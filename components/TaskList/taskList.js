@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     },
     empty: {
         width: "100%",
-        textAlign: "center"
+        textAlign: "center",
     }
 });
 
