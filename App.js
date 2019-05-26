@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import ToDo from './container/ToDo/ToDo';
+import ToDo from './src/container/ToDo/ToDo';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
-import reducer from './store/store';
+import reducer from './src/store/store';
 
 const store = createStore(reducer);
 

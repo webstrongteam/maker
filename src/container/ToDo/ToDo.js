@@ -50,7 +50,8 @@ class ToDo extends Component {
                         toggleEditModal={this.toggleEditModalHandler}
                         toggleModal={this.toggleModalHandler} />
 
-                    <Text style={{fontWeight: 'bold', fontSize: 20, padding: 10}}>To Do list:</Text>
+                    <Text style={styles.title}>MAKER</Text>
+                    <Text style={styles.subtitle}>Best ToDo app!</Text>
 
                     <TextInput
                         placeholder="Tap task name"
@@ -117,9 +118,20 @@ const styles = StyleSheet.create({
         width: "20%",
     },
     tasks: {
-        margin: 20,
+        marginTop: 40,
         width: "100%",
         height: "10%",
+    },
+    title: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        paddingTop: 15,
+        letterSpacing: 1
+    },
+    subtitle: {
+        color: '#ddd',
+        fontSize: 10,
+        paddingBottom: 10
     }
 });
 
