@@ -1,17 +1,42 @@
 import React, {Component} from 'react';
-import ToDo from './src/container/ToDo/ToDo';
-import { createStore } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import axios from 'axios';
+import Router from './router';
+import todoReducer from './src/store/reducers/todo';
+import authReducer from './src/store/reducers/auth';
+import thunk from 'redux-thunk';
+import { ThemeContext, getTheme } from 'react-native-material-ui';
 
-import reducer from './src/store/store';
+const uiTheme = {
+    palette: {
+        primaryColor: '#f4511e',
+    },
+    toolbar: {
+        container: {
+            height: 50,
+        },
+    },
+};
 
-const store = createStore(reducer);
+axios.defaults.baseURL = "https://todo-56c42.firebaseio.com/"; // Default Axios URL
+
+const rootReducer = combineReducers({
+    todo: todoReducer,
+    auth: authReducer
+});
+
+const store = createStore(rootReducer, (
+    applyMiddleware(thunk)
+));
 
 export default class App extends Component {
     render() {
         return (
             <Provider store={store}>
-                <ToDo />
+                <ThemeContext.Provider value={getTheme(uiTheme)}>
+                    <Router />
+                </ThemeContext.Provider>
             </Provider>
         );
     }

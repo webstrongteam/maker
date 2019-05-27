@@ -1,6 +1,7 @@
-# Maker
+# Maker - ToDo app
 
-**Maker** is a To Do mobile application created with React Native.
+**Maker** is a ToDo mobile application created with React Native.
+This is my first React Native project.
 
 ## Basic features  
   
@@ -15,16 +16,17 @@
 - React Redux <i>6.0.0</i>  
 - Redux <i>4.0.1</i>  
 - Redux Thunk <i>2.3.0+</i>  
+- React Navigation <i>3.11.0</i>  
+- React Native MaterialUI <i>1.30.1</i>  
 - Axios <i>18.0+</i>
 
 ### ToDo list
 
-- Connect app with Firebase
-- Create account system :heavy_minus_sign:
-- Add dates to task
-- Add task sorting system
-- Add priority system to task
-- Add task notifications
+- Connect task data with Firebase :heavy_minus_sign:
+- Add dates to task :x:
+- Add task sorting system :x:
+- Add priority system to task :x:
+- Add task notifications :x:
 - Clear and upgrade quality of code :heavy_minus_sign:
 
 #### Legend:

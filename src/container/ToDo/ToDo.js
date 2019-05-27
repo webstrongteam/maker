@@ -2,15 +2,29 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, TextInput, Button, ScrollView } from 'react-native';
 import TaskList from '../../components/TaskList/taskList';
 import Modal from '../../components/Modal/modal';
+import Toolbar from '../../components/Toolbar/Toolbar';
 
 import { connect } from 'react-redux';
-import * as actions from '../../store/actions/tasks';
+import * as actions from '../../store/actions/index';
 
 class ToDo extends Component {
     state = {
         showModal: false,
         showEditModal: false
     };
+
+    static navigationOptions = ({navigation}) => {
+        return {
+            header: <Toolbar
+                toggleDrawer={navigation.getParam('toggleDrawer')}
+                title="MAKER - ToDo list" />
+        }
+    };
+
+    componentDidMount() {
+        if (!this.props.isAuth) this.props.navigation.navigate('Auth');
+        this.props.navigation.setParams({ toggleDrawer: this.toggleDrawerHandler });
+    }
 
     toggleModalHandler = (task = this.props.newTask) => {
         this.props.onUpdateModalTask(task);
@@ -29,12 +43,17 @@ class ToDo extends Component {
         })
     };
 
+    toggleDrawerHandler = () => {
+        this.props.navigation.navigate('Drawer');
+    };
+
     removeTaskHandler = (task) => {
         this.props.onRemoveTask(task);
         this.toggleModalHandler();
     };
 
     render() {
+        alert(this.props.isAuth);
         const {showModal, showEditModal} = this.state;
         const {tasks, newTask, modalTask} = this.props;
 
@@ -49,9 +68,6 @@ class ToDo extends Component {
                         remove={this.removeTaskHandler}
                         toggleEditModal={this.toggleEditModalHandler}
                         toggleModal={this.toggleModalHandler} />
-
-                    <Text style={styles.title}>MAKER</Text>
-                    <Text style={styles.subtitle}>Best ToDo app!</Text>
 
                     <TextInput
                         placeholder="Tap task name"
@@ -122,25 +138,15 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "10%",
     },
-    title: {
-        fontWeight: 'bold',
-        fontSize: 20,
-        paddingTop: 15,
-        letterSpacing: 1
-    },
-    subtitle: {
-        color: '#ddd',
-        fontSize: 10,
-        paddingBottom: 10
-    }
 });
 
 const mapStateToProps = state => {
     return {
-        newTask: state.newTask,
-        modalTask: state.modalTask,
-        tasks: state.tasks,
-        selectedTask: state.selectedTask
+        newTask: state.todo.newTask,
+        modalTask: state.todo.modalTask,
+        tasks: state.todo.tasks,
+        selectedTask: state.todo.selectedTask,
+        isAuth: state.auth.isAuth
     }
 };
 const mapDispatchToProps = dispatch => {

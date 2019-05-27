@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, TextInput, Button, Modal, StyleSheet} from 'react-native';
-import * as actions from "../../store/actions/tasks";
+import * as actions from '../../store/actions/index';
 import {connect} from "react-redux";
 
 class EditTask extends Component {
@@ -83,6 +83,18 @@ class EditTask extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        editTask: state.todo.editTask,
+        tasks: state.todo.tasks
+    }
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        onUpdateTask: (task) => dispatch(actions.updateTask(task))
+    }
+};
+
 const styles = StyleSheet.create({
     modal: {
         marginTop: 15,
@@ -122,15 +134,4 @@ const styles = StyleSheet.create({
     },
 });
 
-const mapStateToProps = state => {
-    return {
-        editTask: state.editTask,
-        tasks: state.tasks
-    }
-};
-const mapDispatchToProps = dispatch => {
-    return {
-        onUpdateTask: (task) => dispatch(actions.updateTask(task))
-    }
-};
 export default connect(mapStateToProps, mapDispatchToProps)(EditTask);
