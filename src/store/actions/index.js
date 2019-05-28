@@ -1,10 +1,13 @@
 export {
-    newName,
-    newDescription,
-    addNewTask,
-    updateModalTask,
-    updateTask,
-    removeTask
+    changeDescription,
+    changeName,
+    changeDate,
+    changeCategory,
+    changePriority,
+    setTask,
+    saveTask,
+    removeTask,
+    defaultTask
 } from './tasks';
 
 export {

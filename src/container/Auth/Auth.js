@@ -4,8 +4,8 @@ import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
-import Input from '../../components/UI/Input/input';
-import Button from '../../components/UI/Button/button';
+import Input from '../../components/UI/Input/Input';
+import Button from '../../components/UI/Button/Button';
 import { validationSystem } from '../../shared/utility';
 
 class Auth extends PureComponent {
@@ -23,8 +23,7 @@ class Auth extends PureComponent {
                     minLength: 5,
                     email: true
                 },
-                valid: false,
-                touched: false
+                valid: true
             },
             password: {
                 elementType: 'input',
@@ -37,26 +36,10 @@ class Auth extends PureComponent {
                     required: true,
                     minLength: 6,
                 },
-                valid: false,
-                touched: false
+                valid: true
             },
         },
         isSingUp: true
-    };
-
-    static navigationOptions = {
-        title: 'Login',
-        headerStyle: {
-            color: '#fefefe',
-            backgroundColor: '#f4511e'
-        },
-        headerLeft: null,
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            textAlign: 'center',
-            flexGrow:1,
-            alignSelf:'center',
-        },
     };
 
     componentWillUpdate(nextProps, nextState, nextContext) {
@@ -69,11 +52,6 @@ class Auth extends PureComponent {
             [controlName]: {
                 ...this.state.controls[controlName],
                 value: event,
-                valid: validationSystem(
-                    this.state.controls[controlName].validation,
-                    event
-                ),
-                touched: true
             }
         };
         this.setState({ controls: updatedControls });
@@ -81,13 +59,16 @@ class Auth extends PureComponent {
 
     submitHandler = (event) => {
         event.preventDefault();
-        const updatedControls = { ...this.state.controls };
+        const controls = this.state.controls;
 
-        if (this.state.controls.password.value === '') updatedControls.password.touched = true;
-        else if (this.state.controls.email.value === '') updatedControls.email.touched = true;
-        else return this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value, this.state.isSingUp);
+        controls.email.valid = validationSystem(controls.email.validation, controls.email.value);
+        controls.password.valid = validationSystem(controls.password.validation, controls.password.value);
 
-        this.setState({ controls: updatedControls });
+        if (controls.email.valid && controls.password.valid) {
+            return this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value, this.state.isSingUp);
+        }
+
+        return this.setState({ controls });
     };
 
     switchAuthModeHandler = () => {
@@ -148,7 +129,6 @@ class Auth extends PureComponent {
                     elementConfig={inputEl.config.elementConfig}
                     value={inputEl.config.value}
                     invalid={!inputEl.config.valid}
-                    touched={inputEl.config.touched}
                     shouldValidate={inputEl.config.validation}
                     changed={(event) => this.inputChangeHandler(event, inputEl.id)} />
             ));
@@ -165,6 +145,7 @@ class Auth extends PureComponent {
                         clicked={this.switchAuthModeHandler}
                         title={`SWITCH TO ${this.state.isSingUp ? 'SIGN IN' : 'SIGN UP'}`}
                         color="#944317" />
+                    {error}
                 </View>
             );
         }
@@ -172,7 +153,6 @@ class Auth extends PureComponent {
         return (
             <View>
                 {login}
-                {error}
             </View>
         );
     };

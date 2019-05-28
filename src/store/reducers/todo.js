@@ -2,88 +2,129 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
 
 const initState = {
-    newTask: {
+    task: {
+        id: false,
         name: '',
-        description: ''
+        description: '',
+        date: new Date(),
+        category: '',
+        priority: ''
     },
-    modalTask: {
-        name: '',
-        description: ''
-    },
-    selectedTask: 0,
     tasks: []
 };
 
-const newName = (state, action) => {
+const changeName = (state, action) => {
     return updateObject(state,{
-        newTask: {
+        task: {
+            ...state.task,
             name: action.name,
-            description: state.newTask.description
         }
     });
 };
 
-const newDescription = (state, action) => {
+const changeDescription = (state, action) => {
     return updateObject(state,{
-        newTask: {
-            name: state.newTask.name,
+        task: {
+            ...state.task,
             description: action.description
         }
     });
 };
 
-const addNewTask = (state) => {
-    if (state.newTask.name.trim() === "") return updateObject(state, state);
-    state.tasks.map(task => {
-        if (task.name === state.newTask.name) return updateObject(state, state);
-    });
+const changeDate = (state, action) => {
     return updateObject(state,{
-        tasks: state.tasks.concat(state.newTask),
-        newTask: {
-            name: '',
-            description: ''
+        task: {
+            ...state.task,
+            date: action.date
         }
     });
 };
 
-const removeTask = (state, action) => {
-    const index = state.tasks.indexOf(action.task);
-    const newTasks = [...state.tasks.slice(0, index), ...state.tasks.slice(index + 1)];
-
+const changeCategory = (state, action) => {
     return updateObject(state,{
-        tasks: newTasks
+        task: {
+            ...state.task,
+            category: action.category
+        }
     });
 };
 
-const updateTask = (state, action) => {
-    if (action.task.name.trim() === "") return updateObject(state, state);
-    state.tasks.map(task => {
-        if (task.name === action.task.name) return updateObject(state, state);
-    });
-    const newTasks = state.tasks;
-    newTasks[state.selectedTask] = action.task;
-
+const changePriority = (state, action) => {
     return updateObject(state,{
-        tasks: newTasks
+        task: {
+            ...state.task,
+            priority: action.priority
+        }
     });
 };
 
-const updateModalTask = (state, action) => {
-    const index = state.tasks.indexOf(action.task);
+const setTask = (state, action) => {
     return updateObject(state,{
-        modalTask: action.task,
-        selectedTask: index,
+        task: {
+            ...action.task
+        }
+    });
+};
+
+const saveTask = (state) => {
+    const task = state.task;
+
+    if (task.name.trim() === "") return updateObject(state, state);
+
+    if (task.id !== false) {
+        const updatedTasks = state.tasks;
+        const selectedTask = state.tasks.filter(oldTask => oldTask.id === task.id);
+        const index = state.tasks.indexOf(selectedTask[0]);
+        updatedTasks[index] = task;
+
+        return updateObject(state,{
+            tasks: updatedTasks
+        });
+    }
+
+    const tasksLen = state.tasks.length;
+    if (tasksLen) task.id = state.tasks[tasksLen-1].id+1;
+    else task.id = 0;
+
+    return updateObject(state,{
+        tasks: state.tasks.concat(task),
+    });
+};
+
+const removeTask = (state) => {
+    const selectedTask = state.tasks.filter(oldTask => oldTask.id === state.task.id);
+    const index = state.tasks.indexOf(selectedTask[0]);
+    const updatedTasks = [...state.tasks.slice(0, index), ...state.tasks.slice(index + 1)];
+
+    return updateObject(state,{
+        tasks: updatedTasks,
+    });
+};
+
+const defaultTask = (state) => {
+    return updateObject(state,{
+        task: {
+            id: false,
+            name: '',
+            description: '',
+            date: new Date(),
+            category: '',
+            priority: ''
+        }
     });
 };
 
 const reducer = (state = initState, action) => {
     switch (action.type) {
-        case actionTypes.NEW_NAME: return newName(state, action);
-        case actionTypes.NEW_DESCRIPTION: return newDescription(state, action);
-        case actionTypes.ADD_NEW_TASK: return addNewTask(state);
-        case actionTypes.REMOVE_TASK: return removeTask(state, action);
-        case actionTypes.UPDATE_TASK: return updateTask(state, action);
-        case actionTypes.UPDATE_MODAL_TASK: return updateModalTask(state, action);
+        case actionTypes.CHANGE_TASK_NAME: return changeName(state, action);
+        case actionTypes.CHANGE_TASK_DESCRIPTION: return changeDescription(state, action);
+        case actionTypes.CHANGE_TASK_DATE: return changeDate(state, action);
+        case actionTypes.CHANGE_TASK_CATEGORY: return changeCategory(state, action);
+        case actionTypes.CHANGE_TASK_PRIORITY: return changePriority(state, action);
+        case actionTypes.SET_TASK: return setTask(state, action);
+        case actionTypes.SAVE_TASK: return saveTask(state);
+        case actionTypes.REMOVE_TASK: return removeTask(state);
+        case actionTypes.DEFAULT_TASK: return defaultTask(state);
         default: return state;
     }
 };

@@ -1,110 +1,62 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, TextInput, Button, ScrollView } from 'react-native';
-import TaskList from '../../components/TaskList/taskList';
-import Modal from '../../components/Modal/modal';
-import Toolbar from '../../components/Toolbar/Toolbar';
+import { StyleSheet, View, ScrollView } from 'react-native';
+import { ActionButton, Toolbar } from 'react-native-material-ui';
+import TaskList from '../../components/TaskList/TaskList';
+import Template from '../Template/Template';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
 class ToDo extends Component {
     state = {
-        showModal: false,
-        showEditModal: false
-    };
-
-    static navigationOptions = ({navigation}) => {
-        return {
-            header: <Toolbar
-                toggleDrawer={navigation.getParam('toggleDrawer')}
-                title="MAKER - ToDo list" />
-        }
+        update: false
     };
 
     componentDidMount() {
-        if (!this.props.isAuth) this.props.navigation.navigate('Auth');
-        this.props.navigation.setParams({ toggleDrawer: this.toggleDrawerHandler });
+        //if (!this.props.isAuth) this.props.navigation.navigate('Auth');
     }
 
-    toggleModalHandler = (task = this.props.newTask) => {
-        this.props.onUpdateModalTask(task);
-        this.setState(prevState => {
-            return {
-                showModal: !prevState.showModal
-            }
-        })
-    };
-
-    toggleEditModalHandler = () => {
-        this.setState(prevState => {
-            return {
-                showEditModal: !prevState.showEditModal
-            }
-        })
-    };
-
-    toggleDrawerHandler = () => {
-        this.props.navigation.navigate('Drawer');
-    };
-
-    removeTaskHandler = (task) => {
-        this.props.onRemoveTask(task);
-        this.toggleModalHandler();
-    };
-
     render() {
-        alert(this.props.isAuth);
-        const {showModal, showEditModal} = this.state;
-        const {tasks, newTask, modalTask} = this.props;
+        const {tasks, navigation} = this.props;
 
         return (
-            <View style={styles.container}>
-                <View style={styles.inputContainer}>
-                    <Modal
-                        task={modalTask}
-                        showModal={showModal}
-                        index={this.props.selectedTask}
-                        showEditModal={showEditModal}
-                        remove={this.removeTaskHandler}
-                        toggleEditModal={this.toggleEditModalHandler}
-                        toggleModal={this.toggleModalHandler} />
-
-                    <TextInput
-                        placeholder="Tap task name"
-                        style={styles.placeInputName}
-                        onChangeText={this.props.onNewName}
-                        value={newTask.name}
-                    />
-                    <TextInput
-                        multiline={true}
-                        numberOfLines={4}
-                        placeholder="Tap task description"
-                        style={styles.placeInputDescription}
-                        onChangeText={this.props.onNewDescription}
-                        value={newTask.description}
-                    />
-
-                    <Button
-                        style={styles.placeButton}
-                        title="Add task"
-                        onPress={this.props.onAddNewTask}
-                    />
+            <Template>
+                <Toolbar
+                    searchable={{
+                        autoFocus: true,
+                        placeholder: 'Search',
+                    }}
+                    rightElement={{
+                        menu: {
+                            icon: "more-vert",
+                            labels: ["item 1", "item 2"]
+                        }
+                    }}
+                    leftElement="menu"
+                    onLeftElementPress={() => navigation.navigate('Drawer')}
+                    centerElement="MAKER - ToDo list"
+                />
+                <View style={styles.container}>
+                    <ScrollView style={styles.tasks}>
+                        <TaskList
+                            toggleModal={(task) => navigation.navigate('ConfigTask', {task})}
+                            tasks={tasks} />
+                    </ScrollView>
                 </View>
-                <ScrollView style={styles.tasks}>
-                    <TaskList
-                        toggleModal={this.toggleModalHandler}
-                        tasks={tasks} />
-                </ScrollView>
-            </View>
+                <ActionButton
+                    onPress={() => navigation.navigate('ConfigTask')}
+                    icon="add"
+                />
+            </Template>
         );
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
         flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center'
     },
     inputContainer: {
@@ -153,9 +105,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onNewName: (name) => dispatch(actions.newName(name)),
         onNewDescription: (description) => dispatch(actions.newDescription(description)),
-        onAddNewTask: () => dispatch(actions.addNewTask()),
-        onRemoveTask: (task) => dispatch(actions.removeTask(task)),
-        onUpdateModalTask: (task) => dispatch(actions.updateModalTask(task))
+        onAddNewTask: () => dispatch(actions.addNewTask())
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ToDo);

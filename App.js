@@ -7,14 +7,17 @@ import todoReducer from './src/store/reducers/todo';
 import authReducer from './src/store/reducers/auth';
 import thunk from 'redux-thunk';
 import { ThemeContext, getTheme } from 'react-native-material-ui';
+import {Platform} from "react-native";
 
 const uiTheme = {
     palette: {
         primaryColor: '#f4511e',
+        accentColor: '#f4133f',
     },
     toolbar: {
         container: {
-            height: 50,
+            paddingTop: Platform.OS === 'android' ? 25 : 0,
+            height: 70,
         },
     },
 };
@@ -41,4 +44,3 @@ export default class App extends Component {
         );
     }
 }
-

@@ -18,15 +18,25 @@ This is my first React Native project.
 - Redux Thunk <i>2.3.0+</i>  
 - React Navigation <i>3.11.0</i>  
 - React Native MaterialUI <i>1.30.1</i>  
+- React Native Datepicker <i>1.7.2</i>  
 - Axios <i>18.0+</i>
 
 ### ToDo list
 
-- Connect task data with Firebase :heavy_minus_sign:
-- Add dates to task :x:
-- Add task sorting system :x:
-- Add priority system to task :x:
-- Add task notifications :x:
+- Set task bgColor by task priority :heavy_minus_sign:
+- Add date division :heavy_minus_sign:
+- Add category creator :heavy_minus_sign:
+- Add task repeat system :heavy_minus_sign:
+- Finish task system :heavy_minus_sign:
+- Add task sorting and searching system :x:
+- Add notifications system :x:
+- Google account auth system :x:
+- Create SQLITE database :x:
+- Google drive synch :x:
+- Add about tab :x:
+- Add setting tab :x:
+- Add account tab :x:
+- Create and add app logo :x:
 - Clear and upgrade quality of code :heavy_minus_sign:
 
 #### Legend:
