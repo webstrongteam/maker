@@ -93,7 +93,7 @@ class ConfigTask extends Component {
                                 onValueChange={(itemValue, itemIndex) =>
                                     this.props.onChangeCategory(itemValue)
                                 }>
-                                <Picker.Item label="Java" value="java" />
+                                <Picker.Item label="Default" value="default" />
                                 <Picker.Item label="JavaScript" value="js" />
                             </Picker>
                         </View>
@@ -108,9 +108,10 @@ class ConfigTask extends Component {
                                 onValueChange={(itemValue, itemIndex) =>
                                     this.props.onChangePriority(itemValue)
                                 }>
+                                <Picker.Item label="None" value="none" />
                                 <Picker.Item label="Low" value="low" />
                                 <Picker.Item label="Medium" value="medium" />
-                                <Picker.Item label="Height" value="height" />
+                                <Picker.Item label="High" value="high" />
                             </Picker>
                         </View>
                     </View>

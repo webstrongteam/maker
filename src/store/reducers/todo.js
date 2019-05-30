@@ -1,14 +1,15 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
+import moment from 'moment';
 
 const initState = {
     task: {
         id: false,
         name: '',
         description: '',
-        date: new Date(),
-        category: '',
-        priority: ''
+        date: moment(new Date()).format('DD-MM-YYYY'),
+        category: 'default',
+        priority: 'none'
     },
     tasks: []
 };
@@ -107,9 +108,9 @@ const defaultTask = (state) => {
             id: false,
             name: '',
             description: '',
-            date: new Date(),
-            category: '',
-            priority: ''
+            date: moment(new Date()).format('DD-MM-YYYY'),
+            category: 'default',
+            priority: 'none'
         }
     });
 };

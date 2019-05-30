@@ -23,7 +23,6 @@ This is my first React Native project.
 
 ### ToDo list
 
-- Set task bgColor by task priority :heavy_minus_sign:
 - Add date division :heavy_minus_sign:
 - Add category creator :heavy_minus_sign:
 - Add task repeat system :heavy_minus_sign:
