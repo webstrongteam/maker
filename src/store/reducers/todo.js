@@ -92,8 +92,13 @@ const saveTask = (state) => {
     });
 };
 
-const removeTask = (state) => {
-    const selectedTask = state.tasks.filter(oldTask => oldTask.id === state.task.id);
+const removeTask = (state, action) => {
+    let selectedTask;
+    if (action.task) {
+        selectedTask = state.tasks.filter(oldTask => oldTask.id === action.task.id);
+    } else {
+        selectedTask = state.tasks.filter(oldTask => oldTask.id === state.task.id);
+    }
     const index = state.tasks.indexOf(selectedTask[0]);
     const updatedTasks = [...state.tasks.slice(0, index), ...state.tasks.slice(index + 1)];
 
@@ -124,7 +129,7 @@ const reducer = (state = initState, action) => {
         case actionTypes.CHANGE_TASK_PRIORITY: return changePriority(state, action);
         case actionTypes.SET_TASK: return setTask(state, action);
         case actionTypes.SAVE_TASK: return saveTask(state);
-        case actionTypes.REMOVE_TASK: return removeTask(state);
+        case actionTypes.REMOVE_TASK: return removeTask(state, action);
         case actionTypes.DEFAULT_TASK: return defaultTask(state);
         default: return state;
     }

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { ActionButton, Toolbar } from 'react-native-material-ui';
-import TaskList from '../../components/TaskList/TaskList';
+import { ActionButton, Toolbar, BottomNavigation } from 'react-native-material-ui';
+import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
 
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import * as actions from '../../store/actions/index';
 
 class ToDo extends Component {
     state = {
-        update: false
+        active: 'byAZ'
     };
 
     componentDidMount() {
@@ -17,20 +17,14 @@ class ToDo extends Component {
     }
 
     render() {
-        const {tasks, navigation} = this.props;
+        const {navigation} = this.props;
 
         return (
             <Template>
                 <Toolbar
                     searchable={{
                         autoFocus: true,
-                        placeholder: 'Search',
-                    }}
-                    rightElement={{
-                        menu: {
-                            icon: "more-vert",
-                            labels: ["item 1", "item 2"]
-                        }
+                        placeholder: 'Search task',
                     }}
                     leftElement="menu"
                     onLeftElementPress={() => navigation.navigate('Drawer')}
@@ -38,15 +32,43 @@ class ToDo extends Component {
                 />
                 <View style={styles.container}>
                     <ScrollView style={styles.tasks}>
-                        <TaskList
-                            toggleModal={(task) => navigation.navigate('ConfigTask', {task})}
-                            tasks={tasks} />
+                        <TaskList navigation={navigation} />
                     </ScrollView>
                 </View>
                 <ActionButton
+                    style={{
+                        container: { marginBottom: 50 }
+                    }}
                     onPress={() => navigation.navigate('ConfigTask')}
                     icon="add"
                 />
+                <BottomNavigation active={this.state.active} >
+                    <BottomNavigation.Action
+                        key="byAZ"
+                        icon="format-line-spacing"
+                        label="A-Z"
+                        onPress={() => this.setState({ active: 'byAZ' })}
+                    />
+                    <BottomNavigation.Action
+                        key="byDate"
+                        icon="insert-invitation"
+                        label="Date"
+                        onPress={() => this.setState({ active: 'byDate' })}
+                    />
+                    <BottomNavigation.Action
+                        key="byCategory"
+                        icon="bookmark-border"
+                        label="Category"
+                        onPress={() => this.setState({ active: 'byCategory' })}
+                    />
+                    <BottomNavigation.Action
+                        key="byPriority"
+                        icon="priority-high"
+                        label="Priority"
+                        onPress={() => this.setState({ active: 'byPriority' })}
+                    />
+
+                </BottomNavigation>
             </Template>
         );
     }
@@ -65,30 +87,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     },
-    placeInputName: {
-        width: "100%",
-        margin: 10,
-        padding: 10,
-        borderRadius: 4,
-        borderWidth: 0.5,
-        borderColor: '#ddd',
-    },
-    placeInputDescription: {
-        width: "100%",
-        margin: 10,
-        height: 100,
-        padding: 10,
-        borderRadius: 4,
-        borderWidth: 0.5,
-        borderColor: '#ddd',
-    },
-    placeButton: {
-        width: "20%",
-    },
     tasks: {
-        marginTop: 40,
+        marginTop: 20,
         width: "100%",
-        height: "10%",
     },
 });
 

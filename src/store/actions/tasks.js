@@ -48,9 +48,10 @@ export const saveTask = () => {
     };
 };
 
-export const removeTask = () => {
+export const removeTask = (task = false) => {
     return {
-        type: actionTypes.REMOVE_TASK
+        type: actionTypes.REMOVE_TASK,
+        task
     }
 };
 

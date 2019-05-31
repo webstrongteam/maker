@@ -23,11 +23,9 @@ This is my first React Native project.
 
 ### ToDo list
 
-- Add date division :heavy_minus_sign:
 - Add category creator :heavy_minus_sign:
 - Add task repeat system :heavy_minus_sign:
-- Finish task system :heavy_minus_sign:
-- Add task sorting and searching system :x:
+- Add task sorting and searching system :heavy_minus_sign:
 - Add notifications system :x:
 - Google account auth system :x:
 - Create SQLITE database :x:

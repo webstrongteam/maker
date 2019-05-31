@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {View, Picker, StyleSheet} from 'react-native';
 import DatePicker from 'react-native-datepicker'
-import {ActionButton, Toolbar, Subheader, Icon} from 'react-native-material-ui';
+import {ActionButton, Toolbar, Subheader, Icon, Button} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import Input from '../../components/UI/Input/Input';
 
@@ -44,6 +44,17 @@ class ConfigTask extends Component {
             <Template>
                 <Toolbar
                     leftElement="arrow-back"
+                    rightElement={
+                        <Button
+                            text="Save"
+                            style={{ text: { color: 'white' } }}
+                            onPress={() => {
+                                this.props.onSaveTask();
+                                navigation.goBack();
+                                this.props.onDefaultTask();
+                            }}
+                        />
+                    }
                     onLeftElementPress={() => {
                         navigation.goBack();
                         this.props.onDefaultTask();
