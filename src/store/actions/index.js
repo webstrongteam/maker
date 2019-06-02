@@ -7,6 +7,7 @@ export {
     setTask,
     saveTask,
     removeTask,
+    undoTask,
     defaultTask
 } from './tasks';
 

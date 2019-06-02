@@ -15,13 +15,11 @@ class TaskList extends Component {
             medium: '#cec825',
             high: '#ce3241'
         },
-        initDivision: false,
-        swiping: false
+        initDivision: false
     };
 
     componentDidMount() {
         this.divisionTask();
-        this.setState({initDivision: true});
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -32,11 +30,18 @@ class TaskList extends Component {
 
     divisionTask = () => {
         const division = [];
-        this.props.tasks.map(task => {
-            if (!division[this.dateDivision(task.date)]) division[this.dateDivision(task.date)] = [];
-            division[this.dateDivision(task.date)].push(task);
+        const {tasks} = this.props;
+
+        tasks.map(task => {
+            if (task.finish) {
+                if (!division['Finished']) division['Finished'] = [];
+                division['Finished'].push(task);
+            } else {
+                if (!division[this.dateDivision(task.date)]) division[this.dateDivision(task.date)] = [];
+                division[this.dateDivision(task.date)].push(task);
+            }
         });
-        this.setState({division});
+        this.setState({division, initDivision: true});
     };
 
     dateDivision = (date) => {
@@ -60,42 +65,46 @@ class TaskList extends Component {
         const {tasks, navigation} = this.props;
 
         const taskList = initDivision && Object.keys(division).map(div => (
-            division[div].map((task, index) => {
-                return (
-                    <View key={div + index}>
-                        {!index &&
-                            <Subheader
-                                text={div}
+            division[div].map((task, index) => (
+                <View key={div + index}>
+                    {!index &&
+                        <Subheader
+                            text={div}
+                            style={{
+                                container: {backgroundColor: '#d8ddd8'},
+                                text: div === 'Overdue' ? {color: '#ce3241'} : {color: 'black'} }}
+                        />
+                    }
+                    <ListItem
+                        divider
+                        dense
+                        onPress={() => task.finish ? true : navigation.navigate('ConfigTask', {task})}
+                        style={{
+                            container: {backgroundColor: priorityColors[task.priority]},
+                            secondaryText: div === 'Overdue' ? {color: '#ce3241'} : {color: 'black'}
+                        }}
+                        rightElement={
+                            <Button
+                                raised primary
                                 style={{
-                                    container: {backgroundColor: '#d8ddd8'},
-                                    text: div === 'Overdue' ? {color: '#ce3241'} : {color: 'black'} }}
+                                    container: {
+                                        backgroundColor: task.finish ? '#5bc0de' : '#26b596',
+                                        marginRight: 15
+                                    }
+                                }}
+                                text={task.finish ? 'Undo' : 'Done'}
+                                icon={task.finish ? 'replay' : 'done'}
+                                onPress={() => {task.finish ? this.props.onUndoTask(task) : this.props.onRemoveTask(task)}}
                             />
                         }
-                        <ListItem
-                            divider
-                            dense
-                            onPress={() => navigation.navigate('ConfigTask', {task})}
-                            style={{
-                                container: {backgroundColor: priorityColors[task.priority]},
-                                secondaryText: div === 'Overdue' ? {color: '#ce3241'} : {color: 'black'}
-                            }}
-                            rightElement={
-                                <Button
-                                    style={{
-                                        container: {backgroundColor: '#26b596', marginRight: 15},
-                                    }}
-                                    raised primary text="Done" icon="done"
-                                    onPress={() => this.props.onRemoveTask(task)} />
-                            }
-                            centerElement={{
-                                primaryText: `${task.name}`,
-                                secondaryText: task.date,
-                                tertiaryText: task.category
-                            }}
-                        />
-                    </View>
-                )
-            })
+                        centerElement={{
+                            primaryText: `${task.name}`,
+                            secondaryText: task.date,
+                            tertiaryText: task.category
+                        }}
+                    />
+                </View>
+            ))
         ));
 
         return (
@@ -122,13 +131,15 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        refresh: state.todo.refresh,
+        finished: state.todo.finished,
+        refresh: state.todo.refresh
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
+        onUndoTask: (task) => dispatch(actions.undoTask(task)),
     }
 };
 

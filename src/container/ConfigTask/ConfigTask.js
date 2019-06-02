@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {View, Picker, StyleSheet} from 'react-native';
+import {View, Picker, StyleSheet, ScrollView} from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import {ActionButton, Toolbar, Subheader, Icon, IconToggle, Button} from 'react-native-material-ui';
 import Template from '../Template/Template';
@@ -14,13 +14,13 @@ class ConfigTask extends Component {
         controls: {
             name: {
                 elementConfig: {
-                    placeholder: 'Task name',
+                    placeholder: 'Enter task name',
                     autoFocus: true
                 }
             },
             description: {
                 elementConfig: {
-                    placeholder: 'Task description',
+                    placeholder: 'Enter task description',
                     multiline: true,
                     numberOfLines: 3
                 }
@@ -68,7 +68,7 @@ class ConfigTask extends Component {
                     }}
                     centerElement={editTask ? "Edit task" : "New task"}
                 />
-                <View>
+                <ScrollView>
                     <Input
                         elementConfig={controls.name.elementConfig}
                         value={task.name}
@@ -136,7 +136,7 @@ class ConfigTask extends Component {
                             </Picker>
                         </View>
                     </View>
-                </View>
+                </ScrollView>
                 {editTask ?
                     <ActionButton
                         actions={[

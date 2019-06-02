@@ -1,17 +1,19 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, ScrollView, Picker, ActivityIndicator} from 'react-native';
-import {ActionButton, Toolbar, BottomNavigation, IconToggle} from 'react-native-material-ui';
+import {ActionButton, Toolbar, BottomNavigation} from 'react-native-material-ui';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
 
 import { connect } from 'react-redux';
+import ConfigCategory from "../ConfigCategory/ConfigCategory";
 
 class ToDo extends Component {
     state = {
         active: 'byAZ',
         tasks: null,
         selectedCategory: 'All',
-        loading: true
+        loading: true,
+        showModal: false
     };
 
     componentDidMount() {
@@ -21,22 +23,35 @@ class ToDo extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps !== this.props || prevProps.refresh !== this.props.refresh) {
-            this.setState({ tasks: this.props.tasks })
+            if (this.state.selectedCategory === 'finished') this.setState({ tasks: this.props.finished });
+            else this.setState({ tasks: this.props.tasks });
         }
     }
 
+    toggleModalHandler = () => {
+        const { showModal } = this.state;
+        this.setState({ showModal: !showModal });
+    };
+
     selectedCategoryHandler = (category) => {
-        const { tasks } = this.props;
+        const { tasks, finished } = this.props;
         let filterTask = tasks;
-        if (category !== 'All') {
+
+        if (category === 'finished') {
+            return this.setState({ selectedCategory: category, tasks: finished });
+        }
+        else if (category === 'new') {
+            return this.toggleModalHandler();
+        }
+        else if (category !== 'All') {
             filterTask = tasks.filter(task => task.category === category);
         }
 
-        this.setState({ selectedCategory: category, tasks: filterTask })
+        return this.setState({ selectedCategory: category, tasks: filterTask });
     };
 
     render() {
-        const {selectedCategory, tasks, loading} = this.state;
+        const {selectedCategory, tasks, loading, showModal} = this.state;
         const {navigation, categories} = this.props;
 
         return (
@@ -59,6 +74,8 @@ class ToDo extends Component {
                             { categories.map(cate => (
                                 <Picker.Item key={cate.id} label={cate.name} value={cate.name} />
                             )) }
+                            <Picker.Item label='Finished' value='finished' />
+                            <Picker.Item label='New category' value='new' />
                         </Picker>
                     }
                 />
@@ -69,13 +86,15 @@ class ToDo extends Component {
                             <TaskList tasks={tasks} navigation={navigation}/>
                         </ScrollView>
                     </View>
-                    <ActionButton
-                        style={{
-                            container: {marginBottom: 50}
-                        }}
-                        onPress={() => navigation.navigate('ConfigTask')}
-                        icon="add"
-                    />
+                    {selectedCategory !== 'finished' &&
+                        <ActionButton
+                            style={{
+                                container: {marginBottom: 50}
+                            }}
+                            onPress={() => navigation.navigate('ConfigTask')}
+                            icon="add"
+                        />
+                    }
                     <BottomNavigation active={this.state.active} >
                         <BottomNavigation.Action
                             key="byAZ"
@@ -106,6 +125,13 @@ class ToDo extends Component {
                 <View style={[styles.container, styles.horizontal]}>
                     <ActivityIndicator size="large" color="#0000ff" />
                 </View>
+                }
+                {showModal &&
+                <ConfigCategory
+                    navigation={navigation}
+                    showModal={showModal}
+                    toggleModal={this.toggleModalHandler}
+                />
                 }
             </Template>
         );
@@ -142,6 +168,7 @@ const mapStateToProps = state => {
         categories: state.todo.categories,
         tasks: state.todo.tasks,
         selectedTask: state.todo.selectedTask,
+        finished: state.todo.finished,
         refresh: state.todo.refresh,
         isAuth: state.auth.isAuth
     }

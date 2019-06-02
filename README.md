@@ -26,9 +26,8 @@ This is my first React Native project.
 
 ### ToDo list
 
-- Add repeating task system :heavy_minus_sign:
 - Create and config SQLITE database :heavy_minus_sign:
-- Add finished task list :x:
+- Add repeating task system :x:
 - Add task sorting and searching system :x:
 - Add notifications system :x:
 - Google account auth system :x:

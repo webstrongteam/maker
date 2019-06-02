@@ -11,7 +11,7 @@ class ConfigCategory extends Component {
         controls: {
             name: {
                 elementConfig: {
-                    placeholder: 'Category name',
+                    placeholder: 'Enter category name',
                     autoFocus: true
                 }
             },

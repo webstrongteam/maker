@@ -17,6 +17,7 @@ const initState = {
     },
     categories: [{id: 0, name: 'Default'}],
     tasks: [],
+    finished: [],
     refresh: false
 };
 
@@ -108,9 +109,25 @@ const removeTask = (state, action) => {
     }
     const index = state.tasks.indexOf(selectedTask[0]);
     const updatedTasks = [...state.tasks.slice(0, index), ...state.tasks.slice(index + 1)];
+    action.task.finish = true;
 
     return updateObject(state,{
         tasks: updatedTasks,
+        finished: state.finished.concat(action.task)
+    });
+};
+
+const undoTask = (state, action) => {
+    const task = action.task;
+
+    const index = state.finished.indexOf(task);
+    const updatedFinished = [...state.finished.slice(0, index), ...state.finished.slice(index + 1)];
+
+    delete action.task.finish;
+
+    return updateObject(state,{
+        tasks: state.tasks.concat(task),
+        finished: updatedFinished
     });
 };
 
@@ -199,6 +216,7 @@ const reducer = (state = initState, action) => {
         case actionTypes.SET_TASK: return setTask(state, action);
         case actionTypes.SAVE_TASK: return saveTask(state);
         case actionTypes.REMOVE_TASK: return removeTask(state, action);
+        case actionTypes.UNDO_TASK: return undoTask(state, action);
         case actionTypes.CHANGE_CATEGORY_NAME: return changeCategoryName(state, action);
         case actionTypes.SET_CATEGORY: return setCategory(state, action);
         case actionTypes.SAVE_CATEGORY: return saveCategory(state);

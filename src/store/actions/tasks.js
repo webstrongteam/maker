@@ -55,6 +55,13 @@ export const removeTask = (task = false) => {
     }
 };
 
+export const undoTask = (task) => {
+    return {
+        type: actionTypes.UNDO_TASK,
+        task
+    }
+};
+
 export const defaultTask = () => {
     return {
         type: actionTypes.DEFAULT_TASK
