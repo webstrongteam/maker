@@ -12,6 +12,10 @@ class DrawerContainer extends Component {
         this.props.navigation.navigate('Auth');
     };
 
+    categoriesListHandler = () => {
+        this.props.navigation.navigate('CategoriesList');
+    };
+
     render() {
         const {navigation} = this.props;
 
@@ -26,15 +30,14 @@ class DrawerContainer extends Component {
                     <Drawer.Section
                         divider
                         items={[
-                            {icon: 'bookmark-border', value: 'Notifications'},
-                            {icon: 'today', value: 'Calendar', active: true},
-                            {icon: 'people', value: 'Clients'},
+                            {icon: 'bookmark-border', value: 'Edit categories', onPress: () => this.categoriesListHandler()},
+                            {icon: 'people', value: 'Account'},
                         ]}
                     />
                     <Drawer.Section
-                        title="Personal"
+                        title="App"
                         items={[
-                            {icon: 'info', value: 'Info'},
+                            {icon: 'info', value: 'About Maker'},
                             {icon: 'settings', value: 'Settings'},
                             {icon: 'input', value: 'Logout', onPress: () => this.logoutHandler()},
                         ]}

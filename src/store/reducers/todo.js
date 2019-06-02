@@ -8,10 +8,16 @@ const initState = {
         name: '',
         description: '',
         date: moment(new Date()).format('DD-MM-YYYY'),
-        category: 'default',
+        category: 'Default',
         priority: 'none'
     },
-    tasks: []
+    category: {
+        id: false,
+        name: ''
+    },
+    categories: [{id: 0, name: 'Default'}],
+    tasks: [],
+    refresh: false
 };
 
 const changeName = (state, action) => {
@@ -79,7 +85,8 @@ const saveTask = (state) => {
         updatedTasks[index] = task;
 
         return updateObject(state,{
-            tasks: updatedTasks
+            tasks: updatedTasks,
+            refresh: !state.refresh
         });
     }
 
@@ -107,6 +114,59 @@ const removeTask = (state, action) => {
     });
 };
 
+const changeCategoryName = (state, action) => {
+    return updateObject(state,{
+        category: {
+            ...state.category,
+            name: action.name
+        }
+    });
+};
+
+const setCategory = (state, action) => {
+    return updateObject(state,{
+        category: {
+            ...action.category
+        }
+    });
+};
+
+const saveCategory = (state) => {
+    const category = state.category;
+
+    if (category.name.trim() === "") return updateObject(state, state);
+
+    if (category.id !== false) {
+        const updatedCategories = state.categories;
+        const selectedCategory = state.categories.filter(oldCate => oldCate.id === category.id);
+        const index = state.categories.indexOf(selectedCategory[0]);
+        updatedCategories[index] = category;
+
+        return updateObject(state,{
+            categories: updatedCategories,
+            refresh: !state.refresh
+        });
+    }
+
+    const categoriesLen = state.categories.length;
+    if (categoriesLen) category.id = state.categories[categoriesLen-1].id+1;
+    else category.id = 0;
+
+    return updateObject(state,{
+        categories: state.categories.concat(category),
+    });
+};
+
+const removeCategory = (state, action) => {
+    const selectedCategory = state.categories.filter(oldCate => oldCate.id === action.category.id);
+    const index = state.categories.indexOf(selectedCategory[0]);
+    const updatedCategories = [...state.categories.slice(0, index), ...state.categories.slice(index + 1)];
+
+    return updateObject(state,{
+        categories: updatedCategories
+    });
+};
+
 const defaultTask = (state) => {
     return updateObject(state,{
         task: {
@@ -114,8 +174,17 @@ const defaultTask = (state) => {
             name: '',
             description: '',
             date: moment(new Date()).format('DD-MM-YYYY'),
-            category: 'default',
+            category: 'Default',
             priority: 'none'
+        }
+    });
+};
+
+const defaultCategory = (state) => {
+    return updateObject(state,{
+        category: {
+            id: false,
+            name: ''
         }
     });
 };
@@ -130,6 +199,11 @@ const reducer = (state = initState, action) => {
         case actionTypes.SET_TASK: return setTask(state, action);
         case actionTypes.SAVE_TASK: return saveTask(state);
         case actionTypes.REMOVE_TASK: return removeTask(state, action);
+        case actionTypes.CHANGE_CATEGORY_NAME: return changeCategoryName(state, action);
+        case actionTypes.SET_CATEGORY: return setCategory(state, action);
+        case actionTypes.SAVE_CATEGORY: return saveCategory(state);
+        case actionTypes.REMOVE_CATEGORY: return removeCategory(state, action);
+        case actionTypes.DEFAULT_CATEGORY: return defaultCategory(state);
         case actionTypes.DEFAULT_TASK: return defaultTask(state);
         default: return state;
     }

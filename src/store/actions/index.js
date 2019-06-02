@@ -11,6 +11,14 @@ export {
 } from './tasks';
 
 export {
+    changeCategoryName,
+    setCategory,
+    saveCategory,
+    removeCategory,
+    defaultCategory
+} from './category';
+
+export {
     auth,
     logout,
     authCheckState

@@ -1,23 +1,43 @@
 import React, {Component} from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { ActionButton, Toolbar, BottomNavigation } from 'react-native-material-ui';
+import {StyleSheet, View, ScrollView, Picker, ActivityIndicator} from 'react-native';
+import {ActionButton, Toolbar, BottomNavigation, IconToggle} from 'react-native-material-ui';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
 
 import { connect } from 'react-redux';
-import * as actions from '../../store/actions/index';
 
 class ToDo extends Component {
     state = {
-        active: 'byAZ'
+        active: 'byAZ',
+        tasks: null,
+        selectedCategory: 'All',
+        loading: true
     };
 
     componentDidMount() {
+        this.setState({ tasks: this.props.tasks, loading: false })
         //if (!this.props.isAuth) this.props.navigation.navigate('Auth');
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps !== this.props || prevProps.refresh !== this.props.refresh) {
+            this.setState({ tasks: this.props.tasks })
+        }
+    }
+
+    selectedCategoryHandler = (category) => {
+        const { tasks } = this.props;
+        let filterTask = tasks;
+        if (category !== 'All') {
+            filterTask = tasks.filter(task => task.category === category);
+        }
+
+        this.setState({ selectedCategory: category, tasks: filterTask })
+    };
+
     render() {
-        const {navigation} = this.props;
+        const {selectedCategory, tasks, loading} = this.state;
+        const {navigation, categories} = this.props;
 
         return (
             <Template>
@@ -28,47 +48,65 @@ class ToDo extends Component {
                     }}
                     leftElement="menu"
                     onLeftElementPress={() => navigation.navigate('Drawer')}
-                    centerElement="MAKER - ToDo list"
+                    centerElement={
+                        <Picker
+                            style={styles.picker}
+                            selectedValue={selectedCategory}
+                            onValueChange={(itemValue, itemIndex) =>
+                                this.selectedCategoryHandler(itemValue)
+                            }>
+                            <Picker.Item label="All" value="All" />
+                            { categories.map(cate => (
+                                <Picker.Item key={cate.id} label={cate.name} value={cate.name} />
+                            )) }
+                        </Picker>
+                    }
                 />
-                <View style={styles.container}>
-                    <ScrollView style={styles.tasks}>
-                        <TaskList navigation={navigation} />
-                    </ScrollView>
+                {!loading ?
+                <React.Fragment>
+                    <View style={styles.container}>
+                        <ScrollView style={styles.tasks}>
+                            <TaskList tasks={tasks} navigation={navigation}/>
+                        </ScrollView>
+                    </View>
+                    <ActionButton
+                        style={{
+                            container: {marginBottom: 50}
+                        }}
+                        onPress={() => navigation.navigate('ConfigTask')}
+                        icon="add"
+                    />
+                    <BottomNavigation active={this.state.active} >
+                        <BottomNavigation.Action
+                            key="byAZ"
+                            icon="format-line-spacing"
+                            label="A-Z"
+                            onPress={() => this.setState({active: 'byAZ'})}
+                        />
+                        <BottomNavigation.Action
+                            key="byDate"
+                            icon="insert-invitation"
+                            label="Date"
+                            onPress={() => this.setState({active: 'byDate'})}
+                        />
+                        <BottomNavigation.Action
+                            key="byCategory"
+                            icon="bookmark-border"
+                            label="Category"
+                            onPress={() => this.setState({active: 'byCategory'})}
+                        />
+                        <BottomNavigation.Action
+                            key="byPriority"
+                            icon="priority-high"
+                            label="Priority"
+                            onPress={() => this.setState({active: 'byPriority'})}
+                        />
+                    </BottomNavigation>
+                </React.Fragment> :
+                <View style={[styles.container, styles.horizontal]}>
+                    <ActivityIndicator size="large" color="#0000ff" />
                 </View>
-                <ActionButton
-                    style={{
-                        container: { marginBottom: 50 }
-                    }}
-                    onPress={() => navigation.navigate('ConfigTask')}
-                    icon="add"
-                />
-                <BottomNavigation active={this.state.active} >
-                    <BottomNavigation.Action
-                        key="byAZ"
-                        icon="format-line-spacing"
-                        label="A-Z"
-                        onPress={() => this.setState({ active: 'byAZ' })}
-                    />
-                    <BottomNavigation.Action
-                        key="byDate"
-                        icon="insert-invitation"
-                        label="Date"
-                        onPress={() => this.setState({ active: 'byDate' })}
-                    />
-                    <BottomNavigation.Action
-                        key="byCategory"
-                        icon="bookmark-border"
-                        label="Category"
-                        onPress={() => this.setState({ active: 'byCategory' })}
-                    />
-                    <BottomNavigation.Action
-                        key="byPriority"
-                        icon="priority-high"
-                        label="Priority"
-                        onPress={() => this.setState({ active: 'byPriority' })}
-                    />
-
-                </BottomNavigation>
+                }
             </Template>
         );
     }
@@ -76,8 +114,6 @@ class ToDo extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        paddingLeft: 20,
-        paddingRight: 20,
         flex: 1,
         alignItems: 'center'
     },
@@ -88,25 +124,27 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     tasks: {
-        marginTop: 20,
         width: "100%",
     },
+    horizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 50
+    },
+    picker: {
+        color: 'white'
+    }
 });
 
 const mapStateToProps = state => {
     return {
         newTask: state.todo.newTask,
-        modalTask: state.todo.modalTask,
+        categories: state.todo.categories,
         tasks: state.todo.tasks,
         selectedTask: state.todo.selectedTask,
+        refresh: state.todo.refresh,
         isAuth: state.auth.isAuth
     }
 };
-const mapDispatchToProps = dispatch => {
-    return {
-        onNewName: (name) => dispatch(actions.newName(name)),
-        onNewDescription: (description) => dispatch(actions.newDescription(description)),
-        onAddNewTask: () => dispatch(actions.addNewTask())
-    }
-};
-export default connect(mapStateToProps, mapDispatchToProps)(ToDo);
+
+export default connect(mapStateToProps)(ToDo);

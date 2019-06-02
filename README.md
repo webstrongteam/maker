@@ -7,6 +7,8 @@ This is my first React Native project.
   
 - Task list
 - Create, Edit and Remove task
+- Categories system
+- Priority task system
 
 ## Technologies  
 **Maker** was created together with:  
@@ -15,24 +17,25 @@ This is my first React Native project.
 - React Native <i>32.0.0</i>
 - React Redux <i>6.0.0</i>  
 - Redux <i>4.0.1</i>  
-- Redux Thunk <i>2.3.0+</i>  
+- Redux Thunk <i>2.3.0</i>  
 - React Navigation <i>3.11.0</i>  
 - React Native MaterialUI <i>1.30.1</i>  
 - React Native Datepicker <i>1.7.2</i>  
-- Axios <i>18.0+</i>
+- Moment.JS <i>2.24.0</i>
+- Axios <i>0.19.0</i>
 
 ### ToDo list
 
-- Add category creator :heavy_minus_sign:
-- Add task repeat system :heavy_minus_sign:
-- Add task sorting and searching system :heavy_minus_sign:
+- Add repeating task system :heavy_minus_sign:
+- Create and config SQLITE database :heavy_minus_sign:
+- Add finished task list :x:
+- Add task sorting and searching system :x:
 - Add notifications system :x:
 - Google account auth system :x:
-- Create SQLITE database :x:
 - Google drive synch :x:
-- Add about tab :x:
-- Add setting tab :x:
-- Add account tab :x:
+- Account tab :x:
+- About tab :x:
+- Setting tab :x:
 - Create and add app logo :x:
 - Clear and upgrade quality of code :heavy_minus_sign:
 

@@ -8,6 +8,11 @@ export const SET_TASK = 'SET_TASK';
 export const SAVE_TASK = 'SAVE_TASK';
 export const REMOVE_TASK = "REMOVE_TASK";
 export const DEFAULT_TASK = "DEFAULT_TASK";
+export const CHANGE_CATEGORY_NAME = "CHANGE_CATEGORY_NAME";
+export const SAVE_CATEGORY = "SAVE_CATEGORY";
+export const SET_CATEGORY = "SET_CATEGORY";
+export const REMOVE_CATEGORY = "REMOVE_CATEGORY";
+export const DEFAULT_CATEGORY = "DEFAULT_CATEGORY";
 
 // Auth
 export const AUTH_START = 'AUTH_START';

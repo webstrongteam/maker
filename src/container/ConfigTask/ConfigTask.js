@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import {View, Picker, StyleSheet} from 'react-native';
 import DatePicker from 'react-native-datepicker'
-import {ActionButton, Toolbar, Subheader, Icon, Button} from 'react-native-material-ui';
+import {ActionButton, Toolbar, Subheader, Icon, IconToggle, Button} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import Input from '../../components/UI/Input/Input';
+import ConfigCategory from '../ConfigCategory/ConfigCategory';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
@@ -25,7 +26,8 @@ class ConfigTask extends Component {
                 }
             }
         },
-        editTask: false
+        editTask: false,
+        showModal: false
     };
 
     componentDidMount() {
@@ -36,9 +38,14 @@ class ConfigTask extends Component {
         }
     }
 
+    toggleModalHandler = () => {
+        const { showModal } = this.state;
+        this.setState({ showModal: !showModal });
+    };
+
     render() {
-        const { controls, editTask } = this.state;
-        const { navigation, task } = this.props;
+        const { controls, editTask, showModal } = this.state;
+        const { navigation, task, categories } = this.props;
 
         return (
             <Template>
@@ -50,8 +57,8 @@ class ConfigTask extends Component {
                             style={{ text: { color: 'white' } }}
                             onPress={() => {
                                 this.props.onSaveTask();
-                                navigation.goBack();
                                 this.props.onDefaultTask();
+                                navigation.goBack();
                             }}
                         />
                     }
@@ -97,16 +104,19 @@ class ConfigTask extends Component {
                                 container: styles.label
                             }}
                             text="Category" />
-                        <View style={styles.picker}>
-                            <Picker
-                                selectedValue={task.category}
-                                style={styles.picker}
-                                onValueChange={(itemValue, itemIndex) =>
-                                    this.props.onChangeCategory(itemValue)
-                                }>
-                                <Picker.Item label="Default" value="default" />
-                                <Picker.Item label="JavaScript" value="js" />
-                            </Picker>
+                        <View style={styles.selectCategory}>
+                            <View style={styles.category}>
+                                <Picker
+                                    selectedValue={task.category}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        this.props.onChangeCategory(itemValue)
+                                    }>
+                                    { categories.map(cate => (
+                                        <Picker.Item key={cate.id} label={cate.name} value={cate.name} />
+                                    )) }
+                                </Picker>
+                            </View>
+                            <IconToggle onPress={() => this.toggleModalHandler()} name="playlist-add" />
                         </View>
                         <Subheader
                             style={{
@@ -142,13 +152,13 @@ class ConfigTask extends Component {
                         onPress={(label) => {
                             if (label === "delete") {
                                 this.props.onRemoveTask();
-                                navigation.goBack();
                                 this.props.onDefaultTask();
+                                navigation.goBack();
                             }
                             else if (label === "check") {
                                 this.props.onSaveTask();
-                                navigation.goBack();
                                 this.props.onDefaultTask();
+                                navigation.goBack();
                             }
                         }}
                         icon="menu"
@@ -157,10 +167,17 @@ class ConfigTask extends Component {
                     <ActionButton
                         onPress={() => {
                             this.props.onSaveTask();
-                            navigation.goBack();
                             this.props.onDefaultTask();
+                            navigation.goBack();
                         }}
                         icon="check"
+                    />
+                }
+                {showModal &&
+                    <ConfigCategory
+                        navigation={navigation}
+                        showModal={showModal}
+                        toggleModal={this.toggleModalHandler}
                     />
                 }
             </Template>
@@ -179,6 +196,18 @@ const styles = StyleSheet.create({
     datePicker: {
 
     },
+    category: {
+        width: '85%',
+        height: 50,
+        borderRadius: 4,
+        borderWidth: 0.5,
+        borderColor: '#d6d7da',
+    },
+    selectCategory: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
     picker: {
         width: '100%',
         height: 50,
@@ -194,6 +223,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         task: state.todo.task,
+        categories: state.todo.categories,
         isAuth: state.auth.isAuth
     }
 };
