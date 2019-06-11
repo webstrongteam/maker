@@ -1,4 +1,6 @@
 // Todo
+export const INIT_TASKS = 'INIT_TASKS';
+export const INIT_FINISHED = 'INIT_FINISHED';
 export const CHANGE_TASK_NAME = 'CHANGE_TASK_NAME';
 export const CHANGE_TASK_DESCRIPTION = 'CHANGE_TASK_DESCRIPTION';
 export const CHANGE_TASK_DATE = 'CHANGE_TASK_DATE';
@@ -9,6 +11,8 @@ export const SAVE_TASK = 'SAVE_TASK';
 export const REMOVE_TASK = "REMOVE_TASK";
 export const UNDO_TASK = "UNDO_TASK";
 export const DEFAULT_TASK = "DEFAULT_TASK";
+
+// Category
 export const CHANGE_CATEGORY_NAME = "CHANGE_CATEGORY_NAME";
 export const SAVE_CATEGORY = "SAVE_CATEGORY";
 export const SET_CATEGORY = "SET_CATEGORY";

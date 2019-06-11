@@ -6,6 +6,7 @@ import Template from '../Template/Template';
 
 import { connect } from 'react-redux';
 import ConfigCategory from "../ConfigCategory/ConfigCategory";
+import * as actions from "../../store/actions";
 
 class ToDo extends Component {
     state = {
@@ -17,14 +18,19 @@ class ToDo extends Component {
     };
 
     componentDidMount() {
-        this.setState({ tasks: this.props.tasks, loading: false })
+        this.props.onInitTasks();
+        this.props.onInitFinished();
         //if (!this.props.isAuth) this.props.navigation.navigate('Auth');
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps !== this.props || prevProps.refresh !== this.props.refresh) {
-            if (this.state.selectedCategory === 'finished') this.setState({ tasks: this.props.finished });
-            else this.setState({ tasks: this.props.tasks });
+            if (this.state.selectedCategory === 'finished') {
+                this.setState({ tasks: this.props.finished, loading: false });
+            }
+            else {
+                this.setState({ tasks: this.props.tasks, loading: false });
+            }
         }
     }
 
@@ -164,14 +170,18 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        newTask: state.todo.newTask,
-        categories: state.todo.categories,
-        tasks: state.todo.tasks,
-        selectedTask: state.todo.selectedTask,
-        finished: state.todo.finished,
-        refresh: state.todo.refresh,
+        tasks: state.tasks.tasks,
+        finished: state.tasks.finished,
+        refresh: state.tasks.refresh,
+        categories: state.categories.categories,
         isAuth: state.auth.isAuth
     }
 };
+const mapDispatchToProps = dispatch => {
+    return {
+        onInitTasks: () => dispatch(actions.initTasks()),
+        onInitFinished: () => dispatch(actions.initFinished()),
+    }
+};
 
-export default connect(mapStateToProps)(ToDo);
+export default connect(mapStateToProps, mapDispatchToProps)(ToDo);

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {View, Picker, StyleSheet, ScrollView} from 'react-native';
+import {View, Picker, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import {ActionButton, Toolbar, Subheader, Icon, IconToggle, Button} from 'react-native-material-ui';
 import Template from '../Template/Template';
@@ -32,8 +32,11 @@ class ConfigTask extends Component {
 
     componentDidMount() {
         const task = this.props.navigation.getParam('task', false);
-        if (task) {
-            this.props.onSetTask(task);
+        if (task) this.props.onSetTask(task.id);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps !== this.props) {
             this.setState({editTask: true});
         }
     }
@@ -46,6 +49,13 @@ class ConfigTask extends Component {
     render() {
         const { controls, editTask, showModal } = this.state;
         const { navigation, task, categories } = this.props;
+        const edit = this.props.navigation.getParam('task', false);
+
+        let loading = true;
+        if (!edit) loading = false;
+        else if (edit) {
+            if (editTask) loading = false
+        }
 
         return (
             <Template>
@@ -56,7 +66,7 @@ class ConfigTask extends Component {
                             text="Save"
                             style={{ text: { color: 'white' } }}
                             onPress={() => {
-                                this.props.onSaveTask();
+                                this.props.onSaveTask(task);
                                 this.props.onDefaultTask();
                                 navigation.goBack();
                             }}
@@ -68,110 +78,116 @@ class ConfigTask extends Component {
                     }}
                     centerElement={editTask ? "Edit task" : "New task"}
                 />
-                <ScrollView>
-                    <Input
-                        elementConfig={controls.name.elementConfig}
-                        value={task.name}
-                        changed={this.props.onChangeName} />
-                    <Input
-                        elementConfig={controls.description.elementConfig}
-                        value={task.description}
-                        changed={this.props.onChangeDescription} />
-                    <View style={styles.container}>
-                        <Subheader
-                            style={{
-                                container: styles.label
-                            }}
-                            text="Due date" />
-                        <DatePicker
-                            style={{width: '100%'}}
-                            date={task.date}
-                            mode="date"
-                            iconComponent={<Icon name="update"/>}
-                            placeholder="Select due date"
-                            format="DD-MM-YYYY"
-                            confirmBtnText="Confirm"
-                            cancelBtnText="Cancel"
-                            customStyles={{
-                                dateInput: {
-                                    marginRight: 5
-                                }
-                            }}
-                            onDateChange={(date) => this.props.onChangeDate(date)}
-                        />
-                        <Subheader
-                            style={{
-                                container: styles.label
-                            }}
-                            text="Category" />
-                        <View style={styles.selectCategory}>
-                            <View style={styles.category}>
-                                <Picker
-                                    selectedValue={task.category}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        this.props.onChangeCategory(itemValue)
-                                    }>
-                                    { categories.map(cate => (
-                                        <Picker.Item key={cate.id} label={cate.name} value={cate.name} />
-                                    )) }
-                                </Picker>
+                {!loading ?
+                    <React.Fragment>
+                        <ScrollView>
+                            <Input
+                                elementConfig={controls.name.elementConfig}
+                                value={task.name}
+                                changed={this.props.onChangeName}/>
+                            <Input
+                                elementConfig={controls.description.elementConfig}
+                                value={task.description}
+                                changed={this.props.onChangeDescription}/>
+                            <View style={styles.container}>
+                                <Subheader
+                                    style={{
+                                        container: styles.label
+                                    }}
+                                    text="Due date"/>
+                                <DatePicker
+                                    style={{width: '100%'}}
+                                    date={task.date}
+                                    mode="date"
+                                    iconComponent={<Icon name="update"/>}
+                                    placeholder="Select due date"
+                                    format="DD-MM-YYYY"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    customStyles={{
+                                        dateInput: {
+                                            marginRight: 5
+                                        }
+                                    }}
+                                    onDateChange={(date) => this.props.onChangeDate(date)}
+                                />
+                                <Subheader
+                                    style={{
+                                        container: styles.label
+                                    }}
+                                    text="Category"/>
+                                <View style={styles.selectCategory}>
+                                    <View style={styles.category}>
+                                        <Picker
+                                            selectedValue={task.category}
+                                            onValueChange={(itemValue, itemIndex) =>
+                                                this.props.onChangeCategory(itemValue)
+                                            }>
+                                            {categories.map(cate => (
+                                                <Picker.Item key={cate.id} label={cate.name} value={cate.name}/>
+                                            ))}
+                                        </Picker>
+                                    </View>
+                                    <IconToggle onPress={() => this.toggleModalHandler()} name="playlist-add"/>
+                                </View>
+                                <Subheader
+                                    style={{
+                                        container: styles.label
+                                    }}
+                                    text="Priority"/>
+                                <View style={styles.picker}>
+                                    <Picker
+                                        selectedValue={task.priority}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            this.props.onChangePriority(itemValue)
+                                        }>
+                                        <Picker.Item label="None" value="none"/>
+                                        <Picker.Item label="Low" value="low"/>
+                                        <Picker.Item label="Medium" value="medium"/>
+                                        <Picker.Item label="High" value="high"/>
+                                    </Picker>
+                                </View>
                             </View>
-                            <IconToggle onPress={() => this.toggleModalHandler()} name="playlist-add" />
-                        </View>
-                        <Subheader
-                            style={{
-                                container: styles.label
-                            }}
-                            text="Priority" />
-                        <View style={styles.picker}>
-                            <Picker
-                                selectedValue={task.priority}
-                                onValueChange={(itemValue, itemIndex) =>
-                                    this.props.onChangePriority(itemValue)
-                                }>
-                                <Picker.Item label="None" value="none" />
-                                <Picker.Item label="Low" value="low" />
-                                <Picker.Item label="Medium" value="medium" />
-                                <Picker.Item label="High" value="high" />
-                            </Picker>
-                        </View>
+                        </ScrollView>
+                        {editTask ?
+                            <ActionButton
+                                actions={[
+                                    {
+                                        icon: 'check',
+                                        label: 'Save'
+                                    },
+                                    {
+                                        icon: 'delete',
+                                        label: 'Delete'
+                                    }
+                                ]}
+                                onPress={(label) => {
+                                    if (label === "delete") {
+                                        this.props.onRemoveTask(task);
+                                        this.props.onDefaultTask();
+                                        navigation.goBack();
+                                    } else if (label === "check") {
+                                        this.props.onSaveTask(task);
+                                        this.props.onDefaultTask();
+                                        navigation.goBack();
+                                    }
+                                }}
+                                icon="menu"
+                                transition="speedDial"
+                            /> :
+                            <ActionButton
+                                onPress={() => {
+                                    this.props.onSaveTask(task);
+                                    this.props.onDefaultTask();
+                                    navigation.goBack();
+                                }}
+                                icon="check"
+                            />
+                        }
+                    </React.Fragment> :
+                    <View style={[styles.container, styles.horizontal]}>
+                        <ActivityIndicator size="large" color="#0000ff"/>
                     </View>
-                </ScrollView>
-                {editTask ?
-                    <ActionButton
-                        actions={[
-                            {
-                                icon: 'check',
-                                label: 'Save'
-                            },
-                            {
-                                icon: 'delete',
-                                label: 'Delete'
-                            }
-                        ]}
-                        onPress={(label) => {
-                            if (label === "delete") {
-                                this.props.onRemoveTask();
-                                this.props.onDefaultTask();
-                                navigation.goBack();
-                            }
-                            else if (label === "check") {
-                                this.props.onSaveTask();
-                                this.props.onDefaultTask();
-                                navigation.goBack();
-                            }
-                        }}
-                        icon="menu"
-                        transition="speedDial"
-                    /> :
-                    <ActionButton
-                        onPress={() => {
-                            this.props.onSaveTask();
-                            this.props.onDefaultTask();
-                            navigation.goBack();
-                        }}
-                        icon="check"
-                    />
                 }
                 {showModal &&
                     <ConfigCategory
@@ -192,6 +208,11 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: "center",
         justifyContent: "center"
+    },
+    horizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 50
     },
     datePicker: {
 
@@ -222,8 +243,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        task: state.todo.task,
-        categories: state.todo.categories,
+        task: state.tasks.task,
+        categories: state.categories.categories,
         isAuth: state.auth.isAuth
     }
 };
@@ -234,10 +255,11 @@ const mapDispatchToProps = dispatch => {
         onChangeDate: (date) => dispatch(actions.changeDate(date)),
         onChangeCategory: (category) => dispatch(actions.changeCategory(category)),
         onChangePriority: (priority) => dispatch(actions.changePriority(priority)),
-        onSetTask: (id, name, description) => dispatch(actions.setTask(id, name, description)),
-        onSaveTask: () => dispatch(actions.saveTask()),
-        onRemoveTask: () => dispatch(actions.removeTask()),
+        onSetTask: (id) => dispatch(actions.setTask(id)),
+        onSaveTask: (task) => dispatch(actions.saveTask(task)),
+        onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onDefaultTask: () => dispatch(actions.defaultTask())
     }
 };
+
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigTask);

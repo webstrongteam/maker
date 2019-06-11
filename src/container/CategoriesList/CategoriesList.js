@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        categories: state.todo.categories,
-        refresh: state.todo.refresh,
+        categories: state.categories.categories,
+        refresh: state.tasks.refresh,
     }
 };
 

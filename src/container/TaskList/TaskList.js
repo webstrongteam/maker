@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import { ListItem, Subheader, Divider } from 'react-native-material-ui';
+import { ListItem, Subheader } from 'react-native-material-ui';
 import moment from 'moment';
 
 import { connect } from 'react-redux';
@@ -32,7 +32,7 @@ class TaskList extends Component {
         const division = [];
         const {tasks} = this.props;
 
-        tasks.map(task => {
+        tasks && tasks.map(task => {
             if (task.finish) {
                 if (!division['Finished']) division['Finished'] = [];
                 division['Finished'].push(task);
@@ -109,7 +109,7 @@ class TaskList extends Component {
 
         return (
             <View>
-                {tasks.length ?
+                {tasks && tasks.length ?
                     <View>{taskList}</View>
                     : <Text style={styles.empty}>Task list is empty</Text>
                 }
@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        finished: state.todo.finished,
-        refresh: state.todo.refresh
+        finished: state.tasks.finished,
+        refresh: state.tasks.refresh
     }
 };
 

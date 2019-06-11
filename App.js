@@ -3,9 +3,11 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import axios from 'axios';
 import Router from './router';
-import todoReducer from './src/store/reducers/todo';
+import tasksReducer from './src/store/reducers/tasks';
+import cateReducer from './src/store/reducers/categories';
 import authReducer from './src/store/reducers/auth';
 import thunk from 'redux-thunk';
+import { SQLite } from 'expo';
 import { ThemeContext, getTheme } from 'react-native-material-ui';
 
 const uiTheme = {
@@ -15,10 +17,31 @@ const uiTheme = {
     },
 };
 
+const db = SQLite.openDatabase('maker.db');
+
+db.transaction(tx => {
+/*    tx.executeSql(
+        'DROP TABLE IF EXISTS tasks;'
+    );
+    tx.executeSql(
+        'DROP TABLE IF EXISTS finished;'
+    );*/
+    tx.executeSql(
+        'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category text, priority text);'
+    );
+    tx.executeSql(
+        'create table if not exists finished (id integer primary key not null, name text, description text, date text, category text, priority text, finish integer);'
+    );
+    tx.executeSql(
+        'create table if not exists category (id integer primary key not null, name text);'
+    );
+});
+
 axios.defaults.baseURL = "https://todo-56c42.firebaseio.com/"; // Default Axios URL
 
 const rootReducer = combineReducers({
-    todo: todoReducer,
+    tasks: tasksReducer,
+    categories: cateReducer,
     auth: authReducer
 });
 

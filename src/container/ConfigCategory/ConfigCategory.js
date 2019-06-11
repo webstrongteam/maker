@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        category: state.todo.category,
+        category: state.categories.category,
         isAuth: state.auth.isAuth
     }
 };

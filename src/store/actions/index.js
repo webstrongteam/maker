@@ -1,4 +1,6 @@
 export {
+    initTasks,
+    initFinished,
     changeDescription,
     changeName,
     changeDate,
@@ -17,7 +19,7 @@ export {
     saveCategory,
     removeCategory,
     defaultCategory
-} from './category';
+} from './categories';
 
 export {
     auth,
