@@ -20,6 +20,7 @@ class ToDo extends Component {
     componentDidMount() {
         this.props.onInitTasks();
         this.props.onInitFinished();
+        this.props.onInitCategories();
         //if (!this.props.isAuth) this.props.navigation.navigate('Auth');
     }
 
@@ -181,6 +182,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onInitTasks: () => dispatch(actions.initTasks()),
         onInitFinished: () => dispatch(actions.initFinished()),
+        onInitCategories: () => dispatch(actions.initCategories()),
     }
 };
 

@@ -6,8 +6,15 @@ const initState = {
         id: false,
         name: ''
     },
-    categories: [{id: 0, name: 'Default'}],
+    categories: [],
     refresh: false
+};
+
+const initCategories = (state, action) => {
+    return updateObject(state,{
+        categories: action.categories,
+        refresh: !state.refresh
+    });
 };
 
 const changeCategoryName = (state, action) => {
@@ -21,45 +28,21 @@ const changeCategoryName = (state, action) => {
 
 const setCategory = (state, action) => {
     return updateObject(state,{
-        category: {
-            ...action.category
-        }
+        category: action.category
     });
 };
 
-const saveCategory = (state) => {
-    const category = state.category;
-
-    if (category.name.trim() === "") return updateObject(state, state);
-
-    if (category.id !== false) {
-        const updatedCategories = state.categories;
-        const selectedCategory = state.categories.filter(oldCate => oldCate.id === category.id);
-        const index = state.categories.indexOf(selectedCategory[0]);
-        updatedCategories[index] = category;
-
-        return updateObject(state,{
-            categories: updatedCategories,
-            refresh: !state.refresh
-        });
-    }
-
-    const categoriesLen = state.categories.length;
-    if (categoriesLen) category.id = state.categories[categoriesLen-1].id+1;
-    else category.id = 0;
-
+const saveCategory = (state, action) => {
     return updateObject(state,{
-        categories: state.categories.concat(category),
+        categories: action.categories,
+        refresh: !state.refresh
     });
 };
 
 const removeCategory = (state, action) => {
-    const selectedCategory = state.categories.filter(oldCate => oldCate.id === action.category.id);
-    const index = state.categories.indexOf(selectedCategory[0]);
-    const updatedCategories = [...state.categories.slice(0, index), ...state.categories.slice(index + 1)];
-
     return updateObject(state,{
-        categories: updatedCategories
+        categories: action.categories,
+        refresh: !state.refresh
     });
 };
 
@@ -74,9 +57,10 @@ const defaultCategory = (state) => {
 
 const reducer = (state = initState, action) => {
     switch (action.type) {
+        case actionTypes.INIT_CATEGORIES: return initCategories(state, action);
         case actionTypes.CHANGE_CATEGORY_NAME: return changeCategoryName(state, action);
         case actionTypes.SET_CATEGORY: return setCategory(state, action);
-        case actionTypes.SAVE_CATEGORY: return saveCategory(state);
+        case actionTypes.SAVE_CATEGORY: return saveCategory(state, action);
         case actionTypes.REMOVE_CATEGORY: return removeCategory(state, action);
         case actionTypes.DEFAULT_CATEGORY: return defaultCategory(state);
         default: return state;

@@ -9,6 +9,7 @@ This is my first React Native project.
 - Create, Edit and Remove task
 - Categories system
 - Priority task system
+- Save data in local database
 
 ## Technologies  
 **Maker** was created together with:  
@@ -22,13 +23,13 @@ This is my first React Native project.
 - React Native MaterialUI <i>1.30.1</i>  
 - React Native Datepicker <i>1.7.2</i>  
 - Moment.JS <i>2.24.0</i>
+- Expo <i>32.0.0</i>
 - Axios <i>0.19.0</i>
 
 ### ToDo list
 
-- Create and config SQLITE database :heavy_minus_sign:
-- Add repeating task system :x:
-- Add task sorting and searching system :x:
+- Add repeating task system :heavy_minus_sign:
+- Add task sorting and searching system :heavy_minus_sign:
 - Add notifications system :x:
 - Google account auth system :x:
 - Google drive synch :x:

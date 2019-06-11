@@ -13,6 +13,7 @@ export const UNDO_TASK = "UNDO_TASK";
 export const DEFAULT_TASK = "DEFAULT_TASK";
 
 // Category
+export const INIT_CATEGORIES = 'INIT_CATEGORIES';
 export const CHANGE_CATEGORY_NAME = "CHANGE_CATEGORY_NAME";
 export const SAVE_CATEGORY = "SAVE_CATEGORY";
 export const SET_CATEGORY = "SET_CATEGORY";

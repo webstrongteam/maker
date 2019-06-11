@@ -52,7 +52,7 @@ class TaskList extends Component {
                                 onPress={() => this.toggleModalHandler(cate)}
                                 rightElement={
                                     cate.id !== 0 &&
-                                    <IconToggle onPress={() => this.props.onRemoveCategory(cate)} name="remove" />
+                                    <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)} name="remove" />
                                 }
                                 centerElement={{
                                     primaryText: `${cate.name}`,
@@ -93,7 +93,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onRemoveCategory: (category) => dispatch(actions.removeCategory(category)),
+        onRemoveCategory: (id) => dispatch(actions.removeCategory(id)),
         onDefaultCategory: () => dispatch(actions.defaultCategory()),
     }
 };

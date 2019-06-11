@@ -191,6 +191,7 @@ class ConfigTask extends Component {
                 }
                 {showModal &&
                     <ConfigCategory
+                        editCategory={false}
                         navigation={navigation}
                         showModal={showModal}
                         toggleModal={this.toggleModalHandler}

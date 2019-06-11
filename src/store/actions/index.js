@@ -14,6 +14,7 @@ export {
 } from './tasks';
 
 export {
+    initCategories,
     changeCategoryName,
     setCategory,
     saveCategory,

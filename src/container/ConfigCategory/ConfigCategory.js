@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {View, StyleSheet, Modal} from 'react-native';
+import {View, StyleSheet, Modal, ActivityIndicator} from 'react-native';
 import {Button, Toolbar} from "react-native-material-ui";
 import Input from '../../components/UI/Input/Input';
 
@@ -16,13 +16,20 @@ class ConfigCategory extends Component {
                 }
             },
         },
-        editCategory: false
+        editCategory: null
     };
 
     componentDidMount() {
         const {editCategory} = this.props;
         if (editCategory) {
-            this.props.onSetCategory(editCategory);
+            this.props.onSetCategory(editCategory.id);
+        } else {
+            this.setState({editCategory: false});
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.refresh !== this.props.refresh) {
             this.setState({editCategory: true});
         }
     }
@@ -46,7 +53,7 @@ class ConfigCategory extends Component {
                                     text="Save"
                                     style={{ text: { color: 'white' } }}
                                     onPress={() => {
-                                        this.props.onSaveCategory();
+                                        this.props.onSaveCategory(category);
                                         this.props.onDefaultCategory();
                                         this.props.toggleModal();
                                     }}
@@ -58,10 +65,15 @@ class ConfigCategory extends Component {
                             }}
                             centerElement={editCategory ? 'Edit category' : 'Create category'}
                         />
-                        <Input
-                            elementConfig={controls.name.elementConfig}
-                            value={category.name}
-                            changed={this.props.onChangeCategoryName} />
+                        {editCategory !== "null" ?
+                            <Input
+                                elementConfig={controls.name.elementConfig}
+                                value={category.name}
+                                changed={this.props.onChangeCategoryName}/> :
+                            <View style={[styles.container, styles.horizontal]}>
+                                <ActivityIndicator size="large" color="#0000ff"/>
+                            </View>
+                        }
                     </View>
                 </Modal>
             </View>
@@ -76,6 +88,11 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: "center",
         justifyContent: "center"
+    },
+    horizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 50
     },
     datePicker: {
 
@@ -113,8 +130,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onChangeCategoryName: (name) => dispatch(actions.changeCategoryName(name)),
-        onSetCategory: (category) => dispatch(actions.setCategory(category)),
-        onSaveCategory: () => dispatch(actions.saveCategory()),
+        onSetCategory: (id) => dispatch(actions.setCategory(id)),
+        onSaveCategory: (category) => dispatch(actions.saveCategory(category)),
         onDefaultCategory: () => dispatch(actions.defaultCategory())
     }
 };
