@@ -50,7 +50,7 @@ class ToDo extends Component {
     };
 
     scrollPosition = (e) => {
-        if (e.nativeEvent.contentOffset.y > this.state.scroll+10) {
+        if (e.nativeEvent.contentOffset.y > this.state.scroll+5) {
             this.setState({ scroll: e.nativeEvent.contentOffset.y });
             this.animateDetail(false);
         } else {
@@ -62,7 +62,7 @@ class ToDo extends Component {
     animateDetail = (fadeIn) => {
         Animated.timing(this.state.fadeAnim, {
             toValue: fadeIn ? 1.0 : 0.0,
-            duration: 300
+            duration: 200
         }).start();
     };
 

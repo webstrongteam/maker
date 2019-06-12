@@ -7,8 +7,10 @@ This is my first React Native project.
   
 - Task list
 - Create, Edit and Remove task
-- Categories system
-- Priority task system
+- Categories
+- Task priority
+- Finished task list
+- Sorting task
 - Save data in local database
 
 ## Technologies  
@@ -28,7 +30,9 @@ This is my first React Native project.
 
 ### ToDo list
 
+- Add advanced sorting system :heavy_minus_sign:
 - Add repeating task system :heavy_minus_sign:
+- Add time to datepicker :x:
 - Add notifications system :x:
 - Google account auth system :x:
 - Google drive synch :x:
