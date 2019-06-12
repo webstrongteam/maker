@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import { ListItem, Subheader } from 'react-native-material-ui';
+import { ListItem, Subheader, IconToggle } from 'react-native-material-ui';
+import {sortingByDiv, sortingByType} from '../../shared/utility';
 import moment from 'moment';
 
 import { connect } from 'react-redux';
@@ -29,18 +30,23 @@ class TaskList extends Component {
     }
 
     divisionTask = () => {
-        const division = [];
-        const {tasks} = this.props;
+        let division = {};
+        const {tasks, sortingType} = this.props;
 
         tasks && tasks.map(task => {
+            let div;
             if (task.finish) {
-                if (!division['Finished']) division['Finished'] = [];
-                division['Finished'].push(task);
+                div = "Finished";
+                if (!division[div]) division[div] = [];
+                division[div].push(task);
             } else {
-                if (!division[this.dateDivision(task.date)]) division[this.dateDivision(task.date)] = [];
-                division[this.dateDivision(task.date)].push(task);
+                div = this.dateDivision(task.date);
+                if (!division[div]) division[div] = [];
+                division[div].push(task);
             }
+            sortingByType(division[div], sortingType);
         });
+
         this.setState({division, initDivision: true});
     };
 
@@ -64,7 +70,10 @@ class TaskList extends Component {
         const {division, priorityColors, initDivision} = this.state;
         const {tasks, navigation} = this.props;
 
-        const taskList = initDivision && Object.keys(division).map(div => (
+        const taskList = initDivision &&
+            Object.keys(division).sort((a, b) => (
+                '' + sortingByDiv(a)).localeCompare(sortingByDiv(b))
+            ).map(div => (
             division[div].map((task, index) => (
                 <View key={div + index}>
                     {!index &&
@@ -80,22 +89,31 @@ class TaskList extends Component {
                         dense
                         onPress={() => task.finish ? true : navigation.navigate('ConfigTask', {task})}
                         style={{
-                            container: {backgroundColor: priorityColors[task.priority]},
-                            secondaryText: div === 'Overdue' ? {color: '#ce3241'} : {color: 'black'}
+                            container: {backgroundColor: !task.finish ? priorityColors[task.priority] : 'white'},
+                            secondaryText: div === 'Overdue' ? {color: !task.finish ? '#ce3241' : 'black'} : {color: 'black'}
                         }}
                         rightElement={
-                            <Button
-                                raised primary
-                                style={{
-                                    container: {
-                                        backgroundColor: task.finish ? '#5bc0de' : '#26b596',
-                                        marginRight: 15
-                                    }
-                                }}
-                                text={task.finish ? 'Undo' : 'Done'}
-                                icon={task.finish ? 'replay' : 'done'}
-                                onPress={() => {task.finish ? this.props.onUndoTask(task) : this.props.onRemoveTask(task)}}
-                            />
+                            <View style={styles.rightElements}>
+                                <Button
+                                    raised primary
+                                    style={{
+                                        container: {
+                                            backgroundColor: task.finish ? '#5bc0de' : '#26b596',
+                                            marginRight: task.finish ? 0 : 15
+                                        }
+                                    }}
+                                    text={task.finish ? 'Undo' : 'Done'}
+                                    icon={task.finish ? 'replay' : 'done'}
+                                    onPress={() => {task.finish ? this.props.onUndoTask(task) : this.props.onFinishTask(task)}}
+                                />
+                                {task.finish &&
+                                <IconToggle
+                                    onPress={() => this.props.onRemoveTask(task)}
+                                    name="delete"
+                                    color="#ce3241"
+                                    size={26}
+                                />}
+                            </View>
                         }
                         centerElement={{
                             primaryText: `${task.name}`,
@@ -119,6 +137,11 @@ class TaskList extends Component {
 }
 
 const styles = StyleSheet.create({
+    rightElements: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     taskList: {
         backgroundColor: "#eee",
     },
@@ -138,6 +161,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        onFinishTask: (task) => dispatch(actions.finishTask(task)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onUndoTask: (task) => dispatch(actions.undoTask(task)),
     }

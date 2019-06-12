@@ -4,11 +4,18 @@
     "slug": "maker",
     "privacy": "public",
     "sdkVersion": "32.0.0",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.WebStrong.maker"
+    },
+    "android": {
+      "package": "com.WebStrong.maker"
+    },
     "platforms": [
       "ios",
       "android"
     ],
-    "version": "0.0.5",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "splash": {
@@ -22,9 +29,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
     "description": "Maker is a mobile ToDo app",
     "githubUrl": "https://github.com/mateuszpijanowski/maker"
   }

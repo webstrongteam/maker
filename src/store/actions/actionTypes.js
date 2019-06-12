@@ -8,8 +8,9 @@ export const CHANGE_TASK_CATEGORY = 'CHANGE_TASK_CATEGORY';
 export const CHANGE_TASK_PRIORITY = 'CHANGE_TASK_PRIORITY';
 export const SET_TASK = 'SET_TASK';
 export const SAVE_TASK = 'SAVE_TASK';
-export const REMOVE_TASK = "REMOVE_TASK";
+export const FINISH_TASK = "FINISH_TASK";
 export const UNDO_TASK = "UNDO_TASK";
+export const REMOVE_TASK = "REMOVE_TASK";
 export const DEFAULT_TASK = "DEFAULT_TASK";
 
 // Category

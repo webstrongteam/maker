@@ -29,7 +29,6 @@ This is my first React Native project.
 ### ToDo list
 
 - Add repeating task system :heavy_minus_sign:
-- Add task sorting and searching system :heavy_minus_sign:
 - Add notifications system :x:
 - Google account auth system :x:
 - Google drive synch :x:

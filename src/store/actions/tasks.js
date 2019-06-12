@@ -66,9 +66,9 @@ export const onSaveTask = (tasks) => {
     };
 };
 
-export const onRemoveTask = (tasks, finished) => {
+export const onFinishTask = (tasks, finished) => {
     return {
-        type: actionTypes.REMOVE_TASK,
+        type: actionTypes.FINISH_TASK,
         tasks,
         finished
     }
@@ -77,6 +77,14 @@ export const onRemoveTask = (tasks, finished) => {
 export const onUndoTask = (tasks, finished) => {
     return {
         type: actionTypes.UNDO_TASK,
+        tasks,
+        finished
+    }
+};
+
+export const onRemoveTask = (tasks, finished) => {
+    return {
+        type: actionTypes.REMOVE_TASK,
         tasks,
         finished
     }
@@ -125,7 +133,6 @@ export const setTask = (id) => {
 };
 
 export const saveTask = (task) => {
-    if (task.name.trim() === "") return false;
     return dispatch => {
         if (task.id) {
             db.transaction(
@@ -149,7 +156,7 @@ export const saveTask = (task) => {
     };
 };
 
-export const removeTask = (task) => {
+export const finishTask = (task) => {
     let tasks = null;
     let finished = null;
     return dispatch => {
@@ -162,7 +169,7 @@ export const removeTask = (task) => {
                 });
                 tx.executeSql('select * from finished', [], (_, {rows}) => {
                     finished = rows._array;
-                    dispatch(onRemoveTask(tasks, finished));
+                    dispatch(onFinishTask(tasks, finished));
                 });
             }, null, null
         );
@@ -186,5 +193,39 @@ export const undoTask = (task) => {
                 });
             }, null, null
         );
+    };
+};
+
+export const removeTask = (task, finished = true) => {
+    let tasks = null;
+    let finish = null;
+    return dispatch => {
+        if (finished) {
+            db.transaction(
+                tx => {
+                    tx.executeSql('delete from finished where id = ?', [task.id]);
+                    tx.executeSql('select * from tasks', [], (_, {rows}) => {
+                        tasks = rows._array;
+                    });
+                    tx.executeSql('select * from finished', [], (_, {rows}) => {
+                        finish = rows._array;
+                        dispatch(onRemoveTask(tasks, finish));
+                    });
+                }, null, null
+            );
+        } else {
+            db.transaction(
+                tx => {
+                    tx.executeSql('delete from tasks where id = ?', [task.id]);
+                    tx.executeSql('select * from tasks', [], (_, {rows}) => {
+                        tasks = rows._array;
+                    });
+                    tx.executeSql('select * from finished', [], (_, {rows}) => {
+                        finish = rows._array;
+                        dispatch(onRemoveTask(tasks, finish));
+                    });
+                }, null, null
+            );
+        }
     };
 };

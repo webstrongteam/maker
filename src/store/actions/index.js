@@ -8,8 +8,9 @@ export {
     changePriority,
     setTask,
     saveTask,
-    removeTask,
+    finishTask,
     undoTask,
+    removeTask,
     defaultTask
 } from './tasks';
 

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Picker, ActivityIndicator} from 'react-native';
+import {StyleSheet, View, ScrollView, Picker, ActivityIndicator, Animated} from 'react-native';
 import {ActionButton, Toolbar, BottomNavigation} from 'react-native-material-ui';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
@@ -14,7 +14,9 @@ class ToDo extends Component {
         tasks: null,
         selectedCategory: 'All',
         loading: true,
-        showModal: false
+        showModal: false,
+        scroll: 0,
+        fadeAnim: new Animated.Value(1),
     };
 
     componentDidMount() {
@@ -40,6 +42,30 @@ class ToDo extends Component {
         this.setState({ showModal: !showModal });
     };
 
+    deleteAllTask = async () => {
+        const {finished} = this.props;
+        await finished.forEach(task => {
+            this.props.onRemoveTask(task);
+        })
+    };
+
+    scrollPosition = (e) => {
+        if (e.nativeEvent.contentOffset.y > this.state.scroll+10) {
+            this.setState({ scroll: e.nativeEvent.contentOffset.y });
+            this.animateDetail(false);
+        } else {
+            this.setState({ scroll: e.nativeEvent.contentOffset.y });
+            this.animateDetail(true);
+        }
+    };
+
+    animateDetail = (fadeIn) => {
+        Animated.timing(this.state.fadeAnim, {
+            toValue: fadeIn ? 1.0 : 0.0,
+            duration: 300
+        }).start();
+    };
+
     selectedCategoryHandler = (category) => {
         const { tasks, finished } = this.props;
         let filterTask = tasks;
@@ -58,8 +84,8 @@ class ToDo extends Component {
     };
 
     render() {
-        const {selectedCategory, tasks, loading, showModal} = this.state;
-        const {navigation, categories} = this.props;
+        const {selectedCategory, tasks, loading, showModal, active, fadeAnim} = this.state;
+        const {navigation, categories, finished} = this.props;
 
         return (
             <Template>
@@ -89,19 +115,29 @@ class ToDo extends Component {
                 {!loading ?
                 <React.Fragment>
                     <View style={styles.container}>
-                        <ScrollView style={styles.tasks}>
-                            <TaskList tasks={tasks} navigation={navigation}/>
+                        <ScrollView onScroll={this.scrollPosition} style={styles.tasks}>
+                            <TaskList tasks={tasks} sortingType={active} navigation={navigation}/>
                         </ScrollView>
                     </View>
-                    {selectedCategory !== 'finished' &&
+                    <Animated.View
+                        style={{
+                            opacity: fadeAnim
+                        }}>
+                    {selectedCategory !== 'finished' ?
                         <ActionButton
-                            style={{
-                                container: {marginBottom: 50}
-                            }}
                             onPress={() => navigation.navigate('ConfigTask')}
                             icon="add"
-                        />
+                        /> :
+                        finished.length ?
+                        <ActionButton
+                            style={{
+                                container: {backgroundColor: '#b6c1ce'}
+                            }}
+                            onPress={() => this.deleteAllTask()}
+                            icon="delete-sweep"
+                        /> : null
                     }
+                    </Animated.View>
                     <BottomNavigation active={this.state.active} >
                         <BottomNavigation.Action
                             key="byAZ"
@@ -183,6 +219,7 @@ const mapDispatchToProps = dispatch => {
         onInitTasks: () => dispatch(actions.initTasks()),
         onInitFinished: () => dispatch(actions.initFinished()),
         onInitCategories: () => dispatch(actions.initCategories()),
+        onRemoveTask: (task) => dispatch(actions.removeTask(task)),
     }
 };
 

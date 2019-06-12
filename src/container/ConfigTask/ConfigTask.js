@@ -32,11 +32,8 @@ class ConfigTask extends Component {
 
     componentDidMount() {
         const task = this.props.navigation.getParam('task', false);
-        if (task) this.props.onSetTask(task.id);
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps !== this.props) {
+        if (task) {
+            this.props.onSetTask(task.id);
             this.setState({editTask: true});
         }
     }
@@ -66,9 +63,11 @@ class ConfigTask extends Component {
                             text="Save"
                             style={{ text: { color: 'white' } }}
                             onPress={() => {
-                                this.props.onSaveTask(task);
-                                this.props.onDefaultTask();
-                                navigation.goBack();
+                                if (task.name.trim() !== '') {
+                                    this.props.onSaveTask(task);
+                                    this.props.onDefaultTask();
+                                    navigation.goBack();
+                                }
                             }}
                         />
                     }
@@ -167,9 +166,11 @@ class ConfigTask extends Component {
                                         this.props.onDefaultTask();
                                         navigation.goBack();
                                     } else if (label === "check") {
-                                        this.props.onSaveTask(task);
-                                        this.props.onDefaultTask();
-                                        navigation.goBack();
+                                        if (task.name.trim() !== '') {
+                                            this.props.onSaveTask(task);
+                                            this.props.onDefaultTask();
+                                            navigation.goBack();
+                                        }
                                     }
                                 }}
                                 icon="menu"
@@ -177,9 +178,11 @@ class ConfigTask extends Component {
                             /> :
                             <ActionButton
                                 onPress={() => {
-                                    this.props.onSaveTask(task);
-                                    this.props.onDefaultTask();
-                                    navigation.goBack();
+                                    if (task.name.trim() !== '') {
+                                        this.props.onSaveTask(task);
+                                        this.props.onDefaultTask();
+                                        navigation.goBack();
+                                    }
                                 }}
                                 icon="check"
                             />
@@ -258,7 +261,7 @@ const mapDispatchToProps = dispatch => {
         onChangePriority: (priority) => dispatch(actions.changePriority(priority)),
         onSetTask: (id) => dispatch(actions.setTask(id)),
         onSaveTask: (task) => dispatch(actions.saveTask(task)),
-        onRemoveTask: (task) => dispatch(actions.removeTask(task)),
+        onRemoveTask: (task) => dispatch(actions.removeTask(task, false)),
         onDefaultTask: () => dispatch(actions.defaultTask())
     }
 };
