@@ -12,7 +12,7 @@ class ToDo extends Component {
     state = {
         sorting: 'byAZ',
         sortingType: 'ASC',
-        tasks: null,
+        tasks: [],
         selectedCategory: 'All',
         loading: true,
         showModal: false,
@@ -28,7 +28,7 @@ class ToDo extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps !== this.props || prevProps.refresh !== this.props.refresh) {
+        if (prevProps.refresh !== this.props.refresh) {
             if (this.state.selectedCategory === 'finished') {
                 this.setState({ tasks: this.props.finished, loading: false });
             }
@@ -116,12 +116,26 @@ class ToDo extends Component {
                             onValueChange={(itemValue, itemIndex) =>
                                 this.selectedCategoryHandler(itemValue)
                             }>
-                            <Picker.Item label="All" value="All" />
-                            { categories.map(cate => (
-                                <Picker.Item key={cate.id} label={cate.name} value={cate.name} />
-                            )) }
-                            <Picker.Item label='Finished' value='finished' />
-                            <Picker.Item label='New category' value='new' />
+                            <Picker.Item
+                                color="black"
+                                label={`All (${this.props.tasks.length})`}
+                                value="All" />
+                            {categories.map(cate => {
+                                const amountOfTasks = this.props.tasks.filter(task => task.category === cate.name);
+                                return <Picker.Item
+                                    key={cate.id}
+                                    label={`${cate.name} (${amountOfTasks.length})`}
+                                    value={cate.name} />
+                                })
+                            }
+                            <Picker.Item
+                                color="#939393"
+                                value='finished'
+                                label={`Finished (${finished.length})`} />
+                            <Picker.Item
+                                color="#939393"
+                                label='New category'
+                                value='new' />
                         </Picker>
                     }
                 />
