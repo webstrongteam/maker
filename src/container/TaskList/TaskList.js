@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import { ListItem, Subheader, IconToggle } from 'react-native-material-ui';
 import {sortingByDiv, sortingByType} from '../../shared/utility';
+import Dialog from "react-native-dialog";
 import moment from 'moment';
 
 import { connect } from 'react-redux';
@@ -16,6 +17,8 @@ class TaskList extends Component {
             medium: '#cec825',
             high: '#ce3241'
         },
+        selectedTask: false,
+        showModal: false,
         initDivision: false
     };
 
@@ -31,7 +34,7 @@ class TaskList extends Component {
 
     divisionTask = () => {
         let division = {};
-        const {tasks, sortingType} = this.props;
+        const {tasks, sorting, sortingType} = this.props;
 
         tasks && tasks.map(task => {
             let div;
@@ -44,7 +47,7 @@ class TaskList extends Component {
                 if (!division[div]) division[div] = [];
                 division[div].push(task);
             }
-            sortingByType(division[div], sortingType);
+            sortingByType(division[div], sorting, sortingType);
         });
 
         this.setState({division, initDivision: true});
@@ -66,8 +69,23 @@ class TaskList extends Component {
         return text;
     };
 
+    checkTaskRepeatHandler = (task) => {
+        if (task.repeat !== 'noRepeat' && !this.state.selectedTask) {
+            this.setState({ showModal: true, selectedTask: task });
+        } else {
+            this.props.onFinishTask(task);
+            this.setState({ showModal: false, selectedTask: false });
+        }
+    };
+
+    finishTaskHandler = (task) => {
+        task.repeat = 'noRepeat';
+        this.props.onFinishTask(task);
+        this.setState({ showModal: false, selectedTask: false });
+    };
+
     render() {
-        const {division, priorityColors, initDivision} = this.state;
+        const {division, priorityColors, initDivision, showModal, selectedTask} = this.state;
         const {tasks, navigation} = this.props;
 
         const taskList = initDivision &&
@@ -104,7 +122,7 @@ class TaskList extends Component {
                                     }}
                                     text={task.finish ? 'Undo' : 'Done'}
                                     icon={task.finish ? 'replay' : 'done'}
-                                    onPress={() => {task.finish ? this.props.onUndoTask(task) : this.props.onFinishTask(task)}}
+                                    onPress={() => {task.finish ? this.props.onUndoTask(task) : this.checkTaskRepeatHandler(task)}}
                                 />
                                 {task.finish &&
                                 <IconToggle
@@ -121,6 +139,20 @@ class TaskList extends Component {
                             tertiaryText: task.category
                         }}
                     />
+                    <Dialog.Container visible={showModal}>
+                        <Dialog.Title>Repeat task?</Dialog.Title>
+                        <Dialog.Description>
+                            Do you want to repeat this task?
+                        </Dialog.Description>
+                        <Dialog.Button
+                            label="Yes"
+                            onPress={() => this.checkTaskRepeatHandler(selectedTask)}
+                        />
+                        <Dialog.Button
+                            label="No"
+                            onPress={() => this.finishTaskHandler(selectedTask)}
+                        />
+                    </Dialog.Container>
                 </View>
             ))
         ));

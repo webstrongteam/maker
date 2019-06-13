@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import moment from 'moment';
 import { SQLite } from 'expo';
 
 const db = SQLite.openDatabase('maker.db');
@@ -49,6 +50,13 @@ export const changePriority = (priority) => {
     return {
         type: actionTypes.CHANGE_TASK_PRIORITY,
         priority
+    }
+};
+
+export const changeRepeat = (repeat) => {
+    return {
+        type: actionTypes.CHANGE_TASK_REPEAT,
+        repeat
     }
 };
 
@@ -137,7 +145,7 @@ export const saveTask = (task) => {
         if (task.id) {
             db.transaction(
                 tx => {
-                    tx.executeSql(`update tasks set name = ?, description = ?, date = ?, category = ?, priority = ? where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.id]);
+                    tx.executeSql(`update tasks set name = ?, description = ?, date = ?, category = ?, priority = ?, repeat = ? where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.id]);
                     tx.executeSql('select * from tasks', [], (_, {rows}) => {
                         dispatch(onSaveTask(rows._array));
                     });
@@ -146,7 +154,7 @@ export const saveTask = (task) => {
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into tasks (name, description, date, category, priority) values (?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority]);
+                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat) values (?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat]);
                     tx.executeSql('select * from tasks', [], (_, {rows}) => {
                         dispatch(onSaveTask(rows._array));
                     });
@@ -159,20 +167,65 @@ export const saveTask = (task) => {
 export const finishTask = (task) => {
     let tasks = null;
     let finished = null;
+    let nextDate = task.date;
+
+    if (task.repeat === 'onceDay') nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'days');
+    else if (task.repeat === 'onceDayMonFri') {
+        if (moment(task.date, "DD-MM-YYYY").day() === 5) { // Friday
+            nextDate = moment(nextDate, "DD-MM-YYYY").add(3, 'days');
+        }
+        else if (moment(task.date, "DD-MM-YYYY").day() === 6) { // Saturday
+            nextDate = moment(nextDate, "DD-MM-YYYY").add(2, 'days');
+        } else {
+            nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'days');
+        }
+    }
+    else if (task.repeat === 'onceDaySatSun') {
+        if (moment(task.date, "DD-MM-YYYY").day() === 6) { // Saturday
+            nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'days');
+        }
+        else if (moment(task.date, "DD-MM-YYYY").day() === 0) { // Sunday
+            nextDate = moment(nextDate, "DD-MM-YYYY").add(6, 'days');
+        }
+        else { // Other day
+            nextDate = moment(nextDate, "DD-MM-YYYY").day(6);
+        }
+    }
+    else if (task.repeat === 'onceWeek') nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'week');
+    else if (task.repeat === 'onceMonth') nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'month');
+    else if (task.repeat === 'onceYear') nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'year');
+
+    nextDate = moment(nextDate, "DD-MM-YYYY").format("DD-MM-YYYY");
+
     return dispatch => {
-        db.transaction(
-            tx => {
-                tx.executeSql('delete from tasks where id = ?', [task.id]);
-                tx.executeSql('insert into finished (name, description, date, category, priority, finish) values (?,?,?,?,?,1)', [task.name, task.description, task.date, task.category, task.priority]);
-                tx.executeSql('select * from tasks', [], (_, {rows}) => {
-                    tasks = rows._array;
-                });
-                tx.executeSql('select * from finished', [], (_, {rows}) => {
-                    finished = rows._array;
-                    dispatch(onFinishTask(tasks, finished));
-                });
-            }, null, null
-        );
+        if (task.repeat === 'noRepeat') {
+            db.transaction(
+                tx => {
+                    tx.executeSql('delete from tasks where id = ?', [task.id]);
+                    tx.executeSql('insert into finished (name, description, date, category, priority, repeat, finish) values (?,?,?,?,?,?,1)', [task.name, task.description, task.date, task.category, task.priority, task.repeat]);
+                    tx.executeSql('select * from tasks', [], (_, {rows}) => {
+                        tasks = rows._array;
+                    });
+                    tx.executeSql('select * from finished', [], (_, {rows}) => {
+                        finished = rows._array;
+                        dispatch(onFinishTask(tasks, finished));
+                    });
+                }, null, null
+            );
+        } else {
+            db.transaction(
+                tx => {
+                    tx.executeSql(`update tasks set date = ? where id = ?;`, [nextDate, task.id]);
+                    tx.executeSql('select * from tasks', [], (_, {rows}) => {
+                        tasks = rows._array;
+                    });
+                    tx.executeSql('select * from finished', [], (_, {rows}) => {
+                        finished = rows._array;
+                        dispatch(onFinishTask(tasks, finished));
+                    });
+                }, null, null
+            );
+        }
     };
 };
 
@@ -183,7 +236,7 @@ export const undoTask = (task) => {
         db.transaction(
             tx => {
                 tx.executeSql('delete from finished where id = ?', [task.id]);
-                tx.executeSql('insert into tasks (name, description, date, category, priority) values (?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority]);
+                tx.executeSql('insert into tasks (name, description, date, category, priority, repeat) values (?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat]);
                 tx.executeSql('select * from tasks', [], (_, {rows}) => {
                     tasks = rows._array;
                 });

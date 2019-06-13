@@ -10,7 +10,8 @@ import * as actions from "../../store/actions";
 
 class ToDo extends Component {
     state = {
-        active: 'byAZ',
+        sorting: 'byAZ',
+        sortingType: 'ASC',
         tasks: null,
         selectedCategory: 'All',
         loading: true,
@@ -49,6 +50,18 @@ class ToDo extends Component {
         })
     };
 
+    setSortingType = (key) => {
+        if (key === this.state.sorting) {
+            if (this.state.sortingType === 'ASC') {
+                this.setState({ sorting: key, sortingType: 'DESC' });
+            } else {
+                this.setState({ sorting: key, sortingType: 'ASC' });
+            }
+        } else {
+            this.setState({ sorting: key });
+        }
+    };
+
     scrollPosition = (e) => {
         if (e.nativeEvent.contentOffset.y > this.state.scroll+5) {
             this.setState({ scroll: e.nativeEvent.contentOffset.y });
@@ -84,7 +97,7 @@ class ToDo extends Component {
     };
 
     render() {
-        const {selectedCategory, tasks, loading, showModal, active, fadeAnim} = this.state;
+        const {selectedCategory, tasks, loading, showModal, sortingType, sorting, fadeAnim} = this.state;
         const {navigation, categories, finished} = this.props;
 
         return (
@@ -116,7 +129,12 @@ class ToDo extends Component {
                 <React.Fragment>
                     <View style={styles.container}>
                         <ScrollView onScroll={this.scrollPosition} style={styles.tasks}>
-                            <TaskList tasks={tasks} sortingType={active} navigation={navigation}/>
+                            <TaskList
+                                tasks={tasks}
+                                sortingType={sortingType}
+                                sorting={sorting}
+                                navigation={navigation}
+                            />
                         </ScrollView>
                     </View>
                     <Animated.View
@@ -138,30 +156,30 @@ class ToDo extends Component {
                         /> : null
                     }
                     </Animated.View>
-                    <BottomNavigation active={this.state.active} >
+                    <BottomNavigation active={sorting}>
                         <BottomNavigation.Action
                             key="byAZ"
                             icon="format-line-spacing"
-                            label="A-Z"
-                            onPress={() => this.setState({active: 'byAZ'})}
+                            label={ sortingType === 'ASC' ? "A-Z" : "Z-A" }
+                            onPress={() => this.setSortingType('byAZ')}
                         />
                         <BottomNavigation.Action
                             key="byDate"
                             icon="insert-invitation"
                             label="Date"
-                            onPress={() => this.setState({active: 'byDate'})}
+                            onPress={() => this.setSortingType('byDate')}
                         />
                         <BottomNavigation.Action
                             key="byCategory"
                             icon="bookmark-border"
                             label="Category"
-                            onPress={() => this.setState({active: 'byCategory'})}
+                            onPress={() => this.setSortingType('byCategory')}
                         />
                         <BottomNavigation.Action
                             key="byPriority"
                             icon="priority-high"
                             label="Priority"
-                            onPress={() => this.setState({active: 'byPriority'})}
+                            onPress={() => this.setSortingType('byPriority')}
                         />
                     </BottomNavigation>
                 </React.Fragment> :

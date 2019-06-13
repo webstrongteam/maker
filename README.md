@@ -7,8 +7,9 @@ This is my first React Native project.
   
 - Task list
 - Create, Edit and Remove task
-- Categories
+- Task categories
 - Task priority
+- Repeating task system
 - Finished task list
 - Sorting task
 - Save data in local database
@@ -24,15 +25,16 @@ This is my first React Native project.
 - React Navigation <i>3.11.0</i>  
 - React Native MaterialUI <i>1.30.1</i>  
 - React Native Datepicker <i>1.7.2</i>  
+- React Native Dialog <i>5.6.0</i>  
 - Moment.JS <i>2.24.0</i>
 - Expo <i>32.0.0</i>
 - Axios <i>0.19.0</i>
 
 ### ToDo list
 
-- Add advanced sorting system :heavy_minus_sign:
-- Add repeating task system :heavy_minus_sign:
+- Add searching system :heavy_minus_sign:
 - Add time to datepicker :x:
+- Upgrade UX :x:
 - Add notifications system :x:
 - Google account auth system :x:
 - Google drive synch :x:

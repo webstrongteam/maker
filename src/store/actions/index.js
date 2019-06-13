@@ -6,6 +6,7 @@ export {
     changeDate,
     changeCategory,
     changePriority,
+    changeRepeat,
     setTask,
     saveTask,
     finishTask,

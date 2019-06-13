@@ -8,6 +8,7 @@ import ConfigCategory from '../ConfigCategory/ConfigCategory';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
+import moment from "moment";
 
 class ConfigTask extends Component {
     state = {
@@ -24,6 +25,36 @@ class ConfigTask extends Component {
                     multiline: true,
                     numberOfLines: 3
                 }
+            }
+        },
+        repeat: {
+            noRepeat: {
+                name: 'No repeat',
+                value: 'noRepeat'
+            },
+            onceDay: {
+                name: 'Once a Day',
+                value: 'onceDay'
+            },
+            onceDayMonFri: {
+                name: 'Once a Week (Mon-Fri)',
+                value: 'onceDayMonFri'
+            },
+            onceDaySatSun: {
+                name: 'Once a Week (Sat-Sun)',
+                value: 'onceDaySatSun'
+            },
+            onceWeek: {
+                name: 'Once a Week',
+                value: 'onceWeek'
+            },
+            onceMonth: {
+                name: 'Once a Month',
+                value: 'onceMonth'
+            },
+            onceYear: {
+                name: 'Once a Year',
+                value: 'onceYear'
             }
         },
         editTask: false,
@@ -44,14 +75,14 @@ class ConfigTask extends Component {
     };
 
     render() {
-        const { controls, editTask, showModal } = this.state;
+        const { controls, editTask, showModal, repeat } = this.state;
         const { navigation, task, categories } = this.props;
         const edit = this.props.navigation.getParam('task', false);
 
         let loading = true;
         if (!edit) loading = false;
         else if (edit) {
-            if (editTask) loading = false
+            if (editTask) loading = false;
         }
 
         return (
@@ -110,6 +141,22 @@ class ConfigTask extends Component {
                                     }}
                                     onDateChange={(date) => this.props.onChangeDate(date)}
                                 />
+                                <Subheader
+                                    style={{
+                                        container: styles.label
+                                    }}
+                                    text="Repeat"/>
+                                <View style={styles.picker}>
+                                    <Picker
+                                        selectedValue={repeat[task.repeat].value}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            this.props.onChangeRepeat(itemValue)
+                                        }>
+                                        {Object.keys(repeat).map(name => (
+                                            <Picker.Item key={name} label={repeat[name].name} value={repeat[name].value} />
+                                        ))}
+                                    </Picker>
+                                </View>
                                 <Subheader
                                     style={{
                                         container: styles.label
@@ -259,6 +306,7 @@ const mapDispatchToProps = dispatch => {
         onChangeDate: (date) => dispatch(actions.changeDate(date)),
         onChangeCategory: (category) => dispatch(actions.changeCategory(category)),
         onChangePriority: (priority) => dispatch(actions.changePriority(priority)),
+        onChangeRepeat: (value) => dispatch(actions.changeRepeat(value)),
         onSetTask: (id) => dispatch(actions.setTask(id)),
         onSaveTask: (task) => dispatch(actions.saveTask(task)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task, false)),

@@ -5,17 +5,17 @@ export const updateObject = (oldObject, newProps) => {
     };
 };
 
-export const sorting = (array, field, type) => {
+export const sortingData = (array, field, type) => {
     if (type === 'ASC') array.sort((a, b) => ('' + a[field]).localeCompare(b[field]));
     if (type === 'DESC') array.sort((a, b) => ('' + b[field]).localeCompare(a[field]));
 };
 
-export const sortingByType = (array, sortingType) => {
-    switch (sortingType) {
-        case "byAZ": return sorting(array, 'name', 'ASC');
-        case "byDate": return sorting(array, 'date', 'ASC');
-        case "byCategory": return sorting(array, 'category', 'ASC');
-        case "byPriority": return sorting(array, 'priority', 'ASC');
+export const sortingByType = (array, sorting, sortingType) => {
+    switch (sorting) {
+        case "byAZ": return sortingData(array, 'name', sortingType);
+        case "byDate": return sortingData(array, 'date', sortingType);
+        case "byCategory": return sortingData(array, 'category', sortingType);
+        case "byPriority": return sortingData(array, 'priority', sortingType);
         default: return array;
     }
 };

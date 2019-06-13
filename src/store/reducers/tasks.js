@@ -1,9 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 import {updateObject} from '../../shared/utility';
 import moment from 'moment';
-import {SQLite} from 'expo';
-
-const db = SQLite.openDatabase('maker.db');
 
 const initState = {
     task: {
@@ -11,8 +8,9 @@ const initState = {
         name: '',
         description: '',
         date: moment(new Date()).format('DD-MM-YYYY'),
+        repeat: 'noRepeat',
         category: 'Default',
-        priority: 'none'
+        priority: 'none',
     },
     tasks: [],
     finished: [],
@@ -78,6 +76,15 @@ const changePriority = (state, action) => {
     });
 };
 
+const changeRepeat = (state, action) => {
+    return updateObject(state,{
+        task: {
+            ...state.task,
+            repeat: action.repeat
+        }
+    });
+};
+
 const setTask = (state, action) => {
     return updateObject(state,{
         task: action.task
@@ -122,6 +129,7 @@ const defaultTask = (state) => {
             name: '',
             description: '',
             date: moment(new Date()).format('DD-MM-YYYY'),
+            repeat: 'noRepeat',
             category: 'Default',
             priority: 'none'
         }
@@ -137,6 +145,7 @@ const reducer = (state = initState, action) => {
         case actionTypes.CHANGE_TASK_DATE: return changeDate(state, action);
         case actionTypes.CHANGE_TASK_CATEGORY: return changeCategory(state, action);
         case actionTypes.CHANGE_TASK_PRIORITY: return changePriority(state, action);
+        case actionTypes.CHANGE_TASK_REPEAT: return changeRepeat(state, action);
         case actionTypes.SET_TASK: return setTask(state, action);
         case actionTypes.SAVE_TASK: return saveTask(state, action);
         case actionTypes.FINISH_TASK: return finishTask(state, action);
