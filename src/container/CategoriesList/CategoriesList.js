@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Picker, ActivityIndicator} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import {Toolbar, IconToggle, ListItem} from 'react-native-material-ui';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Template from '../Template/Template';
@@ -20,9 +20,10 @@ class TaskList extends Component {
         }
     }
 
-    toggleModalHandler = (cate = false) => {
+    toggleModalHandler = (selected) => {
         const { showModal } = this.state;
-        this.setState({ showModal: !showModal, selectedCategory: cate });
+        if (selected) this.setState({ showModal: !showModal });
+        else this.setState({ showModal: !showModal, selectedCategory: false });
     };
 
     render() {
@@ -34,13 +35,18 @@ class TaskList extends Component {
                 <Toolbar
                     leftElement="arrow-back"
                     rightElement={
-                        <IconToggle color="white" onPress={() => this.toggleModalHandler()} name="add" />
+                        <IconToggle color="white" onPress={() => this.toggleModalHandler(false)} name="add" />
                     }
                     onLeftElementPress={() => {
                         this.props.onDefaultCategory();
                         navigation.goBack();
                     }}
                     centerElement='Categories'
+                />
+                <ConfigCategory
+                    showModal={showModal}
+                    editCategory={selectedCategory}
+                    toggleModal={this.toggleModalHandler}
                 />
                 <View style={styles.container}>
                     <ScrollView style={styles.categories}>
@@ -49,10 +55,13 @@ class TaskList extends Component {
                                 divider
                                 dense
                                 key={cate.id}
-                                onPress={() => this.toggleModalHandler(cate)}
+                                onPress={() => {
+                                    this.setState({ selectedCategory: cate });
+                                    this.toggleModalHandler(true)
+                                }}
                                 rightElement={
-                                    cate.id !== 0 &&
-                                    <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)} name="remove" />
+                                    cate.id !== 0 ?
+                                    <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)} name="remove" /> : false
                                 }
                                 centerElement={{
                                     primaryText: `${cate.name}`,
@@ -61,14 +70,6 @@ class TaskList extends Component {
                         ))}
                     </ScrollView>
                 </View>
-                {showModal &&
-                <ConfigCategory
-                    navigation={navigation}
-                    showModal={showModal}
-                    editCategory={selectedCategory}
-                    toggleModal={this.toggleModalHandler}
-                />
-                }
             </Template>
         )
     }

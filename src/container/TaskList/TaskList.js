@@ -92,15 +92,26 @@ class TaskList extends Component {
             Object.keys(division).sort((a, b) => (
                 '' + sortingByDiv(a)).localeCompare(sortingByDiv(b))
             ).map(div => (
-            division[div].map((task, index) => (
-                <View key={div + index}>
+            division[div].map((task, index) => {
+                // Searching system
+                const searchText = this.props.searchText.toLowerCase();
+                if (searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0) {
+                    if (task.description.toLowerCase().indexOf(searchText) < 0) {
+                        if (task.category.toLowerCase().indexOf(searchText) < 0) {
+                            return null;
+                        }
+                    }
+                }
+
+                return <View key={div + index}>
                     {!index &&
-                        <Subheader
-                            text={div}
-                            style={{
-                                container: {backgroundColor: '#d8ddd8'},
-                                text: div === 'Overdue' ? {color: '#ce3241'} : {color: 'black'} }}
-                        />
+                    <Subheader
+                        text={div}
+                        style={{
+                            container: {backgroundColor: '#d8ddd8'},
+                            text: div === 'Overdue' ? {color: '#ce3241'} : {color: 'black'}
+                        }}
+                    />
                     }
                     <ListItem
                         divider
@@ -122,7 +133,9 @@ class TaskList extends Component {
                                     }}
                                     text={task.finish ? 'Undo' : 'Done'}
                                     icon={task.finish ? 'replay' : 'done'}
-                                    onPress={() => {task.finish ? this.props.onUndoTask(task) : this.checkTaskRepeatHandler(task)}}
+                                    onPress={() => {
+                                        task.finish ? this.props.onUndoTask(task) : this.checkTaskRepeatHandler(task)
+                                    }}
                                 />
                                 {task.finish &&
                                 <IconToggle
@@ -152,9 +165,13 @@ class TaskList extends Component {
                             label="No"
                             onPress={() => this.finishTaskHandler(selectedTask)}
                         />
+                        <Dialog.Button
+                            label="Cancel"
+                            onPress={() => this.setState({showModal: false})}
+                        />
                     </Dialog.Container>
                 </View>
-            ))
+            })
         ));
 
         return (

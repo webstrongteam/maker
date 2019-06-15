@@ -71,7 +71,7 @@ export const setCategory = (id) => {
 export const saveCategory = (category) => {
     if (category.name.trim() === "") return false;
     return dispatch => {
-        if (category.id) {
+        if (category.id !== false) {
             db.transaction(
                 tx => {
                     tx.executeSql(`update categories set name = ? where id = ?;`, [category.name, category.id]);

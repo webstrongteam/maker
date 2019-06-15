@@ -1,21 +1,22 @@
 {
   "expo": {
     "name": "Maker - ToDo list",
-    "slug": "maker",
+    "slug": "expo.io/@mateuszpijanowski/maker",
     "privacy": "public",
+    "version": "0.2.1",
     "sdkVersion": "32.0.0",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.WebStrong.maker"
+      "bundleIdentifier": "com.webStrong.maker"
     },
     "android": {
-      "package": "com.WebStrong.maker"
+      "package": "com.webStrong.maker"
     },
     "platforms": [
       "ios",
       "android"
     ],
-    "version": "0.1.0",
+    "primaryColor": "#f4511e",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "splash": {

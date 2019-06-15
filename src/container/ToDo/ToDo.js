@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Picker, ActivityIndicator, Animated} from 'react-native';
+import {StyleSheet, View, ScrollView, Picker, ActivityIndicator, Animated, Easing} from 'react-native';
 import {ActionButton, Toolbar, BottomNavigation} from 'react-native-material-ui';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
+import ConfigCategory from "../ConfigCategory/ConfigCategory";
 
 import { connect } from 'react-redux';
-import ConfigCategory from "../ConfigCategory/ConfigCategory";
 import * as actions from "../../store/actions";
+
+const UP = 1;
+const DOWN = -1;
 
 class ToDo extends Component {
     state = {
@@ -14,10 +17,14 @@ class ToDo extends Component {
         sortingType: 'ASC',
         tasks: [],
         selectedCategory: 'All',
+        searchText: '',
         loading: true,
         showModal: false,
         scroll: 0,
-        fadeAnim: new Animated.Value(1),
+        offset: 0,
+        scrollDirection: 0,
+        bottomHidden: false,
+        moveAnimated: new Animated.Value(0)
     };
 
     componentDidMount() {
@@ -37,6 +44,42 @@ class ToDo extends Component {
             }
         }
     }
+
+    onScroll = (e) => {
+        const currentOffset = e.nativeEvent.contentOffset.y;
+        const sub = this.state.offset - currentOffset;
+
+        if (sub > -5 && sub < 5) return;
+        this.state.offset = e.nativeEvent.contentOffset.y;
+
+        const currentDirection = sub > 0 ? UP : DOWN;
+
+        if (this.state.scrollDirection !== currentDirection) {
+            this.state.scrollDirection = currentDirection;
+
+            this.setState({
+                bottomHidden: currentDirection === DOWN,
+            });
+        }
+    };
+
+    show = () => {
+        Animated.timing(this.state.moveAnimated, {
+            toValue: 0,
+            duration: 225,
+            easing: Easing.bezier(0.0, 0.0, 0.2, 1),
+            useNativeDriver: Platform.OS === 'android',
+        }).start();
+    };
+
+    hide = () => {
+        Animated.timing(this.state.moveAnimated, {
+            toValue: 56, // because the bottom navigation bar has height set to 56
+            duration: 195,
+            easing: Easing.bezier(0.4, 0.0, 0.6, 1),
+            useNativeDriver: Platform.OS === 'android',
+        }).start();
+    };
 
     toggleModalHandler = () => {
         const { showModal } = this.state;
@@ -62,23 +105,6 @@ class ToDo extends Component {
         }
     };
 
-    scrollPosition = (e) => {
-        if (e.nativeEvent.contentOffset.y > this.state.scroll+5) {
-            this.setState({ scroll: e.nativeEvent.contentOffset.y });
-            this.animateDetail(false);
-        } else {
-            this.setState({ scroll: e.nativeEvent.contentOffset.y });
-            this.animateDetail(true);
-        }
-    };
-
-    animateDetail = (fadeIn) => {
-        Animated.timing(this.state.fadeAnim, {
-            toValue: fadeIn ? 1.0 : 0.0,
-            duration: 200
-        }).start();
-    };
-
     selectedCategoryHandler = (category) => {
         const { tasks, finished } = this.props;
         let filterTask = tasks;
@@ -97,7 +123,7 @@ class ToDo extends Component {
     };
 
     render() {
-        const {selectedCategory, tasks, loading, showModal, sortingType, sorting, fadeAnim} = this.state;
+        const {selectedCategory, tasks, loading, showModal, sortingType, sorting, searchText, bottomHidden} = this.state;
         const {navigation, categories, finished} = this.props;
 
         return (
@@ -105,7 +131,9 @@ class ToDo extends Component {
                 <Toolbar
                     searchable={{
                         autoFocus: true,
-                        placeholder: 'Search task',
+                        placeholder: 'Search',
+                        onChangeText: value => this.setState({ searchText: value }),
+                        onSearchClosed: () => this.setState({ searchText: '' }),
                     }}
                     leftElement="menu"
                     onLeftElementPress={() => navigation.navigate('Drawer')}
@@ -124,6 +152,7 @@ class ToDo extends Component {
                                 const amountOfTasks = this.props.tasks.filter(task => task.category === cate.name);
                                 return <Picker.Item
                                     key={cate.id}
+                                    color="black"
                                     label={`${cate.name} (${amountOfTasks.length})`}
                                     value={cate.name} />
                                 })
@@ -139,11 +168,21 @@ class ToDo extends Component {
                         </Picker>
                     }
                 />
+                <ConfigCategory
+                    editCategory={false}
+                    showModal={showModal}
+                    toggleModal={this.toggleModalHandler}
+                />
                 {!loading ?
                 <React.Fragment>
                     <View style={styles.container}>
-                        <ScrollView onScroll={this.scrollPosition} style={styles.tasks}>
+                        <ScrollView
+                            keyboardShouldPersistTaps="always"
+                            keyboardDismissMode="interactive"
+                            onScroll={this.onScroll}
+                            style={styles.tasks}>
                             <TaskList
+                                searchText={searchText}
                                 tasks={tasks}
                                 sortingType={sortingType}
                                 sorting={sorting}
@@ -151,26 +190,27 @@ class ToDo extends Component {
                             />
                         </ScrollView>
                     </View>
-                    <Animated.View
-                        style={{
-                            opacity: fadeAnim
-                        }}>
-                    {selectedCategory !== 'finished' ?
-                        <ActionButton
-                            onPress={() => navigation.navigate('ConfigTask')}
-                            icon="add"
-                        /> :
-                        finished.length ?
-                        <ActionButton
-                            style={{
-                                container: {backgroundColor: '#b6c1ce'}
-                            }}
-                            onPress={() => this.deleteAllTask()}
-                            icon="delete-sweep"
-                        /> : null
-                    }
-                    </Animated.View>
-                    <BottomNavigation active={sorting}>
+                    <View>
+                        {selectedCategory !== 'finished' ?
+                            <ActionButton
+                                hidden={bottomHidden}
+                                onPress={() => navigation.navigate('ConfigTask')}
+                                icon="add"
+                            /> :
+                            finished.length &&
+                            <ActionButton
+                                hidden={bottomHidden}
+                                style={{
+                                    container: {backgroundColor: '#b6c1ce'}
+                                }}
+                                onPress={() => this.deleteAllTask()}
+                                icon="delete-sweep"
+                            />
+                        }
+                    </View>
+                    <BottomNavigation
+                        hidden={bottomHidden}
+                        active={sorting}>
                         <BottomNavigation.Action
                             key="byAZ"
                             icon="format-line-spacing"
@@ -201,13 +241,6 @@ class ToDo extends Component {
                     <ActivityIndicator size="large" color="#0000ff" />
                 </View>
                 }
-                {showModal &&
-                <ConfigCategory
-                    navigation={navigation}
-                    showModal={showModal}
-                    toggleModal={this.toggleModalHandler}
-                />
-                }
             </Template>
         );
     }
@@ -217,12 +250,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center'
-    },
-    inputContainer: {
-        flex: 1,
-        width: "100%",
-        alignItems: "center",
-        justifyContent: "center"
     },
     tasks: {
         width: "100%",

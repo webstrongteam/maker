@@ -16,8 +16,10 @@ const input = (props) => {
     const inputElement = <TextInput
         {...props.elementConfig}
         style={inputClasses}
+        autoFocus={props.focus ? props.focus : false}
         onChangeText={props.changed}
-        value={props.value} />;
+        value={props.value}
+    />;
 
     return (
         <View style={classes.container}>

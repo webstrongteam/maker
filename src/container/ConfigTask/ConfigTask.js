@@ -5,18 +5,17 @@ import {ActionButton, Toolbar, Subheader, Icon, IconToggle, Button} from 'react-
 import Template from '../Template/Template';
 import Input from '../../components/UI/Input/Input';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
+import Dialog from '../../components/UI/Dialog/Dialog';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
-import moment from "moment";
 
 class ConfigTask extends Component {
     state = {
         controls: {
             name: {
                 elementConfig: {
-                    placeholder: 'Enter task name',
-                    autoFocus: true
+                    placeholder: 'Enter task name'
                 }
             },
             description: {
@@ -58,6 +57,7 @@ class ConfigTask extends Component {
             }
         },
         editTask: false,
+        showExitModal: false,
         showModal: false
     };
 
@@ -75,7 +75,7 @@ class ConfigTask extends Component {
     };
 
     render() {
-        const { controls, editTask, showModal, repeat } = this.state;
+        const { controls, editTask, showModal, repeat, showExitModal } = this.state;
         const { navigation, task, categories } = this.props;
         const edit = this.props.navigation.getParam('task', false);
 
@@ -103,16 +103,47 @@ class ConfigTask extends Component {
                         />
                     }
                     onLeftElementPress={() => {
-                        navigation.goBack();
-                        this.props.onDefaultTask();
+                        if (task.name.trim() !== '') {
+                            this.setState({ showExitModal: true })
+                        } else {
+                            navigation.goBack();
+                            this.props.onDefaultTask();
+                        }
                     }}
                     centerElement={editTask ? "Edit task" : "New task"}
+                />
+                <Dialog
+                    showModal={showExitModal}
+                    title="Are you sure?"
+                    description="Quit without saving?"
+                    buttons={{
+                        yes: {
+                            label: 'Yes',
+                            onPress: () => {
+                                this.setState({ showExitModal: false });
+                                navigation.goBack();
+                                this.props.onDefaultTask();
+                            }
+                        },
+                        cancel: {
+                            label: 'Cancel',
+                            onPress: () => {
+                                this.setState({ showExitModal: false });
+                            }
+                        }
+                    }}
+                />
+                <ConfigCategory
+                    editCategory={false}
+                    showModal={showModal}
+                    toggleModal={this.toggleModalHandler}
                 />
                 {!loading ?
                     <React.Fragment>
                         <ScrollView>
                             <Input
                                 elementConfig={controls.name.elementConfig}
+                                focus={!editTask}
                                 value={task.name}
                                 changed={this.props.onChangeName}/>
                             <Input
@@ -161,7 +192,7 @@ class ConfigTask extends Component {
                                     style={{
                                         container: styles.label
                                     }}
-                                    text="Category"/>
+                                    text="Category" />
                                 <View style={styles.selectCategory}>
                                     <View style={styles.category}>
                                         <Picker
@@ -238,14 +269,6 @@ class ConfigTask extends Component {
                     <View style={[styles.container, styles.horizontal]}>
                         <ActivityIndicator size="large" color="#0000ff"/>
                     </View>
-                }
-                {showModal &&
-                    <ConfigCategory
-                        editCategory={false}
-                        navigation={navigation}
-                        showModal={showModal}
-                        toggleModal={this.toggleModalHandler}
-                    />
                 }
             </Template>
         );

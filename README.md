@@ -32,8 +32,10 @@ This is my first React Native project.
 
 ### ToDo list
 
-- Add searching system :heavy_minus_sign:
+- Fix action buttons animation :heavy_minus_sign:
+- Create settings table in DB :heavy_minus_sign:
 - Add time to datepicker :x:
+- Create relations in DB :x:
 - Upgrade UX :x:
 - Add notifications system :x:
 - Google account auth system :x:
@@ -42,6 +44,8 @@ This is my first React Native project.
 - About tab :x:
 - Setting tab :x:
 - Create and add app logo :x:
+- Optimization code and fix errors :x:
+- Create unit tests :x:
 - Clear and upgrade quality of code :heavy_minus_sign:
 
 #### Legend:

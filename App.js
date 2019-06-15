@@ -17,8 +17,8 @@ const uiTheme = {
     },
 };
 
+// Init DB
 const db = SQLite.openDatabase('maker.db');
-
 db.transaction(tx => {
 /*    tx.executeSql(
         'DROP TABLE IF EXISTS tasks;'
