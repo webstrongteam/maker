@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Picker, ActivityIndicator, Animated, Easing} from 'react-native';
+import {StyleSheet, View, ScrollView, Picker, ActivityIndicator, Animated, Easing, Platform} from 'react-native';
 import {ActionButton, Toolbar, BottomNavigation} from 'react-native-material-ui';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
@@ -13,8 +13,6 @@ const DOWN = -1;
 
 class ToDo extends Component {
     state = {
-        sorting: 'byAZ',
-        sortingType: 'ASC',
         tasks: [],
         selectedCategory: 'All',
         searchText: '',
@@ -23,14 +21,14 @@ class ToDo extends Component {
         scroll: 0,
         offset: 0,
         scrollDirection: 0,
-        bottomHidden: false,
-        moveAnimated: new Animated.Value(0)
+        buttonMoveAnimated: new Animated.Value(0)
     };
 
     componentDidMount() {
         this.props.onInitTasks();
         this.props.onInitFinished();
         this.props.onInitCategories();
+        this.props.onInitSettings();
         //if (!this.props.isAuth) this.props.navigation.navigate('Auth');
     }
 
@@ -49,7 +47,7 @@ class ToDo extends Component {
         const currentOffset = e.nativeEvent.contentOffset.y;
         const sub = this.state.offset - currentOffset;
 
-        if (sub > -5 && sub < 5) return;
+        if (sub > -10 && sub < 10) return;
         this.state.offset = e.nativeEvent.contentOffset.y;
 
         const currentDirection = sub > 0 ? UP : DOWN;
@@ -57,26 +55,19 @@ class ToDo extends Component {
         if (this.state.scrollDirection !== currentDirection) {
             this.state.scrollDirection = currentDirection;
 
-            this.setState({
-                bottomHidden: currentDirection === DOWN,
-            });
+            if (currentDirection === DOWN) {
+                this.moveElement(this.state.buttonMoveAnimated, 80, 195);
+            } else {
+                this.moveElement(this.state.buttonMoveAnimated, 0, 225);
+            }
         }
     };
 
-    show = () => {
-        Animated.timing(this.state.moveAnimated, {
-            toValue: 0,
-            duration: 225,
+    moveElement = (el, value, time) => {
+        Animated.timing(el, {
+            toValue: value,
+            duration: time,
             easing: Easing.bezier(0.0, 0.0, 0.2, 1),
-            useNativeDriver: Platform.OS === 'android',
-        }).start();
-    };
-
-    hide = () => {
-        Animated.timing(this.state.moveAnimated, {
-            toValue: 56, // because the bottom navigation bar has height set to 56
-            duration: 195,
-            easing: Easing.bezier(0.4, 0.0, 0.6, 1),
             useNativeDriver: Platform.OS === 'android',
         }).start();
     };
@@ -94,14 +85,14 @@ class ToDo extends Component {
     };
 
     setSortingType = (key) => {
-        if (key === this.state.sorting) {
-            if (this.state.sortingType === 'ASC') {
-                this.setState({ sorting: key, sortingType: 'DESC' });
+        if (key === this.props.sorting) {
+            if (this.props.sortingType === 'ASC') {
+                this.props.onChangeSorting(key, 'DESC');
             } else {
-                this.setState({ sorting: key, sortingType: 'ASC' });
+                this.props.onChangeSorting(key, 'ASC');
             }
         } else {
-            this.setState({ sorting: key });
+            this.props.onChangeSorting(key, 'ASC');
         }
     };
 
@@ -123,8 +114,8 @@ class ToDo extends Component {
     };
 
     render() {
-        const {selectedCategory, tasks, loading, showModal, sortingType, sorting, searchText, bottomHidden} = this.state;
-        const {navigation, categories, finished} = this.props;
+        const {selectedCategory, tasks, loading, showModal, searchText} = this.state;
+        const {navigation, categories, finished, sortingType, sorting} = this.props;
 
         return (
             <Template>
@@ -193,13 +184,11 @@ class ToDo extends Component {
                     <View>
                         {selectedCategory !== 'finished' ?
                             <ActionButton
-                                hidden={bottomHidden}
                                 onPress={() => navigation.navigate('ConfigTask')}
                                 icon="add"
                             /> :
                             finished.length &&
                             <ActionButton
-                                hidden={bottomHidden}
                                 style={{
                                     container: {backgroundColor: '#b6c1ce'}
                                 }}
@@ -208,9 +197,7 @@ class ToDo extends Component {
                             />
                         }
                     </View>
-                    <BottomNavigation
-                        hidden={bottomHidden}
-                        active={sorting}>
+                    <BottomNavigation active={sorting}>
                         <BottomNavigation.Action
                             key="byAZ"
                             icon="format-line-spacing"
@@ -268,6 +255,8 @@ const mapStateToProps = state => {
     return {
         tasks: state.tasks.tasks,
         finished: state.tasks.finished,
+        sorting: state.settings.sorting,
+        sortingType: state.settings.sortingType,
         refresh: state.tasks.refresh,
         categories: state.categories.categories,
         isAuth: state.auth.isAuth
@@ -278,6 +267,8 @@ const mapDispatchToProps = dispatch => {
         onInitTasks: () => dispatch(actions.initTasks()),
         onInitFinished: () => dispatch(actions.initFinished()),
         onInitCategories: () => dispatch(actions.initCategories()),
+        onInitSettings: () => dispatch(actions.initSettings()),
+        onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
     }
 };

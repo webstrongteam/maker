@@ -1,7 +1,7 @@
 # Maker - ToDo app
 
-**Maker** is a ToDo mobile application created with React Native.
-This is my first React Native project.
+**Maker** is a advanced ToDo mobile application created with React Native. 
+This app working with Android and iOS. 
 
 ## Basic features  
   
@@ -12,6 +12,7 @@ This is my first React Native project.
 - Repeating task system
 - Finished task list
 - Sorting task
+- Searching task system
 - Save data in local database
 
 ## Technologies  
@@ -33,10 +34,9 @@ This is my first React Native project.
 ### ToDo list
 
 - Fix action buttons animation :heavy_minus_sign:
-- Create settings table in DB :heavy_minus_sign:
-- Add time to datepicker :x:
+- Add time to datepicker :heavy_minus_sign:
+- Upgrade UX :heavy_minus_sign:
 - Create relations in DB :x:
-- Upgrade UX :x:
 - Add notifications system :x:
 - Google account auth system :x:
 - Google drive synch :x:

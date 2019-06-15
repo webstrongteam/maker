@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {View, Picker, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
 import DatePicker from 'react-native-datepicker'
-import {ActionButton, Toolbar, Subheader, Icon, IconToggle, Button} from 'react-native-material-ui';
+import {Toolbar, Subheader, Icon, IconToggle, Button} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import Input from '../../components/UI/Input/Input';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
@@ -56,8 +56,13 @@ class ConfigTask extends Component {
                 value: 'onceYear'
             }
         },
+        dialog: {
+            title: '',
+            description: '',
+            buttons: {}
+        },
+        showDialog: false,
         editTask: false,
-        showExitModal: false,
         showModal: false
     };
 
@@ -69,13 +74,67 @@ class ConfigTask extends Component {
         }
     }
 
+    showDialog = (action) => {
+        if (action === 'exit') {
+            this.setState({
+                showDialog: true,
+                dialog: {
+                    title: 'Are you sure?',
+                    description: 'Quit without saving?',
+                    buttons: {
+                        yes: {
+                            label: 'Yes',
+                            onPress: () => {
+                                this.setState({ showDialog: false });
+                                this.props.navigation.goBack();
+                                this.props.onDefaultTask();
+                            }
+                        },
+                        cancel: {
+                            label: 'Cancel',
+                            onPress: () => {
+                                this.setState({ showDialog: false });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        else if (action === 'delete') {
+            this.setState({
+                showDialog: true,
+                dialog: {
+                    title: 'Are you sure?',
+                    description: 'Delete this task?',
+                    buttons: {
+                        yes: {
+                            label: 'Yes',
+                            onPress: () => {
+                                this.setState({ showDialog: false });
+                                this.props.onRemoveTask(this.props.task);
+                                this.props.onDefaultTask();
+                                this.props.navigation.goBack();
+                            }
+                        },
+                        cancel: {
+                            label: 'Cancel',
+                            onPress: () => {
+                                this.setState({ showDialog: false });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    };
+
     toggleModalHandler = () => {
         const { showModal } = this.state;
         this.setState({ showModal: !showModal });
     };
 
     render() {
-        const { controls, editTask, showModal, repeat, showExitModal } = this.state;
+        const { controls, editTask, showModal, repeat, dialog, showDialog } = this.state;
         const { navigation, task, categories } = this.props;
         const edit = this.props.navigation.getParam('task', false);
 
@@ -90,21 +149,29 @@ class ConfigTask extends Component {
                 <Toolbar
                     leftElement="arrow-back"
                     rightElement={
-                        <Button
-                            text="Save"
-                            style={{ text: { color: 'white' } }}
-                            onPress={() => {
-                                if (task.name.trim() !== '') {
-                                    this.props.onSaveTask(task);
-                                    this.props.onDefaultTask();
-                                    navigation.goBack();
-                                }
-                            }}
-                        />
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Button
+                                text="Save"
+                                style={{ text: { color: 'white' } }}
+                                onPress={() => {
+                                    if (task.name.trim() !== '') {
+                                        this.props.onSaveTask(task);
+                                        this.props.onDefaultTask();
+                                        navigation.goBack();
+                                    }
+                                }}
+                            />
+                            {editTask && <IconToggle color="white" name="delete"
+                                 onPress={() => {
+                                    this.showDialog('delete');
+                                 }}
+                            />
+                            }
+                        </View>
                     }
                     onLeftElementPress={() => {
                         if (task.name.trim() !== '') {
-                            this.setState({ showExitModal: true })
+                            this.showDialog('exit');
                         } else {
                             navigation.goBack();
                             this.props.onDefaultTask();
@@ -113,25 +180,10 @@ class ConfigTask extends Component {
                     centerElement={editTask ? "Edit task" : "New task"}
                 />
                 <Dialog
-                    showModal={showExitModal}
-                    title="Are you sure?"
-                    description="Quit without saving?"
-                    buttons={{
-                        yes: {
-                            label: 'Yes',
-                            onPress: () => {
-                                this.setState({ showExitModal: false });
-                                navigation.goBack();
-                                this.props.onDefaultTask();
-                            }
-                        },
-                        cancel: {
-                            label: 'Cancel',
-                            onPress: () => {
-                                this.setState({ showExitModal: false });
-                            }
-                        }
-                    }}
+                    showModal={showDialog}
+                    title={dialog.title}
+                    description={dialog.description}
+                    buttons={dialog.buttons}
                 />
                 <ConfigCategory
                     editCategory={false}
@@ -226,45 +278,6 @@ class ConfigTask extends Component {
                                 </View>
                             </View>
                         </ScrollView>
-                        {editTask ?
-                            <ActionButton
-                                actions={[
-                                    {
-                                        icon: 'check',
-                                        label: 'Save'
-                                    },
-                                    {
-                                        icon: 'delete',
-                                        label: 'Delete'
-                                    }
-                                ]}
-                                onPress={(label) => {
-                                    if (label === "delete") {
-                                        this.props.onRemoveTask(task);
-                                        this.props.onDefaultTask();
-                                        navigation.goBack();
-                                    } else if (label === "check") {
-                                        if (task.name.trim() !== '') {
-                                            this.props.onSaveTask(task);
-                                            this.props.onDefaultTask();
-                                            navigation.goBack();
-                                        }
-                                    }
-                                }}
-                                icon="menu"
-                                transition="speedDial"
-                            /> :
-                            <ActionButton
-                                onPress={() => {
-                                    if (task.name.trim() !== '') {
-                                        this.props.onSaveTask(task);
-                                        this.props.onDefaultTask();
-                                        navigation.goBack();
-                                    }
-                                }}
-                                icon="check"
-                            />
-                        }
                     </React.Fragment> :
                     <View style={[styles.container, styles.horizontal]}>
                         <ActivityIndicator size="large" color="#0000ff"/>

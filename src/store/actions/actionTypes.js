@@ -22,6 +22,9 @@ export const SET_CATEGORY = "SET_CATEGORY";
 export const REMOVE_CATEGORY = "REMOVE_CATEGORY";
 export const DEFAULT_CATEGORY = "DEFAULT_CATEGORY";
 
+// Settings
+export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
+
 // Auth
 export const AUTH_START = 'AUTH_START';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';

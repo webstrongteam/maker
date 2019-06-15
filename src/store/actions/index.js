@@ -25,6 +25,11 @@ export {
 } from './categories';
 
 export {
+    initSettings,
+    changeSorting
+} from './settings';
+
+export {
     auth,
     logout,
     authCheckState

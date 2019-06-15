@@ -1,7 +1,9 @@
 {
   "expo": {
     "name": "Maker - ToDo list",
-    "slug": "expo.io/@mateuszpijanowski/maker",
+    "slug": "maker",
+    "description": "Maker is a mobile ToDo app",
+    "githubUrl": "https://github.com/mateuszpijanowski/maker",
     "privacy": "public",
     "version": "0.2.1",
     "sdkVersion": "32.0.0",
@@ -30,7 +32,5 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "description": "Maker is a mobile ToDo app",
-    "githubUrl": "https://github.com/mateuszpijanowski/maker"
   }
 }
