@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import {View, Picker, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
 import DatePicker from 'react-native-datepicker'
-import {Toolbar, Subheader, Icon, IconToggle, Button} from 'react-native-material-ui';
+import {Toolbar, Subheader, IconToggle, Button} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import Input from '../../components/UI/Input/Input';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Dialog from '../../components/UI/Dialog/Dialog';
+import moment from 'moment';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
@@ -15,14 +16,14 @@ class ConfigTask extends Component {
         controls: {
             name: {
                 elementConfig: {
-                    placeholder: 'Enter task name'
+                    label: 'Enter task name'
                 }
             },
             description: {
                 elementConfig: {
-                    placeholder: 'Enter task description',
-                    multiline: true,
-                    numberOfLines: 3
+                    label: 'Enter task description',
+                    characterRestriction: 90,
+                    multiline: true
                 }
             }
         },
@@ -133,12 +134,32 @@ class ConfigTask extends Component {
         this.setState({ showModal: !showModal });
     };
 
+    valid = (value = this.props.task.name) => {
+        const newControls = this.state.controls;
+        if (value.trim() === '') {
+            newControls.name.elementConfig.error = `Task name is required!`;
+        } else {
+            delete newControls.name.elementConfig.error;
+        }
+        this.setState({ controls: newControls })
+    };
+
     render() {
         const { controls, editTask, showModal, repeat, dialog, showDialog } = this.state;
         const { navigation, task, categories } = this.props;
         const edit = this.props.navigation.getParam('task', false);
-
         let loading = true;
+        let date;
+        let now;
+
+        if (task.date.length > 12) {
+            date = moment(task.date, 'DD-MM-YYYY - HH:mm');
+            now = new Date();
+        } else {
+            date = moment(task.date, 'DD-MM-YYYY');
+            now = new Date().setHours(0,0,0,0);
+        }
+
         if (!edit) loading = false;
         else if (edit) {
             if (editTask) loading = false;
@@ -158,6 +179,8 @@ class ConfigTask extends Component {
                                         this.props.onSaveTask(task);
                                         this.props.onDefaultTask();
                                         navigation.goBack();
+                                    } else {
+                                        this.valid();
                                     }
                                 }}
                             />
@@ -197,54 +220,89 @@ class ConfigTask extends Component {
                                 elementConfig={controls.name.elementConfig}
                                 focus={!editTask}
                                 value={task.name}
-                                changed={this.props.onChangeName}/>
+                                changed={(value) => {
+                                    this.valid(value);
+                                    this.props.onChangeName(value);
+                                }}/>
                             <Input
                                 elementConfig={controls.description.elementConfig}
                                 value={task.description}
                                 changed={this.props.onChangeDescription}/>
                             <View style={styles.container}>
-                                <Subheader
+                                <Subheader text="Due date"
                                     style={{
-                                        container: styles.label
+                                        container: styles.label,
+                                        text: {color: '#f4511e'}
                                     }}
-                                    text="Due date"/>
+                                />
                                 <DatePicker
                                     style={{width: '100%'}}
-                                    date={task.date}
+                                    date={task.date.slice(0, 10)}
                                     mode="date"
-                                    iconComponent={<Icon name="update"/>}
+                                    iconComponent={
+                                        task.date ?
+                                        <IconToggle onPress={() => this.props.onChangeDate('')} name='clear' /> :
+                                        <IconToggle name='event' />
+                                    }
                                     placeholder="Select due date"
                                     format="DD-MM-YYYY"
                                     confirmBtnText="Confirm"
                                     cancelBtnText="Cancel"
                                     customStyles={{
-                                        dateInput: {
-                                            marginRight: 5
+                                        dateInput: styles.datePicker,
+                                        dateText: {
+                                            color: +date < +now ? '#ce3241' : '#333'
                                         }
                                     }}
                                     onDateChange={(date) => this.props.onChangeDate(date)}
                                 />
-                                <Subheader
+                                {task.date !== '' &&
+                                <React.Fragment>
+                                    <DatePicker
+                                        style={{width: '100%'}}
+                                        date={task.date.slice(13, 18)}
+                                        mode="time"
+                                        iconComponent={
+                                            task.date.slice(13, 18) ?
+                                                <IconToggle onPress={() => this.props.onChangeDate(task.date.slice(0, 10))} name='clear' /> :
+                                                <IconToggle name='access-time' />
+                                        }
+                                        placeholder="Select due time"
+                                        format="HH:mm"
+                                        confirmBtnText="Confirm"
+                                        cancelBtnText="Cancel"
+                                        customStyles={{
+                                            dateInput: styles.datePicker,
+                                            dateText: {
+                                                color: +date < +now ? '#ce3241' : '#333'
+                                            }
+                                        }}
+                                        onDateChange={(date) => this.props.onChangeDate(`${task.date.slice(0, 10)} - ${date}`)}
+                                    />
+                                    <Subheader text="Repeat"
+                                        style={{
+                                            container: styles.label,
+                                            text: {color: '#f4511e'}
+                                        }}
+                                    />
+                                    <View style={styles.picker}>
+                                        <Picker
+                                            selectedValue={repeat[task.repeat].value}
+                                            onValueChange={(itemValue, itemIndex) =>
+                                            this.props.onChangeRepeat(itemValue)}>
+                                            {Object.keys(repeat).map(name => (
+                                                <Picker.Item key={name} label={repeat[name].name} value={repeat[name].value} />
+                                            ))}
+                                        </Picker>
+                                    </View>
+                                </React.Fragment>
+                                }
+                                <Subheader text="Category"
                                     style={{
-                                        container: styles.label
+                                        container: styles.label,
+                                        text: {color: '#f4511e'}
                                     }}
-                                    text="Repeat"/>
-                                <View style={styles.picker}>
-                                    <Picker
-                                        selectedValue={repeat[task.repeat].value}
-                                        onValueChange={(itemValue, itemIndex) =>
-                                            this.props.onChangeRepeat(itemValue)
-                                        }>
-                                        {Object.keys(repeat).map(name => (
-                                            <Picker.Item key={name} label={repeat[name].name} value={repeat[name].value} />
-                                        ))}
-                                    </Picker>
-                                </View>
-                                <Subheader
-                                    style={{
-                                        container: styles.label
-                                    }}
-                                    text="Category" />
+                                />
                                 <View style={styles.selectCategory}>
                                     <View style={styles.category}>
                                         <Picker
@@ -259,11 +317,12 @@ class ConfigTask extends Component {
                                     </View>
                                     <IconToggle onPress={() => this.toggleModalHandler()} name="playlist-add"/>
                                 </View>
-                                <Subheader
+                                <Subheader text="Priority"
                                     style={{
-                                        container: styles.label
+                                        container: styles.label,
+                                        text: {color: '#f4511e'}
                                     }}
-                                    text="Priority"/>
+                                />
                                 <View style={styles.picker}>
                                     <Picker
                                         selectedValue={task.priority}
@@ -302,26 +361,28 @@ const styles = StyleSheet.create({
         padding: 50
     },
     datePicker: {
-
+        marginRight: 5,
+        marginLeft: 5,
+        borderColor: '#f4511e',
+        borderBottomWidth: 0.5,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        borderTopWidth: 0
     },
     category: {
         width: '85%',
         height: 50,
-        borderRadius: 4,
-        borderWidth: 0.5,
-        borderColor: '#d6d7da',
+        borderWidth: 0
     },
     selectCategory: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     picker: {
         width: '100%',
         height: 50,
-        borderRadius: 4,
-        borderWidth: 0.5,
-        borderColor: '#d6d7da',
+        borderWidth: 0
     },
     label: {
         width: '100%'

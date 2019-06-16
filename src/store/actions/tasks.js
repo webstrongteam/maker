@@ -164,41 +164,42 @@ export const saveTask = (task) => {
     };
 };
 
-export const finishTask = (task) => {
+export const finishTask = (task, endTask) => {
     let tasks = null;
     let finished = null;
     let nextDate = task.date;
+    let dateFormat = task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
 
-    if (task.repeat === 'onceDay') nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'days');
+    if (task.repeat === 'onceDay') nextDate = moment(nextDate, dateFormat).add(1, 'days');
     else if (task.repeat === 'onceDayMonFri') {
-        if (moment(task.date, "DD-MM-YYYY").day() === 5) { // Friday
-            nextDate = moment(nextDate, "DD-MM-YYYY").add(3, 'days');
+        if (moment(task.date, dateFormat).day() === 5) { // Friday
+            nextDate = moment(nextDate, dateFormat).add(3, 'days');
         }
-        else if (moment(task.date, "DD-MM-YYYY").day() === 6) { // Saturday
-            nextDate = moment(nextDate, "DD-MM-YYYY").add(2, 'days');
+        else if (moment(task.date, dateFormat).day() === 6) { // Saturday
+            nextDate = moment(nextDate, dateFormat).add(2, 'days');
         } else {
-            nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'days');
+            nextDate = moment(nextDate, dateFormat).add(1, 'days');
         }
     }
     else if (task.repeat === 'onceDaySatSun') {
-        if (moment(task.date, "DD-MM-YYYY").day() === 6) { // Saturday
-            nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'days');
+        if (moment(task.date, dateFormat).day() === 6) { // Saturday
+            nextDate = moment(nextDate, dateFormat).add(1, 'days');
         }
-        else if (moment(task.date, "DD-MM-YYYY").day() === 0) { // Sunday
-            nextDate = moment(nextDate, "DD-MM-YYYY").add(6, 'days');
+        else if (moment(task.date, dateFormat).day() === 0) { // Sunday
+            nextDate = moment(nextDate, dateFormat).add(6, 'days');
         }
         else { // Other day
-            nextDate = moment(nextDate, "DD-MM-YYYY").day(6);
+            nextDate = moment(nextDate, dateFormat).day(6);
         }
     }
-    else if (task.repeat === 'onceWeek') nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'week');
-    else if (task.repeat === 'onceMonth') nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'month');
-    else if (task.repeat === 'onceYear') nextDate = moment(nextDate, "DD-MM-YYYY").add(1, 'year');
+    else if (task.repeat === 'onceWeek') nextDate = moment(nextDate, dateFormat).add(1, 'week');
+    else if (task.repeat === 'onceMonth') nextDate = moment(nextDate, dateFormat).add(1, 'month');
+    else if (task.repeat === 'onceYear') nextDate = moment(nextDate, dateFormat).add(1, 'year');
 
-    nextDate = moment(nextDate, "DD-MM-YYYY").format("DD-MM-YYYY");
+    nextDate = moment(nextDate, dateFormat).format(dateFormat);
 
     return dispatch => {
-        if (task.repeat === 'noRepeat') {
+        if (task.repeat === 'noRepeat' || endTask) {
             db.transaction(
                 tx => {
                     tx.executeSql('delete from tasks where id = ?', [task.id]);

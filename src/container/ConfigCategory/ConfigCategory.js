@@ -1,12 +1,21 @@
 import React, { Component } from "react";
 import {View} from 'react-native';
 import Dialog from "react-native-dialog";
+import Input from '../../components/UI/Input/Input';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
 class ConfigCategory extends Component {
     state = {
+        controls: {
+            name: {
+                elementConfig: {
+                    label: 'Enter category name',
+                    characterRestriction: 40
+                }
+            }
+        },
         editCategory: null
     };
 
@@ -32,19 +41,33 @@ class ConfigCategory extends Component {
         }
     }
 
+    valid = (value = this.props.category.name) => {
+        const newControls = this.state.controls;
+        if (value.trim() === '') {
+            newControls.name.elementConfig.error = `Category name is required!`;
+        } else {
+            delete newControls.name.elementConfig.error;
+        }
+        this.setState({ controls: newControls })
+    };
+
     render() {
-        const { editCategory } = this.state;
+        const { editCategory, controls } = this.state;
         const { category, showModal } = this.props;
 
         return (
             <View>
                 <Dialog.Container visible={showModal}>
                     <Dialog.Title>{editCategory ? 'Edit category' : 'New category'}</Dialog.Title>
-                    <Dialog.Input
+                    <Input
+                        elementConfig={controls.name.elementConfig}
+                        focus={true}
                         value={category.name}
-                        placeholder="Enter category name"
-                        autoFocus={true}
-                        onChangeText={this.props.onChangeCategoryName} />
+                        changed={(value) => {
+                            this.valid(value);
+                            this.props.onChangeCategoryName(value);
+                        }}
+                    />
                     <Dialog.Button
                         label="Save"
                         onPress={() => {
@@ -53,6 +76,8 @@ class ConfigCategory extends Component {
                                 this.props.onChangeCategory(category.name);
                                 this.props.onDefaultCategory();
                                 this.props.toggleModal();
+                            } else {
+                                this.valid();
                             }
                         }}
                     />

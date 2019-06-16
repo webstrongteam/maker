@@ -27,6 +27,7 @@ This app working with Android and iOS.
 - React Native MaterialUI <i>1.30.1</i>  
 - React Native Datepicker <i>1.7.2</i>  
 - React Native Dialog <i>5.6.0</i>  
+- React Native Material TextField <i>0.12.0</i>  
 - Moment.JS <i>2.24.0</i>
 - Expo <i>32.0.0</i>
 - Axios <i>0.19.0</i>
@@ -34,7 +35,6 @@ This app working with Android and iOS.
 ### ToDo list
 
 - Fix action buttons animation :heavy_minus_sign:
-- Add time to datepicker :heavy_minus_sign:
 - Upgrade UX :heavy_minus_sign:
 - Create relations in DB :x:
 - Add notifications system :x:

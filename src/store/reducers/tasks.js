@@ -7,7 +7,7 @@ const initState = {
         id: false,
         name: '',
         description: '',
-        date: moment(new Date()).format('DD-MM-YYYY'),
+        date: '',
         repeat: 'noRepeat',
         category: 'Default',
         priority: 'none',
@@ -128,7 +128,7 @@ const defaultTask = (state) => {
             id: false,
             name: '',
             description: '',
-            date: moment(new Date()).format('DD-MM-YYYY'),
+            date: '',
             repeat: 'noRepeat',
             category: 'Default',
             priority: 'none'

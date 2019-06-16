@@ -187,14 +187,14 @@ class ToDo extends Component {
                                 onPress={() => navigation.navigate('ConfigTask')}
                                 icon="add"
                             /> :
-                            finished.length &&
+                            finished.length ?
                             <ActionButton
                                 style={{
                                     container: {backgroundColor: '#b6c1ce'}
                                 }}
                                 onPress={() => this.deleteAllTask()}
                                 icon="delete-sweep"
-                            />
+                            /> : null
                         }
                     </View>
                     <BottomNavigation active={sorting}>

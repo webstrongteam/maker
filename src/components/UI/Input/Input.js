@@ -1,20 +1,13 @@
 import React from 'react';
-import { StyleSheet, View, TextInput, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { TextField } from 'react-native-material-textfield';
 
 const input = (props) => {
-    let validationError = null;
     const inputClasses = [classes.InputElement];
 
-    if (props.invalid && props.shouldValidate) {
-        validationError = (
-            <Text style={classes.Error}>
-                Please enter a valid {props.valueName}!
-            </Text>
-        );
-    }
-
-    const inputElement = <TextInput
+    const inputElement = <TextField
         {...props.elementConfig}
+        tintColor="#f4511e"
         style={inputClasses}
         autoFocus={props.focus ? props.focus : false}
         onChangeText={props.changed}
@@ -24,7 +17,6 @@ const input = (props) => {
     return (
         <View style={classes.container}>
             <View style={classes.inputContainer}>
-                {validationError}
                 {inputElement}
             </View>
         </View>
@@ -41,14 +33,10 @@ const classes = StyleSheet.create({
         justifyContent: "center"
     },
     inputContainer: {
-        marginTop: 20,
         width: "100%",
     },
     InputElement: {
-        width: "100%",
-        padding: 10,
-        borderWidth: 0.5,
-        borderColor: '#ddd',
+        width: "100%"
     },
     Invalid: {
         borderColor: '#944317',

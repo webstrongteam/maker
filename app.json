@@ -5,7 +5,7 @@
     "description": "Maker is a mobile ToDo app",
     "githubUrl": "https://github.com/mateuszpijanowski/maker",
     "privacy": "public",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "sdkVersion": "32.0.0",
     "ios": {
       "supportsTablet": true,

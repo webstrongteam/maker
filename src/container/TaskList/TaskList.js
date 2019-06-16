@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import { ListItem, Subheader, IconToggle } from 'react-native-material-ui';
 import {sortingByDiv, sortingByType} from '../../shared/utility';
-import Dialog from "react-native-dialog";
+import Dialog from '../../components/UI/Dialog/Dialog';
 import moment from 'moment';
 
 import { connect } from 'react-redux';
@@ -17,8 +17,26 @@ class TaskList extends Component {
             medium: '#cec825',
             high: '#ce3241'
         },
+        dialog: {
+            title: 'Repeat task?',
+            description: 'Do you want to repeat this task?',
+            buttons: {
+                yes: {
+                    label: 'Yes',
+                    onPress: () => this.checkTaskRepeatHandler(this.state.selectedTask)
+                },
+                no: {
+                    label: 'No',
+                    onPress: () => this.props.onFinishTask(this.state.selectedTask, true)
+                },
+                cancel: {
+                    label: 'Cancel',
+                    onPress: () => this.setState({showDialog: false})
+                }
+            }
+        },
+        showDialog: false,
         selectedTask: false,
-        showModal: false,
         initDivision: false
     };
 
@@ -54,13 +72,24 @@ class TaskList extends Component {
     };
 
     dateDivision = (date) => {
-        date = moment(date, 'DD-MM-YYYY');
-        const now = new Date().setHours(0,0,0,0);
         let text;
+        let now;
+        if (!date) {
+            text = 'Other';
+            return text;
+        } else {
+            if (date.length > 12) {
+                date = moment(date, 'DD-MM-YYYY - HH:mm');
+                now = new Date();
+            } else {
+                date = moment(date, 'DD-MM-YYYY');
+                now = new Date().setHours(0,0,0,0);
+            }
+        }
 
-        if (+date === +now) text = 'Today';
-        else if (+date < +now) text = 'Overdue';
-        else if (+date === +moment(now).add(1, 'days')) text = 'Tomorrow';
+        if (+date < +now) text = 'Overdue';
+        else if (+date <= moment(now).endOf("day")) text = 'Today';
+        else if (+date <= +moment(now).add(1, 'days').endOf("day")) text = 'Tomorrow';
         else if (date <= moment(now).endOf("week")) text = 'This week';
         else if (+date <= +moment(now).add(1, 'week')) text = 'Next week';
         else if (date <= moment(now).endOf("month")) text = 'This month';
@@ -71,21 +100,15 @@ class TaskList extends Component {
 
     checkTaskRepeatHandler = (task) => {
         if (task.repeat !== 'noRepeat' && !this.state.selectedTask) {
-            this.setState({ showModal: true, selectedTask: task });
+            this.setState({ showDialog: true, selectedTask: task });
         } else {
             this.props.onFinishTask(task);
-            this.setState({ showModal: false, selectedTask: false });
+            this.setState({ showDialog: false, selectedTask: false });
         }
     };
 
-    finishTaskHandler = (task) => {
-        task.repeat = 'noRepeat';
-        this.props.onFinishTask(task);
-        this.setState({ showModal: false, selectedTask: false });
-    };
-
     render() {
-        const {division, priorityColors, initDivision, showModal, selectedTask} = this.state;
+        const {division, priorityColors, initDivision, dialog, showDialog} = this.state;
         const {tasks, navigation} = this.props;
 
         const taskList = initDivision &&
@@ -146,30 +169,20 @@ class TaskList extends Component {
                                 />}
                             </View>
                         }
-                        centerElement={{
-                            primaryText: `${task.name}`,
-                            secondaryText: task.date,
+                        centerElement = {{
+                            primaryText: task.name,
+                            secondaryText: task.date ?
+                                task.date : task.description ?
+                                    task.description : ' ',
                             tertiaryText: task.category
                         }}
                     />
-                    <Dialog.Container visible={showModal}>
-                        <Dialog.Title>Repeat task?</Dialog.Title>
-                        <Dialog.Description>
-                            Do you want to repeat this task?
-                        </Dialog.Description>
-                        <Dialog.Button
-                            label="Yes"
-                            onPress={() => this.checkTaskRepeatHandler(selectedTask)}
-                        />
-                        <Dialog.Button
-                            label="No"
-                            onPress={() => this.finishTaskHandler(selectedTask)}
-                        />
-                        <Dialog.Button
-                            label="Cancel"
-                            onPress={() => this.setState({showModal: false})}
-                        />
-                    </Dialog.Container>
+                    <Dialog
+                        showModal={showDialog}
+                        title={dialog.title}
+                        description={dialog.description}
+                        buttons={dialog.buttons}
+                    />
                 </View>
             })
         ));
@@ -210,7 +223,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFinishTask: (task) => dispatch(actions.finishTask(task)),
+        onFinishTask: (task, endTask = false) => dispatch(actions.finishTask(task, endTask)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onUndoTask: (task) => dispatch(actions.undoTask(task)),
     }
