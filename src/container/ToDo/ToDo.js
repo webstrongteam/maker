@@ -95,6 +95,7 @@ class ToDo extends Component {
             return this.toggleModalHandler();
         }
         else if (category !== 'All') {
+            this.props.onChangeCategory(category);
             filterTask = tasks.filter(task => task.category === category);
         }
 
@@ -106,7 +107,7 @@ class ToDo extends Component {
         const {navigation, categories, finished, sortingType, sorting} = this.props;
 
         return (
-            <Template>
+            <Template bgColor="#e5e5e5">
                 <Toolbar
                     searchable={{
                         autoFocus: true,
@@ -255,6 +256,7 @@ const mapDispatchToProps = dispatch => {
         onInitToDo: () => dispatch(actions.initToDo()),
         onInitCategories: () => dispatch(actions.initCategories()),
         onInitSettings: () => dispatch(actions.initSettings()),
+        onChangeCategory: (category) => dispatch(actions.changeCategory(category)),
         onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
     }

@@ -5,7 +5,7 @@ class Template extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.content}>
+                <View style={[styles.content, { backgroundColor: this.props.bgColor }]}>
                     {this.props.children}
                 </View>
             </View>
@@ -20,9 +20,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#f4511e'
     },
     content: {
-        flex: 1,
-        backgroundColor: 'white'
+        flex: 1
     }
 });
+
+Template.defaultProps = {
+    bgColor: 'white',
+};
 
 export default Template;

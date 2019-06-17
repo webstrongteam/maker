@@ -69,13 +69,19 @@ class ConfigTask extends Component {
 
     componentDidMount() {
         const task = this.props.navigation.getParam('task', false);
-        if (task) {
-            this.props.onSetTask(task.id);
-            this.setState({editTask: true});
-        } else {
-            this.props.onChangeCategory(this.props.categories[0].name);
-        }
+        if (task) this.props.onSetTask(task.id, this.initTask);
     }
+
+    initTask = () => {
+        const { categories, task } = this.props;
+
+        const checkExistCategory = categories.filter(cate => cate.name === task.category);
+        if (!checkExistCategory.length) {
+            this.props.onChangeCategory(categories[0].name);
+        }
+
+        this.setState({editTask: true});
+    };
 
     showDialog = (action) => {
         if (action === 'exit') {
@@ -424,7 +430,7 @@ const mapDispatchToProps = dispatch => {
         onChangeCategory: (category) => dispatch(actions.changeCategory(category)),
         onChangePriority: (priority) => dispatch(actions.changePriority(priority)),
         onChangeRepeat: (value) => dispatch(actions.changeRepeat(value)),
-        onSetTask: (id) => dispatch(actions.setTask(id)),
+        onSetTask: (id, callback) => dispatch(actions.setTask(id, callback)),
         onSaveTask: (task) => dispatch(actions.saveTask(task)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task, false)),
         onDefaultTask: () => dispatch(actions.defaultTask())

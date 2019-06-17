@@ -68,7 +68,8 @@ export const changeRepeat = (repeat) => {
     }
 };
 
-export const onSetTask = (task) => {
+export const onSetTask = (task, callback) => {
+    callback();
     return {
         type: actionTypes.SET_TASK,
         task
@@ -121,12 +122,12 @@ export const initFinished = () => {
     };
 };
 
-export const setTask = (id) => {
+export const setTask = (id, callback) => {
     return dispatch => {
         db.transaction(
             tx => {
                 tx.executeSql('select * from tasks where id = ?', [id], (_, {rows}) => {
-                    dispatch(onSetTask(rows._array[0]));
+                    dispatch(onSetTask(rows._array[0], callback));
                 });
             }, (err) => console.warn(err), null
         );

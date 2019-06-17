@@ -211,7 +211,7 @@ class TaskList extends Component {
         return (
             <View>
                 {tasks && tasks.length ?
-                    <View style={{ paddingBottom: 20, backgroundColor: '#e5e5e5' }}>{taskList}</View>
+                    <View style={{ paddingBottom: 20 }}>{taskList}</View>
                     : <Text style={styles.empty}>Task list is empty</Text>
                 }
             </View>
@@ -228,8 +228,7 @@ const styles = StyleSheet.create({
     empty: {
         marginTop: 30,
         width: "100%",
-        textAlign: "center",
-        backgroundColor: '#ddd'
+        textAlign: "center"
     }
 });
 
