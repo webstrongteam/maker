@@ -31,7 +31,7 @@ class TaskList extends Component {
                 },
                 cancel: {
                     label: 'Cancel',
-                    onPress: () => this.setState({showDialog: false})
+                    onPress: () => this.setState({showDialog: false, selectedTask: false})
                 }
             }
         },

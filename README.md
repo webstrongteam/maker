@@ -34,7 +34,6 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-- Fix action buttons animation :heavy_minus_sign:
 - Upgrade UX :heavy_minus_sign:
 - Create relations in DB :x:
 - Add notifications system :x:

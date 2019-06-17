@@ -16,13 +16,13 @@ class ConfigTask extends Component {
         controls: {
             name: {
                 elementConfig: {
-                    label: 'Enter task name'
+                    label: 'Enter task name',
+                    characterRestriction: 30,
                 }
             },
             description: {
                 elementConfig: {
                     label: 'Enter task description',
-                    characterRestriction: 90,
                     multiline: true
                 }
             }
@@ -91,6 +91,15 @@ class ConfigTask extends Component {
                                 this.props.onDefaultTask();
                             }
                         },
+                        save: {
+                            label: 'Save',
+                            onPress: () => {
+                                this.setState({ showDialog: false });
+                                this.props.onSaveTask(this.props.task);
+                                this.props.onDefaultTask();
+                                this.props.navigation.goBack();
+                            }
+                        },
                         cancel: {
                             label: 'Cancel',
                             onPress: () => {
@@ -132,6 +141,10 @@ class ConfigTask extends Component {
     toggleModalHandler = () => {
         const { showModal } = this.state;
         this.setState({ showModal: !showModal });
+    };
+
+    addRef = (e, name) => {
+        this[name] = e;
     };
 
     valid = (value = this.props.task.name) => {
@@ -221,8 +234,12 @@ class ConfigTask extends Component {
                                 focus={!editTask}
                                 value={task.name}
                                 changed={(value) => {
-                                    this.valid(value);
-                                    this.props.onChangeName(value);
+                                    if (value.length <= controls.name.elementConfig.characterRestriction) {
+                                        this.valid(value);
+                                        this.props.onChangeName(value);
+                                    } else {
+                                        this.valid(value);
+                                    }
                                 }}/>
                             <Input
                                 elementConfig={controls.description.elementConfig}
@@ -236,13 +253,14 @@ class ConfigTask extends Component {
                                     }}
                                 />
                                 <DatePicker
+                                    ref={(e) => this.addRef(e, 'datepickerDate')}
                                     style={{width: '100%'}}
                                     date={task.date.slice(0, 10)}
                                     mode="date"
                                     iconComponent={
                                         task.date ?
                                         <IconToggle onPress={() => this.props.onChangeDate('')} name='clear' /> :
-                                        <IconToggle name='event' />
+                                        <IconToggle onPress={() => this.datepickerDate.onPressDate()} name='event' />
                                     }
                                     placeholder="Select due date"
                                     format="DD-MM-YYYY"
@@ -259,13 +277,14 @@ class ConfigTask extends Component {
                                 {task.date !== '' &&
                                 <React.Fragment>
                                     <DatePicker
+                                        ref={(e) => this.addRef(e, 'datepickerTime')}
                                         style={{width: '100%'}}
                                         date={task.date.slice(13, 18)}
                                         mode="time"
                                         iconComponent={
                                             task.date.slice(13, 18) ?
                                                 <IconToggle onPress={() => this.props.onChangeDate(task.date.slice(0, 10))} name='clear' /> :
-                                                <IconToggle name='access-time' />
+                                                <IconToggle onPress={() => this.datepickerTime.onPressDate()} name='access-time' />
                                         }
                                         placeholder="Select due time"
                                         format="HH:mm"

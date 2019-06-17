@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Picker, ActivityIndicator, Animated, Easing, Platform} from 'react-native';
+import {StyleSheet, View, ScrollView, Picker, ActivityIndicator, Animated, Easing, Platform, TouchableOpacity} from 'react-native';
 import {ActionButton, Toolbar, BottomNavigation} from 'react-native-material-ui';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
@@ -21,6 +21,7 @@ class ToDo extends Component {
         scroll: 0,
         offset: 0,
         scrollDirection: 0,
+        bottomHidden: false,
         buttonMoveAnimated: new Animated.Value(0)
     };
 
@@ -55,10 +56,14 @@ class ToDo extends Component {
         if (this.state.scrollDirection !== currentDirection) {
             this.state.scrollDirection = currentDirection;
 
+            this.setState({
+                bottomHidden: currentDirection === DOWN,
+            });
+
             if (currentDirection === DOWN) {
                 this.moveElement(this.state.buttonMoveAnimated, 80, 195);
             } else {
-                this.moveElement(this.state.buttonMoveAnimated, 0, 225);
+                this.moveElement(this.state.buttonMoveAnimated, 0.01, 225);
             }
         }
     };
@@ -114,7 +119,7 @@ class ToDo extends Component {
     };
 
     render() {
-        const {selectedCategory, tasks, loading, showModal, searchText} = this.state;
+        const {selectedCategory, tasks, loading, showModal, searchText, bottomHidden} = this.state;
         const {navigation, categories, finished, sortingType, sorting} = this.props;
 
         return (
@@ -184,9 +189,11 @@ class ToDo extends Component {
                     <View>
                         {selectedCategory !== 'finished' ?
                             <ActionButton
+                                hidden={bottomHidden}
                                 onPress={() => navigation.navigate('ConfigTask')}
                                 icon="add"
-                            /> :
+                            />
+                            :
                             finished.length ?
                             <ActionButton
                                 style={{
@@ -197,7 +204,7 @@ class ToDo extends Component {
                             /> : null
                         }
                     </View>
-                    <BottomNavigation active={sorting}>
+                    <BottomNavigation hidden={bottomHidden} active={sorting}>
                         <BottomNavigation.Action
                             key="byAZ"
                             icon="format-line-spacing"

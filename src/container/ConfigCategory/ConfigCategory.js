@@ -12,7 +12,7 @@ class ConfigCategory extends Component {
             name: {
                 elementConfig: {
                     label: 'Enter category name',
-                    characterRestriction: 40
+                    characterRestriction: 30
                 }
             }
         },
@@ -56,40 +56,42 @@ class ConfigCategory extends Component {
         const { category, showModal } = this.props;
 
         return (
-            <View>
-                <Dialog.Container visible={showModal}>
-                    <Dialog.Title>{editCategory ? 'Edit category' : 'New category'}</Dialog.Title>
-                    <Input
-                        elementConfig={controls.name.elementConfig}
-                        focus={true}
-                        value={category.name}
-                        changed={(value) => {
+            <Dialog.Container visible={showModal}>
+                <Dialog.Title>{editCategory ? 'Edit category' : 'New category'}</Dialog.Title>
+                <Input
+                    elementConfig={controls.name.elementConfig}
+                    focus={true}
+                    value={category.name}
+                    changed={(value) => {
+                        if (value.length <= controls.name.elementConfig.characterRestriction) {
                             this.valid(value);
                             this.props.onChangeCategoryName(value);
-                        }}
-                    />
-                    <Dialog.Button
-                        label="Save"
-                        onPress={() => {
-                            if (category.name.trim() !== '') {
-                                this.props.onSaveCategory(category);
-                                this.props.onChangeCategory(category.name);
-                                this.props.onDefaultCategory();
-                                this.props.toggleModal();
-                            } else {
-                                this.valid();
-                            }
-                        }}
-                    />
-                    <Dialog.Button
-                        label="Cancel"
-                        onPress={() => {
+                        } else {
+                            this.valid(value);
+                        }
+                    }}
+                />
+                <Dialog.Button
+                    label="Save"
+                    onPress={() => {
+                        if (category.name.trim() !== '') {
+                            this.props.onSaveCategory(category);
+                            this.props.onChangeCategory(category.name);
                             this.props.onDefaultCategory();
                             this.props.toggleModal();
-                        }}
-                    />
-                </Dialog.Container>
-            </View>
+                        } else {
+                            this.valid();
+                        }
+                    }}
+                />
+                <Dialog.Button
+                    label="Cancel"
+                    onPress={() => {
+                        this.props.onDefaultCategory();
+                        this.props.toggleModal();
+                    }}
+                />
+            </Dialog.Container>
         );
     }
 }

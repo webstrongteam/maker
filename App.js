@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
+import {NativeModules} from 'react-native';
 import { Provider } from 'react-redux';
 import axios from 'axios';
 import Router from './router';
@@ -10,6 +11,8 @@ import authReducer from './src/store/reducers/auth';
 import thunk from 'redux-thunk';
 import { SQLite } from 'expo';
 import { ThemeContext, getTheme } from 'react-native-material-ui';
+
+const UIManager = NativeModules.UIManager;
 
 const uiTheme = {
     palette: {
@@ -67,6 +70,12 @@ const store = createStore(rootReducer, (
 ));
 
 export default class App extends Component {
+    componentWillMount() {
+        if (UIManager.setLayoutAnimationEnabledExperimental) {
+            UIManager.setLayoutAnimationEnabledExperimental(true);
+        }
+    }
+
     render() {
         return (
             <Provider store={store}>
