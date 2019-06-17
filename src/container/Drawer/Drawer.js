@@ -3,15 +3,10 @@ import {Drawer, Toolbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
 
 // Redux
-import { connect } from 'react-redux';
-import * as actions from '../../store/actions/index';
+/*import { connect } from 'react-redux';
+import * as actions from '../../store/actions/index';*/
 
 class DrawerContainer extends Component {
-    logoutHandler = () => {
-        this.props.onLogout();
-        this.props.navigation.navigate('Auth');
-    };
-
     categoriesListHandler = () => {
         this.props.navigation.navigate('CategoriesList');
     };
@@ -39,7 +34,7 @@ class DrawerContainer extends Component {
                         items={[
                             {icon: 'info', value: 'About Maker'},
                             {icon: 'settings', value: 'Settings'},
-                            {icon: 'input', value: 'Logout', onPress: () => this.logoutHandler()},
+                            {icon: 'input', value: 'Logout'},
                         ]}
                     />
                 </Drawer>
@@ -48,10 +43,4 @@ class DrawerContainer extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        onLogout: () => dispatch(actions.logout())
-    };
-};
-
-export default connect(null, mapDispatchToProps)(DrawerContainer);
+export default DrawerContainer;

@@ -7,7 +7,6 @@ import Router from './router';
 import tasksReducer from './src/store/reducers/tasks';
 import cateReducer from './src/store/reducers/categories';
 import settingsReducer from './src/store/reducers/settings';
-import authReducer from './src/store/reducers/auth';
 import thunk from 'redux-thunk';
 import { SQLite } from 'expo';
 import { ThemeContext, getTheme } from 'react-native-material-ui';
@@ -61,8 +60,7 @@ axios.defaults.baseURL = "https://todo-56c42.firebaseio.com/"; // Default Axios 
 const rootReducer = combineReducers({
     tasks: tasksReducer,
     categories: cateReducer,
-    settings: settingsReducer,
-    auth: authReducer
+    settings: settingsReducer
 });
 
 const store = createStore(rootReducer, (

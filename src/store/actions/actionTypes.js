@@ -1,4 +1,5 @@
 // Todo
+export const INIT_TODO = 'INIT_TODO';
 export const INIT_TASKS = 'INIT_TASKS';
 export const INIT_FINISHED = 'INIT_FINISHED';
 export const CHANGE_TASK_NAME = 'CHANGE_TASK_NAME';
@@ -8,25 +9,13 @@ export const CHANGE_TASK_CATEGORY = 'CHANGE_TASK_CATEGORY';
 export const CHANGE_TASK_PRIORITY = 'CHANGE_TASK_PRIORITY';
 export const CHANGE_TASK_REPEAT = 'CHANGE_TASK_REPEAT';
 export const SET_TASK = 'SET_TASK';
-export const SAVE_TASK = 'SAVE_TASK';
-export const FINISH_TASK = "FINISH_TASK";
-export const UNDO_TASK = "UNDO_TASK";
-export const REMOVE_TASK = "REMOVE_TASK";
 export const DEFAULT_TASK = "DEFAULT_TASK";
 
 // Category
 export const INIT_CATEGORIES = 'INIT_CATEGORIES';
 export const CHANGE_CATEGORY_NAME = "CHANGE_CATEGORY_NAME";
-export const SAVE_CATEGORY = "SAVE_CATEGORY";
 export const SET_CATEGORY = "SET_CATEGORY";
-export const REMOVE_CATEGORY = "REMOVE_CATEGORY";
 export const DEFAULT_CATEGORY = "DEFAULT_CATEGORY";
 
 // Settings
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
-
-// Auth
-export const AUTH_START = 'AUTH_START';
-export const AUTH_SUCCESS = 'AUTH_SUCCESS';
-export const AUTH_FAIL = 'AUTH_FAIL';
-export const AUTH_LOGOUT = 'AUTH_LOGOUT';

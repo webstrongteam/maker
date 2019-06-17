@@ -17,7 +17,7 @@ export const initSettings = () => {
                 tx.executeSql('select * from settings;', [], (_, {rows}) => {
                     dispatch(onUpdateSettings(rows._array[0]));
                 });
-            }, null, null
+            }, (err) => console.warn(err), null
         );
     };
 };

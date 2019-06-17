@@ -1,6 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
 import {updateObject} from '../../shared/utility';
-import moment from 'moment';
 
 const initState = {
     task: {
@@ -15,6 +14,14 @@ const initState = {
     tasks: [],
     finished: [],
     refresh: false
+};
+
+const initToDo = (state, action) => {
+    return updateObject(state,{
+        tasks: action.tasks,
+        finished: action.finished,
+        refresh: !state.refresh
+    });
 };
 
 const initTasks = (state, action) => {
@@ -91,37 +98,6 @@ const setTask = (state, action) => {
     });
 };
 
-const saveTask = (state, action) => {
-    return updateObject(state,{
-        tasks: action.tasks,
-        refresh: !state.refresh
-    });
-};
-
-const finishTask = (state, action) => {
-    return updateObject(state,{
-        tasks: action.tasks,
-        finished: action.finished,
-        refresh: !state.refresh
-    });
-};
-
-const undoTask = (state, action) => {
-    return updateObject(state,{
-        tasks: action.tasks,
-        finished: action.finished,
-        refresh: !state.refresh
-    });
-};
-
-const removeTask = (state, action) => {
-    return updateObject(state,{
-        tasks: action.tasks,
-        finished: action.finished,
-        refresh: !state.refresh
-    });
-};
-
 const defaultTask = (state) => {
     return updateObject(state,{
         task: {
@@ -138,6 +114,7 @@ const defaultTask = (state) => {
 
 const reducer = (state = initState, action) => {
     switch (action.type) {
+        case actionTypes.INIT_TODO: return initToDo(state, action);
         case actionTypes.INIT_TASKS: return initTasks(state, action);
         case actionTypes.INIT_FINISHED: return initFinished(state, action);
         case actionTypes.CHANGE_TASK_NAME: return changeName(state, action);
@@ -147,10 +124,6 @@ const reducer = (state = initState, action) => {
         case actionTypes.CHANGE_TASK_PRIORITY: return changePriority(state, action);
         case actionTypes.CHANGE_TASK_REPEAT: return changeRepeat(state, action);
         case actionTypes.SET_TASK: return setTask(state, action);
-        case actionTypes.SAVE_TASK: return saveTask(state, action);
-        case actionTypes.FINISH_TASK: return finishTask(state, action);
-        case actionTypes.UNDO_TASK: return undoTask(state, action);
-        case actionTypes.REMOVE_TASK: return removeTask(state, action);
         case actionTypes.DEFAULT_TASK: return defaultTask(state);
         default: return state;
     }

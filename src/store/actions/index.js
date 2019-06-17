@@ -1,4 +1,5 @@
 export {
+    initToDo,
     initTasks,
     initFinished,
     changeDescription,
@@ -28,9 +29,3 @@ export {
     initSettings,
     changeSorting
 } from './settings';
-
-export {
-    auth,
-    logout,
-    authCheckState
-} from './auth'

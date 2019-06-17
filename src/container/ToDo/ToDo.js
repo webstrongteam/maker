@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Picker, ActivityIndicator, Animated, Easing, Platform, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, ScrollView, Picker, ActivityIndicator, Animated, Easing, Platform} from 'react-native';
 import {ActionButton, Toolbar, BottomNavigation} from 'react-native-material-ui';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
@@ -26,8 +26,7 @@ class ToDo extends Component {
     };
 
     componentDidMount() {
-        this.props.onInitTasks();
-        this.props.onInitFinished();
+        this.props.onInitToDo();
         this.props.onInitCategories();
         this.props.onInitSettings();
         //if (!this.props.isAuth) this.props.navigation.navigate('Auth');
@@ -265,14 +264,12 @@ const mapStateToProps = state => {
         sorting: state.settings.sorting,
         sortingType: state.settings.sortingType,
         refresh: state.tasks.refresh,
-        categories: state.categories.categories,
-        isAuth: state.auth.isAuth
+        categories: state.categories.categories
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onInitTasks: () => dispatch(actions.initTasks()),
-        onInitFinished: () => dispatch(actions.initFinished()),
+        onInitToDo: () => dispatch(actions.initToDo()),
         onInitCategories: () => dispatch(actions.initCategories()),
         onInitSettings: () => dispatch(actions.initSettings()),
         onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),

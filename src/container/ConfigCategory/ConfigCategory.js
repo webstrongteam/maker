@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import {View} from 'react-native';
 import Dialog from "react-native-dialog";
 import Input from '../../components/UI/Input/Input';
 
@@ -98,8 +97,7 @@ class ConfigCategory extends Component {
 
 const mapStateToProps = state => {
     return {
-        category: state.categories.category,
-        isAuth: state.auth.isAuth
+        category: state.categories.category
     }
 };
 const mapDispatchToProps = dispatch => {

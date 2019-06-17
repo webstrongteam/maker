@@ -27,7 +27,10 @@ class TaskList extends Component {
                 },
                 no: {
                     label: 'No',
-                    onPress: () => this.props.onFinishTask(this.state.selectedTask, true)
+                    onPress: () => {
+                        this.setState({showDialog: false, selectedTask: false});
+                        this.props.onFinishTask(this.state.selectedTask, true);
+                    }
                 },
                 cancel: {
                     label: 'Cancel',
