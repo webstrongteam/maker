@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Picker, ActivityIndicator, Animated, Easing, Platform} from 'react-native';
+import {StyleSheet, View, ScrollView, Picker, ActivityIndicator} from 'react-native';
 import {ActionButton, Toolbar, BottomNavigation} from 'react-native-material-ui';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
@@ -21,8 +21,7 @@ class ToDo extends Component {
         scroll: 0,
         offset: 0,
         scrollDirection: 0,
-        bottomHidden: false,
-        buttonMoveAnimated: new Animated.Value(0)
+        bottomHidden: false
     };
 
     componentDidMount() {
@@ -58,22 +57,7 @@ class ToDo extends Component {
             this.setState({
                 bottomHidden: currentDirection === DOWN,
             });
-
-            if (currentDirection === DOWN) {
-                this.moveElement(this.state.buttonMoveAnimated, 80, 195);
-            } else {
-                this.moveElement(this.state.buttonMoveAnimated, 0.01, 225);
-            }
         }
-    };
-
-    moveElement = (el, value, time) => {
-        Animated.timing(el, {
-            toValue: value,
-            duration: time,
-            easing: Easing.bezier(0.0, 0.0, 0.2, 1),
-            useNativeDriver: Platform.OS === 'android',
-        }).start();
     };
 
     toggleModalHandler = () => {
@@ -195,9 +179,8 @@ class ToDo extends Component {
                             :
                             finished.length ?
                             <ActionButton
-                                style={{
-                                    container: {backgroundColor: '#b6c1ce'}
-                                }}
+                                hidden={bottomHidden}
+                                style={{container: {backgroundColor: '#b6c1ce'}}}
                                 onPress={() => this.deleteAllTask()}
                                 icon="delete-sweep"
                             /> : null

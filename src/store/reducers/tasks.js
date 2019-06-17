@@ -8,7 +8,7 @@ const initState = {
         description: '',
         date: '',
         repeat: 'noRepeat',
-        category: 'Default',
+        category: '',
         priority: 'none',
     },
     tasks: [],
@@ -106,7 +106,7 @@ const defaultTask = (state) => {
             description: '',
             date: '',
             repeat: 'noRepeat',
-            category: 'Default',
+            category: '',
             priority: 'none'
         }
     });

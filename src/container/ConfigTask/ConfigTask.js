@@ -72,6 +72,8 @@ class ConfigTask extends Component {
         if (task) {
             this.props.onSetTask(task.id);
             this.setState({editTask: true});
+        } else {
+            this.props.onChangeCategory(this.props.categories[0].name);
         }
     }
 
@@ -411,8 +413,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         task: state.tasks.task,
-        categories: state.categories.categories,
-        isAuth: state.auth.isAuth
+        categories: state.categories.categories
     }
 };
 const mapDispatchToProps = dispatch => {
