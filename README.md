@@ -27,6 +27,7 @@ This app working with Android and iOS.
 - React Native MaterialUI <i>1.30.1</i>  
 - React Native Datepicker <i>1.7.2</i>  
 - React Native Dialog <i>5.6.0</i>  
+- React Native Modal Dropdown <i>0.6.2</i>  
 - React Native Material TextField <i>0.12.0</i>  
 - Moment.JS <i>2.24.0</i>
 - Expo <i>32.0.0</i>
@@ -34,11 +35,11 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-- Upgrade UX :heavy_minus_sign:
-- Create relations in DB :x:
+- Create relations in DB :heavy_minus_sign:
 - Add notifications system :x:
 - Google account auth system :x:
 - Google drive synch :x:
+- Theme tab :x:
 - Account tab :x:
 - About tab :x:
 - Setting tab :x:

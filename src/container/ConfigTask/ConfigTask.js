@@ -70,6 +70,12 @@ class ConfigTask extends Component {
     componentDidMount() {
         const task = this.props.navigation.getParam('task', false);
         if (task) this.props.onSetTask(task.id, this.initTask);
+	else {
+        const checkExistCategory = this.props.categories.filter(cate => cate.name === this.props.task.category);
+            if (!checkExistCategory.length) {
+                this.props.onChangeCategory(this.props.categories[0].name);
+	    }
+	}
     }
 
     initTask = () => {

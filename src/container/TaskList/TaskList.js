@@ -192,17 +192,11 @@ class TaskList extends Component {
                                     secondaryText: task.date ?
                                         task.date : task.description ?
                                             task.description : ' ',
-                                    tertiaryText: task.category
+                                    tertiaryText: task.category ? task.category : ' '
                                 }}
                             />
                             </View>
                         </AnimatedView>
-                        <Dialog
-                            showModal={showDialog}
-                            title={dialog.title}
-                            description={dialog.description}
-                            buttons={dialog.buttons}
-                        />
                     </View>
                 )
             })
@@ -210,6 +204,12 @@ class TaskList extends Component {
 
         return (
             <View>
+                <Dialog
+                    showModal={showDialog}
+                    title={dialog.title}
+                    description={dialog.description}
+                    buttons={dialog.buttons}
+                />
                 {tasks && tasks.length ?
                     <View style={{ paddingBottom: 20 }}>{taskList}</View>
                     : <Text style={styles.empty}>Task list is empty</Text>
