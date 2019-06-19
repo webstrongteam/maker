@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Animated, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import { ListItem, Subheader, IconToggle } from 'react-native-material-ui';
-import {sortingByDiv, sortingByType} from '../../shared/utility';
+import {sortingByType} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
 import Button from "react-native-material-ui/src/Button";
@@ -41,8 +41,7 @@ class TaskList extends Component {
         },
         showDialog: false,
         selectedTask: false,
-        initDivision: false,
-        animValue: 1,
+        initDivision: false
     };
 
     componentDidMount() {
@@ -59,6 +58,7 @@ class TaskList extends Component {
         const {tasks, sorting, sortingType} = this.props;
         const division = {
             Overdue: [],
+            Today: [],
             Tomorrow: [],
             'This week': [],
             'Next week': [],
@@ -76,11 +76,11 @@ class TaskList extends Component {
                 division[div].push(task);
             } else {
                 div = this.getDateDivision(task.date);
-                if (!division[div]) division[div] = [];
                 division[div].push(task);
             }
             sortingByType(division[div], sorting, sortingType);
         });
+
         this.setState({division, initDivision: true});
     };
 
@@ -122,13 +122,11 @@ class TaskList extends Component {
     };
 
     render() {
-        const {division, priorityColors, initDivision, dialog, showDialog, animValue} = this.state;
+        const {division, priorityColors, initDivision, dialog, showDialog} = this.state;
         const {tasks, navigation} = this.props;
 
         const taskList = initDivision &&
-            Object.keys(division).sort((a, b) => (
-                '' + sortingByDiv(a)).localeCompare(sortingByDiv(b))
-            ).map(div => (
+            Object.keys(division).map(div => (
             division[div].map((task, index) => {
                 // Searching system
                 const searchText = this.props.searchText.toLowerCase();
@@ -142,7 +140,7 @@ class TaskList extends Component {
 
                 return (
                     <View key={div + index}>
-                        <AnimatedView value={animValue} duration={500}>
+                        <AnimatedView value={1} duration={500}>
                             {!index &&
                             <Subheader
                                 text={div}
@@ -221,7 +219,7 @@ class TaskList extends Component {
                 />
                 {tasks && tasks.length ?
                     <View style={{ paddingBottom: 20 }}>{taskList}</View>
-                    : <Text style={styles.empty}>Task list is empty</Text>
+                    : <Text style={styles.empty}>Task list is empty!</Text>
                 }
             </View>
         )

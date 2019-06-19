@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const updateObject = (oldObject, newProps) => {
     return {
         ...oldObject,
@@ -6,8 +8,21 @@ export const updateObject = (oldObject, newProps) => {
 };
 
 export const sortingData = (array, field, type) => {
-    if (type === 'ASC') array.sort((a, b) => ('' + a[field]).localeCompare(b[field]));
-    if (type === 'DESC') array.sort((a, b) => ('' + b[field]).localeCompare(a[field]));
+    if (field === 'date') { // SORTING DATE
+        array.sort((a, b) => {
+            let dateA = a[field];
+            let dateB = b[field];
+            const dateAFormat = dateA.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
+            const dateBFormat = dateB.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
+            if (a[field] !== '') dateA = moment(a[field], dateAFormat);
+            if (b[field] !== '') dateB = moment(b[field], dateBFormat);
+            if (type === 'ASC') return dateA < dateB;
+            if (type === 'DESC') return dateA > dateB;
+        });
+    } else {
+        if (type === 'ASC') array.sort((a, b) => ('' + a[field]).localeCompare(b[field]));
+        if (type === 'DESC') array.sort((a, b) => ('' + b[field]).localeCompare(a[field]));
+    }
 };
 
 export const sortingByType = (array, sorting, sortingType) => {
@@ -20,19 +35,7 @@ export const sortingByType = (array, sorting, sortingType) => {
     }
 };
 
-export const sortingByDiv = (div) => {
-    switch (div) {
-        case "Overdue": return 0;
-        case "Today": return 1;
-        case "Tomorrow": return 2;
-        case "This week": return 3;
-        case "Next week": return 4;
-        case "This month": return 5;
-        case "Later": return 6;
-        default: return 7;
-    }
-};
-
+/*
 export const validationSystem = (rules, value) => {
     let isValid = true;
 
@@ -70,4 +73,4 @@ export const validationSystem = (rules, value) => {
     }
 
     return isValid;
-};
+};*/
