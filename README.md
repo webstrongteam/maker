@@ -35,14 +35,16 @@ This app working with Android and iOS.
 
 ### ToDo list
 
+- Fix date divided :heavy_minus_sign:
 - Create relations in DB :heavy_minus_sign:
+- Add customized repeat task :x:
+- Theme tab :x:
+- Setting tab :x:
 - Add notifications system :x:
 - Google account auth system :x:
-- Google drive synch :x:
-- Theme tab :x:
 - Account tab :x:
+- Google drive synch :x:
 - About tab :x:
-- Setting tab :x:
 - Create and add app logo :x:
 - Optimization code and fix errors :x:
 - Create unit tests :x:

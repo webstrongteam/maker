@@ -158,7 +158,7 @@ export const saveTask = (task) => {
 
 export const finishTask = (task, endTask) => {
     let nextDate = task.date;
-    let dateFormat = task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
+    const dateFormat = task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
 
     if (task.repeat === 'onceDay') nextDate = moment(nextDate, dateFormat).add(1, 'days');
     else if (task.repeat === 'onceDayMonFri') {

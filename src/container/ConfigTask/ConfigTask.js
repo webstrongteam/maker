@@ -17,7 +17,7 @@ class ConfigTask extends Component {
             name: {
                 elementConfig: {
                     label: 'Enter task name',
-                    characterRestriction: 30,
+                    characterRestriction: 40,
                 }
             },
             description: {

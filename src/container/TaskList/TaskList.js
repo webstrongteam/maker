@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Animated, StyleSheet, Text, View} from 'react-native';
 import { ListItem, Subheader, IconToggle } from 'react-native-material-ui';
 import {sortingByDiv, sortingByType} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
@@ -42,6 +42,7 @@ class TaskList extends Component {
         showDialog: false,
         selectedTask: false,
         initDivision: false,
+        animValue: 1,
     };
 
     componentDidMount() {
@@ -55,27 +56,35 @@ class TaskList extends Component {
     }
 
     divisionTask = () => {
-        let division = {};
         const {tasks, sorting, sortingType} = this.props;
+        const division = {
+            Overdue: [],
+            Tomorrow: [],
+            'This week': [],
+            'Next week': [],
+            'This month': [],
+            'Next month': [],
+            Later: [],
+            Other: [],
+            Finished: []
+        };
 
         tasks && tasks.map(task => {
             let div;
             if (task.finish) {
                 div = "Finished";
-                if (!division[div]) division[div] = [];
                 division[div].push(task);
             } else {
-                div = this.dateDivision(task.date);
+                div = this.getDateDivision(task.date);
                 if (!division[div]) division[div] = [];
                 division[div].push(task);
             }
             sortingByType(division[div], sorting, sortingType);
         });
-
         this.setState({division, initDivision: true});
     };
 
-    dateDivision = (date) => {
+    getDateDivision = (date) => {
         let text;
         let now;
         if (!date) {
@@ -113,7 +122,7 @@ class TaskList extends Component {
     };
 
     render() {
-        const {division, priorityColors, initDivision, dialog, showDialog} = this.state;
+        const {division, priorityColors, initDivision, dialog, showDialog, animValue} = this.state;
         const {tasks, navigation} = this.props;
 
         const taskList = initDivision &&
@@ -133,7 +142,7 @@ class TaskList extends Component {
 
                 return (
                     <View key={div + index}>
-                        <AnimatedView value={1} duration={500}>
+                        <AnimatedView value={animValue} duration={500}>
                             {!index &&
                             <Subheader
                                 text={div}

@@ -94,11 +94,11 @@ class ToDo extends Component {
         this.setState({ showModal: !showModal });
     };
 
-    deleteAllTask = async () => {
+    deleteAllTask = () => {
         const {finished} = this.props;
-        await finished.forEach(task => {
+        finished.map(task => {
             this.props.onRemoveTask(task);
-        })
+        });
     };
 
     setSortingType = (key) => {
@@ -240,7 +240,7 @@ class ToDo extends Component {
                         </ScrollView>
                     </View>
                     <View>
-                        {selectedCategory !== 'finished' ?
+                        {selectedCategory !== 'Finished' ?
                             <ActionButton
                                 hidden={bottomHidden}
                                 onPress={() => navigation.navigate('ConfigTask')}
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         width: 230,
         height: 'auto',
-        maxHeight: '80%',
+        maxHeight: 425,
         borderWidth: 2,
         borderRadius: 3,
     },
