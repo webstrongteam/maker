@@ -35,10 +35,9 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-- Add customized repeated task :heavy_minus_sign:
+- Add notifications system :heavy_minus_sign:
 - Theme tab :x:
 - Setting tab :x:
-- Add notifications system :x:
 - Google account auth system :x:
 - Account tab :x:
 - Google drive synch :x:

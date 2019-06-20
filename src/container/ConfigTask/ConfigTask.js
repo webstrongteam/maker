@@ -6,6 +6,8 @@ import Template from '../Template/Template';
 import Input from '../../components/UI/Input/Input';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Dialog from '../../components/UI/Dialog/Dialog';
+import OtherRepeat from './OtherRepeat/OtherRepeat';
+import { convertNumberToDate } from '../../shared/utility';
 import moment from 'moment';
 
 import { connect } from 'react-redux';
@@ -74,6 +76,10 @@ class ConfigTask extends Component {
             description: '',
             buttons: {}
         },
+        otherOption: 'Other...',
+        selectedTime: 0,
+        repeatValue: '1',
+        showOtherRepeat: false,
         showDialog: false,
         editTask: false,
         showModal: false
@@ -100,11 +106,20 @@ class ConfigTask extends Component {
 
     initTask = (task) => {
         const { categories } = this.props;
+        let selectedTime = 0;
+        let repeatValue = '1';
+        let otherOption = 'Other...';
+
+        if (+task.repeat === parseInt(task.repeat, 10)) {
+            selectedTime = task.repeat[0];
+            repeatValue = task.repeat.substring(1);
+            otherOption = `Other (${+repeatValue} ${convertNumberToDate(+selectedTime)})`;
+        }
 
         const checkExistCategory = categories.filter(cate => cate.name === task.category);
         if (!checkExistCategory.length) task.category = categories[0].name;
 
-        this.setState({editTask: true, task});
+        this.setState({editTask: true, task, otherOption, repeatValue, selectedTime});
     };
 
     updateTask = (name, value) => {
@@ -178,6 +193,22 @@ class ConfigTask extends Component {
         this.setState({ showModal: !showModal });
     };
 
+    updateRepeat = (repeat) => {
+        if (repeat === this.state.otherOption) {
+            this.setState({ showOtherRepeat: true });
+        } else {
+            this.updateTask('repeat', repeat);
+        }
+    };
+
+    saveOtherRepeat = () => {
+        const { selectedTime, repeatValue } = this.state;
+        const repeat = selectedTime + repeatValue;
+        const otherOption = `Other (${repeatValue} ${convertNumberToDate(+selectedTime)})`;
+        this.updateTask('repeat', repeat);
+        this.setState({ otherOption, showOtherRepeat: false });
+    };
+
     valid = (value = this.state.task.name) => {
         const newControls = this.state.controls;
         if (value.trim() === '') {
@@ -189,7 +220,7 @@ class ConfigTask extends Component {
     };
 
     render() {
-        const { task, controls, editTask, showModal, repeat, dialog, showDialog } = this.state;
+        const { task, controls, editTask, showModal, repeat, dialog, showDialog, otherOption, selectedTime, showOtherRepeat, repeatValue } = this.state;
         const { navigation, categories } = this.props;
         const edit = this.props.navigation.getParam('task', false);
         let loading = true;
@@ -248,6 +279,15 @@ class ConfigTask extends Component {
                             "New task" :
                         <ActivityIndicator size="small" color="#f4a442"/>
                     }
+                />
+                <OtherRepeat
+                    showModal={showOtherRepeat}
+                    repeat={repeatValue}
+                    selectedTime={selectedTime}
+                    onSetRepeat={value => this.setState({ repeatValue: value })}
+                    onSelectTime={value => this.setState({ selectedTime: value })}
+                    save={this.saveOtherRepeat}
+                    cancel={() => this.setState({ showOtherRepeat: false })}
                 />
                 <Dialog
                     showModal={showDialog}
@@ -340,11 +380,16 @@ class ConfigTask extends Component {
                                     />
                                     <View style={styles.picker}>
                                         <Picker
-                                            selectedValue={repeat[task.repeat].value}
-                                            onValueChange={value => this.updateTask('repeat', value)}>
+                                            selectedValue={
+                                                repeat[task.repeat] ?
+                                                    repeat[task.repeat].value :
+                                                    otherOption
+                                            }
+                                            onValueChange={value => this.updateRepeat(value)}>
                                             {Object.keys(repeat).map(name => (
                                                 <Picker.Item key={name} label={repeat[name].name} value={repeat[name].value} />
                                             ))}
+                                            <Picker.Item label={otherOption} value={otherOption} />
                                         </Picker>
                                     </View>
                                 </React.Fragment>

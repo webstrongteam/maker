@@ -54,6 +54,16 @@ export const sortingByType = (array, sorting, sortingType) => {
     }
 };
 
+export const convertNumberToDate = (number) => {
+    switch (number) {
+        case 0: return "days";
+        case 1: return "week";
+        case 2: return "month";
+        case 3: return "year";
+        default: return "days"
+    }
+};
+
 /*
 export const validationSystem = (rules, value) => {
     let isValid = true;

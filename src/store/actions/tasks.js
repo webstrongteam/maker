@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import { convertNumberToDate } from '../../shared/utility';
 import moment from 'moment';
 import { SQLite } from 'expo';
 
@@ -92,7 +93,10 @@ export const finishTask = (task, endTask) => {
     let nextDate = task.date;
     const dateFormat = task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
 
-    if (task.repeat === 'onceDay') nextDate = moment(nextDate, dateFormat).add(1, 'days');
+    if (+task.repeat === parseInt(task.repeat, 10)) { // Other repeat
+        nextDate = moment(nextDate, dateFormat).add(+task.repeat.substring(1), convertNumberToDate(+task.repeat[0]));
+    }
+    else if (task.repeat === 'onceDay') nextDate = moment(nextDate, dateFormat).add(1, 'days');
     else if (task.repeat === 'onceDayMonFri') {
         if (moment(task.date, dateFormat).day() === 5) { // Friday
             nextDate = moment(nextDate, dateFormat).add(3, 'days');
