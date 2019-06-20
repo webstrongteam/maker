@@ -2,27 +2,16 @@ export {
     initToDo,
     initTasks,
     initFinished,
-    changeDescription,
-    changeName,
-    changeDate,
-    changeCategory,
-    changePriority,
-    changeRepeat,
-    setTask,
     saveTask,
     finishTask,
     undoTask,
-    removeTask,
-    defaultTask
+    removeTask
 } from './tasks';
 
 export {
     initCategories,
-    changeCategoryName,
-    setCategory,
     saveCategory,
-    removeCategory,
-    defaultCategory
+    removeCategory
 } from './categories';
 
 export {

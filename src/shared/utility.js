@@ -19,7 +19,26 @@ export const sortingData = (array, field, type) => {
             if (type === 'ASC') return dateA < dateB;
             if (type === 'DESC') return dateA > dateB;
         });
-    } else {
+    }
+    else if (field === 'priority') { // SORTING PRIORITY
+        array.sort((a, b) => {
+            const convertPriority = (priority) => {
+                switch (priority) {
+                    case "low": return 1;
+                    case "medium": return 2;
+                    case "high": return 3;
+                    default: return 0;
+                }
+            };
+
+            let A = convertPriority(a[field]);
+            let B = convertPriority(b[field]);
+
+            if (type === 'ASC') return A < B;
+            if (type === 'DESC') return A > B;
+        });
+    }
+    else { // DEFAULT SORTING
         if (type === 'ASC') array.sort((a, b) => ('' + a[field]).localeCompare(b[field]));
         if (type === 'DESC') array.sort((a, b) => ('' + b[field]).localeCompare(a[field]));
     }

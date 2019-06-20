@@ -5,8 +5,15 @@ import Input from '../../components/UI/Input/Input';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
+import {SQLite} from "expo";
+const db = SQLite.openDatabase('maker.db');
+
 class ConfigCategory extends Component {
     state = {
+        category: {
+            id: false,
+            name: ''
+        },
         controls: {
             name: {
                 elementConfig: {
@@ -20,27 +27,36 @@ class ConfigCategory extends Component {
 
     componentDidMount() {
         const {editCategory} = this.props;
-        if (editCategory) {
-            this.props.onSetCategory(editCategory.id);
-        } else {
-            this.setState({editCategory: false});
-        }
+        this.initCategory(editCategory);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.refresh !== this.props.refresh) {
-            this.setState({editCategory: true});
-        }
-        else if (prevProps.editCategory !== this.props.editCategory) {
-            if (this.props.editCategory) {
-                this.props.onSetCategory(this.props.editCategory.id);
-            } else {
-                this.setState({editCategory: false});
-            }
+        if (prevProps.editCategory !== this.props.editCategory) {
+            this.initCategory(this.props.editCategory);
         }
     }
 
-    valid = (value = this.props.category.name) => {
+    initCategory = (editCategory) => {
+        if (editCategory) {
+            db.transaction(
+                tx => {
+                    tx.executeSql('select * from categories where id = ?', [editCategory.id], (_, {rows}) => {
+                        this.setState({category: rows._array[0], editCategory: true});
+                    });
+                }, (err) => console.warn(err), null
+            );
+        } else {
+            this.setState({editCategory: false});
+        }
+    };
+
+    updateCategory = (name, value) => {
+        const category = this.state.category;
+        category[name] = value;
+        this.setState({ category });
+    };
+
+    valid = (value = this.state.category.name) => {
         const newControls = this.state.controls;
         if (value.trim() === '') {
             newControls.name.elementConfig.error = `Category name is required!`;
@@ -51,8 +67,8 @@ class ConfigCategory extends Component {
     };
 
     render() {
-        const { editCategory, controls } = this.state;
-        const { category, showModal } = this.props;
+        const { editCategory, controls, category } = this.state;
+        const { showModal } = this.props;
 
         return (
             <Dialog.Container visible={showModal}>
@@ -64,7 +80,7 @@ class ConfigCategory extends Component {
                     changed={(value) => {
                         if (value.length <= controls.name.elementConfig.characterRestriction) {
                             this.valid(value);
-                            this.props.onChangeCategoryName(value);
+                            this.updateCategory('name', value);
                         } else {
                             this.valid(value);
                         }
@@ -75,8 +91,6 @@ class ConfigCategory extends Component {
                     onPress={() => {
                         if (category.name.trim() !== '') {
                             this.props.onSaveCategory(category);
-                            this.props.onChangeCategory(category.name);
-                            this.props.onDefaultCategory();
                             this.props.toggleModal();
                         } else {
                             this.valid();
@@ -86,7 +100,6 @@ class ConfigCategory extends Component {
                 <Dialog.Button
                     label="Cancel"
                     onPress={() => {
-                        this.props.onDefaultCategory();
                         this.props.toggleModal();
                     }}
                 />
@@ -102,11 +115,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onChangeCategory: (category) => dispatch(actions.changeCategory(category)),
-        onChangeCategoryName: (name) => dispatch(actions.changeCategoryName(name)),
-        onSetCategory: (id) => dispatch(actions.setCategory(id)),
         onSaveCategory: (category) => dispatch(actions.saveCategory(category)),
-        onDefaultCategory: () => dispatch(actions.defaultCategory())
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigCategory);

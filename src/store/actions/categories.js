@@ -10,44 +10,12 @@ export const onInitCategories = (categories) => {
     }
 };
 
-export const changeCategoryName = (name) => {
-    return {
-        type: actionTypes.CHANGE_CATEGORY_NAME,
-        name
-    }
-};
-
-export const onSetCategory = (category) => {
-    return {
-        type: actionTypes.SET_CATEGORY,
-        category
-    }
-};
-
-export const defaultCategory = () => {
-    return {
-        type: actionTypes.DEFAULT_CATEGORY
-    }
-};
-
 export const initCategories = () => {
     return dispatch => {
         db.transaction(
             tx => {
                 tx.executeSql('select * from categories', [], (_, {rows}) => {
                     dispatch(onInitCategories(rows._array));
-                });
-            }, (err) => console.warn(err), null
-        );
-    };
-};
-
-export const setCategory = (id) => {
-    return dispatch => {
-        db.transaction(
-            tx => {
-                tx.executeSql('select * from categories where id = ?', [id], (_, {rows}) => {
-                    dispatch(onSetCategory(rows._array[0]));
                 });
             }, (err) => console.warn(err), null
         );

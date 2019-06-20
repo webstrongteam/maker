@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {View, Picker, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
-import DatePicker from 'react-native-datepicker'
+import DatePicker from 'react-native-datepicker';
 import {Toolbar, Subheader, IconToggle, Button} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import Input from '../../components/UI/Input/Input';
@@ -11,8 +11,20 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
+import { SQLite } from 'expo';
+const db = SQLite.openDatabase('maker.db');
+
 class ConfigTask extends Component {
     state = {
+        task: {
+            id: false,
+            name: '',
+            description: '',
+            date: '',
+            repeat: 'noRepeat',
+            category: '',
+            priority: 'none',
+        },
         controls: {
             name: {
                 elementConfig: {
@@ -69,24 +81,36 @@ class ConfigTask extends Component {
 
     componentDidMount() {
         const task = this.props.navigation.getParam('task', false);
-        if (task) this.props.onSetTask(task.id, this.initTask);
-	else {
-        const checkExistCategory = this.props.categories.filter(cate => cate.name === this.props.task.category);
-            if (!checkExistCategory.length) {
-                this.props.onChangeCategory(this.props.categories[0].name);
-	    }
-	}
+        if (task) {
+            db.transaction(
+                tx => {
+                    tx.executeSql('select * from tasks where id = ?', [task.id], (_, {rows}) => {
+                        this.initTask(rows._array[0]);
+                    });
+                }, (err) => console.warn(err), null
+            );
+        }
+        else {
+            const checkExistCategory = this.props.categories.filter(cate => cate.name === this.state.task.category);
+                if (!checkExistCategory.length) {
+                    this.updateTask('category', this.props.categories[0].name);
+            }
+        }
     }
 
-    initTask = () => {
-        const { categories, task } = this.props;
+    initTask = (task) => {
+        const { categories } = this.props;
 
         const checkExistCategory = categories.filter(cate => cate.name === task.category);
-        if (!checkExistCategory.length) {
-            this.props.onChangeCategory(categories[0].name);
-        }
+        if (!checkExistCategory.length) task.category = categories[0].name;
 
-        this.setState({editTask: true});
+        this.setState({editTask: true, task});
+    };
+
+    updateTask = (name, value) => {
+        const task = this.state.task;
+        task[name] = value;
+        this.setState({ task });
     };
 
     showDialog = (action) => {
@@ -102,15 +126,13 @@ class ConfigTask extends Component {
                             onPress: () => {
                                 this.setState({ showDialog: false });
                                 this.props.navigation.goBack();
-                                this.props.onDefaultTask();
                             }
                         },
                         save: {
                             label: 'Save',
                             onPress: () => {
                                 this.setState({ showDialog: false });
-                                this.props.onSaveTask(this.props.task);
-                                this.props.onDefaultTask();
+                                this.props.onSaveTask(this.state.task);
                                 this.props.navigation.goBack();
                             }
                         },
@@ -135,8 +157,7 @@ class ConfigTask extends Component {
                             label: 'Yes',
                             onPress: () => {
                                 this.setState({ showDialog: false });
-                                this.props.onRemoveTask(this.props.task);
-                                this.props.onDefaultTask();
+                                this.props.onRemoveTask(this.state.task);
                                 this.props.navigation.goBack();
                             }
                         },
@@ -157,11 +178,7 @@ class ConfigTask extends Component {
         this.setState({ showModal: !showModal });
     };
 
-    addRef = (e, name) => {
-        this[name] = e;
-    };
-
-    valid = (value = this.props.task.name) => {
+    valid = (value = this.state.task.name) => {
         const newControls = this.state.controls;
         if (value.trim() === '') {
             newControls.name.elementConfig.error = `Task name is required!`;
@@ -172,8 +189,8 @@ class ConfigTask extends Component {
     };
 
     render() {
-        const { controls, editTask, showModal, repeat, dialog, showDialog } = this.state;
-        const { navigation, task, categories } = this.props;
+        const { task, controls, editTask, showModal, repeat, dialog, showDialog } = this.state;
+        const { navigation, categories } = this.props;
         const edit = this.props.navigation.getParam('task', false);
         let loading = true;
         let date;
@@ -204,7 +221,6 @@ class ConfigTask extends Component {
                                 onPress={() => {
                                     if (task.name.trim() !== '') {
                                         this.props.onSaveTask(task);
-                                        this.props.onDefaultTask();
                                         navigation.goBack();
                                     } else {
                                         this.valid();
@@ -224,10 +240,14 @@ class ConfigTask extends Component {
                             this.showDialog('exit');
                         } else {
                             navigation.goBack();
-                            this.props.onDefaultTask();
                         }
                     }}
-                    centerElement={editTask ? "Edit task" : "New task"}
+                    centerElement={!loading ?
+                        editTask ?
+                            "Edit task" :
+                            "New task" :
+                        <ActivityIndicator size="small" color="#f4a442"/>
+                    }
                 />
                 <Dialog
                     showModal={showDialog}
@@ -250,7 +270,7 @@ class ConfigTask extends Component {
                                 changed={(value) => {
                                     if (value.length <= controls.name.elementConfig.characterRestriction) {
                                         this.valid(value);
-                                        this.props.onChangeName(value);
+                                        this.updateTask('name', value);
                                     } else {
                                         this.valid(value);
                                     }
@@ -258,7 +278,7 @@ class ConfigTask extends Component {
                             <Input
                                 elementConfig={controls.description.elementConfig}
                                 value={task.description}
-                                changed={this.props.onChangeDescription}/>
+                                changed={value => this.updateTask('description', value)}/>
                             <View style={styles.container}>
                                 <Subheader text="Due date"
                                     style={{
@@ -267,13 +287,13 @@ class ConfigTask extends Component {
                                     }}
                                 />
                                 <DatePicker
-                                    ref={(e) => this.addRef(e, 'datepickerDate')}
+                                    ref={(e) => this.datepickerDate = e}
                                     style={{width: '100%'}}
                                     date={task.date.slice(0, 10)}
                                     mode="date"
                                     iconComponent={
                                         task.date ?
-                                        <IconToggle onPress={() => this.props.onChangeDate('')} name='clear' /> :
+                                        <IconToggle onPress={() => this.updateTask('date', '')} name='clear' /> :
                                         <IconToggle onPress={() => this.datepickerDate.onPressDate()} name='event' />
                                     }
                                     placeholder="Select due date"
@@ -286,18 +306,18 @@ class ConfigTask extends Component {
                                             color: +date < +now ? '#ce3241' : '#333'
                                         }
                                     }}
-                                    onDateChange={(date) => this.props.onChangeDate(date)}
+                                    onDateChange={(date) => this.updateTask('date', date)}
                                 />
                                 {task.date !== '' &&
                                 <React.Fragment>
                                     <DatePicker
-                                        ref={(e) => this.addRef(e, 'datepickerTime')}
+                                        ref={(e) => this.datepickerTime = e}
                                         style={{width: '100%'}}
                                         date={task.date.slice(13, 18)}
                                         mode="time"
                                         iconComponent={
                                             task.date.slice(13, 18) ?
-                                                <IconToggle onPress={() => this.props.onChangeDate(task.date.slice(0, 10))} name='clear' /> :
+                                                <IconToggle onPress={() => this.updateTask('date', task.date.slice(0, 10))} name='clear' /> :
                                                 <IconToggle onPress={() => this.datepickerTime.onPressDate()} name='access-time' />
                                         }
                                         placeholder="Select due time"
@@ -310,7 +330,7 @@ class ConfigTask extends Component {
                                                 color: +date < +now ? '#ce3241' : '#333'
                                             }
                                         }}
-                                        onDateChange={(date) => this.props.onChangeDate(`${task.date.slice(0, 10)} - ${date}`)}
+                                        onDateChange={(date) => this.updateTask('date', `${task.date.slice(0, 10)} - ${date}`)}
                                     />
                                     <Subheader text="Repeat"
                                         style={{
@@ -321,8 +341,7 @@ class ConfigTask extends Component {
                                     <View style={styles.picker}>
                                         <Picker
                                             selectedValue={repeat[task.repeat].value}
-                                            onValueChange={(itemValue, itemIndex) =>
-                                            this.props.onChangeRepeat(itemValue)}>
+                                            onValueChange={value => this.updateTask('repeat', value)}>
                                             {Object.keys(repeat).map(name => (
                                                 <Picker.Item key={name} label={repeat[name].name} value={repeat[name].value} />
                                             ))}
@@ -340,9 +359,7 @@ class ConfigTask extends Component {
                                     <View style={styles.category}>
                                         <Picker
                                             selectedValue={task.category}
-                                            onValueChange={(itemValue, itemIndex) =>
-                                                this.props.onChangeCategory(itemValue)
-                                            }>
+                                            onValueChange={value => this.updateTask('category', value)}>
                                             {categories.map(cate => (
                                                 <Picker.Item key={cate.id} label={cate.name} value={cate.name}/>
                                             ))}
@@ -359,9 +376,7 @@ class ConfigTask extends Component {
                                 <View style={styles.picker}>
                                     <Picker
                                         selectedValue={task.priority}
-                                        onValueChange={(itemValue, itemIndex) =>
-                                            this.props.onChangePriority(itemValue)
-                                        }>
+                                        onValueChange={value => this.updateTask('priority', value)}>
                                         <Picker.Item label="None" value="none"/>
                                         <Picker.Item label="Low" value="low"/>
                                         <Picker.Item label="Medium" value="medium"/>
@@ -424,22 +439,13 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        task: state.tasks.task,
         categories: state.categories.categories
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onChangeName: (name) => dispatch(actions.changeName(name)),
-        onChangeDescription: (description) => dispatch(actions.changeDescription(description)),
-        onChangeDate: (date) => dispatch(actions.changeDate(date)),
-        onChangeCategory: (category) => dispatch(actions.changeCategory(category)),
-        onChangePriority: (priority) => dispatch(actions.changePriority(priority)),
-        onChangeRepeat: (value) => dispatch(actions.changeRepeat(value)),
-        onSetTask: (id, callback) => dispatch(actions.setTask(id, callback)),
         onSaveTask: (task) => dispatch(actions.saveTask(task)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task, false)),
-        onDefaultTask: () => dispatch(actions.defaultTask())
     }
 };
 

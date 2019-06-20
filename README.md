@@ -35,8 +35,7 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-- Create relations in DB :heavy_minus_sign:
-- Add customized repeated task :x:
+- Add customized repeated task :heavy_minus_sign:
 - Theme tab :x:
 - Setting tab :x:
 - Add notifications system :x:
@@ -44,7 +43,7 @@ This app working with Android and iOS.
 - Account tab :x:
 - Google drive synch :x:
 - About tab :x:
-- Update and add new animations :x:
+- Change datepicker theme :x:
 - Create and add app logo :x:
 - Optimization code and fix errors :x:
 - Create unit tests :x:

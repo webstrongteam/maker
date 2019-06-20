@@ -13,10 +13,10 @@ import * as actions from "../../store/actions";
 class TaskList extends Component {
     state = {
         priorityColors: {
-            none: 'white',
-            low: '#26b596',
-            medium: '#cec825',
-            high: '#ce3241'
+            none: { bgColor: 'white', color: 'black' },
+            low: { bgColor: '#26b596', color: 'white' },
+            medium: { bgColor: '#cec825', color: 'white' },
+            high: { bgColor: '#ce3241', color: 'white' }
         },
         dialog: {
             title: 'Repeat task?',
@@ -164,10 +164,11 @@ class TaskList extends Component {
                                         shadowOpacity: 0.3,
                                         shadowRadius: 5,
                                         elevation: 3,
-                                        backgroundColor: !task.finish ? priorityColors[task.priority] : 'white'
+                                        backgroundColor: !task.finish ? priorityColors[task.priority].bgColor : 'white'
                                     },
-                                    primaryText: {fontSize: 18},
-                                    secondaryText: div === 'Overdue' ? {color: !task.finish ? '#ce3241' : 'black'} : {color: 'black'}
+                                    primaryText: {fontSize: 18, color: priorityColors[task.priority].color},
+                                    secondaryText: div === 'Overdue' ? {color: !task.finish ? '#ce3241' : 'black'} : {color: priorityColors[task.priority].color},
+                                    tertiaryText: {color: priorityColors[task.priority].color}
                                 }}
                                 rightElement={
                                     <View style={styles.rightElements}>

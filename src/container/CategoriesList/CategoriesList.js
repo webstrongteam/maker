@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
-import {Toolbar, IconToggle, ListItem} from 'react-native-material-ui';
+import {StyleSheet, View, ScrollView, TouchableOpacity} from 'react-native';
+import {Toolbar, IconToggle, Icon, ListItem} from 'react-native-material-ui';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Template from '../Template/Template';
 
@@ -38,7 +38,6 @@ class TaskList extends Component {
                         <IconToggle color="white" onPress={() => this.toggleModalHandler(false)} name="add" />
                     }
                     onLeftElementPress={() => {
-                        this.props.onDefaultCategory();
                         navigation.goBack();
                     }}
                     centerElement='Categories'
@@ -57,8 +56,16 @@ class TaskList extends Component {
                                 key={cate.id}
                                 onPress={() => {
                                     this.setState({ selectedCategory: cate });
-                                    this.toggleModalHandler(true)
+                                    this.toggleModalHandler(true);
                                 }}
+                                leftElement={
+                                    <TouchableOpacity onPress={() => {
+                                        this.setState({ selectedCategory: cate });
+                                        this.toggleModalHandler(true);
+                                    }}>
+                                        <Icon name="edit" />
+                                    </TouchableOpacity>
+                                }
                                 rightElement={
                                     cate.id !== 0 ?
                                     <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)} name="remove" /> : false
@@ -95,7 +102,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onRemoveCategory: (id) => dispatch(actions.removeCategory(id)),
-        onDefaultCategory: () => dispatch(actions.defaultCategory()),
     }
 };
 

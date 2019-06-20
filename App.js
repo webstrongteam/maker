@@ -36,19 +36,19 @@ db.transaction(tx => {
         'DROP TABLE IF EXISTS settings;'
     );*/
     tx.executeSql(
+        'create table if not exists categories (id integer primary key not null, name text);'
+    );
+    tx.executeSql(
         'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text);'
     );
     tx.executeSql(
         'create table if not exists finished (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, finish integer);'
     );
     tx.executeSql(
-        'create table if not exists categories (id integer primary key not null, name text);'
-    );
-    tx.executeSql(
         'create table if not exists settings (id integer primary key not null, sorting text, sortingType text);'
     );
     tx.executeSql(
-        "insert into categories (id, name) values (0, 'Default');"
+        "INSERT INTO categories (id, name) values (0, 'Default');"
     );
     tx.executeSql(
         "INSERT INTO settings (id, sorting, sortingType) values (0, 'byAZ', 'ASC');"

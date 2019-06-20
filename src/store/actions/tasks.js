@@ -26,62 +26,6 @@ export const onInitFinished = (tasks) => {
     }
 };
 
-export const changeName = (name) => {
-    return {
-        type: actionTypes.CHANGE_TASK_NAME,
-        name
-    }
-};
-
-export const changeDescription = (description) => {
-    return {
-        type: actionTypes.CHANGE_TASK_DESCRIPTION,
-        description
-    }
-};
-
-export const changeDate = (date) => {
-    return {
-        type: actionTypes.CHANGE_TASK_DATE,
-        date
-    }
-};
-
-export const changeCategory = (category) => {
-    return {
-        type: actionTypes.CHANGE_TASK_CATEGORY,
-        category
-    }
-};
-
-export const changePriority = (priority) => {
-    return {
-        type: actionTypes.CHANGE_TASK_PRIORITY,
-        priority
-    }
-};
-
-export const changeRepeat = (repeat) => {
-    return {
-        type: actionTypes.CHANGE_TASK_REPEAT,
-        repeat
-    }
-};
-
-export const onSetTask = (task, callback) => {
-    callback();
-    return {
-        type: actionTypes.SET_TASK,
-        task
-    }
-};
-
-export const defaultTask = () => {
-    return {
-        type: actionTypes.DEFAULT_TASK
-    }
-};
-
 export const initToDo = () => {
     let tasks;
     return dispatch => {
@@ -116,18 +60,6 @@ export const initFinished = () => {
             tx => {
                 tx.executeSql('select * from finished', [], (_, {rows}) => {
                     dispatch(onInitFinished(rows._array));
-                });
-            }, (err) => console.warn(err), null
-        );
-    };
-};
-
-export const setTask = (id, callback) => {
-    return dispatch => {
-        db.transaction(
-            tx => {
-                tx.executeSql('select * from tasks where id = ?', [id], (_, {rows}) => {
-                    dispatch(onSetTask(rows._array[0], callback));
                 });
             }, (err) => console.warn(err), null
         );
