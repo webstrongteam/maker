@@ -68,7 +68,7 @@ class ConfigCategory extends Component {
 
     render() {
         const { editCategory, controls, category } = this.state;
-        const { showModal } = this.props;
+        const { showModal, theme } = this.props;
 
         return (
             <Dialog.Container visible={showModal}>
@@ -76,6 +76,7 @@ class ConfigCategory extends Component {
                 <Input
                     elementConfig={controls.name.elementConfig}
                     focus={true}
+                    color={theme.primaryColor}
                     value={category.name}
                     changed={(value) => {
                         if (value.length <= controls.name.elementConfig.characterRestriction) {
@@ -110,7 +111,8 @@ class ConfigCategory extends Component {
 
 const mapStateToProps = state => {
     return {
-        category: state.categories.category
+        category: state.categories.category,
+        theme: state.theme.theme
     }
 };
 const mapDispatchToProps = dispatch => {

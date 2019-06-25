@@ -13,6 +13,7 @@ This app working with Android and iOS.
 - Finished task list
 - Sorting task
 - Searching task system
+- Dark mode and own themes
 - Save data in local database
 
 ## Technologies  
@@ -29,20 +30,23 @@ This app working with Android and iOS.
 - React Native Dialog <i>5.6.0</i>  
 - React Native Modal Dropdown <i>0.6.2</i>  
 - React Native Material TextField <i>0.12.0</i>  
+- React Native Color Picker <i>0.4.1</i>  
+- React Native Settings List <i>1.8.0</i>  
 - Moment.JS <i>2.24.0</i>
 - Expo <i>32.0.0</i>
 - Axios <i>0.19.0</i>
 
 ### ToDo list
 
-- Add notifications system :heavy_minus_sign:
-- Theme tab :x:
-- Setting tab :x:
-- Google account auth system :x:
+- Setting tab :heavy_minus_sign:
 - Account tab :x:
+- Google account auth system :x:
 - Google drive synch :x:
 - About tab :x:
+- Add Snackbars :x:
 - Change datepicker theme :x:
+- Add notifications system :x:
+- Add other languages :x:
 - Create and add app logo :x:
 - Optimization code and fix errors :x:
 - Create unit tests :x:

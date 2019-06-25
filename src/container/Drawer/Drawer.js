@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
 import {Drawer, Toolbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
-
-// Redux
-/*import { connect } from 'react-redux';
-import * as actions from '../../store/actions/index';*/
+import { connect } from 'react-redux';
 
 class DrawerContainer extends Component {
-    categoriesListHandler = () => {
-        this.props.navigation.navigate('CategoriesList');
-    };
-
     render() {
-        const {navigation} = this.props;
+        const {navigation, theme} = this.props;
 
         return (
             <Template>
@@ -21,20 +14,22 @@ class DrawerContainer extends Component {
                     onLeftElementPress={() => navigation.goBack()}
                     centerElement="Back"
                 />
-                <Drawer>
+                <Drawer style={{ container: { backgroundColor: theme.primaryBackgroundColor } }}>
                     <Drawer.Section
                         divider
+                        style={{ container: { backgroundColor: theme.primaryBackgroundColor } }}
                         items={[
-                            {icon: 'bookmark-border', value: 'Edit categories', onPress: () => this.categoriesListHandler()},
-                            {icon: 'people', value: 'Account'},
+                            {icon: 'bookmark-border', value: 'Categories', onPress: () => navigation.navigate('CategoriesList')},
+                            {icon: 'people', value: 'Profile'},
                         ]}
                     />
                     <Drawer.Section
                         title="App"
+                        style={{ container: { backgroundColor: theme.primaryBackgroundColor } }}
                         items={[
-                            {icon: 'info', value: 'About Maker'},
+                            {icon: 'assessment', value: 'Themes', onPress: () => navigation.navigate('Themes')},
                             {icon: 'settings', value: 'Settings'},
-                            {icon: 'input', value: 'Logout'},
+                            {icon: 'info', value: 'About Maker'}
                         ]}
                     />
                 </Drawer>
@@ -43,4 +38,8 @@ class DrawerContainer extends Component {
     }
 }
 
-export default DrawerContainer;
+const mapStateToProps = state => {
+    return {theme: state.theme.theme}
+};
+
+export default connect(mapStateToProps)(DrawerContainer);

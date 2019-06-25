@@ -18,3 +18,11 @@ export {
     initSettings,
     changeSorting
 } from './settings';
+
+export {
+    initTheme,
+    initThemes,
+    setSelectedTheme,
+    saveTheme,
+    deleteTheme
+} from './theme'

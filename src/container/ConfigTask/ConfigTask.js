@@ -146,9 +146,11 @@ class ConfigTask extends Component {
                         save: {
                             label: 'Save',
                             onPress: () => {
+                                if (this.state.task.name.trim() !== '') {
+                                    this.props.onSaveTask(this.state.task);
+                                    this.props.navigation.goBack();
+                                } else this.valid();
                                 this.setState({ showDialog: false });
-                                this.props.onSaveTask(this.state.task);
-                                this.props.navigation.goBack();
                             }
                         },
                         cancel: {
@@ -221,7 +223,7 @@ class ConfigTask extends Component {
 
     render() {
         const { task, controls, editTask, showModal, repeat, dialog, showDialog, otherOption, selectedTime, showOtherRepeat, repeatValue } = this.state;
-        const { navigation, categories } = this.props;
+        const { navigation, categories, theme } = this.props;
         const edit = this.props.navigation.getParam('task', false);
         let loading = true;
         let date;
@@ -248,17 +250,15 @@ class ConfigTask extends Component {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Button
                                 text="Save"
-                                style={{ text: { color: 'white' } }}
+                                style={{ text: { color: theme.headerTextColor } }}
                                 onPress={() => {
                                     if (task.name.trim() !== '') {
                                         this.props.onSaveTask(task);
                                         navigation.goBack();
-                                    } else {
-                                        this.valid();
-                                    }
+                                    } else this.valid();
                                 }}
                             />
-                            {editTask && <IconToggle color="white" name="delete"
+                            {editTask && <IconToggle color={theme.headerTextColor} name="delete"
                                  onPress={() => {
                                     this.showDialog('delete');
                                  }}
@@ -277,7 +277,7 @@ class ConfigTask extends Component {
                         editTask ?
                             "Edit task" :
                             "New task" :
-                        <ActivityIndicator size="small" color="#f4a442"/>
+                        <ActivityIndicator size="small" color="#f4a442" />
                     }
                 />
                 <OtherRepeat
@@ -307,6 +307,7 @@ class ConfigTask extends Component {
                                 elementConfig={controls.name.elementConfig}
                                 focus={!editTask}
                                 value={task.name}
+                                color={theme.primaryColor}
                                 changed={(value) => {
                                     if (value.length <= controls.name.elementConfig.characterRestriction) {
                                         this.valid(value);
@@ -318,12 +319,13 @@ class ConfigTask extends Component {
                             <Input
                                 elementConfig={controls.description.elementConfig}
                                 value={task.description}
+                                color={theme.primaryColor}
                                 changed={value => this.updateTask('description', value)}/>
                             <View style={styles.container}>
                                 <Subheader text="Due date"
                                     style={{
                                         container: styles.label,
-                                        text: {color: '#f4511e'}
+                                        text: {color: theme.primaryColor}
                                     }}
                                 />
                                 <DatePicker
@@ -343,7 +345,7 @@ class ConfigTask extends Component {
                                     customStyles={{
                                         dateInput: styles.datePicker,
                                         dateText: {
-                                            color: +date < +now ? '#ce3241' : '#333'
+                                            color: +date < +now ? theme.overdueColor : theme.textColor
                                         }
                                     }}
                                     onDateChange={(date) => this.updateTask('date', date)}
@@ -367,7 +369,7 @@ class ConfigTask extends Component {
                                         customStyles={{
                                             dateInput: styles.datePicker,
                                             dateText: {
-                                                color: +date < +now ? '#ce3241' : '#333'
+                                                color: +date < +now ? theme.overdueColor : theme.textColor
                                             }
                                         }}
                                         onDateChange={(date) => this.updateTask('date', `${task.date.slice(0, 10)} - ${date}`)}
@@ -484,7 +486,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        categories: state.categories.categories
+        categories: state.categories.categories,
+        theme: state.theme.theme
     }
 };
 const mapDispatchToProps = dispatch => {

@@ -13,10 +13,10 @@ import * as actions from "../../store/actions";
 class TaskList extends Component {
     state = {
         priorityColors: {
-            none: { bgColor: 'white', color: 'black' },
-            low: { bgColor: '#26b596', color: 'white' },
-            medium: { bgColor: '#cec825', color: 'white' },
-            high: { bgColor: '#ce3241', color: 'white' }
+            none: { bgColor: this.props.theme.noneColor, color: this.props.theme.noneTextColor },
+            low: { bgColor: this.props.theme.lowColor, color: this.props.theme.lowTextColor },
+            medium: { bgColor: this.props.theme.mediumColor, color: this.props.theme.mediumTextColor },
+            high: { bgColor: this.props.theme.highColor, color: this.props.theme.highTextColor },
         },
         dialog: {
             title: 'Repeat task?',
@@ -123,7 +123,7 @@ class TaskList extends Component {
 
     render() {
         const {division, priorityColors, initDivision, dialog, showDialog} = this.state;
-        const {tasks, navigation} = this.props;
+        const {tasks, theme, navigation} = this.props;
 
         const taskList = initDivision &&
             Object.keys(division).map(div => (
@@ -145,7 +145,7 @@ class TaskList extends Component {
                             <Subheader
                                 text={div}
                                 style={{
-                                    text: div === 'Overdue' ? {color: '#ce3241'} : {color: 'black'}
+                                    text: div === 'Overdue' ? {color: theme.overdueColor} : {color: theme.textColor}
                                 }}
                             />
                             }
@@ -164,11 +164,11 @@ class TaskList extends Component {
                                         shadowOpacity: 0.3,
                                         shadowRadius: 5,
                                         elevation: 3,
-                                        backgroundColor: !task.finish ? priorityColors[task.priority].bgColor : 'white'
+                                        backgroundColor: task.finish ? priorityColors.none.bgColor : priorityColors[task.priority].bgColor
                                     },
-                                    primaryText: {fontSize: 18, color: priorityColors[task.priority].color},
-                                    secondaryText: div === 'Overdue' ? {color: !task.finish ? '#ce3241' : 'black'} : {color: priorityColors[task.priority].color},
-                                    tertiaryText: {color: priorityColors[task.priority].color}
+                                    primaryText: {fontSize: 18, color: task.finish ? theme.textColor : priorityColors[task.priority].color},
+                                    secondaryText: div === 'Overdue' ? {color: task.finish ? theme.textColor : theme.overdueColor} : {color: priorityColors[task.priority].color},
+                                    tertiaryText: task.finish ? {color: priorityColors[task.priority].color} : {color: theme.textColor}
                                 }}
                                 rightElement={
                                     <View style={styles.rightElements}>
@@ -176,7 +176,7 @@ class TaskList extends Component {
                                             raised primary
                                             style={{
                                                 container: {
-                                                    backgroundColor: task.finish ? '#5bc0de' : '#26b596',
+                                                    backgroundColor: task.finish ? theme.undoButtonColor : theme.doneButtonColor,
                                                     marginRight: task.finish ? 0 : 15
                                                 }
                                             }}
@@ -220,7 +220,7 @@ class TaskList extends Component {
                 />
                 {tasks && tasks.length ?
                     <View style={{ paddingBottom: 20 }}>{taskList}</View>
-                    : <Text style={styles.empty}>Task list is empty!</Text>
+                    : <Text style={[styles.empty, {color: theme.textColor}]}>Task list is empty!</Text>
                 }
             </View>
         )
@@ -243,7 +243,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         finished: state.tasks.finished,
-        refresh: state.tasks.refresh
+        refresh: state.tasks.refresh,
+        theme: state.theme.theme
     }
 };
 

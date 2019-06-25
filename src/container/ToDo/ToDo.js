@@ -30,26 +30,30 @@ class ToDo extends Component {
     };
 
     componentDidMount() {
-        this.props.onInitToDo();
-        this.props.onInitCategories();
+        this.props.onInitTheme();
         this.props.onInitSettings();
+        this.props.onInitCategories();
+        this.props.onInitToDo();
         //if (!this.props.isAuth) this.props.navigation.navigate('Auth');
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.refresh !== this.props.refresh) {
-            if (this.state.selectedCategory === 'Finished') {
-                this.setState({ tasks: this.props.finished, loading: false });
-            }
-            else {
-                let filterTask = this.props.tasks;
-                if (this.state.selectedCategory !== 'All') {
-                    filterTask = this.props.tasks.filter(task => task.category === this.state.selectedCategory);
+        const { tasks, categories, finished, theme } = this.props;
+        if (tasks && categories && finished && theme) {
+            if (prevProps !== this.props) {
+                if (this.state.selectedCategory === 'Finished') {
+                    this.setState({ tasks: finished, loading: false });
                 }
-                this.setState({ tasks: filterTask, loading: false });
+                else {
+                    let filterTask = this.props.tasks;
+                    if (this.state.selectedCategory !== 'All') {
+                        filterTask = tasks.filter(task => task.category === this.state.selectedCategory);
+                    }
+                    this.setState({ tasks: filterTask, loading: false });
+                }
             }
         }
-        if (prevProps.categories !== this.props.categories && this.props.categories.length) {
+        if (prevProps.categories !== categories && categories.length) {
             this.renderDropdownData();
         }
     }
@@ -153,7 +157,7 @@ class ToDo extends Component {
 
     dropdownRenderRow(rowData) {
         const {selectedCategory} = this.state;
-        const {tasks,finished} = this.props;
+        const {tasks,finished,theme} = this.props;
         let data;
         if (rowData.id === -3) data = { icon: 'playlist-add', amount: false, bgColor: '#ddd' };
         else if (rowData.id === -1) data = { icon: 'dehaze', amount: tasks.length, bgColor: 'white' };
@@ -164,10 +168,10 @@ class ToDo extends Component {
         }
 
         return (
-            <TouchableHighlight underlayColor='#f4511e'>
+            <TouchableHighlight underlayColor={theme.primaryColor}>
                 <View style={[styles.dropdown_row, {backgroundColor: data.bgColor}]}>
-                    <Icon style={styles.dropdown_image} color="black" name={data.icon} />
-                    <Text style={[styles.dropdown_row_text, selectedCategory === rowData.name && {color: '#f4511e'}]}>
+                    <Icon style={styles.dropdown_icon} color={theme.iconsColor} name={data.icon} />
+                    <Text style={[styles.dropdown_row_text, { color: theme.textColor }, selectedCategory === rowData.name && {color: theme.primaryColor}]}>
                         {rowData.name}
                     </Text>
                     <Text>{data.amount ? `(${data.amount})` : ''}</Text>
@@ -178,116 +182,133 @@ class ToDo extends Component {
 
     render() {
         const {selectedCategory, tasks, loading, showModal, searchText, bottomHidden, dropdownData, selectedIndex, rotateInterpolate} = this.state;
-        const {navigation, finished, sortingType, sorting} = this.props;
+        const {navigation, finished, theme, sortingType, sorting} = this.props;
 
         return (
-            <Template bgColor="#e5e5e5">
-                <Toolbar
-                    searchable={{
-                        autoFocus: true,
-                        placeholder: 'Search',
-                        onChangeText: value => this.setState({ searchText: value }),
-                        onSearchClosed: () => this.setState({ searchText: '' }),
-                    }}
-                    leftElement="menu"
-                    onLeftElementPress={() => navigation.navigate('Drawer')}
-                    centerElement={
-                        <ModalDropdown ref={e => this.dropdown = e}
-                           style={styles.dropdown}
-                           textStyle={styles.dropdown_text}
-                           dropdownStyle={styles.dropdown_dropdown}
-                           defaultValue={selectedCategory}
-                           defaultIndex={selectedIndex}
-                           options={dropdownData}
-                           onDropdownWillShow={() => this.rotate(1)}
-                           onDropdownWillHide={() => this.rotate(0)}
-                           onSelect={(index, item) => {
-                               this.selectedCategoryHandler(item.name, index);
-                               return false;
-                           }}
-                           renderButtonText={(rowData) => rowData.name}
-                           renderRow={this.dropdownRenderRow.bind(this)}
-                        >
-                            <View style={styles.dropdown_button}>
-                                <Text style={styles.dropdown_text}>{selectedCategory}</Text>
-                                <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-                                    <Icon style={styles.dropdown_button_icon} color="white" name="expand-more"/>
-                                </Animated.View>
-                            </View>
-                        </ModalDropdown>
-                    }
-                />
-                <ConfigCategory
-                    editCategory={false}
-                    showModal={showModal}
-                    toggleModal={this.toggleModalHandler}
-                />
+            <React.Fragment>
                 {!loading ?
-                <React.Fragment>
-                    <View style={styles.container}>
-                        <ScrollView
-                            keyboardShouldPersistTaps="always"
-                            keyboardDismissMode="interactive"
-                            onScroll={this.onScroll}
-                            style={styles.tasks}>
-                            <TaskList
-                                searchText={searchText}
-                                tasks={tasks}
-                                sortingType={sortingType}
-                                sorting={sorting}
-                                navigation={navigation}
-                            />
-                        </ScrollView>
-                    </View>
-                    <View>
-                        {selectedCategory !== 'Finished' ?
-                            <ActionButton
-                                hidden={bottomHidden}
-                                onPress={() => navigation.navigate('ConfigTask')}
-                                icon="add"
-                            />
-                            :
-                            finished.length ?
-                            <ActionButton
-                                hidden={bottomHidden}
-                                style={{container: {backgroundColor: '#b6c1ce'}}}
-                                onPress={() => this.deleteAllTask()}
-                                icon="delete-sweep"
-                            /> : null
+                <Template bgColor={theme.secondaryBackgroundColor}>
+                    <Toolbar
+                        searchable={{
+                            autoFocus: true,
+                            placeholder: 'Search',
+                            onChangeText: value => this.setState({searchText: value}),
+                            onSearchClosed: () => this.setState({searchText: ''}),
+                        }}
+                        leftElement="menu"
+                        onLeftElementPress={() => navigation.navigate('Drawer')}
+                        centerElement={
+                            <ModalDropdown
+                                ref={e => this.dropdown = e}
+                                style={styles.dropdown}
+                                textStyle={styles.dropdown_text}
+                                dropdownStyle={styles.dropdown_dropdown}
+                                defaultValue={selectedCategory}
+                                defaultIndex={selectedIndex}
+                                options={dropdownData}
+                                onDropdownWillShow={() => this.rotate(1)}
+                                onDropdownWillHide={() => this.rotate(0)}
+                                onSelect={(index, item) => {
+                                    this.selectedCategoryHandler(item.name, index);
+                                    return false;
+                                }}
+                                renderButtonText={(rowData) => rowData.name}
+                                renderRow={this.dropdownRenderRow.bind(this)}
+                            >
+                                <View style={styles.dropdown_button}>
+                                    <Text style={[styles.dropdown_text, {color: theme.headerTextColor}]}>
+                                        {selectedCategory}
+                                    </Text>
+                                    <Animated.View style={{transform: [{rotate: rotateInterpolate}]}}>
+                                        <Icon
+                                            style={styles.dropdown_button_icon}
+                                            color={theme.headerTextColor}
+                                            name="expand-more" />
+                                    </Animated.View>
+                                </View>
+                            </ModalDropdown>
                         }
-                    </View>
-                    <BottomNavigation hidden={bottomHidden} active={sorting}>
-                        <BottomNavigation.Action
-                            key="byAZ"
-                            icon="format-line-spacing"
-                            label={ sortingType === 'ASC' ? "A-Z" : "Z-A" }
-                            onPress={() => this.setSortingType('byAZ')}
-                        />
-                        <BottomNavigation.Action
-                            key="byDate"
-                            icon="insert-invitation"
-                            label="Date"
-                            onPress={() => this.setSortingType('byDate')}
-                        />
-                        <BottomNavigation.Action
-                            key="byCategory"
-                            icon="bookmark-border"
-                            label="Category"
-                            onPress={() => this.setSortingType('byCategory')}
-                        />
-                        <BottomNavigation.Action
-                            key="byPriority"
-                            icon="priority-high"
-                            label="Priority"
-                            onPress={() => this.setSortingType('byPriority')}
-                        />
-                    </BottomNavigation>
-                </React.Fragment> :
+                    />
+
+                    <ConfigCategory
+                        editCategory={false}
+                        showModal={showModal}
+                        toggleModal={this.toggleModalHandler}
+                    />
+
+                    <React.Fragment>
+                        <View style={styles.container}>
+                            <ScrollView
+                                keyboardShouldPersistTaps="always"
+                                keyboardDismissMode="interactive"
+                                onScroll={this.onScroll}
+                                style={styles.tasks}>
+                                <TaskList
+                                    searchText={searchText}
+                                    tasks={tasks}
+                                    sortingType={sortingType}
+                                    sorting={sorting}
+                                    navigation={navigation}
+                                />
+                            </ScrollView>
+                        </View>
+                        <View>
+                            {selectedCategory !== 'Finished' ?
+                                <ActionButton
+                                    hidden={bottomHidden}
+                                    onPress={() => navigation.navigate('ConfigTask')}
+                                    icon="add"
+                                    style={{
+                                        container: {backgroundColor: theme.actionButtonColor},
+                                        icon: {color: theme.actionButtonIconColor}
+                                    }}
+                                />
+                                :
+                                finished.length ?
+                                    <ActionButton
+                                        hidden={bottomHidden}
+                                        style={{container: {backgroundColor: '#b6c1ce'}}}
+                                        onPress={() => this.deleteAllTask()}
+                                        icon="delete-sweep"
+                                    /> : null
+                            }
+                        </View>
+                        <BottomNavigation
+                            style={{container: {backgroundColor: theme.bottomNavigationColor}}}
+                            hidden={bottomHidden}
+                            active={sorting}>
+                            <BottomNavigation.Action
+                                key="byAZ"
+                                icon="format-line-spacing"
+                                label={sortingType === 'ASC' ? "A-Z" : "Z-A"}
+                                onPress={() => this.setSortingType('byAZ')}
+                            />
+                            <BottomNavigation.Action
+                                key="byDate"
+                                icon="insert-invitation"
+                                label="Date"
+                                onPress={() => this.setSortingType('byDate')}
+                            />
+                            <BottomNavigation.Action
+                                key="byCategory"
+                                icon="bookmark-border"
+                                label="Category"
+                                onPress={() => this.setSortingType('byCategory')}
+                            />
+                            <BottomNavigation.Action
+                                key="byPriority"
+                                icon="priority-high"
+                                label="Priority"
+                                onPress={() => this.setSortingType('byPriority')}
+                            />
+                        </BottomNavigation>
+                    </React.Fragment>
+                </Template> :
                 <View style={[styles.container, styles.horizontal]}>
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <ActivityIndicator size="large" color="#0000ff"/>
                 </View>
                 }
-            </Template>
+            </React.Fragment>
         );
     }
 }
@@ -304,9 +325,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         padding: 50
-    },
-    picker: {
-        color: 'white'
     },
     dropdown: {
         width: 230,
@@ -328,7 +346,6 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         marginHorizontal: 6,
         fontSize: 18,
-        color: 'white',
         textAlign: 'left',
         textAlignVertical: 'center',
     },
@@ -347,7 +364,7 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
     },
-    dropdown_image: {
+    dropdown_icon: {
         marginLeft: 4,
         width: 30,
         height: 30,
@@ -356,13 +373,8 @@ const styles = StyleSheet.create({
     dropdown_row_text: {
         marginHorizontal: 4,
         fontSize: 17,
-        color: 'black',
         textAlignVertical: 'center',
-    },
-    dropdown_separator: {
-        height: 1,
-        backgroundColor: 'cornflowerblue',
-    },
+    }
 });
 
 const mapStateToProps = state => {
@@ -372,13 +384,15 @@ const mapStateToProps = state => {
         sorting: state.settings.sorting,
         sortingType: state.settings.sortingType,
         refresh: state.tasks.refresh,
-        categories: state.categories.categories
+        categories: state.categories.categories,
+        theme: state.theme.theme
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
         onInitToDo: () => dispatch(actions.initToDo()),
         onInitCategories: () => dispatch(actions.initCategories()),
+        onInitTheme: () => dispatch(actions.initTheme()),
         onInitSettings: () => dispatch(actions.initSettings()),
         onChangeCategory: (category) => dispatch(actions.changeCategory(category)),
         onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),

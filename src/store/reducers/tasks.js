@@ -2,8 +2,8 @@ import * as actionTypes from '../actions/actionTypes';
 import {updateObject} from '../../shared/utility';
 
 const initState = {
-    tasks: [],
-    finished: [],
+    tasks: false,
+    finished: false,
     refresh: false
 };
 

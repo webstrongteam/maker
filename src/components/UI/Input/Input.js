@@ -7,8 +7,8 @@ const input = (props) => {
 
     const inputElement = <TextField
         {...props.elementConfig}
-        tintColor="#f4511e"
         style={inputClasses}
+        tintColor={props.color}
         autoFocus={props.focus ? props.focus : false}
         onChangeText={props.changed}
         value={props.value}
@@ -28,7 +28,6 @@ const classes = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         display: 'flex',
-        backgroundColor: '#fff',
         alignItems: "center",
         justifyContent: "center"
     },

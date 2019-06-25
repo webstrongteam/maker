@@ -28,14 +28,14 @@ class TaskList extends Component {
 
     render() {
         const {showModal, selectedCategory} = this.state;
-        const {categories, navigation} = this.props;
+        const {categories, navigation, theme} = this.props;
 
         return (
             <Template>
                 <Toolbar
                     leftElement="arrow-back"
                     rightElement={
-                        <IconToggle color="white" onPress={() => this.toggleModalHandler(false)} name="add" />
+                        <IconToggle color={theme.headerTextColor} onPress={() => this.toggleModalHandler(false)} name="add" />
                     }
                     onLeftElementPress={() => {
                         navigation.goBack();
@@ -48,7 +48,7 @@ class TaskList extends Component {
                     toggleModal={this.toggleModalHandler}
                 />
                 <View style={styles.container}>
-                    <ScrollView style={styles.categories}>
+                    <ScrollView style={[styles.categories, {backgroundColor: theme.primaryBackgroundColor}]}>
                         {categories.map(cate => (
                             <ListItem
                                 divider
@@ -96,6 +96,7 @@ const mapStateToProps = state => {
     return {
         categories: state.categories.categories,
         refresh: state.tasks.refresh,
+        theme: state.theme.theme
     }
 };
 
