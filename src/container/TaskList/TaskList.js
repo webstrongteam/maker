@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import { ListItem, Subheader, IconToggle } from 'react-native-material-ui';
-import {sortingByType} from '../../shared/utility';
+import {generateDialogObject, sortingByType} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
 import Button from "react-native-material-ui/src/Button";
@@ -18,27 +18,7 @@ class TaskList extends Component {
             medium: { bgColor: this.props.theme.mediumColor, color: this.props.theme.mediumTextColor },
             high: { bgColor: this.props.theme.highColor, color: this.props.theme.highTextColor },
         },
-        dialog: {
-            title: 'Repeat task?',
-            description: 'Do you want to repeat this task?',
-            buttons: {
-                yes: {
-                    label: 'Yes',
-                    onPress: () => this.checkTaskRepeatHandler(this.state.selectedTask)
-                },
-                no: {
-                    label: 'No',
-                    onPress: () => {
-                        this.setState({showDialog: false, selectedTask: false});
-                        this.props.onFinishTask(this.state.selectedTask, true);
-                    }
-                },
-                cancel: {
-                    label: 'Cancel',
-                    onPress: () => this.setState({showDialog: false, selectedTask: false})
-                }
-            }
-        },
+        dialog: {},
         showDialog: false,
         selectedTask: false,
         initDivision: false
@@ -53,6 +33,57 @@ class TaskList extends Component {
             this.divisionTask();
         }
     }
+
+    showDialog = (action) => {
+        let dialog;
+        if (action === 'repeat') {
+            dialog = generateDialogObject(
+                'Repeat task?',
+                'Do you want to repeat this task?',
+                {
+                    Yes: () => this.checkTaskRepeatHandler(this.state.selectedTask),
+                    No: () => {
+                        this.setState({showDialog: false, selectedTask: false});
+                        this.props.onFinishTask(this.state.selectedTask, true);
+                    },
+                    Cancel: () => this.setState({showDialog: false, selectedTask: false})
+                }
+            );
+        }
+        else if (action === 'finish') {
+            dialog = generateDialogObject(
+                'Are you sure?',
+                'Finish this task?',
+                {
+                    Yes: () => {
+                        this.setState({ showDialog: false });
+                        this.props.onFinishTask(this.state.selectedTask);
+                        this.props.navigation.goBack();
+                    },
+                    No: () => {
+                        this.setState({ showDialog: false });
+                    }
+                }
+            );
+        }
+        else if (action === 'delete') {
+            dialog = generateDialogObject(
+                'Are you sure?',
+                'Delete this task?',
+                {
+                    Yes: () => {
+                        this.setState({ showDialog: false });
+                        this.props.onRemoveTask(this.state.selectedTask);
+                        this.props.navigation.goBack();
+                    },
+                    No: () => {
+                        this.setState({ showDialog: false });
+                    }
+                }
+            );
+        }
+        this.setState({showDialog: true, dialog});
+    };
 
     divisionTask = () => {
         const {tasks, sorting, sortingType} = this.props;
@@ -113,12 +144,26 @@ class TaskList extends Component {
     };
 
     checkTaskRepeatHandler = (task) => {
-        if (task.repeat !== 'noRepeat' && !this.state.selectedTask) {
-            this.setState({ showDialog: true, selectedTask: task });
+        this.setState({ selectedTask: task });
+        if (task.repeat !== 'noRepeat' &&
+            !this.state.selectedTask &&
+            !!this.props.settings.confirmRepeatingTask) {
+            this.showDialog('repeat');
         } else {
-            this.props.onFinishTask(task);
-            this.setState({ showDialog: false, selectedTask: false });
+            if (!!this.props.settings.confirmFinishingTask) {
+                this.showDialog('finish');
+            } else {
+                this.props.onFinishTask(task);
+                this.setState({ selectedTask: false });
+            }
         }
+    };
+
+    checkDeleteHandler = (task) => {
+        if (!!this.props.settings.confirmDeletingTask) {
+            this.setState({ selectedTask: task });
+            this.showDialog('delete');
+        } else this.props.onRemoveTask(task);
     };
 
     render() {
@@ -188,9 +233,9 @@ class TaskList extends Component {
                                         />
                                         {task.finish &&
                                         <IconToggle
-                                            onPress={() => this.props.onRemoveTask(task)}
+                                            onPress={() => this.checkDeleteHandler(task)}
                                             name="delete"
-                                            color="#ce3241"
+                                            color={theme.overdueColor}
                                             size={26}
                                         />}
                                     </View>
@@ -212,12 +257,14 @@ class TaskList extends Component {
 
         return (
             <View>
+                {showDialog &&
                 <Dialog
                     showModal={showDialog}
                     title={dialog.title}
                     description={dialog.description}
                     buttons={dialog.buttons}
                 />
+                }
                 {tasks && tasks.length ?
                     <View style={{ paddingBottom: 20 }}>{taskList}</View>
                     : <Text style={[styles.empty, {color: theme.textColor}]}>Task list is empty!</Text>
@@ -244,7 +291,8 @@ const mapStateToProps = state => {
     return {
         finished: state.tasks.finished,
         refresh: state.tasks.refresh,
-        theme: state.theme.theme
+        theme: state.theme.theme,
+        settings: state.settings
     }
 };
 

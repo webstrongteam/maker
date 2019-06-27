@@ -5,11 +5,11 @@ const dialog = (props) => (
     <Dialog.Container visible={props.showModal}>
         <Dialog.Title>{props.title}</Dialog.Title>
         <Dialog.Description>{props.description}</Dialog.Description>
-        {Object.keys(props.buttons).map(button => (
+        {props.buttons.map(button => (
             <Dialog.Button
-                key={button}
-                label={props.buttons[button].label}
-                onPress={props.buttons[button].onPress}
+                key={button.label}
+                label={button.label}
+                onPress={button.onPress}
             />
         ))}
     </Dialog.Container>

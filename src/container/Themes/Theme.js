@@ -10,6 +10,7 @@ import Dialog from '../../components/UI/Dialog/Dialog';
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
+import {generateDialogObject} from "../../shared/utility";
 
 class Theme extends Component {
     state = {
@@ -35,12 +36,7 @@ class Theme extends Component {
         },
 
         showDialog: false,
-        dialog: {
-            title: '',
-            description: '',
-            buttons: {}
-        },
-
+        dialog: {},
         loading: true
     };
 
@@ -54,67 +50,45 @@ class Theme extends Component {
             this.setState({ theme: defaultTheme, loading: false });
         }
     }
-
     showDialog = (action) => {
+        let dialog;
         if (action === 'exit') {
-            this.setState({
-                showDialog: true,
-                dialog: {
-                    title: 'Are you sure?',
-                    description: 'Quit without saving?',
-                    buttons: {
-                        yes: {
-                            label: 'Yes',
-                            onPress: () => {
-                                this.setState({ showDialog: false });
-                                this.props.navigation.goBack();
-                            }
-                        },
-                        save: {
-                            label: 'Save',
-                            onPress: () => {
-                                if (this.state.task.name.trim() !== '') {
-                                    this.props.onSaveTheme(this.state.theme);
-                                    this.props.navigation.goBack();
-                                } else this.valid();
-                                this.setState({ showDialog: false });
-                            }
-                        },
-                        cancel: {
-                            label: 'Cancel',
-                            onPress: () => {
-                                this.setState({ showDialog: false });
-                            }
-                        }
-                    }
+            dialog = generateDialogObject(
+                'Are you sure?',
+                'Quit without saving?',
+                {
+                    Yes: () => {
+                        this.setState({ showDialog: false });
+                        this.props.navigation.goBack();
+                    },
+                    Save: () => {
+                        if (this.state.task.name.trim() !== '') {
+                            this.props.onSaveTheme(this.state.theme);
+                            this.props.navigation.goBack();
+                        } else this.valid();
+                        this.setState({ showDialog: false });
+                    },
+                    Cancel: () => this.setState({ showDialog: false })
                 }
-            });
+            );
         }
         else if (action === 'delete') {
-            this.setState({
-                showDialog: true,
-                dialog: {
-                    title: 'Are you sure?',
-                    description: 'Delete this task?',
-                    buttons: {
-                        yes: {
-                            label: 'Yes',
-                            onPress: () => {
-                                this.setState({ showDialog: false });
-                                this.deleteTheme();
-                                this.props.navigation.goBack();
-                            }
-                        },
-                        cancel: {
-                            label: 'Cancel',
-                            onPress: () => {
-                                this.setState({ showDialog: false });
-                            }
-                        }
+            dialog = generateDialogObject(
+                'Are you sure?',
+                'Delete this theme?',
+                {
+                    Yes: () => {
+                        this.setState({ showDialog: false });
+                        this.deleteTheme();
+                        this.props.navigation.goBack();
+                    },
+                    No: () => {
+                        this.setState({ showDialog: false });
                     }
                 }
-            });
+            );
         }
+        this.setState({showDialog: true, dialog});
     };
 
     deleteTheme = () => {
@@ -148,9 +122,7 @@ class Theme extends Component {
         const newControls = this.state.controls;
         if (value.trim() === '') {
             newControls.name.error = `Theme name is required!`;
-        } else {
-            delete newControls.name.error;
-        }
+        } else delete newControls.name.error;
         this.setState({ controls: newControls })
     };
 
@@ -166,7 +138,7 @@ class Theme extends Component {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Button
                                 text="Save"
-                                style={{ text: { color: 'white' } }}
+                                style={{ text: { color: this.props.theme.headerTextColor } }}
                                 onPress={() => {
                                     if (theme.name.trim() !== '') {
                                         this.props.onSaveTheme(theme);
@@ -174,26 +146,28 @@ class Theme extends Component {
                                     } else this.valid();
                                 }}
                             />
-                            {theme.id && <IconToggle color="white" name="delete"
-                                 onPress={() => {
-                                     this.showDialog('delete');
-                                 }}
-                            />
+                            {theme.id !== false && <IconToggle name="delete"
+                                color={this.props.theme.headerTextColor}
+                                onPress={() => this.showDialog('delete')} />
                             }
                         </View>
                     }
                     onLeftElementPress={() => {
-                        navigation.goBack();
+                        if (theme.name.trim() !== '') {
+                            this.showDialog('exit');
+                        } else navigation.goBack();
                     }}
                     centerElement={ theme.id ? 'Edit theme' : 'New theme' }
                 />
 
+                {showDialog &&
                 <Dialog
                     showModal={showDialog}
                     title={dialog.title}
                     description={dialog.description}
                     buttons={dialog.buttons}
                 />
+                }
 
                 <ColorPicker
                     show={showColorPicker}
@@ -210,7 +184,7 @@ class Theme extends Component {
                     <Input
                         elementConfig={controls.name}
                         value={theme.name}
-                        color={theme.primaryColor}
+                        color={this.props.theme.primaryColor}
                         changed={ value => this.changeNameHandler(value) }
                     />
                     <SettingsList borderColor='#d6d5d9' defaultItemSize={50}>

@@ -64,6 +64,21 @@ export const convertNumberToDate = (number) => {
     }
 };
 
+export const generateDialogObject = (title, description, buttons) => {
+    let object = {
+        title,
+        description,
+        buttons: []
+    };
+    Object.keys(buttons).map(key => {
+        object.buttons.push({
+            label: key,
+            onPress: buttons[key]
+        })
+    });
+    return object;
+};
+
 /*
 export const validationSystem = (rules, value) => {
     let isValid = true;

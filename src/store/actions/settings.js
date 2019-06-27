@@ -33,3 +33,63 @@ export const changeSorting = (sorting, type) => {
         );
     };
 };
+
+export const changeTimeFormat = (value) => {
+    return dispatch => {
+        db.transaction(
+            tx => {
+                tx.executeSql('update settings set timeFormat = ? where id = 0;', [value], () => {
+                    dispatch(initSettings())
+                });
+            }, (err) => console.warn(err), null
+        );
+    };
+};
+
+export const changeFirstDayOfWeek = (value) => {
+    return dispatch => {
+        db.transaction(
+            tx => {
+                tx.executeSql('update settings set firstDayOfWeek = ? where id = 0;', [value], () => {
+                    dispatch(initSettings())
+                });
+            }, (err) => console.warn(err), null
+        );
+    };
+};
+
+export const changeConfirmFinishingTask = (value) => {
+    return dispatch => {
+        db.transaction(
+            tx => {
+                tx.executeSql('update settings set confirmFinishingTask = ? where id = 0;', [value], () => {
+                    dispatch(initSettings())
+                });
+            }, (err) => console.warn(err), null
+        );
+    };
+};
+
+export const changeConfirmRepeatingTask = (value) => {
+    return dispatch => {
+        db.transaction(
+            tx => {
+                tx.executeSql('update settings set confirmRepeatingTask = ? where id = 0;', [value], () => {
+                    dispatch(initSettings())
+                });
+            }, (err) => console.warn(err), null
+        );
+    };
+};
+
+export const changeConfirmDeletingTask = (value) => {
+    return dispatch => {
+        db.transaction(
+            tx => {
+                tx.executeSql('update settings set confirmDeletingTask = ? where id = 0;', [value], () => {
+                    dispatch(initSettings())
+                });
+            }, (err) => console.warn(err), null
+        );
+    };
+};

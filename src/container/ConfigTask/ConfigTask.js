@@ -7,7 +7,7 @@ import Input from '../../components/UI/Input/Input';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
-import { convertNumberToDate } from '../../shared/utility';
+import { convertNumberToDate, generateDialogObject } from '../../shared/utility';
 import moment from 'moment';
 
 import { connect } from 'react-redux';
@@ -129,65 +129,45 @@ class ConfigTask extends Component {
     };
 
     showDialog = (action) => {
+        let dialog;
         if (action === 'exit') {
-            this.setState({
-                showDialog: true,
-                dialog: {
-                    title: 'Are you sure?',
-                    description: 'Quit without saving?',
-                    buttons: {
-                        yes: {
-                            label: 'Yes',
-                            onPress: () => {
-                                this.setState({ showDialog: false });
-                                this.props.navigation.goBack();
-                            }
-                        },
-                        save: {
-                            label: 'Save',
-                            onPress: () => {
-                                if (this.state.task.name.trim() !== '') {
-                                    this.props.onSaveTask(this.state.task);
-                                    this.props.navigation.goBack();
-                                } else this.valid();
-                                this.setState({ showDialog: false });
-                            }
-                        },
-                        cancel: {
-                            label: 'Cancel',
-                            onPress: () => {
-                                this.setState({ showDialog: false });
-                            }
-                        }
+            dialog = generateDialogObject(
+                'Are you sure?',
+                'Quit without saving?',
+                {
+                    Yes: () => {
+                        this.setState({ showDialog: false });
+                        this.props.navigation.goBack();
+                    },
+                    Save: () => {
+                        if (this.state.task.name.trim() !== '') {
+                            this.props.onSaveTask(this.state.task);
+                            this.props.navigation.goBack();
+                        } else this.valid();
+                        this.setState({ showDialog: false });
+                    },
+                    Cancel: () => {
+                        this.setState({ showDialog: false });
                     }
                 }
-            });
+            );
         }
         else if (action === 'delete') {
-            this.setState({
-                showDialog: true,
-                dialog: {
-                    title: 'Are you sure?',
-                    description: 'Delete this task?',
-                    buttons: {
-                        yes: {
-                            label: 'Yes',
-                            onPress: () => {
-                                this.setState({ showDialog: false });
-                                this.props.onRemoveTask(this.state.task);
-                                this.props.navigation.goBack();
-                            }
-                        },
-                        cancel: {
-                            label: 'Cancel',
-                            onPress: () => {
-                                this.setState({ showDialog: false });
-                            }
-                        }
+            dialog = generateDialogObject(
+                'Are you sure?',
+                'Delete this task?',
+                {
+                    Yes: () => {
+                        this.setState({ showDialog: false });
+                        this.props.navigation.goBack();
+                    },
+                    Cancel: () => {
+                        this.setState({ showDialog: false });
                     }
                 }
-            });
+            );
         }
+        this.setState({showDialog: true, dialog});
     };
 
     toggleModalHandler = () => {
@@ -223,7 +203,7 @@ class ConfigTask extends Component {
 
     render() {
         const { task, controls, editTask, showModal, repeat, dialog, showDialog, otherOption, selectedTime, showOtherRepeat, repeatValue } = this.state;
-        const { navigation, categories, theme } = this.props;
+        const { navigation, categories, theme, settings } = this.props;
         const edit = this.props.navigation.getParam('task', false);
         let loading = true;
         let date;
@@ -258,11 +238,9 @@ class ConfigTask extends Component {
                                     } else this.valid();
                                 }}
                             />
-                            {editTask && <IconToggle color={theme.headerTextColor} name="delete"
-                                 onPress={() => {
-                                    this.showDialog('delete');
-                                 }}
-                            />
+                            {editTask && <IconToggle name="delete"
+                                color={theme.headerTextColor}
+                                onPress={() => this.showDialog('delete')} />
                             }
                         </View>
                     }
@@ -280,6 +258,7 @@ class ConfigTask extends Component {
                         <ActivityIndicator size="small" color="#f4a442" />
                     }
                 />
+
                 <OtherRepeat
                     showModal={showOtherRepeat}
                     repeat={repeatValue}
@@ -289,17 +268,20 @@ class ConfigTask extends Component {
                     save={this.saveOtherRepeat}
                     cancel={() => this.setState({ showOtherRepeat: false })}
                 />
+                <ConfigCategory
+                    editCategory={false}
+                    showModal={showModal}
+                    toggleModal={this.toggleModalHandler}
+                />
+                {showDialog &&
                 <Dialog
                     showModal={showDialog}
                     title={dialog.title}
                     description={dialog.description}
                     buttons={dialog.buttons}
                 />
-                <ConfigCategory
-                    editCategory={false}
-                    showModal={showModal}
-                    toggleModal={this.toggleModalHandler}
-                />
+                }
+
                 {!loading ?
                     <React.Fragment>
                         <ScrollView>
@@ -356,6 +338,7 @@ class ConfigTask extends Component {
                                         ref={(e) => this.datepickerTime = e}
                                         style={{width: '100%'}}
                                         date={task.date.slice(13, 18)}
+                                        is24Hour={!!settings.timeFormat}
                                         mode="time"
                                         iconComponent={
                                             task.date.slice(13, 18) ?
@@ -377,7 +360,7 @@ class ConfigTask extends Component {
                                     <Subheader text="Repeat"
                                         style={{
                                             container: styles.label,
-                                            text: {color: '#f4511e'}
+                                            text: {color: theme.primaryColor}
                                         }}
                                     />
                                     <View style={styles.picker}>
@@ -399,7 +382,7 @@ class ConfigTask extends Component {
                                 <Subheader text="Category"
                                     style={{
                                         container: styles.label,
-                                        text: {color: '#f4511e'}
+                                        text: {color: theme.primaryColor}
                                     }}
                                 />
                                 <View style={styles.selectCategory}>
@@ -417,7 +400,7 @@ class ConfigTask extends Component {
                                 <Subheader text="Priority"
                                     style={{
                                         container: styles.label,
-                                        text: {color: '#f4511e'}
+                                        text: {color: theme.primaryColor}
                                     }}
                                 />
                                 <View style={styles.picker}>
@@ -487,7 +470,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         categories: state.categories.categories,
-        theme: state.theme.theme
+        theme: state.theme.theme,
+        settings: state.settings
     }
 };
 const mapDispatchToProps = dispatch => {

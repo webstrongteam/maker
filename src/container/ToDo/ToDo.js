@@ -5,9 +5,11 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
 import ConfigCategory from "../ConfigCategory/ConfigCategory";
+import Dialog from '../../components/UI/Dialog/Dialog';
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
+import {generateDialogObject} from "../../shared/utility";
 
 const UP = 1;
 const DOWN = -1;
@@ -27,6 +29,9 @@ class ToDo extends Component {
         bottomHidden: false,
         rotateAnimated: new Animated.Value(0),
         rotateInterpolate: '0deg',
+
+        dialog: {},
+        showDialog: false
     };
 
     componentDidMount() {
@@ -57,6 +62,23 @@ class ToDo extends Component {
             this.renderDropdownData();
         }
     }
+
+    showDialog = () => {
+        let dialog = generateDialogObject(
+            'Are you sure?',
+            'Do you want to delete all finished task?',
+            {
+                Yes: () => {
+                    this.setState({showDialog: false});
+                    this.deleteAllTask();
+                },
+                No: () => {
+                    this.setState({showDialog: false});
+                },
+            }
+        );
+        this.setState({showDialog: true, dialog});
+    };
 
     onScroll = (e) => {
         const currentOffset = e.nativeEvent.contentOffset.y;
@@ -170,18 +192,30 @@ class ToDo extends Component {
         return (
             <TouchableHighlight underlayColor={theme.primaryColor}>
                 <View style={[styles.dropdown_row, {backgroundColor: data.bgColor}]}>
-                    <Icon style={styles.dropdown_icon} color={theme.iconsColor} name={data.icon} />
-                    <Text style={[styles.dropdown_row_text, { color: theme.textColor }, selectedCategory === rowData.name && {color: theme.primaryColor}]}>
+                    <Icon name={data.icon}
+                          style={styles.dropdown_icon}
+                          color={selectedCategory === rowData.name ?
+                              theme.primaryColor :
+                              theme.textColor} />
+                    <Text style={[styles.dropdown_row_text,
+                            selectedCategory === rowData.name ?
+                                {color: theme.primaryColor} :
+                                {color: theme.textColor}]}>
                         {rowData.name}
                     </Text>
-                    <Text>{data.amount ? `(${data.amount})` : ''}</Text>
+                    <Text style={[styles.dropdown_row_text,
+                        selectedCategory === rowData.name ?
+                            {color: theme.primaryColor} :
+                            {color: theme.textColor}]}>
+                        {data.amount ? `(${data.amount})` : ''}
+                    </Text>
                 </View>
             </TouchableHighlight>
         );
     }
 
     render() {
-        const {selectedCategory, tasks, loading, showModal, searchText, bottomHidden, dropdownData, selectedIndex, rotateInterpolate} = this.state;
+        const {showDialog, dialog, selectedCategory, tasks, loading, showModal, searchText, bottomHidden, dropdownData, selectedIndex, rotateInterpolate} = this.state;
         const {navigation, finished, theme, sortingType, sorting} = this.props;
 
         return (
@@ -236,6 +270,15 @@ class ToDo extends Component {
                         toggleModal={this.toggleModalHandler}
                     />
 
+                    {showDialog &&
+                    <Dialog
+                        showModal={showDialog}
+                        title={dialog.title}
+                        description={dialog.description}
+                        buttons={dialog.buttons}
+                    />
+                    }
+
                     <React.Fragment>
                         <View style={styles.container}>
                             <ScrollView
@@ -262,13 +305,12 @@ class ToDo extends Component {
                                         container: {backgroundColor: theme.actionButtonColor},
                                         icon: {color: theme.actionButtonIconColor}
                                     }}
-                                />
-                                :
+                                /> :
                                 finished.length ?
                                     <ActionButton
                                         hidden={bottomHidden}
                                         style={{container: {backgroundColor: '#b6c1ce'}}}
-                                        onPress={() => this.deleteAllTask()}
+                                        onPress={() => this.showDialog()}
                                         icon="delete-sweep"
                                     /> : null
                             }

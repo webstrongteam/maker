@@ -7,6 +7,7 @@ import CategoriesList from './src/container/CategoriesList/CategoriesList';
 import Drawer from './src/container/Drawer/Drawer';
 import Themes from './src/container/Themes/Themes';
 import Theme from './src/container/Themes/Theme';
+import Settings from './src/container/Settings/Settings';
 
 const MainNavigator = createStackNavigator(
     {
@@ -15,7 +16,8 @@ const MainNavigator = createStackNavigator(
         CategoriesList: {screen: CategoriesList},
         Drawer: {screen: Drawer},
         Themes: {screen: Themes},
-        Theme: {screen: Theme}
+        Theme: {screen: Theme},
+        Settings: {screen: Settings}
     },
     {
         initialRouteName: 'ToDo',

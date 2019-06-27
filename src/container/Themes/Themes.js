@@ -7,24 +7,14 @@ import Dialog from "../../components/UI/Dialog/Dialog";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
+import {generateDialogObject} from "../../shared/utility";
 
 class Themes extends Component {
     state = {
         selectedTheme: null,
         loading: true,
 
-        dialog: {
-            title: 'Changing theme',
-            description: 'Some new style may require restarting app.',
-            buttons: {
-                ok: {
-                    label: 'Ok',
-                    onPress: () => {
-                        this.setState({ showDialog: false });
-                    }
-                },
-            }
-        },
+        dialog: {},
         showDialog: false
     };
 
@@ -43,6 +33,17 @@ class Themes extends Component {
         }
     }
 
+    showDialog = () => {
+        const dialog = generateDialogObject(
+            'Changing theme...',
+            'Some new style may require restarting app!',
+            {
+                Ok: () => this.setState({ showDialog: false })
+            }
+        );
+        this.setState({showDialog: true, dialog});
+    };
+
     selectedThemeHandler = (value, id, name) => {
         if (value) {
             this.props.onSetSelectedTheme(id);
@@ -52,7 +53,8 @@ class Themes extends Component {
                 selectedTheme[theme] = theme === name;
             });
 
-            this.setState({ selectedTheme, showDialog: true });
+            this.showDialog();
+            this.setState({ selectedTheme });
         }
     };
 
@@ -73,12 +75,14 @@ class Themes extends Component {
                     centerElement='Themes'
                 />
 
+                {showDialog &&
                 <Dialog
                     showModal={showDialog}
                     title={dialog.title}
                     description={dialog.description}
                     buttons={dialog.buttons}
                 />
+                }
 
                 {!loading ?
                     <SettingsList borderColor='#d6d5d9' defaultItemSize={50}>
@@ -92,7 +96,7 @@ class Themes extends Component {
                         <SettingsList.Item
                             icon={
                                 <View style={styles.iconStyle}>
-                                    <Icon style={{alignSelf: 'center'}} name="home"/>
+                                    <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="home"/>
                                 </View>
                             }
                             hasNavArrow={false}
@@ -106,7 +110,7 @@ class Themes extends Component {
                         <SettingsList.Item
                             icon={
                                 <View style={styles.iconStyle}>
-                                    <Icon style={{alignSelf: 'center'}} name="brightness-2"/>
+                                    <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="brightness-2"/>
                                 </View>
                             }
                             hasNavArrow={false}

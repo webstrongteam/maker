@@ -16,7 +16,12 @@ export {
 
 export {
     initSettings,
-    changeSorting
+    changeSorting,
+    changeConfirmDeletingTask,
+    changeConfirmFinishingTask,
+    changeConfirmRepeatingTask,
+    changeFirstDayOfWeek,
+    changeTimeFormat
 } from './settings';
 
 export {

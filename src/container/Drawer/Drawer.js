@@ -28,7 +28,7 @@ class DrawerContainer extends Component {
                         style={{ container: { backgroundColor: theme.primaryBackgroundColor } }}
                         items={[
                             {icon: 'assessment', value: 'Themes', onPress: () => navigation.navigate('Themes')},
-                            {icon: 'settings', value: 'Settings'},
+                            {icon: 'settings', value: 'Settings', onPress: () => navigation.navigate('Settings')},
                             {icon: 'info', value: 'About Maker'}
                         ]}
                     />
