@@ -79,6 +79,10 @@ class Themes extends Component {
                             primaryText: "Monday",
                         }}
                     />
+                    <Dialog.Button
+                        label="Cancel"
+                        onPress={() => this.setState({ showDialog: false })}
+                    />
                 </Dialog.Container>
 
                 {!loading ?

@@ -129,7 +129,7 @@ class ConfigTask extends Component {
     };
 
     showDialog = (action) => {
-        const { task } = this.props;
+        const {task} = this.state;
         let dialog;
         if (action === 'exit') {
             dialog = generateDialogObject(
