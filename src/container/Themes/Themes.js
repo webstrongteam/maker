@@ -13,7 +13,6 @@ class Themes extends Component {
     state = {
         selectedTheme: null,
         loading: true,
-
         dialog: {},
         showDialog: false
     };
@@ -23,15 +22,22 @@ class Themes extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.themes !== prevProps.themes && this.props.theme.id !== false) {
+        if (this.props.themes !== prevProps.themes || this.props.theme.id !== prevProps.theme.id) {
+            this.initThemes();
+        }
+    }
+
+    initThemes = () => {
+        if (this.props.theme.id === false) this.props.onInitThemes();
+        else {
             const { themes } = this.props;
             const selectedTheme = {};
             themes.map(theme => {
-                selectedTheme[theme.name] = this.props.theme.name === theme.name;
+                selectedTheme[theme.id] = +this.props.theme.id === +theme.id;
             });
             this.setState({ selectedTheme, loading: false });
         }
-    }
+    };
 
     showDialog = () => {
         const dialog = generateDialogObject(
@@ -44,13 +50,13 @@ class Themes extends Component {
         this.setState({showDialog: true, dialog});
     };
 
-    selectedThemeHandler = (value, id, name) => {
+    selectedThemeHandler = (value, id) => {
         if (value) {
             this.props.onSetSelectedTheme(id);
             const selectedTheme = this.state.selectedTheme;
 
             Object.keys(selectedTheme).map(theme => {
-                selectedTheme[theme] = theme === name;
+                selectedTheme[theme] = +theme === +id;
             });
 
             this.showDialog();
@@ -102,8 +108,8 @@ class Themes extends Component {
                             hasNavArrow={false}
                             itemWidth={70}
                             hasSwitch={true}
-                            switchState={selectedTheme.Default}
-                            switchOnValueChange={(value) => this.selectedThemeHandler(value, 0, 'Default')}
+                            switchState={selectedTheme['0']}
+                            switchOnValueChange={(value) => this.selectedThemeHandler(value, 0)}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                             title='Default theme'
                         />
@@ -116,8 +122,8 @@ class Themes extends Component {
                             hasNavArrow={false}
                             itemWidth={70}
                             hasSwitch={true}
-                            switchState={selectedTheme.Dark}
-                            switchOnValueChange={(value) => this.selectedThemeHandler(value, 1, 'Dark')}
+                            switchState={selectedTheme['1']}
+                            switchOnValueChange={(value) => this.selectedThemeHandler(value, 1)}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                             title='Dark theme'
                         />
@@ -138,8 +144,8 @@ class Themes extends Component {
                                         onPress={() => navigation.navigate('Theme', {theme})}
                                         itemWidth={70}
                                         hasSwitch={true}
-                                        switchState={selectedTheme[theme.name]}
-                                        switchOnValueChange={(value) => this.selectedThemeHandler(value, theme.id, theme.name)}
+                                        switchState={selectedTheme[theme.id]}
+                                        switchOnValueChange={(value) => this.selectedThemeHandler(value, theme.id)}
                                         titleStyle={{color: theme.textColor, fontSize: 16}}
                                         title={theme.name}
                                     />
@@ -188,7 +194,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onInitThemes: () => dispatch(actions.initThemes()),
+        onInitThemes: (callback) => dispatch(actions.initThemes(callback)),
         onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),
     }
 };

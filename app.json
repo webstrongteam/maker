@@ -2,10 +2,10 @@
   "expo": {
     "name": "Maker - ToDo list",
     "slug": "maker",
-    "description": "Maker is a advanced ToDo mobile application created with React Native. This app working with Android and iOS.",
+    "description": "Maker is a advanced ToDo mobile application created with React Native and Expo framework. This app working with Android and iOS.",
     "githubUrl": "https://github.com/mateuszpijanowski/maker",
     "privacy": "public",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "sdkVersion": "32.0.0",
     "ios": {
       "supportsTablet": true,

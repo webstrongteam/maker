@@ -39,7 +39,6 @@ class ToDo extends Component {
         this.props.onInitSettings();
         this.props.onInitCategories();
         this.props.onInitToDo();
-        //if (!this.props.isAuth) this.props.navigation.navigate('Auth');
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {

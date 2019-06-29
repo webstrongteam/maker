@@ -14,7 +14,7 @@ This app working with Android and iOS.
 - Sorting task
 - Searching task system
 - Dark mode and own themes
-- Basic app settings
+- App settings
 - Save data in local database
 
 ## Technologies  
@@ -39,11 +39,9 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-* Setting tab :heavy_minus_sign:
-    * Make dropdown for changing first day of week
-* Profile tab :x:
+* Profile tab :heavy_minus_sign:
 * About tab :x:
-* Add notifications system :x:
+* Fix updated DB system :x:
 * Add other languages :x:
 * Create and add app logo :x:
 * Upgrade and fix dark theme :x:
@@ -51,7 +49,9 @@ This app working with Android and iOS.
 - - - -
 * Google account auth system :x:
 * Google drive synch :x:
+* Add notifications system :x:
 * Change datepicker theme :x:
+* App backup system to settings :x:
 * Create unit tests :x:
 * Clear and upgrade quality of code :heavy_minus_sign:
 

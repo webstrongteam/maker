@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Toolbar, Icon, Button, IconToggle} from 'react-native-material-ui';
+import {Toolbar, Button, IconToggle} from 'react-native-material-ui';
 import { fromHsv } from 'react-native-color-picker'
 import ColorPicker from '../../components/UI/ColorPicker/ColorPicker';
 import Template from '../Template/Template';

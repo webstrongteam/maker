@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Toolbar, Icon} from 'react-native-material-ui';
+import {Toolbar, Icon, ListItem} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import {View, StyleSheet, ActivityIndicator, Text} from 'react-native';
+import Dialog from "react-native-dialog";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
@@ -23,24 +24,14 @@ class Themes extends Component {
         }
     }
 
-    convertBoolean = (boolean) => {
-        return !!boolean;
-    };
-
     toggleSetting = (value, name) => {
         if (value) value = 1;
         else value = 0;
         this.props['onChange'+name](value, name);
     };
 
-    showDialog = (option) => {
-        if (option === 'firstDayOfWeek') {
-            // Maybe dropdown?
-        }
-    };
-
     render() {
-        const { loading } = this.state;
+        const { loading, showDialog } = this.state;
         const { navigation, settings, theme } = this.props;
 
         return (
@@ -53,7 +44,45 @@ class Themes extends Component {
                     centerElement='Settings'
                 />
 
+                <Dialog.Container visible={showDialog}>
+                    <Dialog.Title>Select first day of week</Dialog.Title>
+                    <ListItem
+                        divider
+                        dense
+                        onPress={() => {
+                            this.setState({ showDialog: false });
+                            this.props.onChangeFirstDayOfWeek('Sunday');
+                        }}
+                        style={{
+                            primaryText: {
+                                color: settings.firstDayOfWeek === 'Sunday' ?
+                                    theme.primaryColor : theme.textColor
+                            }
+                        }}
+                        centerElement={{
+                            primaryText: "Sunday",
+                        }}
+                    />
+                    <ListItem
+                        dense
+                        onPress={() => {
+                            this.setState({ showDialog: false });
+                            this.props.onChangeFirstDayOfWeek('Monday');
+                        }}
+                        style={{
+                            primaryText: {
+                                color: settings.firstDayOfWeek === 'Monday' ?
+                                    theme.primaryColor : theme.textColor
+                            }
+                        }}
+                        centerElement={{
+                            primaryText: "Monday",
+                        }}
+                    />
+                </Dialog.Container>
+
                 {!loading ?
+                <React.Fragment>
                     <SettingsList borderColor='#d6d5d9' defaultItemSize={50}>
                         <SettingsList.Item
                             hasNavArrow={false}
@@ -71,7 +100,7 @@ class Themes extends Component {
                             hasNavArrow={false}
                             itemWidth={70}
                             hasSwitch={true}
-                            switchState={this.convertBoolean(settings.timeFormat)}
+                            switchState={!!settings.timeFormat}
                             switchOnValueChange={(value) => this.toggleSetting(value, 'TimeFormat')}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                             title='24H time cycle'
@@ -86,7 +115,7 @@ class Themes extends Component {
                             itemWidth={70}
                             hasSwitch={false}
                             titleInfo={settings.firstDayOfWeek}
-                            onPress={this.showDialog('firstDayOfWeek')}
+                            onPress={() => this.setState({ showDialog: true })}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                             title='First day of week'
                         />
@@ -99,7 +128,7 @@ class Themes extends Component {
                             hasNavArrow={false}
                             itemWidth={70}
                             hasSwitch={true}
-                            switchState={this.convertBoolean(settings.confirmFinishingTask)}
+                            switchState={!!settings.confirmFinishingTask}
                             switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmFinishingTask')}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                             title='Confirm finishing task'
@@ -113,7 +142,7 @@ class Themes extends Component {
                             hasNavArrow={false}
                             itemWidth={70}
                             hasSwitch={true}
-                            switchState={this.convertBoolean(settings.confirmRepeatingTask)}
+                            switchState={!!settings.confirmRepeatingTask}
                             switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmRepeatingTask')}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                             title='Confirm repeating task'
@@ -127,19 +156,20 @@ class Themes extends Component {
                             hasNavArrow={false}
                             itemWidth={70}
                             hasSwitch={true}
-                            switchState={this.convertBoolean(settings.confirmDeletingTask)}
+                            switchState={!!settings.confirmDeletingTask}
                             switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmDeletingTask')}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                             title='Confirm deleting task'
                         />
-                    </SettingsList> :
-                    <View style={[styles.container, styles.horizontal]}>
-                        <ActivityIndicator size="large" color="#0000ff" />
+                    </SettingsList>
+                    <View style={styles.version}>
+                        <Text style={{color: theme.textColor}}>Version: {settings.version}</Text>
                     </View>
-                }
-                <View style={styles.version}>
-                    <Text style={{color: theme.textColor}}>Version: {settings.version}</Text>
+                </React.Fragment> :
+                <View style={[styles.container, styles.horizontal]}>
+                    <ActivityIndicator size="large" color="#0000ff" />
                 </View>
+                }
             </Template>
         );
     }

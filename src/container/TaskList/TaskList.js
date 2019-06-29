@@ -41,7 +41,10 @@ class TaskList extends Component {
                 'Repeat task?',
                 'Do you want to repeat this task?',
                 {
-                    Yes: () => this.checkTaskRepeatHandler(this.state.selectedTask),
+                    Yes: () => {
+                        this.checkTaskRepeatHandler(this.state.selectedTask);
+                        this.setState({showDialog: false, selectedTask: false});
+                    },
                     No: () => {
                         this.setState({showDialog: false, selectedTask: false});
                         this.props.onFinishTask(this.state.selectedTask, true);
@@ -56,9 +59,9 @@ class TaskList extends Component {
                 'Finish this task?',
                 {
                     Yes: () => {
-                        this.setState({ showDialog: false });
                         this.props.onFinishTask(this.state.selectedTask);
                         this.props.navigation.goBack();
+                        this.setState({ showDialog: false });
                     },
                     No: () => {
                         this.setState({ showDialog: false });
@@ -72,9 +75,9 @@ class TaskList extends Component {
                 'Delete this task?',
                 {
                     Yes: () => {
-                        this.setState({ showDialog: false });
                         this.props.onRemoveTask(this.state.selectedTask);
                         this.props.navigation.goBack();
+                        this.setState({ showDialog: false });
                     },
                     No: () => {
                         this.setState({ showDialog: false });
@@ -131,11 +134,14 @@ class TaskList extends Component {
             }
         }
 
+        let week = 'week';
+        if (this.props.settings.firstDayOfWeek === 'Monday') week = 'isoWeek';
+
         if (+date < +now) text = 'Overdue';
         else if (+date <= moment(now).endOf("day")) text = 'Today';
         else if (+date <= +moment(now).add(1, 'days').endOf("day")) text = 'Tomorrow';
-        else if (date <= moment(now).endOf("week")) text = 'This week';
-        else if (+date <= +moment(now).add(1, 'week').endOf("week")) text = 'Next week';
+        else if (date <= moment(now).endOf(week)) text = 'This week';
+        else if (+date <= +moment(now).add(1, 'week').endOf(week)) text = 'Next week';
         else if (date <= moment(now).endOf("month")) text = 'This month';
         else if (date <= moment(now).add(1, 'month').endOf("month")) text = 'Next month';
         else text = 'Later';
@@ -213,7 +219,7 @@ class TaskList extends Component {
                                     },
                                     primaryText: {fontSize: 18, color: task.finish ? theme.textColor : priorityColors[task.priority].color},
                                     secondaryText: div === 'Overdue' ? {color: task.finish ? theme.textColor : theme.overdueColor} : {color: priorityColors[task.priority].color},
-                                    tertiaryText: task.finish ? {color: priorityColors[task.priority].color} : {color: theme.textColor}
+                                    tertiaryText: {color: task.finish ? theme.textColor : priorityColors[task.priority].color}
                                 }}
                                 rightElement={
                                     <View style={styles.rightElements}>

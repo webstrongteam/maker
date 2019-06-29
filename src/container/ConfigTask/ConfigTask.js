@@ -129,6 +129,7 @@ class ConfigTask extends Component {
     };
 
     showDialog = (action) => {
+        const { task } = this.props;
         let dialog;
         if (action === 'exit') {
             dialog = generateDialogObject(
@@ -141,7 +142,7 @@ class ConfigTask extends Component {
                     },
                     Save: () => {
                         if (this.state.task.name.trim() !== '') {
-                            this.props.onSaveTask(this.state.task);
+                            this.props.onSaveTask(task);
                             this.props.navigation.goBack();
                         } else this.valid();
                         this.setState({ showDialog: false });
@@ -159,6 +160,7 @@ class ConfigTask extends Component {
                 {
                     Yes: () => {
                         this.setState({ showDialog: false });
+                        this.props.onRemoveTask(task);
                         this.props.navigation.goBack();
                     },
                     Cancel: () => {
