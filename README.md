@@ -40,6 +40,10 @@ This app working with Android and iOS.
 ### ToDo list
 
 * Profile tab :heavy_minus_sign:
+    * Create profile DB
+    * Saving deleted tasks amount in profile DB
+    * Change name
+    * Change avatar system
 * About tab :x:
 * Fix updated DB system :x:
 * Add other languages :x:

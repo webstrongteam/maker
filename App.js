@@ -12,7 +12,7 @@ import thunk from 'redux-thunk';
 import { SQLite } from 'expo';
 import { ThemeContext, getTheme } from 'react-native-material-ui';
 
-const VERSION = '0.5.1B';
+const VERSION = '0.6.0B';
 
 const UIManager = NativeModules.UIManager;
 
@@ -84,7 +84,7 @@ class App extends Component {
                 "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, textColor, headerTextColor, bottomNavigationColor, actionButtonColor, actionButtonIconColor, overdueColor, doneButtonColor, doneButtonTextColor, undoButtonColor, undoButtonTextColor, noneColor, noneTextColor, lowColor, lowTextColor, mediumColor, mediumTextColor, highColor, highTextColor) values (1, 'Dark', '#a33f3f', '#845252', '#707070', '#ffffff', '#ffffff', '#282828', '#a33f3f', '#ffffff', '#ce3241', '#26b596', '#ffffff', '#5bc0de', '#ffffff', '#ffffff', '#000000', '#26b596', '#ffffff', '#cec825', '#ffffff', '#ce3241', '#ffffff');"
             );
             tx.executeSql(
-                "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, theme) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, '0.5.1B', 0);"
+                "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, theme) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, '0.6.0B', 0);"
             );
         }, (err) => {
             console.warn(err);

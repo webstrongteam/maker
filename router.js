@@ -7,6 +7,7 @@ import CategoriesList from './src/container/CategoriesList/CategoriesList';
 import Drawer from './src/container/Drawer/Drawer';
 import Themes from './src/container/Themes/Themes';
 import Theme from './src/container/Themes/Theme';
+import Profile from './src/container/Profile/Profile';
 import Settings from './src/container/Settings/Settings';
 
 const MainNavigator = createStackNavigator(
@@ -14,6 +15,7 @@ const MainNavigator = createStackNavigator(
         ToDo: {screen: ToDo},
         ConfigTask: {screen: ConfigTask},
         CategoriesList: {screen: CategoriesList},
+        Profile: {screen: Profile},
         Drawer: {screen: Drawer},
         Themes: {screen: Themes},
         Theme: {screen: Theme},

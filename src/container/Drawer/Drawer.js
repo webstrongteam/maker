@@ -20,7 +20,7 @@ class DrawerContainer extends Component {
                         style={{ container: { backgroundColor: theme.primaryBackgroundColor } }}
                         items={[
                             {icon: 'bookmark-border', value: 'Categories', onPress: () => navigation.navigate('CategoriesList')},
-                            {icon: 'people', value: 'Profile'},
+                            {icon: 'people', value: 'Profile', onPress: () => navigation.navigate('Profile')},
                         ]}
                     />
                     <Drawer.Section
