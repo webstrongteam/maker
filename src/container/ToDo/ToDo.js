@@ -38,6 +38,7 @@ class ToDo extends Component {
         this.props.onInitTheme();
         this.props.onInitSettings();
         this.props.onInitCategories();
+        this.props.onInitProfile();
         this.props.onInitToDo();
     }
 
@@ -121,7 +122,6 @@ class ToDo extends Component {
 
     deleteAllTask = () => {
         const {finished} = this.props;
-        this.props.onAddDeletedTask(finished.length);
         finished.map(task => {
             this.props.onRemoveTask(task);
         });
@@ -179,7 +179,7 @@ class ToDo extends Component {
 
     dropdownRenderRow(rowData) {
         const {selectedCategory} = this.state;
-        const {tasks,finished,theme} = this.props;
+        const {tasks, finished, theme} = this.props;
         let data;
         if (rowData.id === -3) data = { icon: 'playlist-add', amount: false, bgColor: '#ddd' };
         else if (rowData.id === -1) data = { icon: 'dehaze', amount: tasks.length, bgColor: 'white' };
@@ -435,11 +435,11 @@ const mapDispatchToProps = dispatch => {
         onInitToDo: () => dispatch(actions.initToDo()),
         onInitCategories: () => dispatch(actions.initCategories()),
         onInitTheme: () => dispatch(actions.initTheme()),
+        onInitProfile: () => dispatch(actions.initProfile()),
         onInitSettings: () => dispatch(actions.initSettings()),
         onChangeCategory: (category) => dispatch(actions.changeCategory(category)),
         onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),
-        onRemoveTask: (task) => dispatch(actions.removeTask(task)),
-        onAddDeletedTask: (value = 1) => dispatch(actions.addDeletedTask(value))
+        onRemoveTask: (task) => dispatch(actions.removeTask(task))
     }
 };
 

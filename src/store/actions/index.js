@@ -28,7 +28,7 @@ export {
     initProfile,
     changeName,
     changeAvatar,
-    addDeletedTask
+    addEndedTask
 } from './profile';
 
 export {

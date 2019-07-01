@@ -48,13 +48,13 @@ class Profile extends Component {
     };
 
     render() {
-        const {navigation, theme, tasks, profile} = this.props;
-        const finishedList = tasks.filter(task => task.finish);
+        const {navigation, theme, tasks, finished, profile, categories} = this.props;
         let list;
         const listData = [];
-        listData.push({ label: 'All task', data: tasks.length });
-        listData.push({ label: 'Ended task', data: profile.deletedTask });
-        listData.push({ label: 'Finished task', data: finishedList.length });
+        listData.push({ label: 'All task', data: tasks.length+finished.length });
+        listData.push({ label: 'Finished task', data: finished.length });
+        listData.push({ label: 'Ended task', data: profile.endedTask });
+        listData.push({ label: 'All categories', data: categories.length });
 
         if (profile.id === 0) {
             list = listData.map((item, index) => (
@@ -173,7 +173,9 @@ const mapStateToProps = state => {
         theme: state.theme.theme,
         settings: state.settings,
         tasks: state.tasks.tasks,
-        profile: state.profile
+        finished: state.tasks.finished,
+        profile: state.profile,
+        categories: state.categories.categories,
     }
 };
 const mapDispatchToProps = dispatch => {

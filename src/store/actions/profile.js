@@ -46,11 +46,12 @@ export const changeAvatar = (avatar) => {
     };
 };
 
-export const addDeletedTask = (value) => {
-    return dispatch => {
+export const addEndedTask = () => {
+    return (dispatch, getState) => {
+        const value = getState().profile.endedTask+1;
         db.transaction(
             tx => {
-                tx.executeSql('update profile set deletedTask = ? where id = 0;', [value], () => {
+                tx.executeSql('update profile set endedTask = ? where id = 0;', [value], () => {
                     dispatch(initProfile())
                 });
             }, (err) => console.warn(err), null

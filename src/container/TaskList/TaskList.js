@@ -42,11 +42,13 @@ class TaskList extends Component {
                 'Do you want to repeat this task?',
                 {
                     Yes: () => {
-                        this.checkTaskRepeatHandler(this.state.selectedTask);
                         this.setState({showDialog: false, selectedTask: false});
+                        this.checkTaskRepeatHandler(this.state.selectedTask);
+                        this.props.onAddEndedTask();
                     },
                     No: () => {
                         this.setState({showDialog: false, selectedTask: false});
+                        this.props.onAddEndedTask();
                         this.props.onFinishTask(this.state.selectedTask, true);
                     },
                     Cancel: () => this.setState({showDialog: false, selectedTask: false})
@@ -59,9 +61,10 @@ class TaskList extends Component {
                 'Finish this task?',
                 {
                     Yes: () => {
-                        this.props.onFinishTask(this.state.selectedTask);
-                        this.props.navigation.goBack();
                         this.setState({ showDialog: false });
+                        this.props.onFinishTask(this.state.selectedTask);
+                        this.props.onAddEndedTask();
+                        this.props.navigation.goBack();
                     },
                     No: () => {
                         this.setState({ showDialog: false });
@@ -77,7 +80,6 @@ class TaskList extends Component {
                     Yes: () => {
                         this.setState({ showDialog: false });
                         this.props.onRemoveTask(this.state.selectedTask);
-                        this.props.onAddDeletedTask();
                         this.props.navigation.goBack();
                     },
                     No: () => {
@@ -299,16 +301,17 @@ const mapStateToProps = state => {
         finished: state.tasks.finished,
         refresh: state.tasks.refresh,
         theme: state.theme.theme,
+        profile: state.profile,
         settings: state.settings
     }
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         onFinishTask: (task, endTask = false) => dispatch(actions.finishTask(task, endTask)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onUndoTask: (task) => dispatch(actions.undoTask(task)),
-        onAddDeletedTask: (value = 1) => dispatch(actions.addDeletedTask(value))
+        onAddEndedTask: () => dispatch(actions.addEndedTask())
     }
 };
 

@@ -13,7 +13,7 @@ import thunk from 'redux-thunk';
 import { SQLite } from 'expo';
 import { ThemeContext, getTheme } from 'react-native-material-ui';
 
-const VERSION = '0.6.0B';
+const VERSION = '0.6.1B';
 
 const UIManager = NativeModules.UIManager;
 
@@ -59,6 +59,9 @@ class App extends Component {
                 'DROP TABLE IF EXISTS themes;'
             );
             tx.executeSql(
+                'DROP TABLE IF EXISTS profile;'
+            );
+            tx.executeSql(
                 'DROP TABLE IF EXISTS settings;'
             );*/
             tx.executeSql(
@@ -74,7 +77,7 @@ class App extends Component {
                 'create table if not exists themes (id integer primary key not null, name text, primaryColor text, primaryBackgroundColor text, secondaryBackgroundColor text, textColor text, headerTextColor text, bottomNavigationColor text, actionButtonColor text, actionButtonIconColor text, overdueColor text, doneButtonColor text, doneButtonTextColor text, undoButtonColor text, undoButtonTextColor text, noneColor text, noneTextColor text, lowColor text, lowTextColor text, mediumColor text, mediumTextColor text, highColor text, highTextColor text);'
             );
             tx.executeSql(
-                'create table if not exists profile (id integer primary key not null, name text, avatar text, deletedTask integer);'
+                'create table if not exists profile (id integer primary key not null, name text, avatar text, endedTask integer);'
             );
             tx.executeSql(
                 'create table if not exists settings (id integer primary key not null, sorting text, sortingType text, timeFormat integer, firstDayOfWeek text, confirmFinishingTask integer, confirmRepeatingTask integer, confirmDeletingTask integer, version text, theme integer DEFAULT 0 REFERENCES themes(id) ON DELETE SET DEFAULT);'
@@ -89,10 +92,10 @@ class App extends Component {
                 "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, textColor, headerTextColor, bottomNavigationColor, actionButtonColor, actionButtonIconColor, overdueColor, doneButtonColor, doneButtonTextColor, undoButtonColor, undoButtonTextColor, noneColor, noneTextColor, lowColor, lowTextColor, mediumColor, mediumTextColor, highColor, highTextColor) values (1, 'Dark', '#a33f3f', '#845252', '#707070', '#ffffff', '#ffffff', '#282828', '#a33f3f', '#ffffff', '#ce3241', '#26b596', '#ffffff', '#5bc0de', '#ffffff', '#ffffff', '#000000', '#26b596', '#ffffff', '#cec825', '#ffffff', '#ce3241', '#ffffff');"
             );
             tx.executeSql(
-                "INSERT OR IGNORE INTO profile (id, name, avatar, deletedTask) values (0, 'Maker user', '', 0);"
+                "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker user', '', 0);"
             );
             tx.executeSql(
-                "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, theme) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, '0.6.0B', 0);"
+                "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, theme) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, '0.6.1B', 0);"
             );
         }, (err) => {
             console.warn(err);
@@ -109,7 +112,7 @@ class App extends Component {
                     version = rows._array[0].version;
                     if (version !== VERSION) {
                         tx.executeSql('DROP TABLE IF EXISTS settings;');
-                        this.initDatabase();
+                        return this.initDatabase();
                     }
                 }, (err) => {
                     console.warn(err);
