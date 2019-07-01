@@ -59,8 +59,8 @@ class Themes extends Component {
                 selectedTheme[theme] = +theme === +id;
             });
 
-            this.showDialog();
             this.setState({ selectedTheme });
+            this.showDialog();
         }
     };
 

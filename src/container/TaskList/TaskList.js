@@ -75,9 +75,10 @@ class TaskList extends Component {
                 'Delete this task?',
                 {
                     Yes: () => {
-                        this.props.onRemoveTask(this.state.selectedTask);
-                        this.props.navigation.goBack();
                         this.setState({ showDialog: false });
+                        this.props.onRemoveTask(this.state.selectedTask);
+                        this.props.onAddDeletedTask();
+                        this.props.navigation.goBack();
                     },
                     No: () => {
                         this.setState({ showDialog: false });
@@ -307,6 +308,7 @@ const mapDispatchToProps = dispatch => {
         onFinishTask: (task, endTask = false) => dispatch(actions.finishTask(task, endTask)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onUndoTask: (task) => dispatch(actions.undoTask(task)),
+        onAddDeletedTask: (value = 1) => dispatch(actions.addDeletedTask(value))
     }
 };
 

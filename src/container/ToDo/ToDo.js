@@ -121,6 +121,7 @@ class ToDo extends Component {
 
     deleteAllTask = () => {
         const {finished} = this.props;
+        this.props.onAddDeletedTask(finished.length);
         finished.map(task => {
             this.props.onRemoveTask(task);
         });
@@ -438,6 +439,7 @@ const mapDispatchToProps = dispatch => {
         onChangeCategory: (category) => dispatch(actions.changeCategory(category)),
         onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
+        onAddDeletedTask: (value = 1) => dispatch(actions.addDeletedTask(value))
     }
 };
 

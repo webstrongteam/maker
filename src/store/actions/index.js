@@ -25,6 +25,13 @@ export {
 } from './settings';
 
 export {
+    initProfile,
+    changeName,
+    changeAvatar,
+    addDeletedTask
+} from './profile';
+
+export {
     initTheme,
     initThemes,
     setSelectedTheme,

@@ -15,6 +15,7 @@ This app working with Android and iOS.
 - Searching task system
 - Dark mode and own themes
 - App settings
+- Profile tab with statistics
 - Save data in local database
 
 ## Technologies  
@@ -39,12 +40,7 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-* Profile tab :heavy_minus_sign:
-    * Create profile DB
-    * Saving deleted tasks amount in profile DB
-    * Change name
-    * Change avatar system
-* About tab :x:
+* About tab :heavy_minus_sign:
 * Fix updated DB system :x:
 * Add other languages :x:
 * Create and add app logo :x:

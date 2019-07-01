@@ -91,8 +91,9 @@ class ConfigCategory extends Component {
                     label="Save"
                     onPress={() => {
                         if (category.name.trim() !== '') {
-                            this.props.onSaveCategory(category);
                             this.props.toggleModal();
+                            this.props.onSaveCategory(category);
+                            this.updateCategory('name', '');
                         } else {
                             this.valid();
                         }
@@ -102,6 +103,7 @@ class ConfigCategory extends Component {
                     label="Cancel"
                     onPress={() => {
                         this.props.toggleModal();
+                        this.updateCategory('name', '');
                     }}
                 />
             </Dialog.Container>

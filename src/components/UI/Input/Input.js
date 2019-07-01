@@ -7,7 +7,7 @@ const input = (props) => {
 
     const inputElement = <TextField
         {...props.elementConfig}
-        style={inputClasses}
+        style={props.style ? props.style : inputClasses}
         tintColor={props.color}
         autoFocus={props.focus ? props.focus : false}
         onChangeText={props.changed}

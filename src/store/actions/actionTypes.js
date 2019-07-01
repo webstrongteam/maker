@@ -10,5 +10,8 @@ export const INIT_CATEGORIES = 'INIT_CATEGORIES';
 export const INIT_THEME = 'INIT_THEME';
 export const INIT_THEMES = 'INIT_THEMES';
 
+// Profile
+export const UPDATE_PROFILE = 'UPDATE_PROFILE';
+
 // Settings
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
