@@ -1,7 +1,7 @@
 import * as actionTypes from './actionTypes';
+import { SQLite } from 'expo-sqlite';
 import { convertNumberToDate } from '../../shared/utility';
 import moment from 'moment';
-import { SQLite } from 'expo';
 
 const db = SQLite.openDatabase('maker.db');
 

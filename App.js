@@ -10,10 +10,10 @@ import themeReducer from './src/store/reducers/theme';
 import profileReducer from './src/store/reducers/profile';
 import settingsReducer from './src/store/reducers/settings';
 import thunk from 'redux-thunk';
-import { SQLite } from 'expo';
+import { SQLite } from 'expo-sqlite';
 import { ThemeContext, getTheme } from 'react-native-material-ui';
 
-const VERSION = '0.6.1B';
+const VERSION = '0.7.0B';
 
 const UIManager = NativeModules.UIManager;
 
@@ -95,7 +95,7 @@ class App extends Component {
                 "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker user', '', 0);"
             );
             tx.executeSql(
-                "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, theme) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, '0.6.1B', 0);"
+                "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, theme) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, '0.7.0B', 0);"
             );
         }, (err) => {
             console.warn(err);

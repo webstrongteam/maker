@@ -8,6 +8,7 @@ import Drawer from './src/container/Drawer/Drawer';
 import Themes from './src/container/Themes/Themes';
 import Theme from './src/container/Themes/Theme';
 import Profile from './src/container/Profile/Profile';
+import About from './src/components/About/About';
 import Settings from './src/container/Settings/Settings';
 
 const MainNavigator = createStackNavigator(
@@ -19,6 +20,7 @@ const MainNavigator = createStackNavigator(
         Drawer: {screen: Drawer},
         Themes: {screen: Themes},
         Theme: {screen: Theme},
+        About: {screen: About},
         Settings: {screen: Settings}
     },
     {

@@ -29,7 +29,7 @@ class DrawerContainer extends Component {
                         items={[
                             {icon: 'assessment', value: 'Themes', onPress: () => navigation.navigate('Themes')},
                             {icon: 'settings', value: 'Settings', onPress: () => navigation.navigate('Settings')},
-                            {icon: 'info', value: 'About Maker'}
+                            {icon: 'info', value: 'About Maker', onPress: () => navigation.navigate('About')}
                         ]}
                     />
                 </Drawer>

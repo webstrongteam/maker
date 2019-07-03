@@ -9,7 +9,9 @@ import {
 } from 'react-native';
 import Input from '../../components/UI/Input/Input';
 import Template from '../Template/Template';
-import {ImagePicker, Permissions, Constants} from 'expo';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
+import * as ImagePicker from 'expo-image-picker';
 import { Toolbar } from 'react-native-material-ui';
 
 import { connect } from 'react-redux';
@@ -81,7 +83,7 @@ class Profile extends Component {
                     onLeftElementPress={() => {
                         navigation.goBack();
                     }}
-                    centerElement='Profile'
+                    centerElement='Your profile'
                 />
                 {profile.id === 0 &&
                 <View style={{

@@ -1,6 +1,6 @@
 # Maker - ToDo app
 
-**Maker** is a advanced ToDo mobile application created with React Native and Expo framwork. 
+**Maker** is a advanced ToDo mobile application created with React Native and Expo framework. 
 This app working with Android and iOS. 
 
 ## Basic features  
@@ -21,8 +21,8 @@ This app working with Android and iOS.
 ## Technologies  
 **Maker** was created together with:  
   
-- React <i>16.5.0</i>
-- React Native <i>32.0.0</i>
+- React <i>16.8.2</i>
+- React Native <i>33.0.0</i>
 - React Redux <i>6.0.0</i>  
 - Redux <i>4.0.1</i>  
 - Redux Thunk <i>2.3.0</i>  
@@ -35,15 +35,13 @@ This app working with Android and iOS.
 - React Native Color Picker <i>0.4.1</i>  
 - React Native Settings List <i>1.8.0</i>  
 - Moment.JS <i>2.24.0</i>
-- Expo <i>32.0.0</i>
+- Expo <i>33.0.0</i>
 - Axios <i>0.19.0</i>
 
 ### ToDo list
 
-* About tab :heavy_minus_sign:
-* Fix updated DB system :x:
+* Fix updated DB system :heavy_minus_sign:
 * Add other languages :x:
-* Create and add app logo :x:
 * Upgrade and fix dark theme :x:
 * Optimization code and fix errors :x:
 - - - -
