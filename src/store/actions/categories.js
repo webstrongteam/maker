@@ -22,23 +22,23 @@ export const initCategories = () => {
     };
 };
 
-export const saveCategory = (category) => {
+export const saveCategory = (category, callback) => {
     return dispatch => {
         if (category.id !== false) {
             db.transaction(
                 tx => {
                     tx.executeSql(`update categories set name = ? where id = ?;`, [category.name, category.id], () => {
-                        dispatch(initCategories());
+                        dispatch(initCategories(), callback());
                     });
-                }, (err) => console.warn(err), null
+                }, (err) => console.warn(err)
             );
         } else {
             db.transaction(
                 tx => {
                     tx.executeSql('insert into categories (name) values (?)', [category.name], () => {
-                        dispatch(initCategories());
+                        dispatch(initCategories(), callback());
                     });
-                }, (err) => console.warn(err), null
+                }, (err) => console.warn(err)
             );
         }
     };

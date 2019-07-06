@@ -160,7 +160,7 @@ class Themes extends Component {
                         />
                     </SettingsList> :
                     <View style={[styles.container, styles.horizontal]}>
-                        <ActivityIndicator size="large" color="#0000ff" />
+                        <ActivityIndicator size="large" color={theme.primaryColor} />
                     </View>
                 }
             </Template>
@@ -194,7 +194,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onInitThemes: (callback) => dispatch(actions.initThemes(callback)),
+        onInitThemes: () => dispatch(actions.initThemes()),
         onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),
     }
 };

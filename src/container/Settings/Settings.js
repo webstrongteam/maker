@@ -20,13 +20,7 @@ class Themes extends Component {
     };
 
     componentDidMount() {
-        this.props.onInitSettings();
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.settings !== prevProps.settings && this.props.settings.id === 0) {
-            this.setState({ loading: false });
-        }
+        this.props.onInitSettings(() => this.setState({ loading: false }));
     }
 
     toggleSnackbar = (message, visible = true) => {
@@ -223,7 +217,7 @@ class Themes extends Component {
                     </View>
                 </React.Fragment> :
                 <View style={[styles.container, styles.horizontal]}>
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <ActivityIndicator size="large" color={theme.primaryColor} />
                 </View>
                 }
             </Template>
@@ -262,7 +256,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onInitSettings: () => dispatch(actions.initSettings()),
+        onInitSettings: (callback) => dispatch(actions.initSettings(callback)),
         onChangeLang: (value) => dispatch(actions.changeLang(value)),
         onChangeFirstDayOfWeek: (value) => dispatch(actions.changeFirstDayOfWeek(value)),
         onChangeTimeFormat: (value) => dispatch(actions.changeTimeFormat(value)),

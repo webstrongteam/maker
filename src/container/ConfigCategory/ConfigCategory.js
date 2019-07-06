@@ -1,14 +1,11 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import Dialog from "react-native-dialog";
 import Input from '../../components/UI/Input/Input';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
-import {SQLite} from "expo";
-const db = SQLite.openDatabase('maker.db');
-
-class ConfigCategory extends Component {
+class ConfigCategory extends PureComponent {
     state = {
         category: {
             id: false,
@@ -28,7 +25,7 @@ class ConfigCategory extends Component {
     componentDidMount() {
         const {editCategory} = this.props;
         this.initCategory(editCategory);
-    }
+    };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.editCategory !== this.props.editCategory) {
@@ -36,18 +33,12 @@ class ConfigCategory extends Component {
         }
     }
 
-    initCategory = (editCategory) => {
-        if (editCategory) {
-            db.transaction(
-                tx => {
-                    tx.executeSql('select * from categories where id = ?', [editCategory.id], (_, {rows}) => {
-                        this.setState({category: rows._array[0], editCategory: true});
-                    });
-                }, (err) => console.warn(err), null
-            );
-        } else {
-            this.setState({editCategory: false});
-        }
+    initCategory = (category) => {
+        if (category) this.setState({category, editCategory: true});
+        else this.setState({
+            category: {id: false, name: ''},
+            editCategory: false
+        });
     };
 
     updateCategory = (name, value) => {
@@ -92,18 +83,16 @@ class ConfigCategory extends Component {
                     onPress={() => {
                         if (category.name.trim() !== '') {
                             this.props.toggleModal();
-                            this.props.onSaveCategory(category);
-                            this.updateCategory('name', '');
-                        } else {
-                            this.valid();
-                        }
+                            this.props.onSaveCategory(category, () => {
+                                this.updateCategory('name', '');
+                            });
+                        } else this.valid();
                     }}
                 />
                 <Dialog.Button
                     label="Cancel"
                     onPress={() => {
                         this.props.toggleModal();
-                        this.updateCategory('name', '');
                     }}
                 />
             </Dialog.Container>
@@ -119,7 +108,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onSaveCategory: (category) => dispatch(actions.saveCategory(category)),
+        onSaveCategory: (category, callback) => dispatch(actions.saveCategory(category, callback)),
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigCategory);

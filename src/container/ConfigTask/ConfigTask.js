@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {View, Picker, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
+import {View, Picker, StyleSheet, ScrollView} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import {Toolbar, Subheader, IconToggle, Button} from 'react-native-material-ui';
 import Template from '../Template/Template';
@@ -12,9 +12,6 @@ import moment from 'moment';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
-
-import { SQLite } from 'expo';
-const db = SQLite.openDatabase('maker.db');
 
 class ConfigTask extends Component {
     state = {
@@ -87,15 +84,7 @@ class ConfigTask extends Component {
 
     componentDidMount() {
         const task = this.props.navigation.getParam('task', false);
-        if (task) {
-            db.transaction(
-                tx => {
-                    tx.executeSql('select * from tasks where id = ?', [task.id], (_, {rows}) => {
-                        this.initTask(rows._array[0]);
-                    });
-                }, (err) => console.warn(err), null
-            );
-        }
+        if (task) this.initTask(task);
         else {
             const checkExistCategory = this.props.categories.filter(cate => cate.name === this.state.task.category);
                 if (!checkExistCategory.length) {
@@ -206,8 +195,6 @@ class ConfigTask extends Component {
     render() {
         const { task, controls, editTask, showModal, repeat, dialog, showDialog, otherOption, selectedTime, showOtherRepeat, repeatValue } = this.state;
         const { navigation, categories, theme, settings } = this.props;
-        const edit = this.props.navigation.getParam('task', false);
-        let loading = true;
         let date;
         let now;
 
@@ -217,11 +204,6 @@ class ConfigTask extends Component {
         } else {
             date = moment(task.date, 'DD-MM-YYYY');
             now = new Date().setHours(0,0,0,0);
-        }
-
-        if (!edit) loading = false;
-        else if (edit) {
-            if (editTask) loading = false;
         }
 
         return (
@@ -253,17 +235,13 @@ class ConfigTask extends Component {
                             navigation.goBack();
                         }
                     }}
-                    centerElement={!loading ?
-                        editTask ?
-                            "Edit task" :
-                            "New task" :
-                        <ActivityIndicator size="small" color="#f4a442" />
-                    }
+                    centerElement={editTask ? "Edit task" : "New task"}
                 />
 
                 <OtherRepeat
                     showModal={showOtherRepeat}
                     repeat={repeatValue}
+                    color={theme.primaryColor}
                     selectedTime={selectedTime}
                     onSetRepeat={value => this.setState({ repeatValue: value })}
                     onSelectTime={value => this.setState({ selectedTime: value })}
@@ -284,144 +262,138 @@ class ConfigTask extends Component {
                 />
                 }
 
-                {!loading ?
-                    <React.Fragment>
-                        <ScrollView>
-                            <Input
-                                elementConfig={controls.name.elementConfig}
-                                focus={!editTask}
-                                value={task.name}
-                                color={theme.primaryColor}
-                                changed={(value) => {
-                                    if (value.length <= controls.name.elementConfig.characterRestriction) {
-                                        this.valid(value);
-                                        this.updateTask('name', value);
-                                    } else {
-                                        this.valid(value);
-                                    }
-                                }}/>
-                            <Input
-                                elementConfig={controls.description.elementConfig}
-                                value={task.description}
-                                color={theme.primaryColor}
-                                changed={value => this.updateTask('description', value)}/>
-                            <View style={styles.container}>
-                                <Subheader text="Due date"
-                                    style={{
-                                        container: styles.label,
-                                        text: {color: theme.primaryColor}
-                                    }}
-                                />
-                                <DatePicker
-                                    ref={(e) => this.datepickerDate = e}
-                                    style={{width: '100%'}}
-                                    date={task.date.slice(0, 10)}
-                                    mode="date"
-                                    iconComponent={
-                                        task.date ?
-                                        <IconToggle onPress={() => this.updateTask('date', '')} name='clear' /> :
-                                        <IconToggle onPress={() => this.datepickerDate.onPressDate()} name='event' />
-                                    }
-                                    placeholder="Select due date"
-                                    format="DD-MM-YYYY"
-                                    confirmBtnText="Confirm"
-                                    cancelBtnText="Cancel"
-                                    customStyles={{
-                                        dateInput: styles.datePicker,
-                                        dateText: {
-                                            color: +date < +now ? theme.overdueColor : theme.textColor
-                                        }
-                                    }}
-                                    onDateChange={(date) => this.updateTask('date', date)}
-                                />
-                                {task.date !== '' &&
-                                <React.Fragment>
-                                    <DatePicker
-                                        ref={(e) => this.datepickerTime = e}
-                                        style={{width: '100%'}}
-                                        date={task.date.slice(13, 18)}
-                                        is24Hour={!!settings.timeFormat}
-                                        mode="time"
-                                        iconComponent={
-                                            task.date.slice(13, 18) ?
-                                                <IconToggle onPress={() => this.updateTask('date', task.date.slice(0, 10))} name='clear' /> :
-                                                <IconToggle onPress={() => this.datepickerTime.onPressDate()} name='access-time' />
-                                        }
-                                        placeholder="Select due time"
-                                        format="HH:mm"
-                                        confirmBtnText="Confirm"
-                                        cancelBtnText="Cancel"
-                                        customStyles={{
-                                            dateInput: styles.datePicker,
-                                            dateText: {
-                                                color: +date < +now ? theme.overdueColor : theme.textColor
-                                            }
-                                        }}
-                                        onDateChange={(date) => this.updateTask('date', `${task.date.slice(0, 10)} - ${date}`)}
-                                    />
-                                    <Subheader text="Repeat"
-                                        style={{
-                                            container: styles.label,
-                                            text: {color: theme.primaryColor}
-                                        }}
-                                    />
-                                    <View style={styles.picker}>
-                                        <Picker
-                                            selectedValue={
-                                                repeat[task.repeat] ?
-                                                    repeat[task.repeat].value :
-                                                    otherOption
-                                            }
-                                            onValueChange={value => this.updateRepeat(value)}>
-                                            {Object.keys(repeat).map(name => (
-                                                <Picker.Item key={name} label={repeat[name].name} value={repeat[name].value} />
-                                            ))}
-                                            <Picker.Item label={otherOption} value={otherOption} />
-                                        </Picker>
-                                    </View>
-                                </React.Fragment>
+                <ScrollView>
+                    <Input
+                        elementConfig={controls.name.elementConfig}
+                        focus={!editTask}
+                        value={task.name}
+                        color={theme.primaryColor}
+                        changed={(value) => {
+                            if (value.length <= controls.name.elementConfig.characterRestriction) {
+                                this.valid(value);
+                                this.updateTask('name', value);
+                            } else {
+                                this.valid(value);
+                            }
+                        }}/>
+                    <Input
+                        elementConfig={controls.description.elementConfig}
+                        value={task.description}
+                        color={theme.primaryColor}
+                        changed={value => this.updateTask('description', value)}/>
+                    <View style={styles.container}>
+                        <Subheader text="Due date"
+                            style={{
+                                container: styles.label,
+                                text: {color: theme.primaryColor}
+                            }}
+                        />
+                        <DatePicker
+                            ref={(e) => this.datepickerDate = e}
+                            style={{width: '100%'}}
+                            date={task.date.slice(0, 10)}
+                            mode="date"
+                            iconComponent={
+                                task.date ?
+                                <IconToggle onPress={() => this.updateTask('date', '')} name='clear' /> :
+                                <IconToggle onPress={() => this.datepickerDate.onPressDate()} name='event' />
+                            }
+                            placeholder="Select due date"
+                            format="DD-MM-YYYY"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            customStyles={{
+                                dateInput: styles.datePicker,
+                                dateText: {
+                                    color: +date < +now ? theme.overdueColor : theme.textColor
                                 }
-                                <Subheader text="Category"
-                                    style={{
-                                        container: styles.label,
-                                        text: {color: theme.primaryColor}
-                                    }}
-                                />
-                                <View style={styles.selectCategory}>
-                                    <View style={styles.category}>
-                                        <Picker
-                                            selectedValue={task.category}
-                                            onValueChange={value => this.updateTask('category', value)}>
-                                            {categories.map(cate => (
-                                                <Picker.Item key={cate.id} label={cate.name} value={cate.name}/>
-                                            ))}
-                                        </Picker>
-                                    </View>
-                                    <IconToggle onPress={() => this.toggleModalHandler()} name="playlist-add"/>
-                                </View>
-                                <Subheader text="Priority"
-                                    style={{
-                                        container: styles.label,
-                                        text: {color: theme.primaryColor}
-                                    }}
-                                />
-                                <View style={styles.picker}>
-                                    <Picker
-                                        selectedValue={task.priority}
-                                        onValueChange={value => this.updateTask('priority', value)}>
-                                        <Picker.Item label="None" value="none"/>
-                                        <Picker.Item label="Low" value="low"/>
-                                        <Picker.Item label="Medium" value="medium"/>
-                                        <Picker.Item label="High" value="high"/>
-                                    </Picker>
-                                </View>
+                            }}
+                            onDateChange={(date) => this.updateTask('date', date)}
+                        />
+                        {task.date !== '' &&
+                        <React.Fragment>
+                            <DatePicker
+                                ref={(e) => this.datepickerTime = e}
+                                style={{width: '100%'}}
+                                date={task.date.slice(13, 18)}
+                                is24Hour={!!settings.timeFormat}
+                                mode="time"
+                                iconComponent={
+                                    task.date.slice(13, 18) ?
+                                        <IconToggle onPress={() => this.updateTask('date', task.date.slice(0, 10))} name='clear' /> :
+                                        <IconToggle onPress={() => this.datepickerTime.onPressDate()} name='access-time' />
+                                }
+                                placeholder="Select due time"
+                                format="HH:mm"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                customStyles={{
+                                    dateInput: styles.datePicker,
+                                    dateText: {
+                                        color: +date < +now ? theme.overdueColor : theme.textColor
+                                    }
+                                }}
+                                onDateChange={(date) => this.updateTask('date', `${task.date.slice(0, 10)} - ${date}`)}
+                            />
+                            <Subheader text="Repeat"
+                                style={{
+                                    container: styles.label,
+                                    text: {color: theme.primaryColor}
+                                }}
+                            />
+                            <View style={styles.picker}>
+                                <Picker
+                                    selectedValue={
+                                        repeat[task.repeat] ?
+                                            repeat[task.repeat].value :
+                                            otherOption
+                                    }
+                                    mode="dialog"
+                                    onValueChange={value => this.updateRepeat(value)}>
+                                    {Object.keys(repeat).map(name => (
+                                        <Picker.Item key={name} label={repeat[name].name} value={repeat[name].value} />
+                                    ))}
+                                    <Picker.Item label={otherOption} value={otherOption} />
+                                </Picker>
                             </View>
-                        </ScrollView>
-                    </React.Fragment> :
-                    <View style={[styles.container, styles.horizontal]}>
-                        <ActivityIndicator size="large" color="#0000ff"/>
+                        </React.Fragment>
+                        }
+                        <Subheader text="Category"
+                            style={{
+                                container: styles.label,
+                                text: {color: theme.primaryColor}
+                            }}
+                        />
+                        <View style={styles.selectCategory}>
+                            <View style={styles.category}>
+                                <Picker
+                                    selectedValue={task.category}
+                                    onValueChange={value => this.updateTask('category', value)}>
+                                    {categories.map(cate => (
+                                        <Picker.Item key={cate.id} label={cate.name} value={cate.name}/>
+                                    ))}
+                                </Picker>
+                            </View>
+                            <IconToggle onPress={() => this.toggleModalHandler()} name="playlist-add"/>
+                        </View>
+                        <Subheader text="Priority"
+                            style={{
+                                container: styles.label,
+                                text: {color: theme.primaryColor}
+                            }}
+                        />
+                        <View style={styles.picker}>
+                            <Picker
+                                selectedValue={task.priority}
+                                onValueChange={value => this.updateTask('priority', value)}>
+                                <Picker.Item label="None" value="none"/>
+                                <Picker.Item label="Low" value="low"/>
+                                <Picker.Item label="Medium" value="medium"/>
+                                <Picker.Item label="High" value="high"/>
+                            </Picker>
+                        </View>
                     </View>
-                }
+                </ScrollView>
             </Template>
         );
     }
@@ -434,11 +406,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: "center",
         justifyContent: "center"
-    },
-    horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 50
     },
     datePicker: {
         marginRight: 5,

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Dialog from "react-native-dialog";
 import Input from '../../../components/UI/Input/Input';
-import {Picker, StyleSheet, View} from "react-native";
+import {Picker, View} from "react-native";
 
 class OtherRepeat extends Component {
     state = {
@@ -19,7 +19,7 @@ class OtherRepeat extends Component {
     };
 
     render() {
-        const { showModal, repeat, selectedTime } = this.props;
+        const { showModal, repeat, selectedTime, color } = this.props;
 
         return (
             <Dialog.Container visible={showModal}>
@@ -29,6 +29,7 @@ class OtherRepeat extends Component {
                         elementConfig={this.state.repeat}
                         focus={true}
                         value={repeat}
+                        color={color}
                         changed={(value) => this.valid(value)}
                     />
                     <Picker
@@ -56,13 +57,5 @@ class OtherRepeat extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    picker: {
-        width: '100%',
-        height: 50,
-        borderWidth: 0
-    },
-});
 
 export default OtherRepeat;

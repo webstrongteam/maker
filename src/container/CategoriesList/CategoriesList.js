@@ -15,7 +15,7 @@ class TaskList extends Component {
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps !== this.props || prevProps.refresh !== this.props.refresh) {
+        if (prevProps.refresh !== this.props.refresh) {
             this.setState({ refresh: this.props.refresh });
         }
     }
@@ -35,7 +35,9 @@ class TaskList extends Component {
                 <Toolbar
                     leftElement="arrow-back"
                     rightElement={
-                        <IconToggle color={theme.headerTextColor} onPress={() => this.toggleModalHandler(false)} name="add" />
+                        <IconToggle
+                            color={theme.headerTextColor}
+                            onPress={() => this.toggleModalHandler(false)} name="add" />
                     }
                     onLeftElementPress={() => {
                         navigation.goBack();
@@ -68,7 +70,7 @@ class TaskList extends Component {
                                 }
                                 rightElement={
                                     cate.id !== 0 ?
-                                    <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)} name="remove" /> : false
+                                    <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)} name="remove" /> : null
                                 }
                                 centerElement={{
                                     primaryText: `${cate.name}`,

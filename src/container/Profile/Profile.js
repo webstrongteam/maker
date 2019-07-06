@@ -18,9 +18,15 @@ import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
 
 class Profile extends Component {
+    state = {
+        loading: true
+    };
+
     componentDidMount() {
         this.props.onInitSettings();
-        this.props.onInitProfile();
+        this.props.onInitProfile(() => {
+            this.setState({ loading: false });
+        });
     }
 
     getPermissionAsync = async () => {
@@ -50,6 +56,7 @@ class Profile extends Component {
     };
 
     render() {
+        const {loading} = this.state;
         const {navigation, theme, tasks, finished, profile, categories} = this.props;
         let list;
         const listData = [];
@@ -85,35 +92,43 @@ class Profile extends Component {
                     }}
                     centerElement='Your profile'
                 />
-                {profile.id === 0 &&
-                <View style={{
-                    backgroundColor: theme.secondaryBackgroundColor,
-                    paddingBottom: 10
-                }}>
-                    <TouchableOpacity onPress={() => this.getPermissionAsync()}>
-                        <Image style={styles.image} source={
-                            profile.avatar ?
-                                {uri: profile.avatar} :
-                                require('../../assets/profile.png'
-                            )}/>
-                    </TouchableOpacity>
-                    <Input
-                        elementConfig={{ label: '' }}
-                        style={styles.name}
-                        value={profile.name}
-                        color={theme.primaryColor}
-                        changed={(value) => {
-                            if (value.trim() !== '') {
-                                this.props.onChangeName(value);
-                            } else {
-                               // this.valid(value);
-                            }
-                        }}/>
+
+                {!loading ?
+                <React.Fragment>
+                    {profile.id === 0 &&
+                    <View style={{
+                        backgroundColor: theme.secondaryBackgroundColor,
+                        paddingBottom: 10
+                    }}>
+                        <TouchableOpacity onPress={() => this.getPermissionAsync()}>
+                            <Image style={styles.image} source={
+                                profile.avatar ?
+                                    {uri: profile.avatar} :
+                                    require('../../assets/profile.png'
+                                    )}/>
+                        </TouchableOpacity>
+                        <Input
+                            elementConfig={{label: ''}}
+                            style={styles.name}
+                            value={profile.name}
+                            color={theme.primaryColor}
+                            changed={(value) => {
+                                if (value.trim() !== '') {
+                                    this.props.onChangeName(value);
+                                } else {
+                                    // this.valid(value);
+                                }
+                            }}/>
+                    </View>
+                    }
+                    <ScrollView style={styles.list}>
+                        {list}
+                    </ScrollView>
+                </React.Fragment> :
+                <View style={[styles.container, styles.horizontal]}>
+                    <ActivityIndicator size="large" color={theme.primaryColor}/>
                 </View>
                 }
-                <ScrollView style={styles.list}>
-                    {list}
-                </ScrollView>
             </Template>
         )
     }
@@ -183,7 +198,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onInitSettings: () => dispatch(actions.initSettings()),
-        onInitProfile: () => dispatch(actions.initProfile()),
+        onInitProfile: (callback) => dispatch(actions.initProfile(callback)),
         onChangeName: (name) => dispatch(actions.changeName(name)),
         onChangeAvatar: (avatar) => dispatch(actions.changeAvatar(avatar)),
     }

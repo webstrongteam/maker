@@ -10,14 +10,14 @@ export const onUpdateSettings = (settings) => {
     }
 };
 
-export const initSettings = () => {
+export const initSettings = (callback = () => null) => {
     return dispatch => {
         db.transaction(
             tx => {
                 tx.executeSql('select * from settings;', [], (_, {rows}) => {
                     dispatch(onUpdateSettings(rows._array[0]));
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.warn(err), callback()
         );
     };
 };

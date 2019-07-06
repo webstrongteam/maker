@@ -3,7 +3,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import {ActivityIndicator, NativeModules, StyleSheet, View} from 'react-native';
 import { ThemeContext, getTheme } from 'react-native-material-ui';
 import { Provider } from 'react-redux';
-import axios from 'axios';
+import thunk from 'redux-thunk';
 import Router from './router';
 import tasksReducer from './src/store/reducers/tasks';
 import cateReducer from './src/store/reducers/categories';
@@ -11,11 +11,8 @@ import themeReducer from './src/store/reducers/theme';
 import profileReducer from './src/store/reducers/profile';
 import settingsReducer from './src/store/reducers/settings';
 import {initDatabase, initTheme} from './db';
-import thunk from 'redux-thunk';
 
 const UIManager = NativeModules.UIManager;
-
-axios.defaults.baseURL = "https://todo-56c42.firebaseio.com/"; // Default Axios URL
 
 const rootReducer = combineReducers({
     tasks: tasksReducer,

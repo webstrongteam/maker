@@ -10,12 +10,12 @@ export const onUpdateProfile = (profile) => {
     }
 };
 
-export const initProfile = () => {
+export const initProfile = (callback = () => null) => {
     return dispatch => {
         db.transaction(
             tx => {
                 tx.executeSql('select * from profile;', [], (_, {rows}) => {
-                    dispatch(onUpdateProfile(rows._array[0]));
+                    dispatch(onUpdateProfile(rows._array[0]), callback());
                 });
             }, (err) => console.warn(err), null
         );

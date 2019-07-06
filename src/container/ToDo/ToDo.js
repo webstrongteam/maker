@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Animated, Text, ActivityIndicator,TouchableHighlight, Easing, Platform} from 'react-native';
+import {StyleSheet, View, ScrollView, Animated, Text, ActivityIndicator, TouchableHighlight, Easing, Platform} from 'react-native';
 import {ActionButton, Toolbar, BottomNavigation, Icon} from 'react-native-material-ui';
 import ModalDropdown from 'react-native-modal-dropdown';
 import TaskList from '../TaskList/TaskList';
@@ -36,10 +36,10 @@ class ToDo extends Component {
 
     componentDidMount() {
         this.props.onInitTheme();
-        this.props.onInitSettings();
         this.props.onInitCategories();
         this.props.onInitProfile();
         this.props.onInitToDo();
+        this.props.onInitSettings();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -150,7 +150,6 @@ class ToDo extends Component {
             return this.toggleModalHandler();
         }
         else if (category !== 'All') {
-            this.props.onChangeCategory(category);
             filterTask = tasks.filter(task => task.category === category);
         }
 
@@ -347,7 +346,7 @@ class ToDo extends Component {
                     </React.Fragment>
                 </Template> :
                 <View style={[styles.container, styles.horizontal]}>
-                    <ActivityIndicator size="large" color="#0000ff"/>
+                    <ActivityIndicator size="large" color="#0000ff" />
                 </View>
                 }
             </React.Fragment>
@@ -437,7 +436,6 @@ const mapDispatchToProps = dispatch => {
         onInitTheme: () => dispatch(actions.initTheme()),
         onInitProfile: () => dispatch(actions.initProfile()),
         onInitSettings: () => dispatch(actions.initSettings()),
-        onChangeCategory: (category) => dispatch(actions.changeCategory(category)),
         onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task))
     }
