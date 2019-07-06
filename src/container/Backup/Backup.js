@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, ActivityIndicator} from 'react-native';
+import {StyleSheet, View, ScrollView, ActivityIndicator, Text} from 'react-native';
 import {Toolbar, IconToggle, ListItem, Snackbar} from 'react-native-material-ui';
 import { generateDialogObject } from '../../shared/utility';
 import DialogModal from '../../components/UI/Dialog/Dialog';
@@ -207,8 +207,9 @@ This will delete your current database!`,
 
                 {!loading ?
                 <View style={styles.container}>
-                    <ScrollView style={[styles.categories, {backgroundColor: theme.primaryBackgroundColor}]}>
-                        {backups.map(name => (
+                    <ScrollView style={[styles.backups, {backgroundColor: theme.primaryBackgroundColor}]}>
+                        {backups.length ?
+                        backups.map(name => (
                             <ListItem
                                 divider
                                 dense
@@ -231,7 +232,9 @@ This will delete your current database!`,
                                     primaryText: name
                                 }}
                             />
-                        ))}
+                        )) :
+                        <Text style={[styles.empty, {color: theme.textColor}]}>Backup list is empty!</Text>
+                        }
                     </ScrollView>
                 </View> :
                 <View style={[styles.container, styles.horizontal]}>
@@ -248,14 +251,19 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center'
     },
-    categories: {
-        width: "100%",
+    backups: {
+        width: '100%'
     },
     horizontal: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         padding: 50
     },
+    empty: {
+        marginTop: 30,
+        width: "100%",
+        textAlign: "center"
+    }
 });
 
 const mapStateToProps = state => {

@@ -1,6 +1,6 @@
 {
   "name": "maker",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",

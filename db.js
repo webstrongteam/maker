@@ -1,6 +1,6 @@
 import { SQLite } from 'expo-sqlite';
 
-const VERSION = '0.9.0';
+const VERSION = '0.9.1';
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
@@ -66,11 +66,10 @@ const initApp = (callback) => {
             tx.executeSql("select version from settings", [], (_, {rows}) => {
                 const version = rows._array[0].version;
                 if (version !== VERSION) {
-                    return tx.executeSql('DROP TABLE IF EXISTS settings;', [], () => initDatabase(callback));
+                    tx.executeSql('update settings set version = ? where id = 0;', [VERSION])
                 }
-                callback();
             });
-        }, (err) => console.warn(err)
+        }, (err) => console.warn(err), callback()
     );
 };
 
