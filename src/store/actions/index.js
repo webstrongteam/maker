@@ -21,7 +21,8 @@ export {
     changeConfirmFinishingTask,
     changeConfirmRepeatingTask,
     changeFirstDayOfWeek,
-    changeTimeFormat
+    changeTimeFormat,
+    changeLang
 } from './settings';
 
 export {

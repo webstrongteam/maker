@@ -58,6 +58,18 @@ export const changeFirstDayOfWeek = (value) => {
     };
 };
 
+export const changeLang = (value) => {
+    return dispatch => {
+        db.transaction(
+            tx => {
+                tx.executeSql('update settings set lang = ? where id = 0;', [value], () => {
+                    dispatch(initSettings())
+                });
+            }, (err) => console.warn(err), null
+        );
+    };
+};
+
 export const changeConfirmFinishingTask = (value) => {
     return dispatch => {
         db.transaction(

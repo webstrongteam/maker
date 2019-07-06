@@ -6,10 +6,10 @@ import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
 import ConfigCategory from "../ConfigCategory/ConfigCategory";
 import Dialog from '../../components/UI/Dialog/Dialog';
+import {generateDialogObject} from "../../shared/utility";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
-import {generateDialogObject} from "../../shared/utility";
 
 const UP = 1;
 const DOWN = -1;

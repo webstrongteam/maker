@@ -17,6 +17,7 @@ This app working with Android and iOS.
 - App settings
 - Profile tab with statistics
 - Save data in local database
+- Database backup system
 
 ## Technologies  
 **Maker** was created together with:  
@@ -40,16 +41,13 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-* Fix updated DB system :heavy_minus_sign:
-* Add other languages :x:
 * Upgrade and fix dark theme :x:
+* Add Google ads :x:
 * Optimization code and fix errors :x:
 - - - -
-* Google account auth system :x:
-* Google drive synch :x:
+* Add polish language :x:
 * Add notifications system :x:
 * Change datepicker theme :x:
-* App backup system to settings :x:
 * Create unit tests :x:
 * Clear and upgrade quality of code :heavy_minus_sign:
 

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Toolbar, Icon, ListItem} from 'react-native-material-ui';
+import {Toolbar, Icon, ListItem, Snackbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import {View, StyleSheet, ActivityIndicator, Text} from 'react-native';
@@ -11,7 +11,12 @@ import * as actions from "../../store/actions";
 class Themes extends Component {
     state = {
         loading: true,
-        showDialog: false
+        showWeekDialog: false,
+        showLangDialog: false,
+        snackbar: {
+            visible: false,
+            message: ''
+        }
     };
 
     componentDidMount() {
@@ -24,6 +29,10 @@ class Themes extends Component {
         }
     }
 
+    toggleSnackbar = (message, visible = true) => {
+        this.setState({snackbar: {visible, message}});
+    };
+
     toggleSetting = (value, name) => {
         if (value) value = 1;
         else value = 0;
@@ -31,7 +40,7 @@ class Themes extends Component {
     };
 
     render() {
-        const { loading, showDialog } = this.state;
+        const { loading, showWeekDialog, showLangDialog, snackbar } = this.state;
         const { navigation, settings, theme } = this.props;
 
         return (
@@ -44,14 +53,17 @@ class Themes extends Component {
                     centerElement='Settings'
                 />
 
-                <Dialog.Container visible={showDialog}>
+                <Snackbar visible={snackbar.visible} message={snackbar.message} onRequestClose={() => this.toggleSnackbar('', false)} />
+
+                <Dialog.Container visible={showWeekDialog}>
                     <Dialog.Title>Select first day of week</Dialog.Title>
                     <ListItem
                         divider
                         dense
                         onPress={() => {
-                            this.setState({ showDialog: false });
+                            this.setState({ showWeekDialog: false });
                             this.props.onChangeFirstDayOfWeek('Sunday');
+                            this.toggleSnackbar('First day of week has been changed');
                         }}
                         style={{
                             primaryText: {
@@ -66,8 +78,9 @@ class Themes extends Component {
                     <ListItem
                         dense
                         onPress={() => {
-                            this.setState({ showDialog: false });
+                            this.setState({ showWeekDialog: false });
                             this.props.onChangeFirstDayOfWeek('Monday');
+                            this.toggleSnackbar('First day of week has been changed');
                         }}
                         style={{
                             primaryText: {
@@ -81,7 +94,32 @@ class Themes extends Component {
                     />
                     <Dialog.Button
                         label="Cancel"
-                        onPress={() => this.setState({ showDialog: false })}
+                        onPress={() => this.setState({ showWeekDialog: false })}
+                    />
+                </Dialog.Container>
+
+                <Dialog.Container visible={showLangDialog}>
+                    <Dialog.Title>Select language</Dialog.Title>
+                    <ListItem
+                        divider
+                        dense
+                        onPress={() => {
+                            this.setState({ showLangDialog: false });
+                            this.props.onChangeLang('en');
+                        }}
+                        style={{
+                            primaryText: {
+                                color: settings.lang === 'en' ?
+                                    theme.primaryColor : theme.textColor
+                            }
+                        }}
+                        centerElement={{
+                            primaryText: "English",
+                        }}
+                    />
+                    <Dialog.Button
+                        label="Cancel"
+                        onPress={() => this.setState({ showLangDialog: false })}
                     />
                 </Dialog.Container>
 
@@ -119,9 +157,23 @@ class Themes extends Component {
                             itemWidth={70}
                             hasSwitch={false}
                             titleInfo={settings.firstDayOfWeek}
-                            onPress={() => this.setState({ showDialog: true })}
+                            onPress={() => this.setState({ showWeekDialog: true })}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                             title='First day of week'
+                        />
+                        <SettingsList.Item
+                            icon={
+                                <View style={styles.iconStyle}>
+                                    <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="g-translate" />
+                                </View>
+                            }
+                            hasNavArrow={true}
+                            itemWidth={70}
+                            hasSwitch={false}
+                            titleInfo={settings.lang}
+                            onPress={() => this.setState({ showLangDialog: true })}
+                            titleStyle={{color: theme.textColor, fontSize: 16}}
+                            title='Language'
                         />
                         <SettingsList.Item
                             icon={
@@ -211,6 +263,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onInitSettings: () => dispatch(actions.initSettings()),
+        onChangeLang: (value) => dispatch(actions.changeLang(value)),
         onChangeFirstDayOfWeek: (value) => dispatch(actions.changeFirstDayOfWeek(value)),
         onChangeTimeFormat: (value) => dispatch(actions.changeTimeFormat(value)),
         onChangeConfirmRepeatingTask: (value) => dispatch(actions.changeConfirmRepeatingTask(value)),
