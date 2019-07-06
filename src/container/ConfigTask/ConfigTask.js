@@ -161,9 +161,14 @@ class ConfigTask extends Component {
         this.setState({showDialog: true, dialog});
     };
 
-    toggleModalHandler = () => {
-        const { showModal } = this.state;
-        this.setState({ showModal: !showModal });
+    toggleModalHandler = (category = false) => {
+        const { showModal, task } = this.state;
+        if (category) {
+            task.category = category.name;
+            this.setState({ task, showModal: !showModal });
+        } else {
+            this.setState({ showModal: !showModal });
+        }
     };
 
     updateRepeat = (repeat) => {

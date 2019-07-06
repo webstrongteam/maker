@@ -82,7 +82,7 @@ class ConfigCategory extends PureComponent {
                     label="Save"
                     onPress={() => {
                         if (category.name.trim() !== '') {
-                            this.props.toggleModal();
+                            this.props.toggleModal(category);
                             this.props.onSaveCategory(category, () => {
                                 this.updateCategory('name', '');
                             });

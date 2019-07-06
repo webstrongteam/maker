@@ -41,9 +41,9 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-* Upgrade and fix dark theme :x:
-* Add Google ads :x:
-* Optimization code and fix errors :x:
+* Upgrade and fix dark theme :heavy_minus_sign:
+* Add Google ads :heavy_minus_sign:
+* Optimization code and fix errors :heavy_minus_sign:
 - - - -
 * Add polish language :x:
 * Add notifications system :x:
