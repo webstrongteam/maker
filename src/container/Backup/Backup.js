@@ -9,6 +9,7 @@ import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
 import { SQLite } from 'expo-sqlite';
 import Template from '../Template/Template';
+import {BannerAd} from "../../../adsAPI";
 import moment from 'moment';
 
 import { connect } from 'react-redux';
@@ -241,6 +242,7 @@ This will delete your current database!`,
                     <ActivityIndicator size="large" color={theme.primaryColor} />
                 </View>
                 }
+                <BannerAd />
             </Template>
         )
     }

@@ -22,9 +22,9 @@ This app working with Android and iOS.
 ## Technologies  
 **Maker** was created together with:  
   
-- React <i>16.8.2</i>
+- React <i>16.8.3</i>
 - React Native <i>33.0.0</i>
-- React Redux <i>6.0.0</i>  
+- React Redux <i>7.1.0</i>  
 - Redux <i>4.0.1</i>  
 - Redux Thunk <i>2.3.0</i>  
 - React Navigation <i>3.11.0</i>  
@@ -42,7 +42,6 @@ This app working with Android and iOS.
 ### ToDo list
 
 * Upgrade and fix dark theme :heavy_minus_sign:
-* Add Google ads :heavy_minus_sign:
 * Optimization code and fix errors :heavy_minus_sign:
 - - - -
 * Add polish language :x:

@@ -4,6 +4,7 @@ import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import {View, StyleSheet, ActivityIndicator, Text} from 'react-native';
 import Dialog from "react-native-dialog";
+import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
@@ -220,6 +221,7 @@ class Themes extends Component {
                     <ActivityIndicator size="large" color={theme.primaryColor} />
                 </View>
                 }
+                <BannerAd />
             </Template>
         );
     }
@@ -242,6 +244,7 @@ const styles = StyleSheet.create({
         padding: 50
     },
     version: {
+        marginTop: 20,
         marginLeft: 'auto',
         marginRight: 'auto',
         opacity: 0.35

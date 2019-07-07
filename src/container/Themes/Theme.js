@@ -7,6 +7,7 @@ import SettingsList from 'react-native-settings-list';
 import Input from '../../components/UI/Input/Input';
 import {ActivityIndicator, StyleSheet, View} from "react-native";
 import Dialog from '../../components/UI/Dialog/Dialog';
+import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
@@ -252,6 +253,7 @@ class Theme extends Component {
                     <ActivityIndicator size="large" color={theme.primaryColor} />
                 </View>
                 }
+                <BannerAd />
             </Template>
         );
     }

@@ -3,6 +3,7 @@ import {StyleSheet, View, ScrollView, TouchableOpacity} from 'react-native';
 import {Toolbar, IconToggle, Icon, ListItem} from 'react-native-material-ui';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Template from '../Template/Template';
+import {BannerAd} from '../../../adsAPI';
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
@@ -28,7 +29,7 @@ class TaskList extends Component {
 
     render() {
         const {showModal, selectedCategory} = this.state;
-        const {categories, navigation, theme} = this.props;
+        const {categories, navigation, theme, tasks} = this.props;
 
         return (
             <Template>
@@ -73,12 +74,14 @@ class TaskList extends Component {
                                     <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)} name="remove" /> : null
                                 }
                                 centerElement={{
-                                    primaryText: `${cate.name}`,
+                                    primaryText:
+                                        `${cate.name} (${tasks.filter(task => task.category === cate.name).length})`,
                                 }}
                             />
                         ))}
                     </ScrollView>
                 </View>
+                <BannerAd />
             </Template>
         )
     }
@@ -96,6 +99,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
+        tasks: state.tasks.tasks,
         categories: state.categories.categories,
         refresh: state.tasks.refresh,
         theme: state.theme.theme

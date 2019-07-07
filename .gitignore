@@ -1,5 +1,6 @@
 node_modules/**/*
 .expo*
+adsAPI.js
 /.idea/*
 npm-debug.*
 *.jks

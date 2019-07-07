@@ -13,6 +13,7 @@ import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import { Toolbar } from 'react-native-material-ui';
+import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
@@ -129,6 +130,7 @@ class Profile extends Component {
                     <ActivityIndicator size="large" color={theme.primaryColor}/>
                 </View>
                 }
+                <BannerAd />
             </Template>
         )
     }

@@ -8,6 +8,7 @@ import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
 import { convertNumberToDate, generateDialogObject } from '../../shared/utility';
+import {BannerAd} from "../../../adsAPI";
 import moment from 'moment';
 
 import { connect } from 'react-redux';
@@ -78,7 +79,7 @@ class ConfigTask extends Component {
         repeatValue: '1',
         showOtherRepeat: false,
         showDialog: false,
-        editTask: false,
+        editTask: null,
         showModal: false
     };
 
@@ -87,9 +88,10 @@ class ConfigTask extends Component {
         if (task) this.initTask(task);
         else {
             const checkExistCategory = this.props.categories.filter(cate => cate.name === this.state.task.category);
-                if (!checkExistCategory.length) {
-                    this.updateTask('category', this.props.categories[0].name);
+            if (!checkExistCategory.length) {
+                this.updateTask('category', this.props.categories[0].name);
             }
+            this.setState({ editTask: false });
         }
     }
 
@@ -268,6 +270,7 @@ class ConfigTask extends Component {
                 }
 
                 <ScrollView>
+                    {editTask != null &&
                     <Input
                         elementConfig={controls.name.elementConfig}
                         focus={!editTask}
@@ -281,6 +284,7 @@ class ConfigTask extends Component {
                                 this.valid(value);
                             }
                         }}/>
+                    }
                     <Input
                         elementConfig={controls.description.elementConfig}
                         value={task.description}
@@ -399,6 +403,7 @@ class ConfigTask extends Component {
                         </View>
                     </View>
                 </ScrollView>
+                <BannerAd />
             </Template>
         );
     }
@@ -408,6 +413,7 @@ const styles = StyleSheet.create({
     container: {
         paddingLeft: 20,
         paddingRight: 20,
+        paddingBottom: 20,
         display: 'flex',
         alignItems: "center",
         justifyContent: "center"

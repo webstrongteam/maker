@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import {Drawer, Toolbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
+import {InterstitialAd} from '../../../adsAPI';
+
 import { connect } from 'react-redux';
 
 class DrawerContainer extends Component {
+    componentDidMount() {
+        InterstitialAd();
+    }
+
     render() {
         const {navigation, theme} = this.props;
 

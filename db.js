@@ -1,6 +1,6 @@
 import { SQLite } from 'expo-sqlite';
 
-const VERSION = '0.9.2';
+const VERSION = '0.9.3';
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
