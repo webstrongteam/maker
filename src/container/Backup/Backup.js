@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, ActivityIndicator, Text} from 'react-native';
+import {View, ScrollView, ActivityIndicator, Text} from 'react-native';
 import {Toolbar, IconToggle, ListItem, Snackbar} from 'react-native-material-ui';
 import { generateDialogObject } from '../../shared/utility';
+import {container, activity, fullWidth, empty} from '../../shared/styles';
 import DialogModal from '../../components/UI/Dialog/Dialog';
 import Dialog from "react-native-dialog";
 import * as FileSystem from "expo-file-system";
@@ -207,8 +208,8 @@ This will delete your current database!`,
                 </Dialog.Container>
 
                 {!loading ?
-                <View style={styles.container}>
-                    <ScrollView style={[styles.backups, {backgroundColor: theme.primaryBackgroundColor}]}>
+                <View style={container}>
+                    <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
                         {backups.length ?
                         backups.map(name => (
                             <ListItem
@@ -234,11 +235,11 @@ This will delete your current database!`,
                                 }}
                             />
                         )) :
-                        <Text style={[styles.empty, {color: theme.textColor}]}>Backup list is empty!</Text>
+                        <Text style={[empty, {color: theme.textColor}]}>Backup list is empty!</Text>
                         }
                     </ScrollView>
                 </View> :
-                <View style={[styles.container, styles.horizontal]}>
+                <View style={activity}>
                     <ActivityIndicator size="large" color={theme.primaryColor} />
                 </View>
                 }
@@ -247,26 +248,6 @@ This will delete your current database!`,
         )
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    backups: {
-        width: '100%'
-    },
-    horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 50
-    },
-    empty: {
-        marginTop: 30,
-        width: "100%",
-        textAlign: "center"
-    }
-});
 
 const mapStateToProps = state => {
     return {

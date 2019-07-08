@@ -5,6 +5,7 @@ import {generateDialogObject, sortingByType} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
 import Button from "react-native-material-ui/src/Button";
+import {empty} from '../../shared/styles';
 import moment from 'moment';
 
 import { connect } from 'react-redux';
@@ -276,7 +277,7 @@ class TaskList extends Component {
                 }
                 {tasks && tasks.length ?
                     <View style={{ paddingBottom: 20 }}>{taskList}</View>
-                    : <Text style={[styles.empty, {color: theme.textColor}]}>Task list is empty!</Text>
+                    : <Text style={[empty, {color: theme.textColor}]}>Task list is empty!</Text>
                 }
             </View>
         )
@@ -288,11 +289,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
-    },
-    empty: {
-        marginTop: 30,
-        width: "100%",
-        textAlign: "center"
     }
 });
 

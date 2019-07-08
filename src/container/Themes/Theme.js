@@ -7,6 +7,7 @@ import SettingsList from 'react-native-settings-list';
 import Input from '../../components/UI/Input/Input';
 import {ActivityIndicator, StyleSheet, View} from "react-native";
 import Dialog from '../../components/UI/Dialog/Dialog';
+import {activity} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
@@ -241,7 +242,7 @@ class Theme extends Component {
                                     onPress={() => this.configColorPicker(
                                         names[index], key
                                     )}
-                                    arrowIcon={<View style={[ styles.colorPreView, {backgroundColor: theme[key]} ]} />}
+                                    arrowIcon={<View style={[ styles.colorPreview, {backgroundColor: theme[key]} ]} />}
                                 />
                             );
 
@@ -249,7 +250,7 @@ class Theme extends Component {
                         })}
                     </SettingsList>
                 </React.Fragment> :
-                <View style={[styles.container, styles.horizontal]}>
+                <View style={activity}>
                     <ActivityIndicator size="large" color={theme.primaryColor} />
                 </View>
                 }
@@ -260,16 +261,7 @@ class Theme extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 50
-    },
-    colorPreView: {
+    colorPreview: {
         marginTop: 10,
         marginRight: 10,
         width: 50,

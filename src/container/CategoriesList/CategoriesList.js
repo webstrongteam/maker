@@ -1,6 +1,7 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, TouchableOpacity} from 'react-native';
+import React, {PureComponent} from 'react';
+import {View, ScrollView, TouchableOpacity} from 'react-native';
 import {Toolbar, IconToggle, Icon, ListItem} from 'react-native-material-ui';
+import {container, fullWidth} from '../../shared/styles';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Template from '../Template/Template';
 import {BannerAd} from '../../../adsAPI';
@@ -8,7 +9,7 @@ import {BannerAd} from '../../../adsAPI';
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
 
-class TaskList extends Component {
+class TaskList extends PureComponent {
     state = {
         showModal: false,
         refresh: false,
@@ -16,7 +17,7 @@ class TaskList extends Component {
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.refresh !== this.props.refresh) {
+        if (prevProps.categories !== this.props.categories) {
             this.setState({ refresh: this.props.refresh });
         }
     }
@@ -50,8 +51,8 @@ class TaskList extends Component {
                     editCategory={selectedCategory}
                     toggleModal={this.toggleModalHandler}
                 />
-                <View style={styles.container}>
-                    <ScrollView style={[styles.categories, {backgroundColor: theme.primaryBackgroundColor}]}>
+                <View style={container}>
+                    <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
                         {categories.map(cate => (
                             <ListItem
                                 divider
@@ -71,7 +72,7 @@ class TaskList extends Component {
                                 }
                                 rightElement={
                                     cate.id !== 0 ?
-                                    <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)} name="remove" /> : null
+                                        <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)} name="remove" /> : null
                                 }
                                 centerElement={{
                                     primaryText:
@@ -86,16 +87,6 @@ class TaskList extends Component {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    categories: {
-        width: "100%",
-    },
-});
 
 const mapStateToProps = state => {
     return {

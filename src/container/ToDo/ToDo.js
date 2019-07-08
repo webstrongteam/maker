@@ -7,6 +7,7 @@ import Template from '../Template/Template';
 import ConfigCategory from "../ConfigCategory/ConfigCategory";
 import Dialog from '../../components/UI/Dialog/Dialog';
 import {generateDialogObject} from "../../shared/utility";
+import {container, activity, fullWidth} from '../../shared/styles';
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
@@ -279,12 +280,12 @@ class ToDo extends Component {
                     }
 
                     <React.Fragment>
-                        <View style={styles.container}>
+                        <View style={container}>
                             <ScrollView
                                 keyboardShouldPersistTaps="always"
                                 keyboardDismissMode="interactive"
                                 onScroll={this.onScroll}
-                                style={styles.tasks}>
+                                style={fullWidth}>
                                 <TaskList
                                     searchText={searchText}
                                     tasks={tasks}
@@ -345,7 +346,7 @@ class ToDo extends Component {
                         </BottomNavigation>
                     </React.Fragment>
                 </Template> :
-                <View style={[styles.container, styles.horizontal]}>
+                <View style={activity}>
                     <ActivityIndicator size="large" color="#0000ff" />
                 </View>
                 }
@@ -355,18 +356,6 @@ class ToDo extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    tasks: {
-        width: "100%",
-    },
-    horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 50
-    },
     dropdown: {
         width: 230,
         justifyContent: 'flex-start',

@@ -13,10 +13,8 @@ class ConfigCategory extends PureComponent {
         },
         controls: {
             name: {
-                elementConfig: {
-                    label: 'Enter category name',
-                    characterRestriction: 30
-                }
+                label: 'Enter category name',
+                characterRestriction: 30
             }
         },
         editCategory: null
@@ -50,9 +48,9 @@ class ConfigCategory extends PureComponent {
     valid = (value = this.state.category.name) => {
         const newControls = this.state.controls;
         if (value.trim() === '') {
-            newControls.name.elementConfig.error = `Category name is required!`;
+            newControls.name.error = `Category name is required!`;
         } else {
-            delete newControls.name.elementConfig.error;
+            delete newControls.name.error;
         }
         this.setState({ controls: newControls })
     };
@@ -65,17 +63,15 @@ class ConfigCategory extends PureComponent {
             <Dialog.Container visible={showModal}>
                 <Dialog.Title>{editCategory ? 'Edit category' : 'New category'}</Dialog.Title>
                 <Input
-                    elementConfig={controls.name.elementConfig}
+                    elementConfig={controls.name}
                     focus={true}
                     color={theme.primaryColor}
                     value={category.name}
                     changed={(value) => {
-                        if (value.length <= controls.name.elementConfig.characterRestriction) {
+                        if (value.length <= controls.name.characterRestriction) {
                             this.valid(value);
                             this.updateCategory('name', value);
-                        } else {
-                            this.valid(value);
-                        }
+                        } else this.valid(value);
                     }}
                 />
                 <Dialog.Button

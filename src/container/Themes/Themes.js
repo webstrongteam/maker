@@ -2,13 +2,14 @@ import React, {Component} from 'react';
 import {Toolbar, IconToggle, Icon} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
-import {View, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, ActivityIndicator} from 'react-native';
 import Dialog from "../../components/UI/Dialog/Dialog";
+import {generateDialogObject} from "../../shared/utility";
+import {activity, iconStyle} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
-import {generateDialogObject} from "../../shared/utility";
 
 class Themes extends Component {
     state = {
@@ -102,7 +103,7 @@ class Themes extends Component {
                         />
                         <SettingsList.Item
                             icon={
-                                <View style={styles.iconStyle}>
+                                <View style={iconStyle}>
                                     <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="home"/>
                                 </View>
                             }
@@ -116,7 +117,7 @@ class Themes extends Component {
                         />
                         <SettingsList.Item
                             icon={
-                                <View style={styles.iconStyle}>
+                                <View style={iconStyle}>
                                     <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="brightness-2"/>
                                 </View>
                             }
@@ -160,7 +161,7 @@ class Themes extends Component {
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                         />
                     </SettingsList> :
-                    <View style={[styles.container, styles.horizontal]}>
+                    <View style={activity}>
                         <ActivityIndicator size="large" color={theme.primaryColor} />
                     </View>
                 }
@@ -169,24 +170,6 @@ class Themes extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    iconStyle: {
-        marginLeft:15,
-        marginRight:5,
-        alignSelf:'center',
-        justifyContent:'center'
-    },
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 50
-    },
-});
 
 const mapStateToProps = state => {
     return {

@@ -47,6 +47,7 @@ This app working with Android and iOS.
 * Add polish language :x:
 * Add notifications system :x:
 * Change datepicker theme :x:
+* Upgrade about tab design :x:
 * Create unit tests :x:
 * Clear and upgrade quality of code :heavy_minus_sign:
 

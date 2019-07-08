@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import {ActivityIndicator, NativeModules, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, NativeModules, View} from 'react-native';
 import { ThemeContext, getTheme } from 'react-native-material-ui';
+import {activity} from './src/shared/styles';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import Router from './router';
@@ -56,23 +57,11 @@ class App extends Component {
                     <Router />
                 </ThemeContext.Provider>
             </Provider> :
-            <View style={[styles.container, styles.horizontal]}>
+            <View style={activity}>
                 <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 50
-    }
-});
 
 export default App;

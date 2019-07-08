@@ -3,6 +3,7 @@ import {Toolbar, Icon, ListItem, Snackbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import {View, StyleSheet, ActivityIndicator, Text} from 'react-native';
+import {activity, iconStyle} from '../../shared/styles';
 import Dialog from "react-native-dialog";
 import {BannerAd} from "../../../adsAPI";
 
@@ -130,7 +131,7 @@ class Themes extends Component {
                         />
                         <SettingsList.Item
                             icon={
-                                <View style={styles.iconStyle}>
+                                <View style={iconStyle}>
                                     <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="alarm"/>
                                 </View>
                             }
@@ -144,7 +145,7 @@ class Themes extends Component {
                         />
                         <SettingsList.Item
                             icon={
-                                <View style={styles.iconStyle}>
+                                <View style={iconStyle}>
                                     <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="event"/>
                                 </View>
                             }
@@ -158,7 +159,7 @@ class Themes extends Component {
                         />
                         <SettingsList.Item
                             icon={
-                                <View style={styles.iconStyle}>
+                                <View style={iconStyle}>
                                     <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="g-translate" />
                                 </View>
                             }
@@ -172,7 +173,7 @@ class Themes extends Component {
                         />
                         <SettingsList.Item
                             icon={
-                                <View style={styles.iconStyle}>
+                                <View style={iconStyle}>
                                     <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="done"/>
                                 </View>
                             }
@@ -186,7 +187,7 @@ class Themes extends Component {
                         />
                         <SettingsList.Item
                             icon={
-                                <View style={styles.iconStyle}>
+                                <View style={iconStyle}>
                                     <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="autorenew"/>
                                 </View>
                             }
@@ -200,7 +201,7 @@ class Themes extends Component {
                         />
                         <SettingsList.Item
                             icon={
-                                <View style={styles.iconStyle}>
+                                <View style={iconStyle}>
                                     <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="delete"/>
                                 </View>
                             }
@@ -217,7 +218,7 @@ class Themes extends Component {
                         <Text style={{color: theme.textColor}}>Version: {settings.version}</Text>
                     </View>
                 </React.Fragment> :
-                <View style={[styles.container, styles.horizontal]}>
+                <View style={activity}>
                     <ActivityIndicator size="large" color={theme.primaryColor} />
                 </View>
                 }
@@ -228,21 +229,6 @@ class Themes extends Component {
 }
 
 const styles = StyleSheet.create({
-    iconStyle: {
-        marginLeft:15,
-        marginRight:5,
-        alignSelf:'center',
-        justifyContent:'center'
-    },
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 50
-    },
     version: {
         marginTop: 20,
         marginLeft: 'auto',

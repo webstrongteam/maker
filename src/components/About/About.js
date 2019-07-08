@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     ScrollView
 } from 'react-native';
+import {separator} from '../../shared/styles';
 import * as WebBrowser from 'expo-web-browser';
 import Template from '../../container/Template/Template';
 import { Toolbar } from 'react-native-material-ui';
@@ -31,7 +32,7 @@ const about = (props) => {
                         style={styles.logo}
                         source={require('../../assets/icon.png')}
                     />
-                    <Text style={ styles.separator } />
+                    <Text style={separator} />
                     <Text style={styles.primaryText}>
                         Maker is a advanced ToDo mobile application created with React Native
                         and Expo framework. This app working with Android and iOS.
@@ -99,13 +100,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         alignSelf: 'center'
-    },
-    separator: {
-        height: 1,
-        marginLeft: 15,
-        marginRight: 15,
-        flex: 1,
-        backgroundColor: '#E4E4E4'
     }
 });
 

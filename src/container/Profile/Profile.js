@@ -13,6 +13,7 @@ import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import { Toolbar } from 'react-native-material-ui';
+import {activity, separator} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
@@ -73,15 +74,9 @@ class Profile extends Component {
                         <Text style={{ color: theme.primaryColor, fontSize: 16 }}> {item.label} </Text>
                         <Text style={styles.rowContent}> {item.data} </Text>
                     </View>
-                    <View style={styles.separator}/>
+                    <View style={separator}/>
                 </View>
             ));
-        } else {
-            list = (
-                <View style={[styles.container, styles.horizontal]}>
-                    <ActivityIndicator size="large" color="#0000ff"/>
-                </View>
-            )
         }
 
         return (
@@ -122,11 +117,11 @@ class Profile extends Component {
                             }}/>
                     </View>
                     }
-                    <ScrollView style={styles.list}>
+                    <ScrollView style={{ flex: 1 }}>
                         {list}
                     </ScrollView>
                 </React.Fragment> :
-                <View style={[styles.container, styles.horizontal]}>
+                <View style={activity}>
                     <ActivityIndicator size="large" color={theme.primaryColor}/>
                 </View>
                 }
@@ -137,18 +132,6 @@ class Profile extends Component {
 }
 
 const styles = StyleSheet.create({
-    list: {
-        flex: 1
-    },
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 50
-    },
     item: {
         paddingLeft: 10,
         paddingTop: 5,
@@ -167,23 +150,8 @@ const styles = StyleSheet.create({
         marginBottom: -20,
         alignSelf: 'center'
     },
-    buttonText: {
-        fontSize: 18,
-        color: 'white',
-        alignSelf: 'center'
-    },
-    rowContainer: {
-        padding: 10
-    },
     rowContent: {
         fontSize: 19
-    },
-    separator: {
-        height: 1,
-        marginLeft: 15,
-        marginRight: 15,
-        flex: 1,
-        backgroundColor: '#E4E4E4'
     }
 });
 

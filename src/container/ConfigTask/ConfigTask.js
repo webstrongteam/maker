@@ -8,6 +8,7 @@ import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
 import { convertNumberToDate, generateDialogObject } from '../../shared/utility';
+import {fullWidth} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 import moment from 'moment';
 
@@ -27,16 +28,12 @@ class ConfigTask extends Component {
         },
         controls: {
             name: {
-                elementConfig: {
-                    label: 'Enter task name',
-                    characterRestriction: 40,
-                }
+                label: 'Enter task name',
+                characterRestriction: 40,
             },
             description: {
-                elementConfig: {
-                    label: 'Enter task description',
-                    multiline: true
-                }
+                label: 'Enter task description',
+                multiline: true
             }
         },
         repeat: {
@@ -192,9 +189,9 @@ class ConfigTask extends Component {
     valid = (value = this.state.task.name) => {
         const newControls = this.state.controls;
         if (value.trim() === '') {
-            newControls.name.elementConfig.error = `Task name is required!`;
+            newControls.name.error = `Task name is required!`;
         } else {
-            delete newControls.name.elementConfig.error;
+            delete newControls.name.error;
         }
         this.setState({ controls: newControls })
     };
@@ -272,12 +269,12 @@ class ConfigTask extends Component {
                 <ScrollView>
                     {editTask != null &&
                     <Input
-                        elementConfig={controls.name.elementConfig}
+                        elementConfig={controls.name}
                         focus={!editTask}
                         value={task.name}
                         color={theme.primaryColor}
                         changed={(value) => {
-                            if (value.length <= controls.name.elementConfig.characterRestriction) {
+                            if (value.length <= controls.name.characterRestriction) {
                                 this.valid(value);
                                 this.updateTask('name', value);
                             } else {
@@ -286,14 +283,14 @@ class ConfigTask extends Component {
                         }}/>
                     }
                     <Input
-                        elementConfig={controls.description.elementConfig}
+                        elementConfig={controls.description}
                         value={task.description}
                         color={theme.primaryColor}
                         changed={value => this.updateTask('description', value)}/>
                     <View style={styles.container}>
                         <Subheader text="Due date"
                             style={{
-                                container: styles.label,
+                                container: fullWidth,
                                 text: {color: theme.primaryColor}
                             }}
                         />
@@ -312,7 +309,7 @@ class ConfigTask extends Component {
                             confirmBtnText="Confirm"
                             cancelBtnText="Cancel"
                             customStyles={{
-                                dateInput: styles.datePicker,
+                                dateInput: [styles.datePicker, { borderColor: theme.primaryColor }],
                                 dateText: {
                                     color: +date < +now ? theme.overdueColor : theme.textColor
                                 }
@@ -337,7 +334,7 @@ class ConfigTask extends Component {
                                 confirmBtnText="Confirm"
                                 cancelBtnText="Cancel"
                                 customStyles={{
-                                    dateInput: styles.datePicker,
+                                    dateInput: [styles.datePicker, { borderColor: theme.primaryColor }],
                                     dateText: {
                                         color: +date < +now ? theme.overdueColor : theme.textColor
                                     }
@@ -346,7 +343,7 @@ class ConfigTask extends Component {
                             />
                             <Subheader text="Repeat"
                                 style={{
-                                    container: styles.label,
+                                    container: fullWidth,
                                     text: {color: theme.primaryColor}
                                 }}
                             />
@@ -369,7 +366,7 @@ class ConfigTask extends Component {
                         }
                         <Subheader text="Category"
                             style={{
-                                container: styles.label,
+                                container: fullWidth,
                                 text: {color: theme.primaryColor}
                             }}
                         />
@@ -387,7 +384,7 @@ class ConfigTask extends Component {
                         </View>
                         <Subheader text="Priority"
                             style={{
-                                container: styles.label,
+                                container: fullWidth,
                                 text: {color: theme.primaryColor}
                             }}
                         />
@@ -421,7 +418,6 @@ const styles = StyleSheet.create({
     datePicker: {
         marginRight: 5,
         marginLeft: 5,
-        borderColor: '#f4511e',
         borderBottomWidth: 0.5,
         borderLeftWidth: 0,
         borderRightWidth: 0,
@@ -441,9 +437,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 50,
         borderWidth: 0
-    },
-    label: {
-        width: '100%'
     }
 });
 
