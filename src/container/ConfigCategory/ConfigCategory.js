@@ -60,12 +60,16 @@ class ConfigCategory extends PureComponent {
         const { showModal, theme } = this.props;
 
         return (
-            <Dialog.Container visible={showModal}>
-                <Dialog.Title>{editCategory ? 'Edit category' : 'New category'}</Dialog.Title>
+            <Dialog.Container
+                contentStyle={{backgroundColor: theme.secondaryBackgroundColor}}
+                visible={showModal}>
+                <Dialog.Title
+                    style={{color: theme.textColor}}>
+                    {editCategory ? 'Edit category' : 'New category'}
+                </Dialog.Title>
                 <Input
                     elementConfig={controls.name}
                     focus={true}
-                    color={theme.primaryColor}
                     value={category.name}
                     changed={(value) => {
                         if (value.length <= controls.name.characterRestriction) {

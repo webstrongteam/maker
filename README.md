@@ -41,7 +41,7 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-* Upgrade and fix dark theme :heavy_minus_sign:
+* Fix dark theme :heavy_minus_sign:
 * Optimization code and fix errors :heavy_minus_sign:
 - - - -
 * Add polish language :x:

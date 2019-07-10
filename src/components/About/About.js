@@ -12,6 +12,8 @@ import * as WebBrowser from 'expo-web-browser';
 import Template from '../../container/Template/Template';
 import { Toolbar } from 'react-native-material-ui';
 
+import {connect} from "react-redux";
+
 const about = (props) => {
     const openWebBrowser = async () => {
         await WebBrowser.openBrowserAsync('https://github.com/mateuszpijanowski/maker');
@@ -33,22 +35,23 @@ const about = (props) => {
                         source={require('../../assets/icon.png')}
                     />
                     <Text style={separator} />
-                    <Text style={styles.primaryText}>
+                    <Text style={[styles.primaryText, { color: props.theme.textColor }]}>
                         Maker is a advanced ToDo mobile application created with React Native
                         and Expo framework. This app working with Android and iOS.
                     </Text>
-                    <Text style={styles.secondaryText}>
+                    <Text style={[styles.secondaryText, { color: props.theme.textColor }]}>
                         Maker is open source app in GitHub:
                     </Text>
                     <TouchableOpacity onPress={openWebBrowser}>
                         <Image
+                            tintColor={props.theme.textColor}
                             style={styles.github}
                             source={require('../../assets/github.png')}
                         />
                     </TouchableOpacity>
                 </ScrollView>
                 <View style={{ opacity: 0.5 }}>
-                    <Text style={styles.copy}>
+                    <Text style={[styles.copy, { color: props.theme.textColor }]}>
                         &copy; by Mateusz Pijanowski (WebStrong team)
                     </Text>
                 </View>
@@ -103,4 +106,8 @@ const styles = StyleSheet.create({
     }
 });
 
-export default about;
+const mapStateToProps = state => {
+    return {theme: state.theme.theme}
+};
+
+export default connect(mapStateToProps)(about);

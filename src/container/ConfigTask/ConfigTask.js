@@ -245,7 +245,6 @@ class ConfigTask extends Component {
                 <OtherRepeat
                     showModal={showOtherRepeat}
                     repeat={repeatValue}
-                    color={theme.primaryColor}
                     selectedTime={selectedTime}
                     onSetRepeat={value => this.setState({ repeatValue: value })}
                     onSelectTime={value => this.setState({ selectedTime: value })}
@@ -272,7 +271,6 @@ class ConfigTask extends Component {
                         elementConfig={controls.name}
                         focus={!editTask}
                         value={task.name}
-                        color={theme.primaryColor}
                         changed={(value) => {
                             if (value.length <= controls.name.characterRestriction) {
                                 this.valid(value);
@@ -285,7 +283,6 @@ class ConfigTask extends Component {
                     <Input
                         elementConfig={controls.description}
                         value={task.description}
-                        color={theme.primaryColor}
                         changed={value => this.updateTask('description', value)}/>
                     <View style={styles.container}>
                         <Subheader text="Due date"
@@ -349,17 +346,20 @@ class ConfigTask extends Component {
                             />
                             <View style={styles.picker}>
                                 <Picker
+                                    style={{color: theme.textColor}}
                                     selectedValue={
                                         repeat[task.repeat] ?
                                             repeat[task.repeat].value :
                                             otherOption
                                     }
-                                    mode="dialog"
                                     onValueChange={value => this.updateRepeat(value)}>
                                     {Object.keys(repeat).map(name => (
-                                        <Picker.Item key={name} label={repeat[name].name} value={repeat[name].value} />
+                                        <Picker.Item key={name}
+                                                     label={repeat[name].name}
+                                                     value={repeat[name].value} />
                                     ))}
-                                    <Picker.Item label={otherOption} value={otherOption} />
+                                    <Picker.Item label={otherOption}
+                                                 value={otherOption} />
                                 </Picker>
                             </View>
                         </React.Fragment>
@@ -373,10 +373,13 @@ class ConfigTask extends Component {
                         <View style={styles.selectCategory}>
                             <View style={styles.category}>
                                 <Picker
+                                    style={{color: theme.textColor}}
                                     selectedValue={task.category}
                                     onValueChange={value => this.updateTask('category', value)}>
                                     {categories.map(cate => (
-                                        <Picker.Item key={cate.id} label={cate.name} value={cate.name}/>
+                                        <Picker.Item key={cate.id}
+                                                     label={cate.name}
+                                                     value={cate.name}/>
                                     ))}
                                 </Picker>
                             </View>
@@ -390,6 +393,7 @@ class ConfigTask extends Component {
                         />
                         <View style={styles.picker}>
                             <Picker
+                                style={{color: theme.textColor}}
                                 selectedValue={task.priority}
                                 onValueChange={value => this.updateTask('priority', value)}>
                                 <Picker.Item label="None" value="none"/>

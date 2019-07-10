@@ -181,12 +181,12 @@ class ToDo extends Component {
         const {selectedCategory} = this.state;
         const {tasks, finished, theme} = this.props;
         let data;
-        if (rowData.id === -3) data = { icon: 'playlist-add', amount: false, bgColor: '#ddd' };
-        else if (rowData.id === -1) data = { icon: 'dehaze', amount: tasks.length, bgColor: 'white' };
-        else if (rowData.id === -2) data = { icon: 'done', amount: finished.length, bgColor: 'white' };
+        if (rowData.id === -3) data = { icon: 'playlist-add', amount: false, bgColor: theme.secondaryBackgroundColor };
+        else if (rowData.id === -1) data = { icon: 'dehaze', amount: tasks.length, bgColor: theme.primaryBackgroundColor };
+        else if (rowData.id === -2) data = { icon: 'done', amount: finished.length, bgColor: theme.primaryBackgroundColor };
         else {
             const amountOfTasks = this.props.tasks.filter(task => task.category === rowData.name);
-            data = { icon: 'bookmark-border', amount: amountOfTasks.length, bgColor: 'white' };
+            data = { icon: 'bookmark-border', amount: amountOfTasks.length, bgColor: theme.primaryBackgroundColor };
         }
 
         return (

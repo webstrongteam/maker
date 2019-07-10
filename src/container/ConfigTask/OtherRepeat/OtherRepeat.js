@@ -3,6 +3,8 @@ import Dialog from "react-native-dialog";
 import Input from '../../../components/UI/Input/Input';
 import {Picker, View} from "react-native";
 
+import {connect} from "react-redux";
+
 class OtherRepeat extends Component {
     state = {
         repeat: {
@@ -19,21 +21,25 @@ class OtherRepeat extends Component {
     };
 
     render() {
-        const { showModal, repeat, selectedTime, color } = this.props;
+        const { showModal, repeat, selectedTime, theme } = this.props;
 
         return (
-            <Dialog.Container visible={showModal}>
-                <Dialog.Title>Config repeat</Dialog.Title>
+            <Dialog.Container
+                contentStyle={{ backgroundColor: theme.secondaryBackgroundColor }}
+                visible={showModal}>
+                <Dialog.Title
+                    style={{ color: theme.textColor }}>
+                    Config repeat
+                </Dialog.Title>
                 <View>
                     <Input
                         elementConfig={this.state.repeat}
                         focus={true}
                         value={repeat}
-                        color={color}
                         changed={(value) => this.valid(value)}
                     />
                     <Picker
-                        style={{ marginLeft: 10 }}
+                        style={{ marginLeft: 10, color: theme.textColor}}
                         selectedValue={selectedTime}
                         onValueChange={value => this.props.onSelectTime(value)}>
                         <Picker.Item label="Days" value="0" />
@@ -58,4 +64,8 @@ class OtherRepeat extends Component {
     }
 }
 
-export default OtherRepeat;
+const mapStateToProps = state => {
+    return {theme: state.theme.theme}
+};
+
+export default connect(mapStateToProps)(OtherRepeat);

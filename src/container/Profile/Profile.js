@@ -71,8 +71,12 @@ class Profile extends Component {
             list = listData.map((item, index) => (
                 <View key={index}>
                     <View style={[styles.item, { backgroundColor: theme.primaryBackgroundColor }]}>
-                        <Text style={{ color: theme.primaryColor, fontSize: 16 }}> {item.label} </Text>
-                        <Text style={styles.rowContent}> {item.data} </Text>
+                        <Text style={{ color: theme.primaryColor, fontSize: 16 }}>
+                            {item.label}
+                        </Text>
+                        <Text style={{fontSize: 19, color: theme.textColor}}>
+                            {item.data}
+                        </Text>
                     </View>
                     <View style={separator}/>
                 </View>
@@ -133,7 +137,7 @@ class Profile extends Component {
 
 const styles = StyleSheet.create({
     item: {
-        paddingLeft: 10,
+        paddingLeft: 15,
         paddingTop: 5,
         paddingBottom: 10
     },
@@ -149,9 +153,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: -20,
         alignSelf: 'center'
-    },
-    rowContent: {
-        fontSize: 19
     }
 });
 

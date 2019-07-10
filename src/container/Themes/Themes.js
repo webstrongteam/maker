@@ -93,7 +93,8 @@ class Themes extends Component {
                 }
 
                 {!loading ?
-                    <SettingsList borderColor='#d6d5d9' defaultItemSize={50}>
+                    <SettingsList backgroundColor={theme.primaryBackgroundColor}
+                                  borderColor='#d6d5d9' defaultItemSize={50}>
                         <SettingsList.Item
                             hasNavArrow={false}
                             title='Themes list'

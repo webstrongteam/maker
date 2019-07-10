@@ -1,6 +1,6 @@
 import { SQLite } from 'expo-sqlite';
 
-const VERSION = '0.9.3';
+const VERSION = '0.9.5';
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
@@ -86,6 +86,7 @@ export const initTheme = (callback) => {
                                 accentColor: theme.actionButtonColor,
                                 primaryTextColor: theme.textColor,
                                 secondaryTextColor: theme.textColor,
+                                canvasColor: theme.primaryBackgroundColor,
                                 alternateTextColor: theme.headerTextColor,
                                 disabledColor: theme.textColor,
                                 pickerHeaderColor: theme.textColor

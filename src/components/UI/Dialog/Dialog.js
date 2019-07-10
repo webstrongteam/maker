@@ -1,10 +1,20 @@
 import React from "react";
 import Dialog from "react-native-dialog";
 
+import { connect } from 'react-redux';
+
 const dialog = (props) => (
-    <Dialog.Container visible={props.showModal}>
-        <Dialog.Title>{props.title}</Dialog.Title>
-        <Dialog.Description>{props.description}</Dialog.Description>
+    <Dialog.Container
+        contentStyle={{backgroundColor: props.theme.secondaryBackgroundColor}}
+        visible={props.showModal}>
+        <Dialog.Title
+            style={{color: props.theme.textColor}}>
+            {props.title}
+        </Dialog.Title>
+        <Dialog.Description
+            style={{color: props.theme.textColor}}>
+            {props.description}
+        </Dialog.Description>
         {props.buttons.map(button => (
             <Dialog.Button
                 key={button.label}
@@ -15,4 +25,8 @@ const dialog = (props) => (
     </Dialog.Container>
 );
 
-export default dialog;
+const mapStateToProps = state => {
+    return {theme: state.theme.theme}
+};
+
+export default connect(mapStateToProps)(dialog);

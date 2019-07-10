@@ -51,8 +51,13 @@ class Themes extends Component {
 
                 <Snackbar visible={snackbar.visible} message={snackbar.message} onRequestClose={() => this.toggleSnackbar('', false)} />
 
-                <Dialog.Container visible={showWeekDialog}>
-                    <Dialog.Title>Select first day of week</Dialog.Title>
+                <Dialog.Container
+                    contentStyle={{ backgroundColor: theme.secondaryBackgroundColor }}
+                    visible={showWeekDialog}>
+                    <Dialog.Title
+                        style={{ color: theme.textColor }}>
+                        Select first day of week
+                    </Dialog.Title>
                     <ListItem
                         divider
                         dense
@@ -94,8 +99,13 @@ class Themes extends Component {
                     />
                 </Dialog.Container>
 
-                <Dialog.Container visible={showLangDialog}>
-                    <Dialog.Title>Select language</Dialog.Title>
+                <Dialog.Container
+                    contentStyle={{ backgroundColor: theme.secondaryBackgroundColor }}
+                    visible={showLangDialog}>
+                    <Dialog.Title
+                        style={{ color: theme.textColor }}>
+                        Select language
+                    </Dialog.Title>
                     <ListItem
                         divider
                         dense
@@ -121,7 +131,8 @@ class Themes extends Component {
 
                 {!loading ?
                 <React.Fragment>
-                    <SettingsList borderColor='#d6d5d9' defaultItemSize={50}>
+                    <SettingsList backgroundColor={theme.primaryBackgroundColor}
+                                  borderColor='#d6d5d9' defaultItemSize={50}>
                         <SettingsList.Item
                             hasNavArrow={false}
                             title='General'

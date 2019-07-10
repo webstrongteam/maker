@@ -6,13 +6,13 @@ import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import Input from '../../components/UI/Input/Input';
 import {ActivityIndicator, StyleSheet, View} from "react-native";
+import {generateDialogObject} from "../../shared/utility";
 import Dialog from '../../components/UI/Dialog/Dialog';
 import {activity} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
-import {generateDialogObject} from "../../shared/utility";
 
 class Theme extends Component {
     state = {
@@ -133,7 +133,7 @@ class Theme extends Component {
         const { navigation } = this.props;
 
         return (
-            <Template bgColor="#e5e5e5">
+            <Template bgColor={theme.secondaryBackgroundColor}>
                 <Toolbar
                     leftElement="arrow-back"
                     rightElement={
@@ -189,7 +189,8 @@ class Theme extends Component {
                         color={this.props.theme.primaryColor}
                         changed={ value => this.changeNameHandler(value) }
                     />
-                    <SettingsList borderColor='#d6d5d9' defaultItemSize={50}>
+                    <SettingsList backgroundColor={theme.primaryBackgroundColor}
+                                  borderColor='#d6d5d9' defaultItemSize={50}>
                         <SettingsList.Item
                             hasNavArrow={false}
                             title='Main'
@@ -237,12 +238,20 @@ class Theme extends Component {
                             themeList.push(
                                 <SettingsList.Item
                                     itemWidth={70}
-                                    titleStyle={{color: 'black', fontSize: 16}}
+                                    titleStyle={{color: theme.textColor, fontSize: 16}}
                                     title={names[index]}
                                     onPress={() => this.configColorPicker(
                                         names[index], key
                                     )}
-                                    arrowIcon={<View style={[ styles.colorPreview, {backgroundColor: theme[key]} ]} />}
+                                    arrowIcon={<View
+                                        style={[
+                                            styles.colorPreview,
+                                            {
+                                                borderColor: theme.textColor,
+                                                backgroundColor: theme[key]
+                                            }]
+                                        }
+                                    />}
                                 />
                             );
 
@@ -268,8 +277,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderStyle: "dashed",
         borderRadius: 30,
-        borderWidth: 0.75,
-        borderColor: '#5d5d5d',
+        borderWidth: 0.75
     }
 });
 

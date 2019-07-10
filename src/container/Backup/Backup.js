@@ -178,8 +178,13 @@ This will delete your current database!`,
                 />
                 }
 
-                <Dialog.Container visible={showAddBackupDialog}>
-                    <Dialog.Title>Add database from...</Dialog.Title>
+                <Dialog.Container
+                    contentStyle={{ backgroundColor: theme.secondaryBackgroundColor }}
+                    visible={showAddBackupDialog}>
+                    <Dialog.Title
+                        style={{ color: theme.textColor }}>
+                        Add database from...
+                    </Dialog.Title>
                     <ListItem
                         divider
                         dense
