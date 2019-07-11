@@ -1,20 +1,20 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {Toolbar, Button, IconToggle} from 'react-native-material-ui';
 import { fromHsv } from 'react-native-color-picker'
 import ColorPicker from '../../components/UI/ColorPicker/ColorPicker';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import Input from '../../components/UI/Input/Input';
-import {ActivityIndicator, StyleSheet, View} from "react-native";
-import {generateDialogObject} from "../../shared/utility";
+import {StyleSheet, View} from "react-native";
+import {generateDialogObject, valid} from "../../shared/utility";
 import Dialog from '../../components/UI/Dialog/Dialog';
-import {activity} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
 
-class Theme extends Component {
+class Theme extends PureComponent {
     state = {
         theme: {id: false},
         names: [
@@ -33,7 +33,8 @@ class Theme extends Component {
             name: {
                 label: 'Enter theme name',
                 focus: true,
-                characterRestriction: 40
+                required: true,
+                characterRestriction: 30
             }
         },
 
@@ -106,7 +107,6 @@ class Theme extends Component {
     };
 
     changeNameHandler = (name) => {
-        this.valid(name);
         const theme = this.state.theme;
         theme.name = name;
         this.setState({ theme });
@@ -120,12 +120,17 @@ class Theme extends Component {
         this.setState({ theme, showColorPicker: false });
     };
 
-    valid = (value = this.state.theme.name) => {
-        const newControls = this.state.controls;
-        if (value.trim() === '') {
-            newControls.name.error = `Theme name is required!`;
-        } else delete newControls.name.error;
-        this.setState({ controls: newControls })
+    checkValid = (name, save = false, value = this.state.theme.name) => {
+        const controls = this.state.controls;
+        valid(controls, value, name, (newControls) => {
+            this.changeNameHandler(value);
+            if (save && !newControls[name].error) {
+                const {theme} = this.state;
+                const {navigation} = this.props;
+                this.props.onSaveTheme(theme);
+                navigation.goBack();
+            } this.setState({ controls: newControls });
+        })
     };
 
     render() {
@@ -141,12 +146,7 @@ class Theme extends Component {
                             <Button
                                 text="Save"
                                 style={{ text: { color: this.props.theme.headerTextColor } }}
-                                onPress={() => {
-                                    if (theme.name.trim() !== '') {
-                                        this.props.onSaveTheme(theme);
-                                        navigation.goBack();
-                                    } else this.valid();
-                                }}
+                                onPress={() => this.checkValid('name', true)}
                             />
                             {theme.id !== false && <IconToggle name="delete"
                                 color={this.props.theme.headerTextColor}
@@ -187,7 +187,7 @@ class Theme extends Component {
                         elementConfig={controls.name}
                         value={theme.name}
                         color={this.props.theme.primaryColor}
-                        changed={ value => this.changeNameHandler(value) }
+                        changed={value => this.checkValid('name', false, value)}
                     />
                     <SettingsList backgroundColor={theme.primaryBackgroundColor}
                                   borderColor='#d6d5d9' defaultItemSize={50}>
@@ -254,14 +254,10 @@ class Theme extends Component {
                                     />}
                                 />
                             );
-
                             return themeList;
                         })}
                     </SettingsList>
-                </React.Fragment> :
-                <View style={activity}>
-                    <ActivityIndicator size="large" color={theme.primaryColor} />
-                </View>
+                </React.Fragment> : <Spinner />
                 }
                 <BannerAd />
             </Template>
@@ -282,9 +278,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-    return {
-        theme: state.theme.theme
-    }
+    return {theme: state.theme.theme}
 };
 const mapDispatchToProps = dispatch => {
     return {

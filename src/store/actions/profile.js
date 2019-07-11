@@ -17,7 +17,7 @@ export const initProfile = (callback = () => null) => {
                 tx.executeSql('select * from profile;', [], (_, {rows}) => {
                     dispatch(onUpdateProfile(rows._array[0]), callback());
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -29,7 +29,7 @@ export const changeName = (name) => {
                 tx.executeSql('update profile set name = ? where id = 0;', [name], () => {
                     dispatch(initProfile())
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -41,7 +41,7 @@ export const changeAvatar = (avatar) => {
                 tx.executeSql('update profile set avatar = ? where id = 0;', [avatar], () => {
                     dispatch(initProfile())
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -54,7 +54,7 @@ export const addEndedTask = () => {
                 tx.executeSql('update profile set endedTask = ? where id = 0;', [value], () => {
                     dispatch(initProfile())
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };

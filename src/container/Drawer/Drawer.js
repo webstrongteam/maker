@@ -14,16 +14,16 @@ class DrawerContainer extends Component {
         const {navigation, theme} = this.props;
 
         return (
-            <Template>
+            <Template bgColor={theme.secondaryBackgroundColor}>
                 <Toolbar
                     leftElement="arrow-back"
                     onLeftElementPress={() => navigation.goBack()}
                     centerElement="Back"
                 />
-                <Drawer style={{ container: { backgroundColor: theme.primaryBackgroundColor } }}>
+                <Drawer style={{ container: { backgroundColor: theme.secondaryBackgroundColor } }}>
                     <Drawer.Section
                         divider
-                        style={{ container: { backgroundColor: theme.primaryBackgroundColor } }}
+                        style={{ container: { backgroundColor: theme.secondaryBackgroundColor } }}
                         items={[
                             {icon: 'bookmark-border', value: 'Categories', onPress: () => navigation.navigate('CategoriesList')},
                             {icon: 'people', value: 'Profile', onPress: () => navigation.navigate('Profile')},
@@ -31,7 +31,7 @@ class DrawerContainer extends Component {
                     />
                     <Drawer.Section
                         title="App"
-                        style={{ container: { backgroundColor: theme.primaryBackgroundColor } }}
+                        style={{ container: { backgroundColor: theme.secondaryBackgroundColor } }}
                         items={[
                             {icon: 'assessment', value: 'Themes', onPress: () => navigation.navigate('Themes')},
                             {icon: 'settings', value: 'Settings', onPress: () => navigation.navigate('Settings')},

@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import { ListItem, Subheader, IconToggle } from 'react-native-material-ui';
+import { ListItem, Subheader, IconToggle, Button } from 'react-native-material-ui';
 import {generateDialogObject, sortingByType} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
-import Button from "react-native-material-ui/src/Button";
 import {empty} from '../../shared/styles';
 import moment from 'moment';
 
@@ -222,18 +221,19 @@ class TaskList extends Component {
                                         backgroundColor: task.finish ? priorityColors.none.bgColor : priorityColors[task.priority].bgColor
                                     },
                                     primaryText: {fontSize: 18, color: task.finish ? theme.textColor : priorityColors[task.priority].color},
-                                    secondaryText: div === 'Overdue' ? {color: task.finish ? theme.textColor : theme.overdueColor} : {color: priorityColors[task.priority].color},
+                                    secondaryText: {color: task.finished ? theme.textColor : div === 'Overdue' ? theme.overdueColor : priorityColors[task.priority].color},
                                     tertiaryText: {color: task.finish ? theme.textColor : priorityColors[task.priority].color}
                                 }}
                                 rightElement={
                                     <View style={styles.rightElements}>
                                         <Button
-                                            raised primary
+                                            raised
                                             style={{
                                                 container: {
                                                     backgroundColor: task.finish ? theme.undoButtonColor : theme.doneButtonColor,
                                                     marginRight: task.finish ? 0 : 15
-                                                }
+                                                },
+                                                text: { color: task.finish ? theme.undoButtonTextColor : theme.doneButtonTextColor }
                                             }}
                                             text={task.finish ? 'Undo' : 'Done'}
                                             icon={task.finish ? 'replay' : 'done'}

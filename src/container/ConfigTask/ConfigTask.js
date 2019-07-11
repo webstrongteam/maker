@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import {View, Picker, StyleSheet, ScrollView} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import {Toolbar, Subheader, IconToggle, Button} from 'react-native-material-ui';
@@ -7,7 +7,7 @@ import Input from '../../components/UI/Input/Input';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
-import { convertNumberToDate, generateDialogObject } from '../../shared/utility';
+import {convertNumberToDate, generateDialogObject, valid} from '../../shared/utility';
 import {fullWidth} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 import moment from 'moment';
@@ -15,7 +15,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
-class ConfigTask extends Component {
+class ConfigTask extends PureComponent {
     state = {
         task: {
             id: false,
@@ -29,6 +29,7 @@ class ConfigTask extends Component {
         controls: {
             name: {
                 label: 'Enter task name',
+                required: true,
                 characterRestriction: 40,
             },
             description: {
@@ -66,18 +67,14 @@ class ConfigTask extends Component {
                 value: 'onceYear'
             }
         },
-        dialog: {
-            title: '',
-            description: '',
-            buttons: {}
-        },
+        dialog: null,
         otherOption: 'Other...',
         selectedTime: 0,
         repeatValue: '1',
         showOtherRepeat: false,
         showDialog: false,
         editTask: null,
-        showModal: false
+        showCategory: false
     };
 
     componentDidMount() {
@@ -90,7 +87,7 @@ class ConfigTask extends Component {
             }
             this.setState({ editTask: false });
         }
-    }
+    };
 
     initTask = (task) => {
         const { categories } = this.props;
@@ -126,13 +123,11 @@ class ConfigTask extends Component {
                 {
                     Yes: () => {
                         this.setState({ showDialog: false });
+                        this.props.onInitToDo();
                         this.props.navigation.goBack();
                     },
                     Save: () => {
-                        if (this.state.task.name.trim() !== '') {
-                            this.props.onSaveTask(task);
-                            this.props.navigation.goBack();
-                        } else this.valid();
+                        this.checkValid('name', true);
                         this.setState({ showDialog: false });
                     },
                     Cancel: () => {
@@ -161,12 +156,12 @@ class ConfigTask extends Component {
     };
 
     toggleModalHandler = (category = false) => {
-        const { showModal, task } = this.state;
+        const { showCategory, task } = this.state;
         if (category) {
             task.category = category.name;
-            this.setState({ task, showModal: !showModal });
+            this.setState({ task, showCategory: !showCategory });
         } else {
-            this.setState({ showModal: !showModal });
+            this.setState({ showCategory: !showCategory });
         }
     };
 
@@ -186,18 +181,21 @@ class ConfigTask extends Component {
         this.setState({ otherOption, showOtherRepeat: false });
     };
 
-    valid = (value = this.state.task.name) => {
-        const newControls = this.state.controls;
-        if (value.trim() === '') {
-            newControls.name.error = `Task name is required!`;
-        } else {
-            delete newControls.name.error;
-        }
-        this.setState({ controls: newControls })
+    checkValid = (name, save = false, value = this.state.task.name) => {
+        const controls = this.state.controls;
+        valid(controls, value, name, (newControls) => {
+            this.updateTask(name, value);
+            if (save && !newControls[name].error) {
+                const {task} = this.state;
+                const {navigation} = this.props;
+                this.props.onSaveTask(task);
+                navigation.goBack();
+            } this.setState({ controls: newControls });
+        })
     };
 
     render() {
-        const { task, controls, editTask, showModal, repeat, dialog, showDialog, otherOption, selectedTime, showOtherRepeat, repeatValue } = this.state;
+        const { task, controls, editTask, showCategory, repeat, dialog, showDialog, otherOption, selectedTime, showOtherRepeat, repeatValue } = this.state;
         const { navigation, categories, theme, settings } = this.props;
         let date;
         let now;
@@ -219,12 +217,7 @@ class ConfigTask extends Component {
                             <Button
                                 text="Save"
                                 style={{ text: { color: theme.headerTextColor } }}
-                                onPress={() => {
-                                    if (task.name.trim() !== '') {
-                                        this.props.onSaveTask(task);
-                                        navigation.goBack();
-                                    } else this.valid();
-                                }}
+                                onPress={() => this.checkValid('name', true)}
                             />
                             {editTask && <IconToggle name="delete"
                                 color={theme.headerTextColor}
@@ -236,26 +229,31 @@ class ConfigTask extends Component {
                         if (task.name.trim() !== '') {
                             this.showDialog('exit');
                         } else {
+                            this.props.onInitToDo();
                             navigation.goBack();
                         }
                     }}
                     centerElement={editTask ? "Edit task" : "New task"}
                 />
 
+                {showOtherRepeat &&
                 <OtherRepeat
                     showModal={showOtherRepeat}
                     repeat={repeatValue}
                     selectedTime={selectedTime}
-                    onSetRepeat={value => this.setState({ repeatValue: value })}
-                    onSelectTime={value => this.setState({ selectedTime: value })}
+                    onSetRepeat={value => this.setState({repeatValue: value})}
+                    onSelectTime={value => this.setState({selectedTime: value})}
                     save={this.saveOtherRepeat}
-                    cancel={() => this.setState({ showOtherRepeat: false })}
+                    cancel={() => this.setState({showOtherRepeat: false})}
                 />
+                }
+                {showCategory &&
                 <ConfigCategory
-                    editCategory={false}
-                    showModal={showModal}
+                    showModal={showCategory}
+                    category={{id: false, name: ''}}
                     toggleModal={this.toggleModalHandler}
                 />
+                }
                 {showDialog &&
                 <Dialog
                     showModal={showDialog}
@@ -272,13 +270,8 @@ class ConfigTask extends Component {
                         focus={!editTask}
                         value={task.name}
                         changed={(value) => {
-                            if (value.length <= controls.name.characterRestriction) {
-                                this.valid(value);
-                                this.updateTask('name', value);
-                            } else {
-                                this.valid(value);
-                            }
-                        }}/>
+                            this.checkValid('name', false, value)
+                        }} />
                     }
                     <Input
                         elementConfig={controls.description}
@@ -453,6 +446,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
+        onInitToDo: () => dispatch(actions.initToDo()),
         onSaveTask: (task) => dispatch(actions.saveTask(task)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task, false)),
     }

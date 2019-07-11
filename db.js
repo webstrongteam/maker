@@ -1,6 +1,6 @@
 import { SQLite } from 'expo-sqlite';
 
-const VERSION = '0.9.5';
+const VERSION = '0.9.6'; // APP VERSION
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
@@ -56,7 +56,7 @@ export const initDatabase = (callback) => {
         tx.executeSql(
             "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 'en');", [VERSION]
         );
-    }, (err) => console.warn(err), initApp(callback));
+    }, (err) => console.log(err), initApp(callback));
 };
 
 const initApp = (callback) => {
@@ -69,7 +69,7 @@ const initApp = (callback) => {
                     tx.executeSql('update settings set version = ? where id = 0;', [VERSION])
                 }
             });
-        }, (err) => console.warn(err), callback()
+        }, (err) => console.log(err), callback()
     );
 };
 
@@ -86,7 +86,7 @@ export const initTheme = (callback) => {
                                 accentColor: theme.actionButtonColor,
                                 primaryTextColor: theme.textColor,
                                 secondaryTextColor: theme.textColor,
-                                canvasColor: theme.primaryBackgroundColor,
+                                canvasColor: theme.secondaryBackgroundColor,
                                 alternateTextColor: theme.headerTextColor,
                                 disabledColor: theme.textColor,
                                 pickerHeaderColor: theme.textColor
@@ -95,7 +95,7 @@ export const initTheme = (callback) => {
                         ready: true
                     })
                 });
-            }, (err) => console.warn(err));
+            }, (err) => console.log(err));
         }
     );
 };

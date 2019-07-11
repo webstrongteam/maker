@@ -15,9 +15,10 @@ export const initSettings = (callback = () => null) => {
         db.transaction(
             tx => {
                 tx.executeSql('select * from settings;', [], (_, {rows}) => {
+                    callback();
                     dispatch(onUpdateSettings(rows._array[0]));
                 });
-            }, (err) => console.warn(err), callback()
+            }, (err) => console.log(err)
         );
     };
 };
@@ -29,7 +30,7 @@ export const changeSorting = (sorting, type) => {
                 tx.executeSql('update settings set sorting = ?, sortingType = ? where id = 0;', [sorting, type], () => {
                     dispatch(initSettings())
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -41,7 +42,7 @@ export const changeTimeFormat = (value) => {
                 tx.executeSql('update settings set timeFormat = ? where id = 0;', [value], () => {
                     dispatch(initSettings())
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -53,7 +54,7 @@ export const changeFirstDayOfWeek = (value) => {
                 tx.executeSql('update settings set firstDayOfWeek = ? where id = 0;', [value], () => {
                     dispatch(initSettings())
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -65,7 +66,7 @@ export const changeLang = (value) => {
                 tx.executeSql('update settings set lang = ? where id = 0;', [value], () => {
                     dispatch(initSettings())
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -77,7 +78,7 @@ export const changeConfirmFinishingTask = (value) => {
                 tx.executeSql('update settings set confirmFinishingTask = ? where id = 0;', [value], () => {
                     dispatch(initSettings())
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -89,7 +90,7 @@ export const changeConfirmRepeatingTask = (value) => {
                 tx.executeSql('update settings set confirmRepeatingTask = ? where id = 0;', [value], () => {
                     dispatch(initSettings())
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -101,7 +102,7 @@ export const changeConfirmDeletingTask = (value) => {
                 tx.executeSql('update settings set confirmDeletingTask = ? where id = 0;', [value], () => {
                     dispatch(initSettings())
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };

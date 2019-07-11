@@ -1,13 +1,14 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Animated, Text, ActivityIndicator, TouchableHighlight, Easing, Platform} from 'react-native';
+import React, {PureComponent} from 'react';
+import {StyleSheet, View, ScrollView, Animated, Text, TouchableHighlight, Easing, Platform} from 'react-native';
 import {ActionButton, Toolbar, BottomNavigation, Icon} from 'react-native-material-ui';
 import ModalDropdown from 'react-native-modal-dropdown';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
 import ConfigCategory from "../ConfigCategory/ConfigCategory";
 import Dialog from '../../components/UI/Dialog/Dialog';
 import {generateDialogObject} from "../../shared/utility";
-import {container, activity, fullWidth} from '../../shared/styles';
+import {container, fullWidth} from '../../shared/styles';
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
@@ -15,15 +16,13 @@ import * as actions from "../../store/actions";
 const UP = 1;
 const DOWN = -1;
 
-class ToDo extends Component {
+class ToDo extends PureComponent {
     state = {
         tasks: [],
         dropdownData: null,
         selectedCategory: 'All',
         selectedIndex: 0,
         searchText: '',
-        loading: true,
-        showModal: false,
         scroll: 0,
         offset: 0,
         scrollDirection: 0,
@@ -32,7 +31,9 @@ class ToDo extends Component {
         rotateInterpolate: '0deg',
 
         dialog: {},
-        showDialog: false
+        showDialog: false,
+        showConfigCategory: false,
+        loading: true
     };
 
     componentDidMount() {
@@ -116,9 +117,9 @@ class ToDo extends Component {
         this.setState({ rotateInterpolate });
     };
 
-    toggleModalHandler = () => {
-        const { showModal } = this.state;
-        this.setState({ showModal: !showModal });
+    toggleConfigCategory = () => {
+        const { showConfigCategory } = this.state;
+        this.setState({ showConfigCategory: !showConfigCategory });
     };
 
     deleteAllTask = () => {
@@ -198,9 +199,9 @@ class ToDo extends Component {
                               theme.primaryColor :
                               theme.textColor} />
                     <Text style={[styles.dropdown_row_text,
-                            selectedCategory === rowData.name ?
-                                {color: theme.primaryColor} :
-                                {color: theme.textColor}]}>
+                        selectedCategory === rowData.name ?
+                            {color: theme.primaryColor} :
+                            {color: theme.textColor}]}>
                         {rowData.name}
                     </Text>
                     <Text style={[styles.dropdown_row_text,
@@ -215,140 +216,138 @@ class ToDo extends Component {
     }
 
     render() {
-        const {showDialog, dialog, selectedCategory, tasks, loading, showModal, searchText, bottomHidden, dropdownData, selectedIndex, rotateInterpolate} = this.state;
+        const {showDialog, dialog, selectedCategory, tasks, loading, showConfigCategory, searchText, bottomHidden, dropdownData, selectedIndex, rotateInterpolate} = this.state;
         const {navigation, finished, theme, sortingType, sorting} = this.props;
 
         return (
             <React.Fragment>
                 {!loading ?
-                <Template bgColor={theme.secondaryBackgroundColor}>
-                    <Toolbar
-                        searchable={{
-                            autoFocus: true,
-                            placeholder: 'Search',
-                            onChangeText: value => this.setState({searchText: value}),
-                            onSearchClosed: () => this.setState({searchText: ''}),
-                        }}
-                        leftElement="menu"
-                        onLeftElementPress={() => navigation.navigate('Drawer')}
-                        centerElement={
-                            <ModalDropdown
-                                ref={e => this.dropdown = e}
-                                style={styles.dropdown}
-                                textStyle={styles.dropdown_text}
-                                dropdownStyle={styles.dropdown_dropdown}
-                                defaultValue={selectedCategory}
-                                defaultIndex={selectedIndex}
-                                options={dropdownData}
-                                onDropdownWillShow={() => this.rotate(1)}
-                                onDropdownWillHide={() => this.rotate(0)}
-                                onSelect={(index, item) => {
-                                    this.selectedCategoryHandler(item.name, index);
-                                    return false;
-                                }}
-                                renderButtonText={(rowData) => rowData.name}
-                                renderRow={this.dropdownRenderRow.bind(this)}
-                            >
-                                <View style={styles.dropdown_button}>
-                                    <Text style={[styles.dropdown_text, {color: theme.headerTextColor}]}>
-                                        {selectedCategory}
-                                    </Text>
-                                    <Animated.View style={{transform: [{rotate: rotateInterpolate}]}}>
-                                        <Icon
-                                            style={styles.dropdown_button_icon}
-                                            color={theme.headerTextColor}
-                                            name="expand-more" />
-                                    </Animated.View>
-                                </View>
-                            </ModalDropdown>
-                        }
-                    />
-
-                    <ConfigCategory
-                        editCategory={false}
-                        showModal={showModal}
-                        toggleModal={this.toggleModalHandler}
-                    />
-
-                    {showDialog &&
-                    <Dialog
-                        showModal={showDialog}
-                        title={dialog.title}
-                        description={dialog.description}
-                        buttons={dialog.buttons}
-                    />
-                    }
-
-                    <React.Fragment>
-                        <View style={container}>
-                            <ScrollView
-                                keyboardShouldPersistTaps="always"
-                                keyboardDismissMode="interactive"
-                                onScroll={this.onScroll}
-                                style={fullWidth}>
-                                <TaskList
-                                    searchText={searchText}
-                                    tasks={tasks}
-                                    sortingType={sortingType}
-                                    sorting={sorting}
-                                    navigation={navigation}
-                                />
-                            </ScrollView>
-                        </View>
-                        <View>
-                            {selectedCategory !== 'Finished' ?
-                                <ActionButton
-                                    hidden={bottomHidden}
-                                    onPress={() => navigation.navigate('ConfigTask')}
-                                    icon="add"
-                                    style={{
-                                        container: {backgroundColor: theme.actionButtonColor},
-                                        icon: {color: theme.actionButtonIconColor}
+                    <Template bgColor={theme.secondaryBackgroundColor}>
+                        <Toolbar
+                            searchable={{
+                                autoFocus: true,
+                                placeholder: 'Search',
+                                onChangeText: value => this.setState({searchText: value}),
+                                onSearchClosed: () => this.setState({searchText: ''}),
+                            }}
+                            leftElement="menu"
+                            onLeftElementPress={() => navigation.navigate('Drawer')}
+                            centerElement={
+                                <ModalDropdown
+                                    ref={e => this.dropdown = e}
+                                    style={styles.dropdown}
+                                    textStyle={styles.dropdown_text}
+                                    dropdownStyle={styles.dropdown_dropdown}
+                                    defaultValue={selectedCategory}
+                                    defaultIndex={selectedIndex}
+                                    options={dropdownData}
+                                    onDropdownWillShow={() => this.rotate(1)}
+                                    onDropdownWillHide={() => this.rotate(0)}
+                                    onSelect={(index, item) => {
+                                        this.selectedCategoryHandler(item.name, index);
+                                        return false;
                                     }}
-                                /> :
-                                finished.length ?
+                                    renderButtonText={(rowData) => rowData.name}
+                                    renderRow={this.dropdownRenderRow.bind(this)}
+                                >
+                                    <View style={styles.dropdown_button}>
+                                        <Text style={[styles.dropdown_text, {color: theme.headerTextColor}]}>
+                                            {selectedCategory}
+                                        </Text>
+                                        <Animated.View style={{transform: [{rotate: rotateInterpolate}]}}>
+                                            <Icon
+                                                style={styles.dropdown_button_icon}
+                                                color={theme.headerTextColor}
+                                                name="expand-more" />
+                                        </Animated.View>
+                                    </View>
+                                </ModalDropdown>
+                            }
+                        />
+
+                        {showConfigCategory &&
+                        <ConfigCategory
+                            editCategory={{id: false, name: ''}}
+                            showModal={showConfigCategory}
+                            toggleModal={this.toggleConfigCategory}
+                        />
+                        }
+                        {showDialog &&
+                        <Dialog
+                            showModal={showDialog}
+                            title={dialog.title}
+                            description={dialog.description}
+                            buttons={dialog.buttons}
+                        />
+                        }
+
+                        <React.Fragment>
+                            <View style={container}>
+                                <ScrollView
+                                    keyboardShouldPersistTaps="always"
+                                    keyboardDismissMode="interactive"
+                                    onScroll={this.onScroll}
+                                    style={fullWidth}>
+                                    <TaskList
+                                        searchText={searchText}
+                                        tasks={tasks}
+                                        sortingType={sortingType}
+                                        sorting={sorting}
+                                        navigation={navigation}
+                                    />
+                                </ScrollView>
+                            </View>
+                            <View>
+                                {selectedCategory !== 'Finished' ?
                                     <ActionButton
                                         hidden={bottomHidden}
-                                        style={{container: {backgroundColor: '#b6c1ce'}}}
-                                        onPress={() => this.showDialog()}
-                                        icon="delete-sweep"
-                                    /> : null
-                            }
-                        </View>
-                        <BottomNavigation
-                            style={{container: {backgroundColor: theme.bottomNavigationColor}}}
-                            hidden={bottomHidden}
-                            active={sorting}>
-                            <BottomNavigation.Action
-                                key="byAZ"
-                                icon="format-line-spacing"
-                                label={sortingType === 'ASC' ? "A-Z" : "Z-A"}
-                                onPress={() => this.setSortingType('byAZ')}
-                            />
-                            <BottomNavigation.Action
-                                key="byDate"
-                                icon="insert-invitation"
-                                label="Date"
-                                onPress={() => this.setSortingType('byDate')}
-                            />
-                            <BottomNavigation.Action
-                                key="byCategory"
-                                icon="bookmark-border"
-                                label="Category"
-                                onPress={() => this.setSortingType('byCategory')}
-                            />
-                            <BottomNavigation.Action
-                                key="byPriority"
-                                icon="priority-high"
-                                label="Priority"
-                                onPress={() => this.setSortingType('byPriority')}
-                            />
-                        </BottomNavigation>
-                    </React.Fragment>
-                </Template> :
-                <View style={activity}>
-                    <ActivityIndicator size="large" color="#0000ff" />
-                </View>
+                                        onPress={() => navigation.navigate('ConfigTask')}
+                                        icon="add"
+                                        style={{
+                                            container: {backgroundColor: theme.actionButtonColor},
+                                            icon: {color: theme.actionButtonIconColor}
+                                        }}
+                                    /> :
+                                    finished.length ?
+                                        <ActionButton
+                                            hidden={bottomHidden}
+                                            style={{container: {backgroundColor: '#b6c1ce'}}}
+                                            onPress={() => this.showDialog()}
+                                            icon="delete-sweep"
+                                        /> : null
+                                }
+                            </View>
+                            <BottomNavigation
+                                style={{container: {backgroundColor: theme.bottomNavigationColor}}}
+                                hidden={bottomHidden}
+                                active={sorting}>
+                                <BottomNavigation.Action
+                                    key="byAZ"
+                                    icon="format-line-spacing"
+                                    label={sortingType === 'ASC' ? "A-Z" : "Z-A"}
+                                    onPress={() => this.setSortingType('byAZ')}
+                                />
+                                <BottomNavigation.Action
+                                    key="byDate"
+                                    icon="insert-invitation"
+                                    label="Date"
+                                    onPress={() => this.setSortingType('byDate')}
+                                />
+                                <BottomNavigation.Action
+                                    key="byCategory"
+                                    icon="bookmark-border"
+                                    label="Category"
+                                    onPress={() => this.setSortingType('byCategory')}
+                                />
+                                <BottomNavigation.Action
+                                    key="byPriority"
+                                    icon="priority-high"
+                                    label="Priority"
+                                    onPress={() => this.setSortingType('byPriority')}
+                                />
+                            </BottomNavigation>
+                        </React.Fragment>
+                    </Template> : <Spinner color="#0000ff" />
                 }
             </React.Fragment>
         );

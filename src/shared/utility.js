@@ -7,6 +7,10 @@ export const updateObject = (oldObject, newProps) => {
     };
 };
 
+export const capitalize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 export const sortingData = (array, field, type) => {
     if (field === 'date') { // SORTING DATE
         array.sort((a, b) => {
@@ -77,4 +81,41 @@ export const generateDialogObject = (title, description, buttons) => {
         })
     });
     return object;
+};
+
+export const valid = (controls, value, name, callback) => {
+    let validStatus = true;
+
+    // Validation system
+    if (controls[name].characterRestriction) {
+        if (value.length > controls[name].characterRestriction) {
+            controls[name].error = `${capitalize(name)} is too long!`;
+            validStatus = false;
+        }
+    }
+    if (controls[name].number) {
+        if (+value !== parseInt(value, 10)) {
+            controls[name].error = `${capitalize(name)} must be a number!`;
+            validStatus = false;
+        } else {
+            if (controls[name].positiveNumber) {
+                if (+value < 1) {
+                    controls[name].error = `${capitalize(name)} must be greater than zero!`;
+                    validStatus = false;
+                }
+            }
+        }
+    }
+    if (controls[name].required) {
+        if (value.trim() === '') {
+            controls[name].error = `${capitalize(name)} is required!`;
+            validStatus = false;
+        }
+    }
+
+    if (validStatus && controls[name].error) {
+        delete controls[name].error;
+    }
+
+    callback(controls);
 };

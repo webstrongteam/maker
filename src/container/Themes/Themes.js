@@ -1,21 +1,22 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {Toolbar, IconToggle, Icon} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
-import {View, ActivityIndicator} from 'react-native';
+import {View} from 'react-native';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import Dialog from "../../components/UI/Dialog/Dialog";
 import {generateDialogObject} from "../../shared/utility";
-import {activity, iconStyle} from '../../shared/styles';
+import {iconStyle} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
 
-class Themes extends Component {
+class Themes extends PureComponent {
     state = {
         selectedTheme: null,
         loading: true,
-        dialog: {},
+        dialog: null,
         showDialog: false
     };
 
@@ -30,7 +31,7 @@ class Themes extends Component {
     }
 
     initThemes = () => {
-        if (this.props.theme.id === false) this.props.onInitThemes();
+        if (this.props.theme.id === false) this.props.onInitTheme();
         else {
             const { themes } = this.props;
             const selectedTheme = {};
@@ -62,6 +63,7 @@ class Themes extends Component {
             });
 
             this.setState({ selectedTheme });
+            this.props.onInitTheme();
             this.showDialog();
         }
     };
@@ -138,19 +140,19 @@ class Themes extends Component {
                             itemWidth={70}
                             borderHide={'Both'}
                         />
-                        {themes.map((theme, index) => {
+                        {themes.map((themeEl, index) => {
                             if (index > 1) {
                                 return (
                                     <SettingsList.Item
                                         key={index}
                                         hasNavArrow={true}
-                                        onPress={() => navigation.navigate('Theme', {theme})}
+                                        onPress={() => navigation.navigate('Theme', {themeEl})}
                                         itemWidth={70}
                                         hasSwitch={true}
-                                        switchState={selectedTheme[theme.id]}
-                                        switchOnValueChange={(value) => this.selectedThemeHandler(value, theme.id)}
+                                        switchState={selectedTheme[themeEl.id]}
+                                        switchOnValueChange={(value) => this.selectedThemeHandler(value, themeEl.id)}
                                         titleStyle={{color: theme.textColor, fontSize: 16}}
-                                        title={theme.name}
+                                        title={themeEl.name}
                                     />
                                 )
                             }
@@ -161,10 +163,7 @@ class Themes extends Component {
                             onPress={() => navigation.navigate('Theme')}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                         />
-                    </SettingsList> :
-                    <View style={activity}>
-                        <ActivityIndicator size="large" color={theme.primaryColor} />
-                    </View>
+                    </SettingsList> : <Spinner />
                 }
                 <BannerAd />
             </Template>
@@ -180,8 +179,9 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
+        onInitTheme: () => dispatch(actions.initTheme()),
         onInitThemes: () => dispatch(actions.initThemes()),
-        onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),
+        onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id))
     }
 };
 

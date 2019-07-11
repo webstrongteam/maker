@@ -1,20 +1,27 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {Toolbar, Icon, ListItem, Snackbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
-import {View, StyleSheet, ActivityIndicator, Text} from 'react-native';
-import {activity, iconStyle} from '../../shared/styles';
-import Dialog from "react-native-dialog";
+import Spinner from '../../components/UI/Spinner/Spinner';
+import {View, StyleSheet, Text} from 'react-native';
+import {iconStyle} from '../../shared/styles';
+import {generateDialogObject} from "../../shared/utility";
+import Dialog from '../../components/UI/Dialog/Dialog';
 import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
 
-class Themes extends Component {
+class Settings extends PureComponent {
     state = {
         loading: true,
         showWeekDialog: false,
         showLangDialog: false,
+        dialog: null,
+        showFirstDayOfWeek: false,
+        showLanguages: false,
+        daysOfWeek: ['Sunday', 'Monday'],
+        languages: [{name: 'English', short_name: 'en'}],
         snackbar: {
             visible: false,
             message: ''
@@ -23,7 +30,7 @@ class Themes extends Component {
 
     componentDidMount() {
         this.props.onInitSettings(() => this.setState({ loading: false }));
-    }
+    };
 
     toggleSnackbar = (message, visible = true) => {
         this.setState({snackbar: {visible, message}});
@@ -35,9 +42,98 @@ class Themes extends Component {
         this.props['onChange'+name](value, name);
     };
 
+    showDialog = (action) => {
+        let dialog;
+        if (action === 'showFirstDayOfWeek') {
+            dialog = generateDialogObject(
+                'Select first day of week',
+                false,
+                {
+                    Cancel: () => {
+                        this.setState({[action]: false});
+                    }
+                }
+            );
+        }
+        else if (action === 'showLanguages') {
+            dialog = generateDialogObject(
+                'Select language',
+                false,
+                {
+                    Cancel: () => {
+                        this.setState({[action]: false});
+                    }
+                }
+            );
+        }
+        this.setState({[action]: true, dialog});
+    };
+
     render() {
-        const { loading, showWeekDialog, showLangDialog, snackbar } = this.state;
+        const { loading, snackbar, showFirstDayOfWeek, showLanguages, daysOfWeek, languages, dialog } = this.state;
         const { navigation, settings, theme } = this.props;
+        let viewDialog = null;
+
+        if (showFirstDayOfWeek) {
+            viewDialog = (
+                <Dialog
+                    showModal={showFirstDayOfWeek}
+                    title={dialog.title}
+                    buttons={dialog.buttons}
+                >
+                    {daysOfWeek.map(day => (
+                        <ListItem
+                            divider
+                            dense
+                            onPress={() => {
+                                this.setState({showFirstDayOfWeek: false});
+                                this.props.onChangeFirstDayOfWeek(day);
+                                this.toggleSnackbar('First day of week has been changed');
+                            }}
+                            style={{
+                                primaryText: {
+                                    color: settings.firstDayOfWeek === day ?
+                                        theme.primaryColor : theme.textColor
+                                }
+                            }}
+                            centerElement={{
+                                primaryText: day,
+                            }}
+                        />
+                    ))
+                    }
+                </Dialog>
+            )
+        } else if (showLanguages) {
+            viewDialog = (
+                <Dialog
+                    showModal={showLanguages}
+                    title={dialog.title}
+                    buttons={dialog.buttons}
+                >
+                    {languages.map(lang => (
+                        <ListItem
+                            divider
+                            dense
+                            onPress={() => {
+                                this.setState({ showLanguages: false });
+                                this.props.onChangeLang(lang.short_name);
+                            }}
+                            style={{
+                                primaryText: {
+                                    color: settings.lang === lang.short_name ?
+                                        theme.primaryColor : theme.textColor
+                                }
+                            }}
+                            centerElement={{
+                                primaryText: lang.name,
+                            }}
+                        />
+                    ))
+                    }
+                </Dialog>
+            )
+        }
 
         return (
             <Template bgColor={theme.secondaryBackgroundColor}>
@@ -50,84 +146,7 @@ class Themes extends Component {
                 />
 
                 <Snackbar visible={snackbar.visible} message={snackbar.message} onRequestClose={() => this.toggleSnackbar('', false)} />
-
-                <Dialog.Container
-                    contentStyle={{ backgroundColor: theme.secondaryBackgroundColor }}
-                    visible={showWeekDialog}>
-                    <Dialog.Title
-                        style={{ color: theme.textColor }}>
-                        Select first day of week
-                    </Dialog.Title>
-                    <ListItem
-                        divider
-                        dense
-                        onPress={() => {
-                            this.setState({ showWeekDialog: false });
-                            this.props.onChangeFirstDayOfWeek('Sunday');
-                            this.toggleSnackbar('First day of week has been changed');
-                        }}
-                        style={{
-                            primaryText: {
-                                color: settings.firstDayOfWeek === 'Sunday' ?
-                                    theme.primaryColor : theme.textColor
-                            }
-                        }}
-                        centerElement={{
-                            primaryText: "Sunday",
-                        }}
-                    />
-                    <ListItem
-                        dense
-                        onPress={() => {
-                            this.setState({ showWeekDialog: false });
-                            this.props.onChangeFirstDayOfWeek('Monday');
-                            this.toggleSnackbar('First day of week has been changed');
-                        }}
-                        style={{
-                            primaryText: {
-                                color: settings.firstDayOfWeek === 'Monday' ?
-                                    theme.primaryColor : theme.textColor
-                            }
-                        }}
-                        centerElement={{
-                            primaryText: "Monday",
-                        }}
-                    />
-                    <Dialog.Button
-                        label="Cancel"
-                        onPress={() => this.setState({ showWeekDialog: false })}
-                    />
-                </Dialog.Container>
-
-                <Dialog.Container
-                    contentStyle={{ backgroundColor: theme.secondaryBackgroundColor }}
-                    visible={showLangDialog}>
-                    <Dialog.Title
-                        style={{ color: theme.textColor }}>
-                        Select language
-                    </Dialog.Title>
-                    <ListItem
-                        divider
-                        dense
-                        onPress={() => {
-                            this.setState({ showLangDialog: false });
-                            this.props.onChangeLang('en');
-                        }}
-                        style={{
-                            primaryText: {
-                                color: settings.lang === 'en' ?
-                                    theme.primaryColor : theme.textColor
-                            }
-                        }}
-                        centerElement={{
-                            primaryText: "English",
-                        }}
-                    />
-                    <Dialog.Button
-                        label="Cancel"
-                        onPress={() => this.setState({ showLangDialog: false })}
-                    />
-                </Dialog.Container>
+                {viewDialog}
 
                 {!loading ?
                 <React.Fragment>
@@ -164,7 +183,7 @@ class Themes extends Component {
                             itemWidth={70}
                             hasSwitch={false}
                             titleInfo={settings.firstDayOfWeek}
-                            onPress={() => this.setState({ showWeekDialog: true })}
+                            onPress={() => this.showDialog('showFirstDayOfWeek')}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                             title='First day of week'
                         />
@@ -178,7 +197,7 @@ class Themes extends Component {
                             itemWidth={70}
                             hasSwitch={false}
                             titleInfo={settings.lang}
-                            onPress={() => this.setState({ showLangDialog: true })}
+                            onPress={() => this.showDialog('showLanguages')}
                             titleStyle={{color: theme.textColor, fontSize: 16}}
                             title='Language'
                         />
@@ -228,10 +247,7 @@ class Themes extends Component {
                     <View style={styles.version}>
                         <Text style={{color: theme.textColor}}>Version: {settings.version}</Text>
                     </View>
-                </React.Fragment> :
-                <View style={activity}>
-                    <ActivityIndicator size="large" color={theme.primaryColor} />
-                </View>
+                </React.Fragment> : <Spinner />
                 }
                 <BannerAd />
             </Template>
@@ -266,4 +282,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Themes);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

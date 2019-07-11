@@ -5,7 +5,7 @@ import {
     StyleSheet,
     Image,
     TouchableOpacity,
-    ScrollView, ActivityIndicator
+    ScrollView
 } from 'react-native';
 import Input from '../../components/UI/Input/Input';
 import Template from '../Template/Template';
@@ -13,7 +13,9 @@ import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import { Toolbar } from 'react-native-material-ui';
-import {activity, separator} from '../../shared/styles';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import {separator} from '../../shared/styles';
+import {valid} from "../../shared/utility";
 import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
@@ -21,7 +23,14 @@ import * as actions from "../../store/actions";
 
 class Profile extends Component {
     state = {
-        loading: true
+        loading: true,
+        controls: {
+            name: {
+                label: '',
+                required: true,
+                characterRestriction: 20
+            }
+        },
     };
 
     componentDidMount() {
@@ -57,8 +66,17 @@ class Profile extends Component {
         }
     };
 
+    checkValid = (name, value) => {
+        const controls = this.state.controls;
+        valid(controls, value, name, (newControls) => {
+            if (!newControls[name].error) {
+                this.props.onChangeName(value);
+            } this.setState({ controls: newControls });
+        })
+    };
+
     render() {
-        const {loading} = this.state;
+        const {loading, controls} = this.state;
         const {navigation, theme, tasks, finished, profile, categories} = this.props;
         let list;
         const listData = [];
@@ -108,26 +126,17 @@ class Profile extends Component {
                                     )}/>
                         </TouchableOpacity>
                         <Input
-                            elementConfig={{label: ''}}
+                            elementConfig={controls.name}
                             style={styles.name}
                             value={profile.name}
                             color={theme.primaryColor}
-                            changed={(value) => {
-                                if (value.trim() !== '') {
-                                    this.props.onChangeName(value);
-                                } else {
-                                    // this.valid(value);
-                                }
-                            }}/>
+                            changed={value => this.checkValid('name', value)}/>
                     </View>
                     }
                     <ScrollView style={{ flex: 1 }}>
                         {list}
                     </ScrollView>
-                </React.Fragment> :
-                <View style={activity}>
-                    <ActivityIndicator size="large" color={theme.primaryColor}/>
-                </View>
+                </React.Fragment> : <Spinner />
                 }
                 <BannerAd />
             </Template>

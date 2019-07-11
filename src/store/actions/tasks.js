@@ -38,7 +38,7 @@ export const initToDo = () => {
                 tx.executeSql('select * from finished', [], (_, {rows}) => {
                     dispatch(onInitToDo(tasks, rows._array));
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -50,7 +50,7 @@ export const initTasks = () => {
                 tx.executeSql('select * from tasks', [], (_, {rows}) => {
                     dispatch(onInitTasks(rows._array));
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -62,7 +62,7 @@ export const initFinished = () => {
                 tx.executeSql('select * from finished', [], (_, {rows}) => {
                     dispatch(onInitFinished(rows._array));
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -75,7 +75,7 @@ export const saveTask = (task) => {
                     tx.executeSql(`update tasks set name = ?, description = ?, date = ?, category = ?, priority = ?, repeat = ? where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.id], () => {
                         dispatch(initTasks());
                     });
-                }, null, null
+                }, (err) => console.log(err)
             );
         } else {
             db.transaction(
@@ -83,7 +83,7 @@ export const saveTask = (task) => {
                     tx.executeSql('insert into tasks (name, description, date, category, priority, repeat) values (?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat], () => {
                         dispatch(initTasks());
                     });
-                }, null, null
+                }, (err) => console.log(err)
             );
         }
     };
@@ -132,7 +132,7 @@ export const finishTask = (task, endTask) => {
                     tx.executeSql('insert into finished (name, description, date, category, priority, repeat, finish) values (?,?,?,?,?,?,1)', [task.name, task.description, task.date, task.category, task.priority, task.repeat], () => {
                         dispatch(initToDo());
                     });
-                }, (err) => console.warn(err), null
+                }, (err) => console.log(err)
             );
         } else {
             db.transaction(
@@ -140,7 +140,7 @@ export const finishTask = (task, endTask) => {
                     tx.executeSql(`update tasks set date = ? where id = ?;`, [nextDate, task.id], () => {
                         dispatch(initTasks());
                     });
-                }, (err) => console.warn(err), null
+                }, (err) => console.log(err)
             );
         }
     };
@@ -154,7 +154,7 @@ export const undoTask = (task) => {
                 tx.executeSql('insert into tasks (name, description, date, category, priority, repeat) values (?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat], () => {
                     dispatch(initToDo());
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -167,7 +167,7 @@ export const removeTask = (task, finished = true) => {
                     tx.executeSql('delete from finished where id = ?', [task.id], () => {
                         dispatch(initFinished());
                     });
-                }, (err) => console.warn(err), null
+                }, (err) => console.log(err)
             );
         } else {
             db.transaction(
@@ -175,7 +175,7 @@ export const removeTask = (task, finished = true) => {
                     tx.executeSql('delete from tasks where id = ?', [task.id], () => {
                         dispatch(initTasks());
                     });
-                }, (err) => console.warn(err), null
+                }, (err) => console.log(err)
             );
         }
     };

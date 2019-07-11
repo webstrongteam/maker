@@ -26,7 +26,7 @@ export const initTheme = () => {
                         dispatch(onInitTheme(rows._array[0]))
                     });
                 });
-            }, (err) => console.warn(err)
+            }, (err) => console.log(err)
         );
     };
 };
@@ -38,7 +38,7 @@ export const initThemes = () => {
                 tx.executeSql("select * from themes", [], (_, {rows}) => {
                     dispatch(onInitThemes(rows._array));
                 });
-            }, (err) => console.warn(err)
+            }, (err) => console.log(err)
         );
     };
 };
@@ -50,7 +50,7 @@ export const setSelectedTheme = (id) => {
                 tx.executeSql('update settings set theme = ? where id = 0;', [id], () => {
                     dispatch(initTheme());
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -64,7 +64,7 @@ export const saveTheme = (theme) => {
                         [theme.name, theme.primaryColor, theme.primaryBackgroundColor, theme.secondaryBackgroundColor, theme.textColor, theme.headerTextColor, theme.bottomNavigationColor, theme.actionButtonColor, theme.actionButtonIconColor, theme.overdueColor, theme.doneButtonColor, theme.doneButtonTextColor, theme.undoButtonColor, theme.undoButtonTextColor, theme.noneColor, theme.noneTextColor, theme.lowColor, theme.lowTextColor, theme.mediumColor, theme.mediumTextColor, theme.highColor, theme.highTextColor, theme.id], () => {
                         dispatch(initThemes());
                     });
-                }, (err) => console.warn(err), null
+                }, (err) => console.log(err)
             );
         } else {
             db.transaction(
@@ -73,7 +73,7 @@ export const saveTheme = (theme) => {
                         [theme.name, theme.primaryColor, theme.primaryBackgroundColor, theme.secondaryBackgroundColor, theme.textColor, theme.headerTextColor, theme.bottomNavigationColor, theme.actionButtonColor, theme.actionButtonIconColor, theme.overdueColor, theme.doneButtonColor, theme.doneButtonTextColor, theme.undoButtonColor, theme.undoButtonTextColor, theme.noneColor, theme.noneTextColor, theme.lowColor, theme.lowTextColor, theme.mediumColor, theme.mediumTextColor, theme.highColor, theme.highTextColor], () => {
                         dispatch(initThemes());
                     });
-                }, (err) => console.warn(err), null
+                }, (err) => console.log(err)
             );
         }
     };
@@ -86,7 +86,7 @@ export const deleteTheme = (id) => {
                 tx.executeSql('delete from themes where id = ?', [id], () => {
                     dispatch(initThemes());
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };

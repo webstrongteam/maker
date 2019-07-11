@@ -1,4 +1,5 @@
 import React from "react";
+import {View} from 'react-native';
 import Dialog from "react-native-dialog";
 
 import { connect } from 'react-redux';
@@ -11,10 +12,17 @@ const dialog = (props) => (
             style={{color: props.theme.textColor}}>
             {props.title}
         </Dialog.Title>
-        <Dialog.Description
-            style={{color: props.theme.textColor}}>
-            {props.description}
-        </Dialog.Description>
+
+        {props.description ?
+            <Dialog.Description
+                style={{color: props.theme.textColor}}>
+                {props.description}
+            </Dialog.Description> :
+            <View>
+                {props.children}
+            </View>
+        }
+
         {props.buttons.map(button => (
             <Dialog.Button
                 key={button.label}

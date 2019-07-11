@@ -3,7 +3,7 @@ export const INIT_TODO = 'INIT_TODO';
 export const INIT_TASKS = 'INIT_TASKS';
 export const INIT_FINISHED = 'INIT_FINISHED';
 
-// Category
+// Categories
 export const INIT_CATEGORIES = 'INIT_CATEGORIES';
 
 // Theme

@@ -9,23 +9,27 @@ import {BannerAd} from '../../../adsAPI';
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
 
-class TaskList extends PureComponent {
+class CategoriesList extends PureComponent {
     state = {
         showModal: false,
-        refresh: false,
-        selectedCategory: false
+        selectedCategory: {id: false, name: ''}
     };
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.categories !== this.props.categories) {
-            this.setState({ refresh: this.props.refresh });
-        }
-    }
 
     toggleModalHandler = (selected) => {
         const { showModal } = this.state;
-        if (selected) this.setState({ showModal: !showModal });
-        else this.setState({ showModal: !showModal, selectedCategory: false });
+        if (selected) {
+            this.setState({
+                showModal: !showModal,
+                selectedCategory: selected
+            });
+        }
+        else {
+            this.props.onInitCategories();
+            this.setState({
+                showModal: !showModal,
+                selectedCategory: {id: false, name: ''}
+            });
+        }
     };
 
     render() {
@@ -46,11 +50,13 @@ class TaskList extends PureComponent {
                     }}
                     centerElement='Categories'
                 />
+                {showModal &&
                 <ConfigCategory
                     showModal={showModal}
-                    editCategory={selectedCategory}
+                    category={selectedCategory}
                     toggleModal={this.toggleModalHandler}
                 />
+                }
                 <View style={container}>
                     <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
                         {categories.map(cate => (
@@ -59,13 +65,11 @@ class TaskList extends PureComponent {
                                 dense
                                 key={cate.id}
                                 onPress={() => {
-                                    this.setState({ selectedCategory: cate });
-                                    this.toggleModalHandler(true);
+                                    this.toggleModalHandler(cate);
                                 }}
                                 leftElement={
                                     <TouchableOpacity onPress={() => {
-                                        this.setState({ selectedCategory: cate });
-                                        this.toggleModalHandler(true);
+                                        this.toggleModalHandler(cate);
                                     }}>
                                         <Icon name="edit" />
                                     </TouchableOpacity>
@@ -92,15 +96,15 @@ const mapStateToProps = state => {
     return {
         tasks: state.tasks.tasks,
         categories: state.categories.categories,
-        refresh: state.tasks.refresh,
         theme: state.theme.theme
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        onInitCategories: () => dispatch(actions.initCategories()),
         onRemoveCategory: (id) => dispatch(actions.removeCategory(id)),
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
+export default connect(mapStateToProps, mapDispatchToProps)(CategoriesList);

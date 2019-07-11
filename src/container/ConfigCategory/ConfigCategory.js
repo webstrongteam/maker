@@ -1,11 +1,13 @@
-import React, { PureComponent } from "react";
-import Dialog from "react-native-dialog";
+import React, { Component } from "react";
+import Dialog from '../../components/UI/Dialog/Dialog';
 import Input from '../../components/UI/Input/Input';
+import {valid} from '../../shared/utility';
+import {generateDialogObject} from "../../shared/utility";
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
-class ConfigCategory extends PureComponent {
+class ConfigCategory extends Component {
     state = {
         category: {
             id: false,
@@ -14,29 +16,27 @@ class ConfigCategory extends PureComponent {
         controls: {
             name: {
                 label: 'Enter category name',
+                required: true,
                 characterRestriction: 30
             }
         },
-        editCategory: null
+        editCategory: null,
+        dialog: false
     };
 
     componentDidMount() {
-        const {editCategory} = this.props;
-        this.initCategory(editCategory);
+        this.initCategory(this.props.category);
     };
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.editCategory !== this.props.editCategory) {
-            this.initCategory(this.props.editCategory);
-        }
-    }
-
     initCategory = (category) => {
-        if (category) this.setState({category, editCategory: true});
-        else this.setState({
-            category: {id: false, name: ''},
-            editCategory: false
-        });
+        if (category.id != null) {
+            this.setState({category, editCategory: true});
+            this.showDialog('Edit category');
+        }
+        else {
+            this.setState({category, editCategory: false});
+            this.showDialog('New category');
+        }
     };
 
     updateCategory = (name, value) => {
@@ -45,66 +45,62 @@ class ConfigCategory extends PureComponent {
         this.setState({ category });
     };
 
-    valid = (value = this.state.category.name) => {
-        const newControls = this.state.controls;
-        if (value.trim() === '') {
-            newControls.name.error = `Category name is required!`;
-        } else {
-            delete newControls.name.error;
-        }
-        this.setState({ controls: newControls })
+    changeInputHandler = (name, save = false, value = this.state.category.name) => {
+        const controls = this.state.controls;
+        valid(controls, value, name, (newControls) => {
+            this.updateCategory('name', value);
+            if (save && !newControls[name].error) {
+                const {category} = this.state;
+                this.props.toggleModal(category);
+                this.props.onSaveCategory(category, () => {
+                    delete newControls[name].error;
+                    this.updateCategory('name', '');
+                });
+            } this.setState({ controls: newControls });
+        })
+    };
+
+    showDialog = (title) => {
+        const dialog = generateDialogObject(
+            title,
+            false,
+            {
+                Save: () => this.changeInputHandler('name',true),
+                Cancel: () => {
+                    delete this.state.controls.name.error;
+                    this.props.toggleModal(false);
+                }
+            }
+        );
+        this.setState({dialog});
     };
 
     render() {
-        const { editCategory, controls, category } = this.state;
-        const { showModal, theme } = this.props;
+        const { dialog, controls, category } = this.state;
+        const { showModal } = this.props;
 
         return (
-            <Dialog.Container
-                contentStyle={{backgroundColor: theme.secondaryBackgroundColor}}
-                visible={showModal}>
-                <Dialog.Title
-                    style={{color: theme.textColor}}>
-                    {editCategory ? 'Edit category' : 'New category'}
-                </Dialog.Title>
-                <Input
-                    elementConfig={controls.name}
-                    focus={true}
-                    value={category.name}
-                    changed={(value) => {
-                        if (value.length <= controls.name.characterRestriction) {
-                            this.valid(value);
-                            this.updateCategory('name', value);
-                        } else this.valid(value);
-                    }}
-                />
-                <Dialog.Button
-                    label="Save"
-                    onPress={() => {
-                        if (category.name.trim() !== '') {
-                            this.props.toggleModal(category);
-                            this.props.onSaveCategory(category, () => {
-                                this.updateCategory('name', '');
-                            });
-                        } else this.valid();
-                    }}
-                />
-                <Dialog.Button
-                    label="Cancel"
-                    onPress={() => {
-                        this.props.toggleModal();
-                    }}
-                />
-            </Dialog.Container>
+            <React.Fragment>
+                {dialog &&
+                <Dialog
+                    showModal={showModal}
+                    title={dialog.title}
+                    buttons={dialog.buttons}>
+                    <Input
+                        elementConfig={controls.name}
+                        focus={true}
+                        value={category.name}
+                        changed={(value) => this.changeInputHandler('name',false, value)}
+                    />
+                </Dialog>
+                }
+            </React.Fragment>
         );
     }
 }
 
 const mapStateToProps = state => {
-    return {
-        category: state.categories.category,
-        theme: state.theme.theme
-    }
+    return {theme: state.theme.theme}
 };
 const mapDispatchToProps = dispatch => {
     return {

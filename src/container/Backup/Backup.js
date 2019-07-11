@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
-import {View, ScrollView, ActivityIndicator, Text} from 'react-native';
+import React, {PureComponent} from 'react';
+import {View, ScrollView, Text} from 'react-native';
 import {Toolbar, IconToggle, ListItem, Snackbar} from 'react-native-material-ui';
 import { generateDialogObject } from '../../shared/utility';
-import {container, activity, fullWidth, empty} from '../../shared/styles';
-import DialogModal from '../../components/UI/Dialog/Dialog';
-import Dialog from "react-native-dialog";
+import {container, fullWidth, empty} from '../../shared/styles';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import Dialog from '../../components/UI/Dialog/Dialog';
 import * as FileSystem from "expo-file-system";
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
@@ -16,9 +16,10 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
 
-class TaskList extends Component {
+class TaskList extends PureComponent {
     state = {
-        showDialog: false,
+        showSelectBackupSource: false,
+        showBackupAlert: false,
         dialog: null,
         backups: [],
         loading: true,
@@ -128,27 +129,41 @@ class TaskList extends Component {
         this.setState({snackbar: {visible, message}});
     };
 
-    showDialog = (name) => {
-        const dialog = generateDialogObject(
-            'Are you sure?',
-            `Replace current database by '${name}' backup? 
+    showDialog = (action, name = null) => {
+        let dialog;
+        if (action === 'showBackupAlert') {
+            dialog = generateDialogObject(
+                'Are you sure?',
+                `Replace current database by '${name}' backup? 
 
 This will delete your current database!`,
-            {
-                Yes: () => {
-                    this.setState({ showDialog: false });
-                    this.useBackupDB(name);
-                },
-                Cancel: () => {
-                    this.setState({ showDialog: false });
+                {
+                    Yes: () => {
+                        this.setState({ [action]: false });
+                        this.useBackupDB(name);
+                    },
+                    Cancel: () => {
+                        this.setState({ [action]: false });
+                    }
                 }
-            }
-        );
-        this.setState({showDialog: true, dialog});
+            );
+        }
+        else if (action === 'showSelectBackupSource') {
+            dialog = generateDialogObject(
+                'Add database from...',
+                false,
+                {
+                    Cancel: () => {
+                        this.setState({ [action]: false });
+                    }
+                }
+            );
+        }
+        this.setState({[action]: true, dialog});
     };
 
     render() {
-        const {loading, showDialog, dialog, snackbar, backups, showAddBackupDialog} = this.state;
+        const {loading, showBackupAlert, dialog, snackbar, backups, showSelectBackupSource} = this.state;
         const {navigation, theme} = this.props;
 
         return (
@@ -158,7 +173,7 @@ This will delete your current database!`,
                     rightElement={
                         <IconToggle
                             color={theme.headerTextColor}
-                            onPress={() => this.setState({showAddBackupDialog: true})}
+                            onPress={() => this.showDialog('showSelectBackupSource')}
                             name="add" />
                     }
                     onLeftElementPress={() => {
@@ -169,27 +184,25 @@ This will delete your current database!`,
 
                 <Snackbar visible={snackbar.visible} message={snackbar.message} onRequestClose={() => this.toggleSnackbar('', false)} />
 
-                {showDialog &&
-                <DialogModal
-                    showModal={showDialog}
+                {showBackupAlert &&
+                <Dialog
+                    showModal={showBackupAlert}
                     title={dialog.title}
                     description={dialog.description}
                     buttons={dialog.buttons}
                 />
                 }
 
-                <Dialog.Container
-                    contentStyle={{ backgroundColor: theme.secondaryBackgroundColor }}
-                    visible={showAddBackupDialog}>
-                    <Dialog.Title
-                        style={{ color: theme.textColor }}>
-                        Add database from...
-                    </Dialog.Title>
+                {showSelectBackupSource &&
+                <Dialog
+                    showModal={showSelectBackupSource}
+                    title={dialog.title}
+                    buttons={dialog.buttons}>
                     <ListItem
                         divider
                         dense
                         onPress={() => {
-                            this.setState({ showAddBackupDialog: false });
+                            this.setState({ showSelectBackupSource: false });
                             this.createBackup();
                         }}
                         centerElement={{
@@ -199,18 +212,15 @@ This will delete your current database!`,
                     <ListItem
                         dense
                         onPress={() => {
-                            this.setState({ showAddBackupDialog: false });
+                            this.setState({ showSelectBackupSource: false });
                             this.addBackupFromStorage();
                         }}
                         centerElement={{
                             primaryText: "Your storage",
                         }}
                     />
-                    <Dialog.Button
-                        label="Cancel"
-                        onPress={() => this.setState({ showAddBackupDialog: false })}
-                    />
-                </Dialog.Container>
+                </Dialog>
+                }
 
                 {!loading ?
                 <View style={container}>
@@ -221,7 +231,7 @@ This will delete your current database!`,
                                 divider
                                 dense
                                 key={name}
-                                onPress={() => this.showDialog(name)}
+                                onPress={() => this.showDialog('showBackupAlert', name)}
                                 style={{
                                     container: {height: 50}
                                 }}
@@ -243,10 +253,7 @@ This will delete your current database!`,
                         <Text style={[empty, {color: theme.textColor}]}>Backup list is empty!</Text>
                         }
                     </ScrollView>
-                </View> :
-                <View style={activity}>
-                    <ActivityIndicator size="large" color={theme.primaryColor} />
-                </View>
+                </View> : <Spinner />
                 }
                 <BannerAd />
             </Template>

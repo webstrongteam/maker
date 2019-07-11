@@ -17,7 +17,7 @@ export const initCategories = () => {
                 tx.executeSql('select * from categories', [], (_, {rows}) => {
                     dispatch(onInitCategories(rows._array));
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };
@@ -30,7 +30,7 @@ export const saveCategory = (category, callback) => {
                     tx.executeSql(`update categories set name = ? where id = ?;`, [category.name, category.id], () => {
                         dispatch(initCategories(), callback());
                     });
-                }, (err) => console.warn(err)
+                }, (err) => console.log(err)
             );
         } else {
             db.transaction(
@@ -38,7 +38,7 @@ export const saveCategory = (category, callback) => {
                     tx.executeSql('insert into categories (name) values (?)', [category.name], () => {
                         dispatch(initCategories(), callback());
                     });
-                }, (err) => console.warn(err)
+                }, (err) => console.log(err)
             );
         }
     };
@@ -51,7 +51,7 @@ export const removeCategory = (id) => {
                 tx.executeSql('delete from categories where id = ?', [id], () => {
                     dispatch(initCategories());
                 });
-            }, (err) => console.warn(err), null
+            }, (err) => console.log(err)
         );
     };
 };

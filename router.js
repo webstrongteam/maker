@@ -1,6 +1,7 @@
 import React from 'react';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
 
+// Components
 import ToDo from "./src/container/ToDo/ToDo";
 import ConfigTask from "./src/container/ConfigTask/ConfigTask";
 import CategoriesList from './src/container/CategoriesList/CategoriesList';
