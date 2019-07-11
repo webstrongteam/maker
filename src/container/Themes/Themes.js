@@ -146,7 +146,7 @@ class Themes extends PureComponent {
                                     <SettingsList.Item
                                         key={index}
                                         hasNavArrow={true}
-                                        onPress={() => navigation.navigate('Theme', {themeEl})}
+                                        onPress={() => navigation.navigate('Theme', {theme: themeEl})}
                                         itemWidth={70}
                                         hasSwitch={true}
                                         switchState={selectedTheme[themeEl.id]}

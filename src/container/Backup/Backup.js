@@ -19,7 +19,7 @@ import * as actions from "../../store/actions";
 class TaskList extends PureComponent {
     state = {
         showSelectBackupSource: false,
-        showBackupAlert: false,
+        showDialog: false,
         dialog: null,
         backups: [],
         loading: true,
@@ -139,11 +139,11 @@ class TaskList extends PureComponent {
 This will delete your current database!`,
                 {
                     Yes: () => {
-                        this.setState({ [action]: false });
+                        this.setState({showDialog: false});
                         this.useBackupDB(name);
                     },
                     Cancel: () => {
-                        this.setState({ [action]: false });
+                        this.setState({showDialog: false});
                     }
                 }
             );
@@ -159,11 +159,27 @@ This will delete your current database!`,
                 }
             );
         }
-        this.setState({[action]: true, dialog});
+        else if (action === 'showConfirmDelete') {
+            dialog = generateDialogObject(
+                'Are you sure?',
+                'Delete this backup?',
+                {
+                    Yes: () => {
+                        this.setState({showDialog: false});
+                        this.removeBackup(`Backup/${name}`)
+                    },
+                    Cancel: () => {
+                        this.setState({showDialog: false});
+                    }
+                }
+            );
+        }
+        if (dialog.description) this.setState({showDialog: true, dialog});
+        else this.setState({[action]: true, dialog});
     };
 
     render() {
-        const {loading, showBackupAlert, dialog, snackbar, backups, showSelectBackupSource} = this.state;
+        const {loading, showDialog, dialog, snackbar, backups, showSelectBackupSource} = this.state;
         const {navigation, theme} = this.props;
 
         return (
@@ -184,9 +200,9 @@ This will delete your current database!`,
 
                 <Snackbar visible={snackbar.visible} message={snackbar.message} onRequestClose={() => this.toggleSnackbar('', false)} />
 
-                {showBackupAlert &&
+                {showDialog &&
                 <Dialog
-                    showModal={showBackupAlert}
+                    showModal={showDialog}
                     title={dialog.title}
                     description={dialog.description}
                     buttons={dialog.buttons}
@@ -241,7 +257,7 @@ This will delete your current database!`,
                                             onPress={() => this.shareBackup(name)}
                                             name="share" />
                                         <IconToggle
-                                            onPress={() => this.removeBackup(`Backup/${name}`)}
+                                            onPress={() => this.showDialog('showConfirmDelete', name)}
                                             name="delete" />
                                     </View>
                                 }

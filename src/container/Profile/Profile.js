@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {
     Text,
     View,
@@ -15,22 +15,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { Toolbar } from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import {separator} from '../../shared/styles';
-import {valid} from "../../shared/utility";
 import {BannerAd} from "../../../adsAPI";
 
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
 
-class Profile extends Component {
+class Profile extends PureComponent {
     state = {
-        loading: true,
-        controls: {
-            name: {
-                label: '',
-                required: true,
-                characterRestriction: 20
-            }
-        },
+        loading: true
     };
 
     componentDidMount() {
@@ -64,15 +56,6 @@ class Profile extends Component {
         if (!result.cancelled) {
             this.props.onChangeAvatar(result.uri);
         }
-    };
-
-    checkValid = (name, value) => {
-        const controls = this.state.controls;
-        valid(controls, value, name, (newControls) => {
-            if (!newControls[name].error) {
-                this.props.onChangeName(value);
-            } this.setState({ controls: newControls });
-        })
     };
 
     render() {
@@ -126,11 +109,11 @@ class Profile extends Component {
                                     )}/>
                         </TouchableOpacity>
                         <Input
-                            elementConfig={controls.name}
+                            elementConfig={{label: ''}}
                             style={styles.name}
                             value={profile.name}
                             color={theme.primaryColor}
-                            changed={value => this.checkValid('name', value)}/>
+                            changed={value => this.props.onChangeName(value)}/>
                     </View>
                     }
                     <ScrollView style={{ flex: 1 }}>

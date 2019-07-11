@@ -67,8 +67,10 @@ class ConfigCategory extends Component {
             {
                 Save: () => this.changeInputHandler('name',true),
                 Cancel: () => {
-                    delete this.state.controls.name.error;
-                    this.props.toggleModal(false);
+                    this.props.onInitCategories(() => {
+                        delete this.state.controls.name.error;
+                        this.props.toggleModal(false);
+                    });
                 }
             }
         );
@@ -104,6 +106,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
+        onInitCategories: (callback) => dispatch(actions.initCategories(callback)),
         onSaveCategory: (category, callback) => dispatch(actions.saveCategory(category, callback)),
     }
 };

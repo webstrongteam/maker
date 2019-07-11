@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import {View, Picker, StyleSheet, ScrollView} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import {Toolbar, Subheader, IconToggle, Button} from 'react-native-material-ui';
@@ -15,7 +15,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
-class ConfigTask extends PureComponent {
+class ConfigTask extends Component {
     state = {
         task: {
             id: false,

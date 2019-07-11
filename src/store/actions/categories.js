@@ -10,11 +10,12 @@ export const onInitCategories = (categories) => {
     }
 };
 
-export const initCategories = () => {
+export const initCategories = (callback = () => null) => {
     return dispatch => {
         db.transaction(
             tx => {
                 tx.executeSql('select * from categories', [], (_, {rows}) => {
+                    callback();
                     dispatch(onInitCategories(rows._array));
                 });
             }, (err) => console.log(err)

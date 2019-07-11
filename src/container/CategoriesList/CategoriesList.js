@@ -24,7 +24,6 @@ class CategoriesList extends PureComponent {
             });
         }
         else {
-            this.props.onInitCategories();
             this.setState({
                 showModal: !showModal,
                 selectedCategory: {id: false, name: ''}
@@ -102,7 +101,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onInitCategories: () => dispatch(actions.initCategories()),
         onRemoveCategory: (id) => dispatch(actions.removeCategory(id)),
     }
 };

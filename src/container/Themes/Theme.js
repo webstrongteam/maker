@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
 import {Toolbar, Button, IconToggle} from 'react-native-material-ui';
 import { fromHsv } from 'react-native-color-picker'
 import ColorPicker from '../../components/UI/ColorPicker/ColorPicker';
@@ -14,9 +14,9 @@ import {BannerAd} from "../../../adsAPI";
 import { connect } from 'react-redux';
 import * as actions from "../../store/actions";
 
-class Theme extends PureComponent {
+class Theme extends Component {
     state = {
-        theme: {id: false},
+        customTheme: {id: false},
         names: [
             'id', 'name', 'Primary color', 'Primary background color', 'Secondary background color', 'Text color', 'Header text color',
             'Bottom navigation color', 'Action button color', 'Action button icon color', 'Overdue color',
@@ -45,12 +45,12 @@ class Theme extends PureComponent {
 
     componentDidMount() {
         const theme = this.props.navigation.getParam('theme', false);
-        if (theme) this.setState({ theme, loading: false });
+        if (theme) this.setState({ customTheme: theme, loading: false });
         else {
             const defaultTheme = this.props.theme;
             defaultTheme.id = false;
             defaultTheme.name = '';
-            this.setState({ theme: defaultTheme, loading: false });
+            this.setState({ customTheme: defaultTheme, loading: false });
         }
     }
     showDialog = (action) => {
@@ -62,13 +62,11 @@ class Theme extends PureComponent {
                 {
                     Yes: () => {
                         this.setState({ showDialog: false });
+                        this.props.onInitThemes();
                         this.props.navigation.goBack();
                     },
                     Save: () => {
-                        if (this.state.task.name.trim() !== '') {
-                            this.props.onSaveTheme(this.state.theme);
-                            this.props.navigation.goBack();
-                        } else this.valid();
+                        this.checkValid('name', true);
                         this.setState({ showDialog: false });
                     },
                     Cancel: () => this.setState({ showDialog: false })
@@ -95,11 +93,11 @@ class Theme extends PureComponent {
     };
 
     deleteTheme = () => {
-        const {theme} = this.state;
-        if (this.props.theme.id === theme.id) {
+        const {customTheme} = this.state;
+        if (this.props.theme.id === customTheme.id) {
             this.props.onSetSelectedTheme(0); // Set default theme
         }
-        this.props.onDeleteTheme(theme.id);
+        this.props.onDeleteTheme(customTheme.id);
     };
 
     configColorPicker = (colorPickerTitle, selectedColor) => {
@@ -107,35 +105,35 @@ class Theme extends PureComponent {
     };
 
     changeNameHandler = (name) => {
-        const theme = this.state.theme;
-        theme.name = name;
-        this.setState({ theme });
+        const customTheme = this.state.customTheme;
+        customTheme.name = name;
+        this.setState({ customTheme });
     };
 
     onSaveColor = () => {
         const {selectedColor, actualColor} = this.state;
-        const theme = this.state.theme;
-        theme[selectedColor] = actualColor;
+        const customTheme = this.state.customTheme;
+        customTheme[selectedColor] = actualColor;
 
-        this.setState({ theme, showColorPicker: false });
+        this.setState({ customTheme, showColorPicker: false });
     };
 
-    checkValid = (name, save = false, value = this.state.theme.name) => {
+    checkValid = (name, save = false, value = this.state.customTheme.name) => {
         const controls = this.state.controls;
         valid(controls, value, name, (newControls) => {
             this.changeNameHandler(value);
             if (save && !newControls[name].error) {
-                const {theme} = this.state;
+                const {customTheme} = this.state;
                 const {navigation} = this.props;
-                this.props.onSaveTheme(theme);
+                this.props.onSaveTheme(customTheme);
                 navigation.goBack();
             } this.setState({ controls: newControls });
         })
     };
 
     render() {
-        const { theme, controls, showDialog, dialog, loading, names, showColorPicker, selectedColor, colorPickerTitle, actualColor } = this.state;
-        const { navigation } = this.props;
+        const { customTheme, controls, showDialog, dialog, loading, names, showColorPicker, selectedColor, colorPickerTitle, actualColor } = this.state;
+        const { navigation, theme } = this.props;
 
         return (
             <Template bgColor={theme.secondaryBackgroundColor}>
@@ -145,21 +143,24 @@ class Theme extends PureComponent {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Button
                                 text="Save"
-                                style={{ text: { color: this.props.theme.headerTextColor } }}
+                                style={{ text: { color: theme.headerTextColor } }}
                                 onPress={() => this.checkValid('name', true)}
                             />
-                            {theme.id !== false && <IconToggle name="delete"
-                                color={this.props.theme.headerTextColor}
+                            {customTheme.id !== false && <IconToggle name="delete"
+                                color={theme.headerTextColor}
                                 onPress={() => this.showDialog('delete')} />
                             }
                         </View>
                     }
                     onLeftElementPress={() => {
-                        if (theme.name.trim() !== '') {
+                        if (customTheme.name.trim() !== '') {
                             this.showDialog('exit');
-                        } else navigation.goBack();
+                        } else {
+                            this.props.onInitThemes();
+                            navigation.goBack();
+                        }
                     }}
-                    centerElement={ theme.id ? 'Edit theme' : 'New theme' }
+                    centerElement={ customTheme.id ? 'Edit theme' : 'New theme' }
                 />
 
                 {showDialog &&
@@ -175,7 +176,7 @@ class Theme extends PureComponent {
                     show={showColorPicker}
                     title={colorPickerTitle}
                     color={actualColor}
-                    defaultColor={theme[selectedColor]}
+                    defaultColor={customTheme[selectedColor]}
                     changeColor={(color) => this.setState({ actualColor: fromHsv(color) })}
                     save={this.onSaveColor}
                     cancel={() => this.setState({ showColorPicker: false })}
@@ -185,12 +186,12 @@ class Theme extends PureComponent {
                 <React.Fragment>
                     <Input
                         elementConfig={controls.name}
-                        value={theme.name}
-                        color={this.props.theme.primaryColor}
+                        value={customTheme.name}
                         changed={value => this.checkValid('name', false, value)}
                     />
                     <SettingsList backgroundColor={theme.primaryBackgroundColor}
-                                  borderColor='#d6d5d9' defaultItemSize={50}>
+                                  borderColor={theme.secondaryBackgroundColor}
+                                  defaultItemSize={50}>
                         <SettingsList.Item
                             hasNavArrow={false}
                             title='Main'
@@ -198,7 +199,7 @@ class Theme extends PureComponent {
                             itemWidth={50}
                             borderHide={'Both'}
                         />
-                        {Object.keys(theme).map((key, index) => {
+                        {Object.keys(customTheme).map((key, index) => {
                             if (key === 'id' || key === 'name') return null;
                             const themeList = [];
                             if (key === 'bottomNavigationColor') {
@@ -248,7 +249,7 @@ class Theme extends PureComponent {
                                             styles.colorPreview,
                                             {
                                                 borderColor: theme.textColor,
-                                                backgroundColor: theme[key]
+                                                backgroundColor: customTheme[key]
                                             }]
                                         }
                                     />}
@@ -282,6 +283,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
+        onInitThemes: () => dispatch(actions.initThemes()),
         onSaveTheme: (theme) => dispatch(actions.saveTheme(theme)),
         onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),
         onDeleteTheme: (id) => dispatch(actions.deleteTheme(id))
