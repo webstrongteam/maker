@@ -81,10 +81,11 @@ class Settings extends PureComponent {
                     title={dialog.title}
                     buttons={dialog.buttons}
                 >
-                    {daysOfWeek.map(day => (
+                    {daysOfWeek.map((day, index) => (
                         <ListItem
                             divider
                             dense
+                            key={index}
                             onPress={() => {
                                 this.setState({showFirstDayOfWeek: false});
                                 this.props.onChangeFirstDayOfWeek(day);
@@ -111,10 +112,11 @@ class Settings extends PureComponent {
                     title={dialog.title}
                     buttons={dialog.buttons}
                 >
-                    {languages.map(lang => (
+                    {languages.map((lang, index) => (
                         <ListItem
                             divider
                             dense
+                            key={index}
                             onPress={() => {
                                 this.setState({ showLanguages: false });
                                 this.props.onChangeLang(lang.short_name);

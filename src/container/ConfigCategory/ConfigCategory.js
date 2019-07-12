@@ -55,7 +55,7 @@ class ConfigCategory extends Component {
                 const {category} = this.state;
                 this.props.onSaveCategory(category, () => {
                     delete newControls[name].error;
-                    this.props.toggleModal();
+                    this.props.toggleModal(category);
                 });
             } this.setState({ controls: newControls });
         })

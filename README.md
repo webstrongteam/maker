@@ -41,14 +41,16 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-* Fix dark theme :heavy_minus_sign:
-- - - -
+##### 1.0v ToDo:
+* Publish app :heavy_minus_sign:
+##### 1.1v ToDo:
+* Add quickly list :x:
 * Add polish language :x:
 * Add notifications system :x:
+* Add custom repeating rang :x:
 * Change datepicker theme :x:
 * Upgrade about tab design :x:
 * Create unit tests :x:
-* Clear and upgrade quality of code :heavy_minus_sign:
 
 #### Legend:
 :heavy_minus_sign: - I am working on it now \

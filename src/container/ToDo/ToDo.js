@@ -149,7 +149,7 @@ class ToDo extends PureComponent {
             return this.setState({ selectedCategory: category, selectedIndex: +index, tasks: finished });
         }
         else if (category === 'New category') {
-            return this.toggleModalHandler();
+            return this.toggleConfigCategory();
         }
         else if (category !== 'All') {
             filterTask = tasks.filter(task => task.category === category);
@@ -267,7 +267,7 @@ class ToDo extends PureComponent {
 
                         {showConfigCategory &&
                         <ConfigCategory
-                            editCategory={{id: false, name: ''}}
+                            category={false}
                             showModal={showConfigCategory}
                             toggleModal={this.toggleConfigCategory}
                         />

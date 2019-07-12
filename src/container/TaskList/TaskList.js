@@ -221,7 +221,7 @@ class TaskList extends Component {
                                         backgroundColor: task.finish ? priorityColors.none.bgColor : priorityColors[task.priority].bgColor
                                     },
                                     primaryText: {fontSize: 18, color: task.finish ? theme.textColor : priorityColors[task.priority].color},
-                                    secondaryText: {color: task.finished ? theme.textColor : div === 'Overdue' ? theme.overdueColor : priorityColors[task.priority].color},
+                                    secondaryText: {fontWeight: '500', color: task.finished ? theme.textColor : div === 'Overdue' ? theme.overdueColor : priorityColors[task.priority].color},
                                     tertiaryText: {color: task.finish ? theme.textColor : priorityColors[task.priority].color}
                                 }}
                                 rightElement={

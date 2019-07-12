@@ -55,10 +55,11 @@ class Theme extends Component {
             });
         }
         else {
-            const defaultTheme = this.props.theme;
-            defaultTheme.id = false;
-            defaultTheme.name = '';
-            this.setState({ customTheme: defaultTheme, loading: false });
+            this.props.onInitTheme(customTheme => {
+                customTheme.id = false;
+                customTheme.name = '';
+                this.setState({ customTheme, loading: false });
+            });
         }
     };
 
@@ -296,6 +297,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
+        onInitTheme: (callback) => dispatch(actions.initTheme(callback)),
         onInitCustomTheme: (id, callback) => dispatch(actions.initCustomTheme(id, callback)),
         onSaveTheme: (theme) => dispatch(actions.saveTheme(theme)),
         onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),

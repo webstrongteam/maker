@@ -75,7 +75,7 @@ class ConfigTask extends Component {
         showOtherRepeat: false,
         showDialog: false,
         editTask: null,
-        showCategory: false,
+        showConfigCategory: false,
         loading: true
     };
 
@@ -162,14 +162,10 @@ class ConfigTask extends Component {
         this.setState({showDialog: true, dialog});
     };
 
-    toggleModalHandler = (category = false) => {
-        const { showCategory, task } = this.state;
-        if (category) {
-            task.category = category.name;
-            this.setState({ task, showCategory: !showCategory });
-        } else {
-            this.setState({ showCategory: !showCategory });
-        }
+    toggleConfigCategory = (category) => {
+        const { showConfigCategory, task } = this.state;
+        if (category) task.category = category.name;
+        this.setState({ showConfigCategory: !showConfigCategory });
     };
 
     updateRepeat = (repeat) => {
@@ -202,7 +198,7 @@ class ConfigTask extends Component {
     };
 
     render() {
-        const { task, controls, loading, editTask, showCategory, repeat, dialog, showDialog, otherOption, selectedTime, showOtherRepeat, repeatValue } = this.state;
+        const { task, controls, loading, editTask, showConfigCategory, repeat, dialog, showDialog, otherOption, selectedTime, showOtherRepeat, repeatValue } = this.state;
         const { navigation, categories, theme, settings } = this.props;
         let date;
         let now;
@@ -259,11 +255,11 @@ class ConfigTask extends Component {
                     cancel={() => this.setState({showOtherRepeat: false})}
                 />
                 }
-                {showCategory &&
+                {showConfigCategory &&
                 <ConfigCategory
-                    showModal={showCategory}
-                    category={{id: false, name: ''}}
-                    toggleModal={this.toggleModalHandler}
+                    showModal={showConfigCategory}
+                    category={false}
+                    toggleModal={this.toggleConfigCategory}
                 />
                 }
                 {showDialog &&
@@ -389,7 +385,7 @@ class ConfigTask extends Component {
                                     ))}
                                 </Picker>
                             </View>
-                            <IconToggle onPress={() => this.toggleModalHandler()} name="playlist-add"/>
+                            <IconToggle onPress={() => this.toggleConfigCategory()} name="playlist-add"/>
                         </View>
                         <Subheader text="Priority"
                                    style={{

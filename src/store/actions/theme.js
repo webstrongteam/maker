@@ -17,12 +17,13 @@ export const onInitThemes = (themes) => {
     }
 };
 
-export const initTheme = () => {
+export const initTheme = (callback = () => null) => {
     return dispatch => {
         db.transaction(
             tx => {
                 tx.executeSql("select theme from settings", [], (_, {rows}) => {
                     tx.executeSql('select * from themes where id = ?', [rows._array[0].theme], (_, {rows}) => {
+                        callback(rows._array[0]);
                         dispatch(onInitTheme(rows._array[0]))
                     });
                 });
