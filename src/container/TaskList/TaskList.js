@@ -207,7 +207,7 @@ class TaskList extends Component {
                             <ListItem
                                 divider
                                 dense
-                                onPress={() => task.finish ? true : navigation.navigate('ConfigTask', {task})}
+                                onPress={() => task.finish ? true : navigation.navigate('ConfigTask', {task: task.id})}
                                 style={{
                                     container: {
                                         shadowColor: "#000",

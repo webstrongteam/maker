@@ -1,6 +1,7 @@
 export {
     initToDo,
     initTasks,
+    initTask,
     initFinished,
     saveTask,
     finishTask,
@@ -10,6 +11,7 @@ export {
 
 export {
     initCategories,
+    initCategory,
     saveCategory,
     removeCategory
 } from './categories';
@@ -35,6 +37,7 @@ export {
 export {
     initTheme,
     initThemes,
+    initCustomTheme,
     setSelectedTheme,
     saveTheme,
     deleteTheme

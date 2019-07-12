@@ -55,6 +55,18 @@ export const initTasks = () => {
     };
 };
 
+export const initTask = (id, callback = () => null) => {
+    return () => {
+        db.transaction(
+            tx => {
+                tx.executeSql('select * from tasks where id = ?', [id], (_, {rows}) => {
+                    callback(rows._array[0]);
+                });
+            }, (err) => console.log(err)
+        );
+    };
+};
+
 export const initFinished = () => {
     return dispatch => {
         db.transaction(

@@ -28,13 +28,15 @@ class ConfigCategory extends Component {
         this.initCategory(this.props.category);
     };
 
-    initCategory = (category) => {
-        if (category.id != null) {
-            this.setState({category, editCategory: true});
-            this.showDialog('Edit category');
+    initCategory = (id) => {
+        if (id !== false) {
+            this.props.onInitCategory(id, (category) => {
+                this.setState({category, editCategory: true});
+                this.showDialog('Edit category');
+            })
         }
         else {
-            this.setState({category, editCategory: false});
+            this.setState({editCategory: false});
             this.showDialog('New category');
         }
     };
@@ -51,10 +53,9 @@ class ConfigCategory extends Component {
             this.updateCategory('name', value);
             if (save && !newControls[name].error) {
                 const {category} = this.state;
-                this.props.toggleModal(category);
                 this.props.onSaveCategory(category, () => {
                     delete newControls[name].error;
-                    this.updateCategory('name', '');
+                    this.props.toggleModal();
                 });
             } this.setState({ controls: newControls });
         })
@@ -66,12 +67,7 @@ class ConfigCategory extends Component {
             false,
             {
                 Save: () => this.changeInputHandler('name',true),
-                Cancel: () => {
-                    this.props.onInitCategories(() => {
-                        delete this.state.controls.name.error;
-                        this.props.toggleModal(false);
-                    });
-                }
+                Cancel: () => this.props.toggleModal()
             }
         );
         this.setState({dialog});
@@ -106,7 +102,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onInitCategories: (callback) => dispatch(actions.initCategories(callback)),
+        onInitCategory: (id, callback) => dispatch(actions.initCategory(id, callback)),
         onSaveCategory: (category, callback) => dispatch(actions.saveCategory(category, callback)),
     }
 };

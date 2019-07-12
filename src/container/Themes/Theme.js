@@ -45,14 +45,23 @@ class Theme extends Component {
 
     componentDidMount() {
         const theme = this.props.navigation.getParam('theme', false);
-        if (theme) this.setState({ customTheme: theme, loading: false });
+        this.initTheme(theme);
+    }
+
+    initTheme = (id) => {
+        if (id !== false) {
+            this.props.onInitCustomTheme(id, (customTheme) => {
+                this.setState({ customTheme, loading: false });
+            });
+        }
         else {
             const defaultTheme = this.props.theme;
             defaultTheme.id = false;
             defaultTheme.name = '';
             this.setState({ customTheme: defaultTheme, loading: false });
         }
-    }
+    };
+
     showDialog = (action) => {
         let dialog;
         if (action === 'exit') {
@@ -62,7 +71,6 @@ class Theme extends Component {
                 {
                     Yes: () => {
                         this.setState({ showDialog: false });
-                        this.props.onInitThemes();
                         this.props.navigation.goBack();
                     },
                     Save: () => {
@@ -155,12 +163,17 @@ class Theme extends Component {
                     onLeftElementPress={() => {
                         if (customTheme.name.trim() !== '') {
                             this.showDialog('exit');
-                        } else {
-                            this.props.onInitThemes();
-                            navigation.goBack();
-                        }
+                        } else navigation.goBack();
                     }}
-                    centerElement={ customTheme.id ? 'Edit theme' : 'New theme' }
+                    centerElement={
+                        !loading ?
+                        customTheme.id ?
+                            "Edit theme" :
+                            "New theme" :
+                        <View style={{marginTop: 10}}>
+                            <Spinner color={theme.secondaryBackgroundColor} size='small' />
+                        </View>
+                    }
                 />
 
                 {showDialog &&
@@ -283,7 +296,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onInitThemes: () => dispatch(actions.initThemes()),
+        onInitCustomTheme: (id, callback) => dispatch(actions.initCustomTheme(id, callback)),
         onSaveTheme: (theme) => dispatch(actions.saveTheme(theme)),
         onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),
         onDeleteTheme: (id) => dispatch(actions.deleteTheme(id))

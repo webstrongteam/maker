@@ -43,6 +43,18 @@ export const initThemes = () => {
     };
 };
 
+export const initCustomTheme = (id, callback = () => null) => {
+    return () => {
+        db.transaction(
+            tx => {
+                tx.executeSql('select * from themes where id = ?', [id], (_, {rows}) => {
+                    callback(rows._array[0]);
+                });
+            }, (err) => console.log(err)
+        );
+    };
+};
+
 export const setSelectedTheme = (id) => {
     return dispatch => {
         db.transaction(

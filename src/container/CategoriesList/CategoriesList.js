@@ -12,28 +12,41 @@ import * as actions from "../../store/actions";
 class CategoriesList extends PureComponent {
     state = {
         showModal: false,
-        selectedCategory: {id: false, name: ''}
+        taskPerCategory: {},
+        selectedCategory: {id: false, name: ''},
+        ready: false
     };
 
-    toggleModalHandler = (selected) => {
+    componentDidMount() {
+        const {tasks} = this.props;
+        const taskPerCategory = this.state.taskPerCategory;
+
+        tasks.map(task => {
+            if (!taskPerCategory[task.category]) taskPerCategory[task.category] = 1;
+            else taskPerCategory[task.category]++;
+        });
+
+        this.setState({ taskPerCategory, ready: true });
+    }
+
+    toggleModalHandler = (selected = false) => {
         const { showModal } = this.state;
-        if (selected) {
+        if (selected !== false) {
             this.setState({
                 showModal: !showModal,
                 selectedCategory: selected
             });
-        }
-        else {
+        } else {
             this.setState({
                 showModal: !showModal,
-                selectedCategory: {id: false, name: ''}
+                selectedCategory: false
             });
         }
     };
 
     render() {
-        const {showModal, selectedCategory} = this.state;
-        const {categories, navigation, theme, tasks} = this.props;
+        const {showModal, selectedCategory, taskPerCategory, ready} = this.state;
+        const {categories, navigation, theme} = this.props;
 
         return (
             <Template>
@@ -42,7 +55,7 @@ class CategoriesList extends PureComponent {
                     rightElement={
                         <IconToggle
                             color={theme.headerTextColor}
-                            onPress={() => this.toggleModalHandler(false)} name="add" />
+                            onPress={() => this.toggleModalHandler()} name="add" />
                     }
                     onLeftElementPress={() => {
                         navigation.goBack();
@@ -56,6 +69,7 @@ class CategoriesList extends PureComponent {
                     toggleModal={this.toggleModalHandler}
                 />
                 }
+                {ready &&
                 <View style={container}>
                     <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
                         {categories.map(cate => (
@@ -64,27 +78,29 @@ class CategoriesList extends PureComponent {
                                 dense
                                 key={cate.id}
                                 onPress={() => {
-                                    this.toggleModalHandler(cate);
+                                    this.toggleModalHandler(cate.id);
                                 }}
                                 leftElement={
                                     <TouchableOpacity onPress={() => {
                                         this.toggleModalHandler(cate);
                                     }}>
-                                        <Icon name="edit" />
+                                        <Icon name="edit"/>
                                     </TouchableOpacity>
                                 }
                                 rightElement={
                                     cate.id !== 0 ?
-                                        <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)} name="remove" /> : null
+                                        <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)}
+                                                    name="remove"/> : null
                                 }
                                 centerElement={{
                                     primaryText:
-                                        `${cate.name} (${tasks.filter(task => task.category === cate.name).length})`,
+                                        `${cate.name} (${taskPerCategory[cate.name] ? taskPerCategory[cate.name] : 0})`,
                                 }}
                             />
                         ))}
                     </ScrollView>
                 </View>
+                }
                 <BannerAd />
             </Template>
         )

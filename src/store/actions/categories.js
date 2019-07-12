@@ -23,6 +23,18 @@ export const initCategories = (callback = () => null) => {
     };
 };
 
+export const initCategory = (id, callback = () => null) => {
+    return () => {
+        db.transaction(
+            tx => {
+                tx.executeSql('select * from categories where id = ?', [id], (_, {rows}) => {
+                    callback(rows._array[0]);
+                });
+            }, (err) => console.log(err)
+        );
+    };
+};
+
 export const saveCategory = (category, callback) => {
     return dispatch => {
         if (category.id !== false) {
