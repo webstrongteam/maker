@@ -1,28 +1,10 @@
 import { SQLite } from 'expo-sqlite';
 
-const VERSION = '1.0.1'; // APP VERSION
+const VERSION = '1.0.2'; // APP VERSION
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
     db.transaction(tx => {
-/*      tx.executeSql(
-            'DROP TABLE IF EXISTS tasks;'
-        );
-        tx.executeSql(
-            'DROP TABLE IF EXISTS finished;'
-        );
-        tx.executeSql(
-            'DROP TABLE IF EXISTS categories;'
-        );
-        tx.executeSql(
-            'DROP TABLE IF EXISTS themes;'
-        );
-        tx.executeSql(
-            'DROP TABLE IF EXISTS profile;'
-        );
-        tx.executeSql(
-            'DROP TABLE IF EXISTS settings;'
-        );*/
         tx.executeSql(
             'create table if not exists categories (id integer primary key not null, name text);'
         );

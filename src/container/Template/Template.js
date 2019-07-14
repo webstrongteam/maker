@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {View, StyleSheet, Platform} from 'react-native';
+import {View, StatusBar, Platform} from 'react-native';
 import {ThemeContext, getTheme} from 'react-native-material-ui';
 import {initDatabase, initTheme} from "../../../db";
+import {content} from '../../shared/styles';
 
 import { connect } from 'react-redux';
 
@@ -45,11 +46,18 @@ class Template extends Component {
             <React.Fragment>
                 {ready &&
                 <ThemeContext.Provider value={getTheme(uiTheme)}>
-                    <View style={[styles.container, {backgroundColor: this.props.theme.primaryColor}]}>
-                        <View
-                            style={[styles.content, {backgroundColor: this.props.bgColor ? this.props.bgColor : this.props.theme.primaryBackgroundColor}]}>
-                            {this.props.children}
-                        </View>
+                    <View style={{
+                        height: Platform.OS === 'ios' ?
+                            20 : StatusBar.currentHeight,
+                        backgroundColor: this.props.theme.primaryColor}}>
+                        <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent />
+                    </View>
+                    <View
+                        style={[content, {
+                            backgroundColor: this.props.bgColor ?
+                                this.props.bgColor :
+                                this.props.theme.primaryBackgroundColor}]}>
+                        {this.props.children}
                     </View>
                 </ThemeContext.Provider>
                 }
@@ -57,16 +65,6 @@ class Template extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: Platform.OS === 'android' ? 25 : 0
-    },
-    content: {
-        flex: 1
-    }
-});
 
 const mapStateToProps = state => {
     return {theme: state.theme.theme}

@@ -5,21 +5,23 @@
     "description": "Maker is a advanced ToDo mobile application created with React Native and Expo framework. This app working with Android and iOS.",
     "githubUrl": "https://github.com/mateuszpijanowski/maker",
     "privacy": "public",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "sdkVersion": "33.0.0",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.webStrong.maker"
     },
     "android": {
-      "package": "com.webStrong.maker"
+      "package": "com.webStrong.maker",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.webStrong.maker",
+      "versionCode": 3
     },
     "platforms": [
       "ios",
       "android"
     ],
     "primaryColor": "#f4511e",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./src/assets/icon.png",
     "splash": {
       "image": "./src/assets/splash.png",

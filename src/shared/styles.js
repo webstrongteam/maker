@@ -1,13 +1,13 @@
 // GLOBAL STYLES
 
+export const content = {flex: 1};
+
 export const container = {
     flex: 1,
     alignItems: 'center'
 };
 
-export const fullWidth = {
-    width: "100%"
-};
+export const fullWidth = {width: "100%"};
 
 export const activity = {
     flex: 1,
@@ -24,10 +24,10 @@ export const empty = {
 };
 
 export const iconStyle = {
-    marginLeft:15,
-    marginRight:5,
-    alignSelf:'center',
-    justifyContent:'center'
+    marginLeft: 15,
+    marginRight: 5,
+    alignSelf: 'center',
+    justifyContent: 'center'
 };
 
 export const separator = {

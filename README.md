@@ -49,7 +49,7 @@ This app working with Android and iOS.
 * Add quickly list :x:
 * Add polish language :x:
 * Add notifications system :x:
-* Add custom repeating rang :x:
+* Add custom repeating range :x:
 * Change datepicker theme :x:
 * Upgrade about tab design :x:
 * Create unit tests :x:
