@@ -48,8 +48,15 @@ class TaskList extends PureComponent {
     useBackupDB = (name) => {
         FileSystem.copyAsync({ from: FileSystem.documentDirectory + 'Backup/' + name, to: FileSystem.documentDirectory + 'SQLite/maker.db' })
             .then(() => {
+                this.setState({ loading: true });
+                this.props.onInitTheme();
+                this.props.onInitCategories();
+                this.props.onInitProfile();
                 this.props.onInitToDo();
-                this.toggleSnackbar('Database has been replace');
+                this.props.onInitSettings(() => {
+                    this.setState({ loading: false });
+                    this.toggleSnackbar('Database has been replaced');
+                });
             })
             .catch(() => {
                 this.toggleSnackbar('Replacing database error!');
@@ -198,7 +205,10 @@ This will delete your current database!`,
                     centerElement='Backups'
                 />
 
-                <Snackbar visible={snackbar.visible} message={snackbar.message} onRequestClose={() => this.toggleSnackbar('', false)} />
+                <Snackbar
+                    visible={snackbar.visible}
+                    message={snackbar.message}
+                    onRequestClose={() => this.toggleSnackbar('', false)} />
 
                 {showDialog &&
                 <Dialog
@@ -286,7 +296,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onInitToDo: () => dispatch(actions.initToDo())
+        onInitToDo: () => dispatch(actions.initToDo()),
+        onInitCategories: () => dispatch(actions.initCategories()),
+        onInitTheme: () => dispatch(actions.initTheme()),
+        onInitProfile: () => dispatch(actions.initProfile()),
+        onInitSettings: (callback) => dispatch(actions.initSettings(callback))
     }
 };
 

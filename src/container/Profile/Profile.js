@@ -59,7 +59,7 @@ class Profile extends PureComponent {
     };
 
     render() {
-        const {loading, controls} = this.state;
+        const {loading} = this.state;
         const {navigation, theme, tasks, finished, profile, categories} = this.props;
         let list;
         const listData = [];
@@ -88,9 +88,7 @@ class Profile extends PureComponent {
             <Template>
                 <Toolbar
                     leftElement="arrow-back"
-                    onLeftElementPress={() => {
-                        navigation.goBack();
-                    }}
+                    onLeftElementPress={() => navigation.goBack()}
                     centerElement='Your profile'
                 />
 

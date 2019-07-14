@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
 
-const initState = false;
+const initState = {};
 
 const initTheme = (state, action) => {
     return updateObject(state,{

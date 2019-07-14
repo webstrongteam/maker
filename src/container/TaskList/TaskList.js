@@ -29,7 +29,8 @@ class TaskList extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps !== this.props || prevProps.refresh !== this.props.refresh) {
+        if (prevProps.tasks !== this.props.tasks ||
+            this.props.settings !== prevProps.settings) {
             this.divisionTask();
         }
     }
@@ -294,10 +295,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        finished: state.tasks.finished,
-        refresh: state.tasks.refresh,
         theme: state.theme.theme,
-        profile: state.profile,
         settings: state.settings
     }
 };

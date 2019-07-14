@@ -76,6 +76,7 @@ class ConfigTask extends Component {
         showDialog: false,
         editTask: null,
         showConfigCategory: false,
+        changedSth: false,
         loading: true
     };
 
@@ -117,8 +118,9 @@ class ConfigTask extends Component {
 
     updateTask = (name, value) => {
         const task = this.state.task;
+        if (task[name]+'' === value+'') return null;
         task[name] = value;
-        this.setState({ task });
+        this.setState({ task, changedSth: true });
     };
 
     showDialog = (action) => {
@@ -198,8 +200,10 @@ class ConfigTask extends Component {
     };
 
     render() {
-        const { task, controls, loading, editTask, showConfigCategory, repeat, dialog, showDialog, otherOption, selectedTime, showOtherRepeat, repeatValue } = this.state;
-        const { navigation, categories, theme, settings } = this.props;
+        const {task, changedSth, controls, loading, editTask,
+            showConfigCategory, repeat, dialog, showDialog,
+            otherOption, selectedTime, showOtherRepeat, repeatValue} = this.state;
+        const {navigation, categories, theme, settings} = this.props;
         let date;
         let now;
 
@@ -229,9 +233,8 @@ class ConfigTask extends Component {
                         </View>
                     }
                     onLeftElementPress={() => {
-                        if (task.name.trim() !== '') {
-                            this.showDialog('exit');
-                        } else navigation.goBack();
+                        if (changedSth) this.showDialog('exit');
+                        else navigation.goBack();
                     }}
                     centerElement={
                         !loading ?

@@ -251,7 +251,7 @@ class ToDo extends PureComponent {
                                     renderRow={this.dropdownRenderRow.bind(this)}
                                 >
                                     <View style={styles.dropdown_button}>
-                                        <Text style={[styles.dropdown_text, {color: theme.headerTextColor}]}>
+                                        <Text style={[styles.dropdown_text, {color: theme.headerTextColor, fontWeight: '500'}]}>
                                             {selectedCategory}
                                         </Text>
                                         <Animated.View style={{transform: [{rotate: rotateInterpolate}]}}>
@@ -412,7 +412,6 @@ const mapStateToProps = state => {
         finished: state.tasks.finished,
         sorting: state.settings.sorting,
         sortingType: state.settings.sortingType,
-        refresh: state.tasks.refresh,
         categories: state.categories.categories,
         theme: state.theme.theme
     }

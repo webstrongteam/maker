@@ -2,14 +2,12 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
 
 const initState = {
-    categories: false,
-    refresh: false
+    categories: false
 };
 
 const initCategories = (state, action) => {
     return updateObject(state,{
-        categories: action.categories,
-        refresh: !state.refresh
+        categories: action.categories
     });
 };
 

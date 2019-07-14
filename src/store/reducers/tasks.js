@@ -3,29 +3,25 @@ import {updateObject} from '../../shared/utility';
 
 const initState = {
     tasks: false,
-    finished: false,
-    refresh: false
+    finished: false
 };
 
 const initToDo = (state, action) => {
     return updateObject(state,{
         tasks: action.tasks,
         finished: action.finished,
-        refresh: !state.refresh
     });
 };
 
 const initTasks = (state, action) => {
     return updateObject(state,{
         tasks: action.tasks,
-        refresh: !state.refresh
     });
 };
 
 const initFinished = (state, action) => {
     return updateObject(state,{
         finished: action.tasks,
-        refresh: !state.refresh
     });
 };
 

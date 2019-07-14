@@ -1,6 +1,6 @@
 import { SQLite } from 'expo-sqlite';
 
-const VERSION = '1.0.0'; // APP VERSION
+const VERSION = '1.0.1'; // APP VERSION
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
@@ -54,9 +54,11 @@ export const initDatabase = (callback) => {
             "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker user', '', 0);"
         );
         tx.executeSql(
-            "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 'en');", [VERSION]
+            "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 'en');", [VERSION], () => {
+                initApp(callback);
+            }
         );
-    }, (err) => console.log(err), initApp(callback));
+    }, (err) => console.log(err));
 };
 
 const initApp = (callback) => {

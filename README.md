@@ -1,7 +1,11 @@
-# Maker - ToDo app
+# Maker - ToDo app 
+<a href="https://play.google.com/store/apps/details?id=com.webStrong.maker" target="_blank"><img src="http://webstrong.pl/Maker/promo_images/Google-Play-Icon.png" width="150"/></a>
+<a href="https://expo.io/@mateuszpijanowski/maker" target="_blank"><img src="http://webstrong.pl/Maker/promo_images/expo_logo.png" width="160"/></a>
 
 **Maker** is a advanced ToDo mobile application created with React Native and Expo framework. 
 This app working with Android and iOS. 
+
+<p align="center"><img src="http://webstrong.pl/Maker/promo_images/maker_todo_list_promo.png" width="500px" /></p>
 
 ## Basic features  
   
@@ -25,9 +29,9 @@ This app working with Android and iOS.
 - React <i>16.8.3</i>
 - React Native <i>33.0.0</i>
 - React Redux <i>7.1.0</i>  
-- Redux <i>4.0.1</i>  
+- Redux <i>4.0.4</i>  
 - Redux Thunk <i>2.3.0</i>  
-- React Navigation <i>3.11.0</i>  
+- React Navigation <i>3.11.1</i>  
 - React Native MaterialUI <i>1.30.1</i>  
 - React Native Datepicker <i>1.7.2</i>  
 - React Native Dialog <i>5.6.0</i>  
@@ -41,8 +45,6 @@ This app working with Android and iOS.
 
 ### ToDo list
 
-##### 1.0v ToDo:
-* Publish app :heavy_minus_sign:
 ##### 1.1v ToDo:
 * Add quickly list :x:
 * Add polish language :x:
@@ -59,4 +61,5 @@ This app working with Android and iOS.
 ### WebStrong &copy;  
   
 This web was created by **Mateusz Pijanowski** (<i>WebStrong team</i>) <br />
-> **Online:** https://expo.io/@mateuszpijanowski/maker
+> **Google Play:** https://play.google.com/store/apps/details?id=com.webStrong.maker <br />
+> **Expo:** https://expo.io/@mateuszpijanowski/maker
