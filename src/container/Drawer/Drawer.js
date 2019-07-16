@@ -1,15 +1,11 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {Drawer, Toolbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
-import {InterstitialAd} from '../../../adsAPI';
+import {BannerAd} from "../../../adsAPI";
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 class DrawerContainer extends Component {
-    componentDidMount() {
-        InterstitialAd();
-    }
-
     render() {
         const {navigation, theme} = this.props;
 
@@ -20,18 +16,22 @@ class DrawerContainer extends Component {
                     onLeftElementPress={() => navigation.goBack()}
                     centerElement="Back"
                 />
-                <Drawer style={{ container: { backgroundColor: theme.secondaryBackgroundColor } }}>
+                <Drawer style={{container: {backgroundColor: theme.secondaryBackgroundColor}}}>
                     <Drawer.Section
                         divider
-                        style={{ container: { backgroundColor: theme.secondaryBackgroundColor } }}
+                        style={{container: {backgroundColor: theme.secondaryBackgroundColor}}}
                         items={[
-                            {icon: 'bookmark-border', value: 'Categories', onPress: () => navigation.navigate('CategoriesList')},
+                            {
+                                icon: 'bookmark-border',
+                                value: 'Categories',
+                                onPress: () => navigation.navigate('CategoriesList')
+                            },
                             {icon: 'people', value: 'Profile', onPress: () => navigation.navigate('Profile')},
                         ]}
                     />
                     <Drawer.Section
                         title="App"
-                        style={{ container: { backgroundColor: theme.secondaryBackgroundColor } }}
+                        style={{container: {backgroundColor: theme.secondaryBackgroundColor}}}
                         items={[
                             {icon: 'assessment', value: 'Themes', onPress: () => navigation.navigate('Themes')},
                             {icon: 'settings', value: 'Settings', onPress: () => navigation.navigate('Settings')},
@@ -40,6 +40,7 @@ class DrawerContainer extends Component {
                         ]}
                     />
                 </Drawer>
+                <BannerAd/>
             </Template>
         )
     }

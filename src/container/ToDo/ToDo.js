@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
-import {StyleSheet, View, ScrollView, Animated, Text, TouchableHighlight, Easing, Platform} from 'react-native';
-import {ActionButton, Toolbar, BottomNavigation, Icon} from 'react-native-material-ui';
+import {Animated, Easing, Platform, ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {ActionButton, BottomNavigation, Icon, Toolbar} from 'react-native-material-ui';
 import ModalDropdown from 'react-native-modal-dropdown';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import TaskList from '../TaskList/TaskList';
@@ -10,7 +10,7 @@ import Dialog from '../../components/UI/Dialog/Dialog';
 import {generateDialogObject} from "../../shared/utility";
 import {container, fullWidth} from '../../shared/styles';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
 
 const UP = 1;
@@ -45,18 +45,17 @@ class ToDo extends PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { tasks, categories, finished, theme } = this.props;
+        const {tasks, categories, finished, theme} = this.props;
         if (tasks && categories && finished && theme) {
             if (prevProps !== this.props) {
                 if (this.state.selectedCategory === 'Finished') {
-                    this.setState({ tasks: finished, loading: false });
-                }
-                else {
+                    this.setState({tasks: finished, loading: false});
+                } else {
                     let filterTask = this.props.tasks;
                     if (this.state.selectedCategory !== 'All') {
                         filterTask = tasks.filter(task => task.category === this.state.selectedCategory);
                     }
-                    this.setState({ tasks: filterTask, loading: false });
+                    this.setState({tasks: filterTask, loading: false});
                 }
             }
         }
@@ -114,12 +113,12 @@ class ToDo extends PureComponent {
             outputRange: ['0deg', '180deg']
         });
 
-        this.setState({ rotateInterpolate });
+        this.setState({rotateInterpolate});
     };
 
     toggleConfigCategory = () => {
-        const { showConfigCategory } = this.state;
-        this.setState({ showConfigCategory: !showConfigCategory });
+        const {showConfigCategory} = this.state;
+        this.setState({showConfigCategory: !showConfigCategory});
     };
 
     deleteAllTask = () => {
@@ -142,24 +141,30 @@ class ToDo extends PureComponent {
     };
 
     selectedCategoryHandler = (category, index) => {
-        const { tasks, finished } = this.props;
+        const {tasks, finished} = this.props;
         let filterTask = tasks;
 
         if (category === 'Finished') {
-            return this.setState({ selectedCategory: category, selectedIndex: +index, tasks: finished });
-        }
-        else if (category === 'New category') {
+            return this.setState({
+                selectedCategory: category,
+                selectedIndex: +index,
+                tasks: finished
+            });
+        } else if (category === 'New category') {
             return this.toggleConfigCategory();
-        }
-        else if (category !== 'All') {
+        } else if (category !== 'All') {
             filterTask = tasks.filter(task => task.category === category);
         }
 
-        return this.setState({ selectedCategory: category, selectedIndex: +index, tasks: filterTask });
+        return this.setState({
+            selectedCategory: category,
+            selectedIndex: +index,
+            tasks: filterTask
+        });
     };
 
     renderDropdownData = () => {
-        const { categories } = this.props;
+        const {categories} = this.props;
         if (!categories.length) return null;
         const dropdownData = [];
         const all = {
@@ -175,19 +180,36 @@ class ToDo extends PureComponent {
             name: 'New category'
         };
         dropdownData.push(all, ...categories, finish, newCate);
-        this.setState({ dropdownData });
+        this.setState({dropdownData});
     };
 
     dropdownRenderRow(rowData) {
         const {selectedCategory} = this.state;
         const {tasks, finished, theme} = this.props;
         let data;
-        if (rowData.id === -3) data = { icon: 'playlist-add', amount: false, bgColor: theme.secondaryBackgroundColor };
-        else if (rowData.id === -1) data = { icon: 'dehaze', amount: tasks.length, bgColor: theme.primaryBackgroundColor };
-        else if (rowData.id === -2) data = { icon: 'done', amount: finished.length, bgColor: theme.primaryBackgroundColor };
+        if (rowData.id === -3) {
+            data = {
+                icon: 'playlist-add',
+                amount: false,
+                bgColor: theme.secondaryBackgroundColor
+            };
+        } else if (rowData.id === -1) data = {
+            icon: 'dehaze',
+            amount: tasks.length,
+            bgColor: theme.primaryBackgroundColor
+        };
+        else if (rowData.id === -2) data = {
+            icon: 'done',
+            amount: finished.length,
+            bgColor: theme.primaryBackgroundColor
+        };
         else {
             const amountOfTasks = this.props.tasks.filter(task => task.category === rowData.name);
-            data = { icon: 'bookmark-border', amount: amountOfTasks.length, bgColor: theme.primaryBackgroundColor };
+            data = {
+                icon: 'bookmark-border',
+                amount: amountOfTasks.length,
+                bgColor: theme.primaryBackgroundColor
+            };
         }
 
         return (
@@ -197,7 +219,7 @@ class ToDo extends PureComponent {
                           style={styles.dropdown_icon}
                           color={selectedCategory === rowData.name ?
                               theme.primaryColor :
-                              theme.textColor} />
+                              theme.textColor}/>
                     <Text style={[styles.dropdown_row_text,
                         selectedCategory === rowData.name ?
                             {color: theme.primaryColor} :
@@ -251,14 +273,17 @@ class ToDo extends PureComponent {
                                     renderRow={this.dropdownRenderRow.bind(this)}
                                 >
                                     <View style={styles.dropdown_button}>
-                                        <Text style={[styles.dropdown_text, {color: theme.headerTextColor, fontWeight: '500'}]}>
+                                        <Text style={[styles.dropdown_text, {
+                                            color: theme.headerTextColor,
+                                            fontWeight: '500'
+                                        }]}>
                                             {selectedCategory}
                                         </Text>
                                         <Animated.View style={{transform: [{rotate: rotateInterpolate}]}}>
                                             <Icon
                                                 style={styles.dropdown_button_icon}
                                                 color={theme.headerTextColor}
-                                                name="expand-more" />
+                                                name="expand-more"/>
                                         </Animated.View>
                                     </View>
                                 </ModalDropdown>
@@ -311,7 +336,10 @@ class ToDo extends PureComponent {
                                     finished.length ?
                                         <ActionButton
                                             hidden={bottomHidden}
-                                            style={{container: {backgroundColor: '#b6c1ce'}}}
+                                            style={{
+                                                container: {backgroundColor: theme.actionButtonColor},
+                                                icon: {color: theme.actionButtonIconColor}
+                                            }}
                                             onPress={() => this.showDialog()}
                                             icon="delete-sweep"
                                         /> : null
@@ -347,7 +375,7 @@ class ToDo extends PureComponent {
                                 />
                             </BottomNavigation>
                         </React.Fragment>
-                    </Template> : <Spinner color="#0000ff" />
+                    </Template> : <Spinner color="#0000ff"/>
                 }
             </React.Fragment>
         );

@@ -23,15 +23,18 @@ export const sortingData = (array, field, type) => {
             if (type === 'ASC') return dateA < dateB;
             if (type === 'DESC') return dateA > dateB;
         });
-    }
-    else if (field === 'priority') { // SORTING PRIORITY
+    } else if (field === 'priority') { // SORTING PRIORITY
         array.sort((a, b) => {
             const convertPriority = (priority) => {
                 switch (priority) {
-                    case "low": return 1;
-                    case "medium": return 2;
-                    case "high": return 3;
-                    default: return 0;
+                    case "low":
+                        return 1;
+                    case "medium":
+                        return 2;
+                    case "high":
+                        return 3;
+                    default:
+                        return 0;
                 }
             };
 
@@ -41,8 +44,7 @@ export const sortingData = (array, field, type) => {
             if (type === 'ASC') return A < B;
             if (type === 'DESC') return A > B;
         });
-    }
-    else { // DEFAULT SORTING
+    } else { // DEFAULT SORTING
         if (type === 'ASC') array.sort((a, b) => ('' + a[field]).localeCompare(b[field]));
         if (type === 'DESC') array.sort((a, b) => ('' + b[field]).localeCompare(a[field]));
     }
@@ -50,21 +52,31 @@ export const sortingData = (array, field, type) => {
 
 export const sortingByType = (array, sorting, sortingType) => {
     switch (sorting) {
-        case "byAZ": return sortingData(array, 'name', sortingType);
-        case "byDate": return sortingData(array, 'date', sortingType);
-        case "byCategory": return sortingData(array, 'category', sortingType);
-        case "byPriority": return sortingData(array, 'priority', sortingType);
-        default: return array;
+        case "byAZ":
+            return sortingData(array, 'name', sortingType);
+        case "byDate":
+            return sortingData(array, 'date', sortingType);
+        case "byCategory":
+            return sortingData(array, 'category', sortingType);
+        case "byPriority":
+            return sortingData(array, 'priority', sortingType);
+        default:
+            return array;
     }
 };
 
 export const convertNumberToDate = (number) => {
     switch (number) {
-        case 0: return "days";
-        case 1: return "week";
-        case 2: return "month";
-        case 3: return "year";
-        default: return "days"
+        case 0:
+            return "days";
+        case 1:
+            return "week";
+        case 2:
+            return "month";
+        case 3:
+            return "year";
+        default:
+            return "days"
     }
 };
 

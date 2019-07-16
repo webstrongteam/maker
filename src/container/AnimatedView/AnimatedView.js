@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {Animated, Easing, Platform} from "react-native";
 
 class AnimatedView extends Component {

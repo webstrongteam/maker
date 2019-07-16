@@ -1,19 +1,19 @@
 import React, {PureComponent} from 'react';
-import {View, ScrollView, Text} from 'react-native';
-import {Toolbar, IconToggle, ListItem, Snackbar} from 'react-native-material-ui';
-import { generateDialogObject } from '../../shared/utility';
-import {container, fullWidth, empty} from '../../shared/styles';
+import {ScrollView, Text, View} from 'react-native';
+import {IconToggle, ListItem, Snackbar, Toolbar} from 'react-native-material-ui';
+import {generateDialogObject} from '../../shared/utility';
+import {container, empty, fullWidth} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import * as FileSystem from "expo-file-system";
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
-import { SQLite } from 'expo-sqlite';
+import {SQLite} from 'expo-sqlite';
 import Template from '../Template/Template';
 import {BannerAd} from "../../../adsAPI";
 import moment from 'moment';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
 
 class TaskList extends PureComponent {
@@ -37,24 +37,27 @@ class TaskList extends PureComponent {
         await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'Backup', {intermediates: true});
         await FileSystem.readDirectoryAsync(FileSystem.documentDirectory + 'Backup')
             .then((backups) => {
-                this.setState({ backups, loading: false });
+                this.setState({backups, loading: false});
             })
             .catch(() => {
                 this.toggleSnackbar('Loading backups error!');
-                this.setState({ backups: [], loading: false });
+                this.setState({backups: [], loading: false});
             });
     };
 
     useBackupDB = (name) => {
-        FileSystem.copyAsync({ from: FileSystem.documentDirectory + 'Backup/' + name, to: FileSystem.documentDirectory + 'SQLite/maker.db' })
+        FileSystem.copyAsync({
+            from: FileSystem.documentDirectory + 'Backup/' + name,
+            to: FileSystem.documentDirectory + 'SQLite/maker.db'
+        })
             .then(() => {
-                this.setState({ loading: true });
+                this.setState({loading: true});
                 this.props.onInitTheme();
                 this.props.onInitCategories();
                 this.props.onInitProfile();
                 this.props.onInitToDo();
                 this.props.onInitSettings(() => {
-                    this.setState({ loading: false });
+                    this.setState({loading: false});
                     this.toggleSnackbar('Database has been replaced');
                 });
             })
@@ -73,7 +76,8 @@ class TaskList extends PureComponent {
 
         FileSystem.copyAsync({
             from: uri,
-            to: `${FileSystem.documentDirectory}Backup/maker${date}` })
+            to: `${FileSystem.documentDirectory}Backup/maker${date}`
+        })
             .then(() => {
                 this.loadBackupFiles();
                 this.toggleSnackbar('Backup has been created');
@@ -84,11 +88,15 @@ class TaskList extends PureComponent {
     };
 
     addBackupFromStorage = async () => {
-        const backupPicker = await DocumentPicker.getDocumentAsync({type: 'application/sql', copyToCacheDirectory: false});
+        const backupPicker = await DocumentPicker.getDocumentAsync({
+            type: 'application/sql',
+            copyToCacheDirectory: false
+        });
         if (backupPicker.type === 'success') {
             FileSystem.copyAsync({
                 from: backupPicker.uri,
-                to: `${FileSystem.documentDirectory}SQLite/maker_test.db` })
+                to: `${FileSystem.documentDirectory}SQLite/maker_test.db`
+            })
                 .then(() => {
                     this.checkDatabase();
                 })
@@ -126,7 +134,8 @@ class TaskList extends PureComponent {
                     () => {
                         this.toggleSnackbar('This file is incorrect!');
                     }
-            )}, () => {
+                )
+            }, () => {
                 this.toggleSnackbar('This file is incorrect!');
             }
         );
@@ -154,19 +163,17 @@ This will delete your current database!`,
                     }
                 }
             );
-        }
-        else if (action === 'showSelectBackupSource') {
+        } else if (action === 'showSelectBackupSource') {
             dialog = generateDialogObject(
                 'Add database from...',
                 false,
                 {
                     Cancel: () => {
-                        this.setState({ [action]: false });
+                        this.setState({[action]: false});
                     }
                 }
             );
-        }
-        else if (action === 'showConfirmDelete') {
+        } else if (action === 'showConfirmDelete') {
             dialog = generateDialogObject(
                 'Are you sure?',
                 'Delete this backup?',
@@ -197,7 +204,7 @@ This will delete your current database!`,
                         <IconToggle
                             color={theme.headerTextColor}
                             onPress={() => this.showDialog('showSelectBackupSource')}
-                            name="add" />
+                            name="add"/>
                     }
                     onLeftElementPress={() => {
                         navigation.goBack();
@@ -208,7 +215,7 @@ This will delete your current database!`,
                 <Snackbar
                     visible={snackbar.visible}
                     message={snackbar.message}
-                    onRequestClose={() => this.toggleSnackbar('', false)} />
+                    onRequestClose={() => this.toggleSnackbar('', false)}/>
 
                 {showDialog &&
                 <Dialog
@@ -228,7 +235,7 @@ This will delete your current database!`,
                         divider
                         dense
                         onPress={() => {
-                            this.setState({ showSelectBackupSource: false });
+                            this.setState({showSelectBackupSource: false});
                             this.createBackup();
                         }}
                         centerElement={{
@@ -238,7 +245,7 @@ This will delete your current database!`,
                     <ListItem
                         dense
                         onPress={() => {
-                            this.setState({ showSelectBackupSource: false });
+                            this.setState({showSelectBackupSource: false});
                             this.addBackupFromStorage();
                         }}
                         centerElement={{
@@ -249,39 +256,39 @@ This will delete your current database!`,
                 }
 
                 {!loading ?
-                <View style={container}>
-                    <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
-                        {backups.length ?
-                        backups.map(name => (
-                            <ListItem
-                                divider
-                                dense
-                                key={name}
-                                onPress={() => this.showDialog('showBackupAlert', name)}
-                                style={{
-                                    container: {height: 50}
-                                }}
-                                rightElement={
-                                    <View style={{flexDirection: 'row'}}>
-                                        <IconToggle
-                                            onPress={() => this.shareBackup(name)}
-                                            name="share" />
-                                        <IconToggle
-                                            onPress={() => this.showDialog('showConfirmDelete', name)}
-                                            name="delete" />
-                                    </View>
-                                }
-                                centerElement={{
-                                    primaryText: name
-                                }}
-                            />
-                        )) :
-                        <Text style={[empty, {color: theme.textColor}]}>Backup list is empty!</Text>
-                        }
-                    </ScrollView>
-                </View> : <Spinner />
+                    <View style={container}>
+                        <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
+                            {backups.length ?
+                                backups.map(name => (
+                                    <ListItem
+                                        divider
+                                        dense
+                                        key={name}
+                                        onPress={() => this.showDialog('showBackupAlert', name)}
+                                        style={{
+                                            container: {height: 50}
+                                        }}
+                                        rightElement={
+                                            <View style={{flexDirection: 'row'}}>
+                                                <IconToggle
+                                                    onPress={() => this.shareBackup(name)}
+                                                    name="share"/>
+                                                <IconToggle
+                                                    onPress={() => this.showDialog('showConfirmDelete', name)}
+                                                    name="delete"/>
+                                            </View>
+                                        }
+                                        centerElement={{
+                                            primaryText: name
+                                        }}
+                                    />
+                                )) :
+                                <Text style={[empty, {color: theme.textColor}]}>Backup list is empty!</Text>
+                            }
+                        </ScrollView>
+                    </View> : <Spinner/>
                 }
-                <BannerAd />
+                <BannerAd/>
             </Template>
         )
     }

@@ -2,7 +2,7 @@ import React from "react";
 import {View} from 'react-native';
 import Dialog from "react-native-dialog";
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 const dialog = (props) => (
     <Dialog.Container

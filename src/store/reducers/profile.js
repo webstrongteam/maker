@@ -1,18 +1,20 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../../shared/utility';
+import {updateObject} from '../../shared/utility';
 
 const initState = {};
 
 const updateProfile = (state, action) => {
-    return updateObject(state,{
+    return updateObject(state, {
         ...action.profile
     });
 };
 
 const reducer = (state = initState, action) => {
     switch (action.type) {
-        case actionTypes.UPDATE_PROFILE: return updateProfile(state, action);
-        default: return state;
+        case actionTypes.UPDATE_PROFILE:
+            return updateProfile(state, action);
+        default:
+            return state;
     }
 };
 

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import {applyMiddleware, combineReducers, createStore} from 'redux';
 import {ActivityIndicator, NativeModules, View} from 'react-native';
-import { ThemeContext, getTheme } from 'react-native-material-ui';
+import {getTheme, ThemeContext} from 'react-native-material-ui';
 import {activity} from './src/shared/styles';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 import Router from './router';
 import tasksReducer from './src/store/reducers/tasks';
@@ -48,17 +48,17 @@ class App extends Component {
     }
 
     render() {
-        const { uiTheme, ready } = this.state;
+        const {uiTheme, ready} = this.state;
 
         return (
             ready ?
             <Provider store={store}>
                 <ThemeContext.Provider value={getTheme(uiTheme)}>
-                    <Router />
+                    <Router/>
                 </ThemeContext.Provider>
             </Provider> :
             <View style={activity}>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size="large" color="#0000ff"/>
             </View>
         );
     }

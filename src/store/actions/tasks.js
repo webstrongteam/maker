@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
-import { SQLite } from 'expo-sqlite';
-import { convertNumberToDate } from '../../shared/utility';
+import {SQLite} from 'expo-sqlite';
+import {convertNumberToDate} from '../../shared/utility';
 import moment from 'moment';
 
 const db = SQLite.openDatabase('maker.db');
@@ -84,7 +84,14 @@ export const saveTask = (task) => {
         if (task.id) {
             db.transaction(
                 tx => {
-                    tx.executeSql(`update tasks set name = ?, description = ?, date = ?, category = ?, priority = ?, repeat = ? where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.id], () => {
+                    tx.executeSql(`update tasks
+                                   set name        = ?,
+                                       description = ?,
+                                       date        = ?,
+                                       category    = ?,
+                                       priority    = ?,
+                                       repeat      = ?
+                                   where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.id], () => {
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)
@@ -107,30 +114,24 @@ export const finishTask = (task, endTask) => {
 
     if (+task.repeat === parseInt(task.repeat, 10)) { // Other repeat
         nextDate = moment(nextDate, dateFormat).add(+task.repeat.substring(1), convertNumberToDate(+task.repeat[0]));
-    }
-    else if (task.repeat === 'onceDay') nextDate = moment(nextDate, dateFormat).add(1, 'days');
+    } else if (task.repeat === 'onceDay') nextDate = moment(nextDate, dateFormat).add(1, 'days');
     else if (task.repeat === 'onceDayMonFri') {
         if (moment(task.date, dateFormat).day() === 5) { // Friday
             nextDate = moment(nextDate, dateFormat).add(3, 'days');
-        }
-        else if (moment(task.date, dateFormat).day() === 6) { // Saturday
+        } else if (moment(task.date, dateFormat).day() === 6) { // Saturday
             nextDate = moment(nextDate, dateFormat).add(2, 'days');
         } else {
             nextDate = moment(nextDate, dateFormat).add(1, 'days');
         }
-    }
-    else if (task.repeat === 'onceDaySatSun') {
+    } else if (task.repeat === 'onceDaySatSun') {
         if (moment(task.date, dateFormat).day() === 6) { // Saturday
             nextDate = moment(nextDate, dateFormat).add(1, 'days');
-        }
-        else if (moment(task.date, dateFormat).day() === 0) { // Sunday
+        } else if (moment(task.date, dateFormat).day() === 0) { // Sunday
             nextDate = moment(nextDate, dateFormat).add(6, 'days');
-        }
-        else { // Other day
+        } else { // Other day
             nextDate = moment(nextDate, dateFormat).day(6);
         }
-    }
-    else if (task.repeat === 'onceWeek') nextDate = moment(nextDate, dateFormat).add(1, 'week');
+    } else if (task.repeat === 'onceWeek') nextDate = moment(nextDate, dateFormat).add(1, 'week');
     else if (task.repeat === 'onceMonth') nextDate = moment(nextDate, dateFormat).add(1, 'month');
     else if (task.repeat === 'onceYear') nextDate = moment(nextDate, dateFormat).add(1, 'year');
 
@@ -149,7 +150,9 @@ export const finishTask = (task, endTask) => {
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql(`update tasks set date = ? where id = ?;`, [nextDate, task.id], () => {
+                    tx.executeSql(`update tasks
+                                   set date = ?
+                                   where id = ?;`, [nextDate, task.id], () => {
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)

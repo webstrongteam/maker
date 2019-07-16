@@ -1,23 +1,16 @@
 import React, {PureComponent} from 'react';
-import {
-    Text,
-    View,
-    StyleSheet,
-    Image,
-    TouchableOpacity,
-    ScrollView
-} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Input from '../../components/UI/Input/Input';
 import Template from '../Template/Template';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
-import { Toolbar } from 'react-native-material-ui';
+import {Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import {separator} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
 
 class Profile extends PureComponent {
@@ -28,13 +21,13 @@ class Profile extends PureComponent {
     componentDidMount() {
         this.props.onInitSettings();
         this.props.onInitProfile(() => {
-            this.setState({ loading: false });
+            this.setState({loading: false});
         });
     }
 
     getPermissionAsync = async () => {
         if (Constants.platform.ios) {
-            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
                 alert('Sorry, we need camera roll permissions to make this work!');
                 return false;
@@ -63,16 +56,16 @@ class Profile extends PureComponent {
         const {navigation, theme, tasks, finished, profile, categories} = this.props;
         let list;
         const listData = [];
-        listData.push({ label: 'All task', data: tasks.length+finished.length });
-        listData.push({ label: 'Finished task', data: finished.length });
-        listData.push({ label: 'Ended task', data: profile.endedTask });
-        listData.push({ label: 'All categories', data: categories.length });
+        listData.push({label: 'All task', data: tasks.length + finished.length});
+        listData.push({label: 'Finished task', data: finished.length});
+        listData.push({label: 'Ended task', data: profile.endedTask});
+        listData.push({label: 'All categories', data: categories.length});
 
         if (profile.id === 0) {
             list = listData.map((item, index) => (
                 <View key={index}>
-                    <View style={[styles.item, { backgroundColor: theme.primaryBackgroundColor }]}>
-                        <Text style={{ color: theme.primaryColor, fontSize: 16 }}>
+                    <View style={[styles.item, {backgroundColor: theme.primaryBackgroundColor}]}>
+                        <Text style={{color: theme.primaryColor, fontSize: 16}}>
                             {item.label}
                         </Text>
                         <Text style={{fontSize: 19, color: theme.textColor}}>
@@ -93,33 +86,33 @@ class Profile extends PureComponent {
                 />
 
                 {!loading ?
-                <React.Fragment>
-                    {profile.id === 0 &&
-                    <View style={{
-                        backgroundColor: theme.secondaryBackgroundColor,
-                        paddingBottom: 10
-                    }}>
-                        <TouchableOpacity onPress={() => this.getPermissionAsync()}>
-                            <Image style={styles.image} source={
-                                profile.avatar ?
-                                    {uri: profile.avatar} :
-                                    require('../../assets/profile.png'
-                                    )}/>
-                        </TouchableOpacity>
-                        <Input
-                            elementConfig={{label: ''}}
-                            style={styles.name}
-                            value={profile.name}
-                            color={theme.primaryColor}
-                            changed={value => this.props.onChangeName(value)}/>
-                    </View>
-                    }
-                    <ScrollView style={{ flex: 1 }}>
-                        {list}
-                    </ScrollView>
-                </React.Fragment> : <Spinner />
+                    <React.Fragment>
+                        {profile.id === 0 &&
+                        <View style={{
+                            backgroundColor: theme.secondaryBackgroundColor,
+                            paddingBottom: 10
+                        }}>
+                            <TouchableOpacity onPress={() => this.getPermissionAsync()}>
+                                <Image style={styles.image} source={
+                                    profile.avatar ?
+                                        {uri: profile.avatar} :
+                                        require('../../assets/profile.png'
+                                        )}/>
+                            </TouchableOpacity>
+                            <Input
+                                elementConfig={{label: ''}}
+                                style={styles.name}
+                                value={profile.name}
+                                color={theme.primaryColor}
+                                changed={value => this.props.onChangeName(value)}/>
+                        </View>
+                        }
+                        <ScrollView style={{flex: 1}}>
+                            {list}
+                        </ScrollView>
+                    </React.Fragment> : <Spinner/>
                 }
-                <BannerAd />
+                <BannerAd/>
             </Template>
         )
     }

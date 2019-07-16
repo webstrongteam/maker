@@ -1,6 +1,6 @@
-import { SQLite } from 'expo-sqlite';
+import {SQLite} from 'expo-sqlite';
 
-const VERSION = '1.0.2'; // APP VERSION
+const VERSION = '1.0.3'; // APP VERSION
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
@@ -30,7 +30,7 @@ export const initDatabase = (callback) => {
             "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, textColor, headerTextColor, bottomNavigationColor, actionButtonColor, actionButtonIconColor, overdueColor, doneButtonColor, doneButtonTextColor, undoButtonColor, undoButtonTextColor, noneColor, noneTextColor, lowColor, lowTextColor, mediumColor, mediumTextColor, highColor, highTextColor) values (0, 'Default', '#f4511e', '#ffffff', '#e5e5e5', '#666', '#ffffff', '#ffffff', '#f4133f', '#ffffff', '#ce3241', '#26b596', '#ffffff', '#5bc0de', '#ffffff', '#ffffff', '#000000', '#26b596', '#ffffff', '#cec825', '#ffffff', '#ce3241', '#ffffff');"
         );
         tx.executeSql(
-            "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, textColor, headerTextColor, bottomNavigationColor, actionButtonColor, actionButtonIconColor, overdueColor, doneButtonColor, doneButtonTextColor, undoButtonColor, undoButtonTextColor, noneColor, noneTextColor, lowColor, lowTextColor, mediumColor, mediumTextColor, highColor, highTextColor) values (1, 'Dark', '#d6471a', '#525252', '#383838', '#d9d9d9', '#d9d9d9', '#242424', '#a60d2b', '#d9d9d9', '#fc5363', '#197863', '#d9d9d9', '#d6471a', '#d9d9d9', '#525252', '#d9d9d9', '#1c8a72', '#d9d9d9', '#d6471a', '#d9d9d9', '#871f29', '#d9d9d9');"
+            "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, textColor, headerTextColor, bottomNavigationColor, actionButtonColor, actionButtonIconColor, overdueColor, doneButtonColor, doneButtonTextColor, undoButtonColor, undoButtonTextColor, noneColor, noneTextColor, lowColor, lowTextColor, mediumColor, mediumTextColor, highColor, highTextColor) values (1, 'Dark', '#d6471a', '#3b3b3b', '#262626', '#d9d9d9', '#d9d9d9', '#262626', '#a60d2b', '#d9d9d9', '#fc5363', '#197863', '#d9d9d9', '#d6471a', '#d9d9d9', '#3b3b3b', '#d9d9d9', '#146151', '#d9d9d9', '#916826', '#d9d9d9', '#871f29', '#d9d9d9');"
         );
         tx.executeSql(
             "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker user', '', 0);"
@@ -50,10 +50,16 @@ const initApp = (callback) => {
             tx.executeSql("select version from settings", [], (_, {rows}) => {
                 const version = rows._array[0].version;
                 if (version !== VERSION) {
-                    tx.executeSql('update settings set version = ? where id = 0;', [VERSION])
-                }
+                    tx.executeSql('DELETE FROM themes WHERE id = 0;', [], () => {
+                        tx.executeSql('DELETE FROM themes WHERE id = 1;', [], () => {
+                            tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {
+                                initDatabase(callback);
+                            });
+                        });
+                    });
+                } else callback();
             });
-        }, (err) => console.log(err), callback()
+        }, (err) => console.log(err)
     );
 };
 

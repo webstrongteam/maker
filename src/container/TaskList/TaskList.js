@@ -1,22 +1,22 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import { ListItem, Subheader, IconToggle, Button } from 'react-native-material-ui';
+import {Button, IconToggle, ListItem, Subheader} from 'react-native-material-ui';
 import {generateDialogObject, sortingByType} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
 import {empty} from '../../shared/styles';
 import moment from 'moment';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
 
 class TaskList extends Component {
     state = {
         priorityColors: {
-            none: { bgColor: this.props.theme.noneColor, color: this.props.theme.noneTextColor },
-            low: { bgColor: this.props.theme.lowColor, color: this.props.theme.lowTextColor },
-            medium: { bgColor: this.props.theme.mediumColor, color: this.props.theme.mediumTextColor },
-            high: { bgColor: this.props.theme.highColor, color: this.props.theme.highTextColor },
+            none: {bgColor: this.props.theme.noneColor, color: this.props.theme.noneTextColor},
+            low: {bgColor: this.props.theme.lowColor, color: this.props.theme.lowTextColor},
+            medium: {bgColor: this.props.theme.mediumColor, color: this.props.theme.mediumTextColor},
+            high: {bgColor: this.props.theme.highColor, color: this.props.theme.highTextColor},
         },
         dialog: {},
         showDialog: false,
@@ -33,7 +33,21 @@ class TaskList extends Component {
             this.props.settings !== prevProps.settings) {
             this.divisionTask();
         }
+        if (prevProps.theme !== this.props.theme) {
+            this.refreshPriorityColors();
+        }
     }
+
+    refreshPriorityColors = () => {
+        this.setState({
+            priorityColors: {
+                none: {bgColor: this.props.theme.noneColor, color: this.props.theme.noneTextColor},
+                low: {bgColor: this.props.theme.lowColor, color: this.props.theme.lowTextColor},
+                medium: {bgColor: this.props.theme.mediumColor, color: this.props.theme.mediumTextColor},
+                high: {bgColor: this.props.theme.highColor, color: this.props.theme.highTextColor}
+            }
+        })
+    };
 
     showDialog = (action) => {
         let dialog;
@@ -55,36 +69,34 @@ class TaskList extends Component {
                     Cancel: () => this.setState({showDialog: false, selectedTask: false})
                 }
             );
-        }
-        else if (action === 'finish') {
+        } else if (action === 'finish') {
             dialog = generateDialogObject(
                 'Are you sure?',
                 'Finish this task?',
                 {
                     Yes: () => {
-                        this.setState({ showDialog: false });
+                        this.setState({showDialog: false});
                         this.props.onFinishTask(this.state.selectedTask);
                         this.props.onAddEndedTask();
                         this.props.navigation.goBack();
                     },
                     No: () => {
-                        this.setState({ showDialog: false });
+                        this.setState({showDialog: false});
                     }
                 }
             );
-        }
-        else if (action === 'delete') {
+        } else if (action === 'delete') {
             dialog = generateDialogObject(
                 'Are you sure?',
                 'Delete this task?',
                 {
                     Yes: () => {
-                        this.setState({ showDialog: false });
+                        this.setState({showDialog: false});
                         this.props.onRemoveTask(this.state.selectedTask);
                         this.props.navigation.goBack();
                     },
                     No: () => {
-                        this.setState({ showDialog: false });
+                        this.setState({showDialog: false});
                     }
                 }
             );
@@ -134,7 +146,7 @@ class TaskList extends Component {
                 now = new Date();
             } else {
                 date = moment(date, 'DD-MM-YYYY');
-                now = new Date().setHours(0,0,0,0);
+                now = new Date().setHours(0, 0, 0, 0);
             }
         }
 
@@ -154,7 +166,7 @@ class TaskList extends Component {
     };
 
     checkTaskRepeatHandler = (task) => {
-        this.setState({ selectedTask: task });
+        this.setState({selectedTask: task});
         if (task.repeat !== 'noRepeat' &&
             !this.state.selectedTask &&
             !!this.props.settings.confirmRepeatingTask) {
@@ -164,14 +176,14 @@ class TaskList extends Component {
                 this.showDialog('finish');
             } else {
                 this.props.onFinishTask(task);
-                this.setState({ selectedTask: false });
+                this.setState({selectedTask: false});
             }
         }
     };
 
     checkDeleteHandler = (task) => {
         if (!!this.props.settings.confirmDeletingTask) {
-            this.setState({ selectedTask: task });
+            this.setState({selectedTask: task});
             this.showDialog('delete');
         } else this.props.onRemoveTask(task);
     };
@@ -182,89 +194,110 @@ class TaskList extends Component {
 
         const taskList = initDivision &&
             Object.keys(division).map(div => (
-            division[div].map((task, index) => {
-                // Searching system
-                const searchText = this.props.searchText.toLowerCase();
-                if (searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0) {
-                    if (task.description.toLowerCase().indexOf(searchText) < 0) {
-                        if (task.category.toLowerCase().indexOf(searchText) < 0) {
-                            return null;
+                division[div].map((task, index) => {
+                    // Searching system
+                    const searchText = this.props.searchText.toLowerCase();
+                    if (searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0) {
+                        if (task.description.toLowerCase().indexOf(searchText) < 0) {
+                            if (task.category.toLowerCase().indexOf(searchText) < 0) {
+                                return null;
+                            }
                         }
                     }
-                }
 
-                return (
-                    <View key={div + index}>
-                        <AnimatedView value={1} duration={500}>
-                            {!index &&
-                            <Subheader
-                                text={div}
-                                style={{
-                                    text: div === 'Overdue' ? {color: theme.overdueColor} : {color: theme.textColor}
-                                }}
-                            />
-                            }
-                            <View style={{marginLeft: 10, marginRight: 10, marginBottom: 10}}>
-                            <ListItem
-                                divider
-                                dense
-                                onPress={() => task.finish ? true : navigation.navigate('ConfigTask', {task: task.id})}
-                                style={{
-                                    container: {
-                                        shadowColor: "#000",
-                                        shadowOffset: {
-                                            width: 0,
-                                            height: 3,
-                                        },
-                                        shadowOpacity: 0.3,
-                                        shadowRadius: 5,
-                                        elevation: 3,
-                                        backgroundColor: task.finish ? priorityColors.none.bgColor : priorityColors[task.priority].bgColor
-                                    },
-                                    primaryText: {fontSize: 18, color: task.finish ? theme.textColor : priorityColors[task.priority].color},
-                                    secondaryText: {fontWeight: '500', color: task.finished ? theme.textColor : div === 'Overdue' ? theme.overdueColor : priorityColors[task.priority].color},
-                                    tertiaryText: {color: task.finish ? theme.textColor : priorityColors[task.priority].color}
-                                }}
-                                rightElement={
-                                    <View style={styles.rightElements}>
-                                        <Button
-                                            raised
-                                            style={{
-                                                container: {
-                                                    backgroundColor: task.finish ? theme.undoButtonColor : theme.doneButtonColor,
-                                                    marginRight: task.finish ? 0 : 15
-                                                },
-                                                text: { color: task.finish ? theme.undoButtonTextColor : theme.doneButtonTextColor }
-                                            }}
-                                            text={task.finish ? 'Undo' : 'Done'}
-                                            icon={task.finish ? 'replay' : 'done'}
-                                            onPress={() => {
-                                                task.finish ? this.props.onUndoTask(task) : this.checkTaskRepeatHandler(task)
-                                            }}
-                                        />
-                                        {task.finish &&
-                                        <IconToggle
-                                            onPress={() => this.checkDeleteHandler(task)}
-                                            name="delete"
-                                            color={theme.overdueColor}
-                                            size={26}
-                                        />}
-                                    </View>
+                    return (
+                        <View key={div + index}>
+                            <AnimatedView value={1} duration={500}>
+                                {!index &&
+                                <Subheader
+                                    text={div}
+                                    style={{
+                                        text: div === 'Overdue' ? {color: theme.overdueColor} : {color: theme.textColor}
+                                    }}
+                                />
                                 }
-                                centerElement = {{
-                                    primaryText: task.name,
-                                    secondaryText: task.date ?
-                                        task.date : task.description ?
-                                            task.description : ' ',
-                                    tertiaryText: task.category ? task.category : ' '
-                                }}
-                            />
-                            </View>
-                        </AnimatedView>
-                    </View>
-                )
-            })
-        ));
+                                <View style={{marginLeft: 10, marginRight: 10, marginBottom: 10}}>
+                                    <ListItem
+                                        divider
+                                        dense
+                                        onPress={() => task.finish ? true : navigation.navigate('ConfigTask', {task: task.id})}
+                                        style={{
+                                            container: [
+                                                styles.shadow,
+                                                {
+                                                    backgroundColor: task.finish ?
+                                                        priorityColors.none.bgColor :
+                                                        priorityColors[task.priority].bgColor
+                                                }
+                                            ],
+                                            primaryText: {
+                                                fontSize: 18,
+                                                color: task.finish ?
+                                                    theme.textColor :
+                                                    priorityColors[task.priority].color
+                                            },
+                                            secondaryText: {
+                                                fontWeight: '500',
+                                                color: task.finished ?
+                                                    theme.textColor :
+                                                    div === 'Overdue' ?
+                                                        theme.overdueColor :
+                                                        priorityColors[task.priority].color
+                                            },
+                                            tertiaryText: {
+                                                color: task.finish ?
+                                                    theme.textColor :
+                                                    priorityColors[task.priority].color
+                                            }
+                                        }}
+                                        rightElement={
+                                            <View style={styles.rightElements}>
+                                                <Button
+                                                    raised
+                                                    style={{
+                                                        container: {
+                                                            backgroundColor: task.finish ?
+                                                                theme.undoButtonColor :
+                                                                theme.doneButtonColor,
+                                                            marginRight: task.finish ? 0 : 15
+                                                        },
+                                                        text: {
+                                                            color: task.finish ?
+                                                                theme.undoButtonTextColor :
+                                                                theme.doneButtonTextColor
+                                                        }
+                                                    }}
+                                                    text={task.finish ? 'Undo' : 'Done'}
+                                                    icon={task.finish ? 'replay' : 'done'}
+                                                    onPress={() => {
+                                                        task.finish ?
+                                                            this.props.onUndoTask(task) :
+                                                            this.checkTaskRepeatHandler(task)
+                                                    }}
+                                                />
+                                                {task.finish &&
+                                                <IconToggle
+                                                    onPress={() => this.checkDeleteHandler(task)}
+                                                    name="delete"
+                                                    color={theme.actionButtonColor}
+                                                    size={26}
+                                                />}
+                                            </View>
+                                        }
+                                        centerElement={{
+                                            primaryText: task.name,
+                                            secondaryText: task.date ?
+                                                task.date : task.description ?
+                                                    task.description : ' ',
+                                            tertiaryText: task.category ? task.category : ' '
+                                        }}
+                                    />
+                                </View>
+                            </AnimatedView>
+                        </View>
+                    )
+                })
+            ));
 
         return (
             <View>
@@ -277,8 +310,12 @@ class TaskList extends Component {
                 />
                 }
                 {tasks && tasks.length ?
-                    <View style={{ paddingBottom: 20 }}>{taskList}</View>
-                    : <Text style={[empty, {color: theme.textColor}]}>Task list is empty!</Text>
+                    <View style={{paddingBottom: 20}}>
+                        {taskList}
+                    </View>
+                    : <Text style={[empty, {color: theme.textColor}]}>
+                        Task list is empty!
+                    </Text>
                 }
             </View>
         )
@@ -286,6 +323,16 @@ class TaskList extends Component {
 }
 
 const styles = StyleSheet.create({
+    shadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 3
+    },
     rightElements: {
         flexDirection: 'row',
         alignItems: 'center',

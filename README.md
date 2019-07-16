@@ -2,7 +2,7 @@
 <a href="https://play.google.com/store/apps/details?id=com.webStrong.maker" target="_blank"><img src="http://webstrong.pl/Maker/promo_images/Google-Play-Icon.png" width="150"/></a>
 <a href="https://expo.io/@mateuszpijanowski/maker" target="_blank"><img src="http://webstrong.pl/Maker/promo_images/expo_logo.png" width="160"/></a>
 
-**Maker** is a advanced ToDo mobile application created with React Native and Expo framework. 
+**Maker** is an advanced ToDo mobile application created with React Native and Expo framework. 
 This app working with Android and iOS. 
 
 <p align="center"><img src="http://webstrong.pl/Maker/promo_images/maker_todo_list_promo.png" width="500px" /></p>
@@ -47,7 +47,7 @@ This app working with Android and iOS.
 
 ##### 1.1v ToDo:
 * Add quickly list :x:
-* Add polish language :x:
+* Add other languages :x:
 * Add notifications system :x:
 * Add custom repeating range :x:
 * Change datepicker theme :x:

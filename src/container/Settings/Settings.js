@@ -1,15 +1,15 @@
 import React, {PureComponent} from 'react';
-import {Toolbar, Icon, ListItem, Snackbar} from 'react-native-material-ui';
+import {Icon, ListItem, Snackbar, Toolbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import {View, StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {iconStyle} from '../../shared/styles';
 import {generateDialogObject} from "../../shared/utility";
 import Dialog from '../../components/UI/Dialog/Dialog';
 import {BannerAd} from "../../../adsAPI";
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
 
 class Settings extends PureComponent {
@@ -29,7 +29,7 @@ class Settings extends PureComponent {
     };
 
     componentDidMount() {
-        this.props.onInitSettings(() => this.setState({ loading: false }));
+        this.props.onInitSettings(() => this.setState({loading: false}));
     };
 
     toggleSnackbar = (message, visible = true) => {
@@ -39,7 +39,7 @@ class Settings extends PureComponent {
     toggleSetting = (value, name) => {
         if (value) value = 1;
         else value = 0;
-        this.props['onChange'+name](value, name);
+        this.props['onChange' + name](value, name);
     };
 
     showDialog = (action) => {
@@ -54,8 +54,7 @@ class Settings extends PureComponent {
                     }
                 }
             );
-        }
-        else if (action === 'showLanguages') {
+        } else if (action === 'showLanguages') {
             dialog = generateDialogObject(
                 'Select language',
                 false,
@@ -70,8 +69,8 @@ class Settings extends PureComponent {
     };
 
     render() {
-        const { loading, snackbar, showFirstDayOfWeek, showLanguages, daysOfWeek, languages, dialog } = this.state;
-        const { navigation, settings, theme } = this.props;
+        const {loading, snackbar, showFirstDayOfWeek, showLanguages, daysOfWeek, languages, dialog} = this.state;
+        const {navigation, settings, theme} = this.props;
         let viewDialog = null;
 
         if (showFirstDayOfWeek) {
@@ -118,7 +117,7 @@ class Settings extends PureComponent {
                             dense
                             key={index}
                             onPress={() => {
-                                this.setState({ showLanguages: false });
+                                this.setState({showLanguages: false});
                                 this.props.onChangeLang(lang.short_name);
                             }}
                             style={{
@@ -147,111 +146,112 @@ class Settings extends PureComponent {
                     centerElement='Settings'
                 />
 
-                <Snackbar visible={snackbar.visible} message={snackbar.message} onRequestClose={() => this.toggleSnackbar('', false)} />
+                <Snackbar visible={snackbar.visible} message={snackbar.message}
+                          onRequestClose={() => this.toggleSnackbar('', false)}/>
                 {viewDialog}
 
                 {!loading ?
-                <React.Fragment>
-                    <SettingsList backgroundColor={theme.primaryBackgroundColor}
-                                  borderColor='#d6d5d9' defaultItemSize={50}>
-                        <SettingsList.Item
-                            hasNavArrow={false}
-                            title='General'
-                            titleStyle={{color: '#009688', fontWeight: '500'}}
-                            itemWidth={50}
-                            borderHide={'Both'}
-                        />
-                        <SettingsList.Item
-                            icon={
-                                <View style={iconStyle}>
-                                    <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="alarm"/>
-                                </View>
-                            }
-                            hasNavArrow={false}
-                            itemWidth={70}
-                            hasSwitch={true}
-                            switchState={!!settings.timeFormat}
-                            switchOnValueChange={(value) => this.toggleSetting(value, 'TimeFormat')}
-                            titleStyle={{color: theme.textColor, fontSize: 16}}
-                            title='24H time cycle'
-                        />
-                        <SettingsList.Item
-                            icon={
-                                <View style={iconStyle}>
-                                    <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="event"/>
-                                </View>
-                            }
-                            hasNavArrow={true}
-                            itemWidth={70}
-                            hasSwitch={false}
-                            titleInfo={settings.firstDayOfWeek}
-                            onPress={() => this.showDialog('showFirstDayOfWeek')}
-                            titleStyle={{color: theme.textColor, fontSize: 16}}
-                            title='First day of week'
-                        />
-                        <SettingsList.Item
-                            icon={
-                                <View style={iconStyle}>
-                                    <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="g-translate" />
-                                </View>
-                            }
-                            hasNavArrow={true}
-                            itemWidth={70}
-                            hasSwitch={false}
-                            titleInfo={settings.lang}
-                            onPress={() => this.showDialog('showLanguages')}
-                            titleStyle={{color: theme.textColor, fontSize: 16}}
-                            title='Language'
-                        />
-                        <SettingsList.Item
-                            icon={
-                                <View style={iconStyle}>
-                                    <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="done"/>
-                                </View>
-                            }
-                            hasNavArrow={false}
-                            itemWidth={70}
-                            hasSwitch={true}
-                            switchState={!!settings.confirmFinishingTask}
-                            switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmFinishingTask')}
-                            titleStyle={{color: theme.textColor, fontSize: 16}}
-                            title='Confirm finishing task'
-                        />
-                        <SettingsList.Item
-                            icon={
-                                <View style={iconStyle}>
-                                    <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="autorenew"/>
-                                </View>
-                            }
-                            hasNavArrow={false}
-                            itemWidth={70}
-                            hasSwitch={true}
-                            switchState={!!settings.confirmRepeatingTask}
-                            switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmRepeatingTask')}
-                            titleStyle={{color: theme.textColor, fontSize: 16}}
-                            title='Confirm repeating task'
-                        />
-                        <SettingsList.Item
-                            icon={
-                                <View style={iconStyle}>
-                                    <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="delete"/>
-                                </View>
-                            }
-                            hasNavArrow={false}
-                            itemWidth={70}
-                            hasSwitch={true}
-                            switchState={!!settings.confirmDeletingTask}
-                            switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmDeletingTask')}
-                            titleStyle={{color: theme.textColor, fontSize: 16}}
-                            title='Confirm deleting task'
-                        />
-                    </SettingsList>
-                    <View style={styles.version}>
-                        <Text style={{color: theme.textColor}}>Version: {settings.version}</Text>
-                    </View>
-                </React.Fragment> : <Spinner />
+                    <React.Fragment>
+                        <SettingsList backgroundColor={theme.primaryBackgroundColor}
+                                      borderColor='#d6d5d9' defaultItemSize={50}>
+                            <SettingsList.Item
+                                hasNavArrow={false}
+                                title='General'
+                                titleStyle={{color: '#009688', fontWeight: '500'}}
+                                itemWidth={50}
+                                borderHide={'Both'}
+                            />
+                            <SettingsList.Item
+                                icon={
+                                    <View style={iconStyle}>
+                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="alarm"/>
+                                    </View>
+                                }
+                                hasNavArrow={false}
+                                itemWidth={70}
+                                hasSwitch={true}
+                                switchState={!!settings.timeFormat}
+                                switchOnValueChange={(value) => this.toggleSetting(value, 'TimeFormat')}
+                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                title='24H time cycle'
+                            />
+                            <SettingsList.Item
+                                icon={
+                                    <View style={iconStyle}>
+                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="event"/>
+                                    </View>
+                                }
+                                hasNavArrow={true}
+                                itemWidth={70}
+                                hasSwitch={false}
+                                titleInfo={settings.firstDayOfWeek}
+                                onPress={() => this.showDialog('showFirstDayOfWeek')}
+                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                title='First day of week'
+                            />
+                            <SettingsList.Item
+                                icon={
+                                    <View style={iconStyle}>
+                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="g-translate"/>
+                                    </View>
+                                }
+                                hasNavArrow={true}
+                                itemWidth={70}
+                                hasSwitch={false}
+                                titleInfo={settings.lang}
+                                onPress={() => this.showDialog('showLanguages')}
+                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                title='Language'
+                            />
+                            <SettingsList.Item
+                                icon={
+                                    <View style={iconStyle}>
+                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="done"/>
+                                    </View>
+                                }
+                                hasNavArrow={false}
+                                itemWidth={70}
+                                hasSwitch={true}
+                                switchState={!!settings.confirmFinishingTask}
+                                switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmFinishingTask')}
+                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                title='Confirm finishing task'
+                            />
+                            <SettingsList.Item
+                                icon={
+                                    <View style={iconStyle}>
+                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="autorenew"/>
+                                    </View>
+                                }
+                                hasNavArrow={false}
+                                itemWidth={70}
+                                hasSwitch={true}
+                                switchState={!!settings.confirmRepeatingTask}
+                                switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmRepeatingTask')}
+                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                title='Confirm repeating task'
+                            />
+                            <SettingsList.Item
+                                icon={
+                                    <View style={iconStyle}>
+                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="delete"/>
+                                    </View>
+                                }
+                                hasNavArrow={false}
+                                itemWidth={70}
+                                hasSwitch={true}
+                                switchState={!!settings.confirmDeletingTask}
+                                switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmDeletingTask')}
+                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                title='Confirm deleting task'
+                            />
+                        </SettingsList>
+                        <View style={styles.version}>
+                            <Text style={{color: theme.textColor}}>Version: {settings.version}</Text>
+                        </View>
+                    </React.Fragment> : <Spinner/>
                 }
-                <BannerAd />
+                <BannerAd/>
             </Template>
         );
     }

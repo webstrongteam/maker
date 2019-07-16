@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import {Picker} from "react-native";
 import Dialog from '../../../components/UI/Dialog/Dialog';
 import Input from '../../../components/UI/Input/Input';
@@ -31,7 +31,8 @@ class OtherRepeat extends Component {
             this.props.onSetRepeat(value);
             if (save && !newControls[name].error) {
                 this.props.save();
-            } this.setState({ controls: newControls });
+            }
+            this.setState({controls: newControls});
         })
     };
 

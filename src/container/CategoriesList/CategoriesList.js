@@ -1,12 +1,12 @@
 import React, {PureComponent} from 'react';
-import {View, ScrollView, TouchableOpacity} from 'react-native';
-import {Toolbar, IconToggle, Icon, ListItem} from 'react-native-material-ui';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {Icon, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {container, fullWidth} from '../../shared/styles';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Template from '../Template/Template';
 import {BannerAd} from '../../../adsAPI';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
 
 class CategoriesList extends PureComponent {
@@ -26,11 +26,11 @@ class CategoriesList extends PureComponent {
             else taskPerCategory[task.category]++;
         });
 
-        this.setState({ taskPerCategory, ready: true });
+        this.setState({taskPerCategory, ready: true});
     }
 
     toggleModalHandler = (selected = false) => {
-        const { showModal } = this.state;
+        const {showModal} = this.state;
         if (selected !== false) {
             this.setState({
                 showModal: !showModal,
@@ -55,7 +55,7 @@ class CategoriesList extends PureComponent {
                     rightElement={
                         <IconToggle
                             color={theme.headerTextColor}
-                            onPress={() => this.toggleModalHandler()} name="add" />
+                            onPress={() => this.toggleModalHandler()} name="add"/>
                     }
                     onLeftElementPress={() => {
                         navigation.goBack();
@@ -81,9 +81,7 @@ class CategoriesList extends PureComponent {
                                     this.toggleModalHandler(cate.id);
                                 }}
                                 leftElement={
-                                    <TouchableOpacity onPress={() => {
-                                        this.toggleModalHandler(cate);
-                                    }}>
+                                    <TouchableOpacity onPress={() => this.toggleModalHandler(cate.id)}>
                                         <Icon name="edit"/>
                                     </TouchableOpacity>
                                 }
@@ -101,7 +99,7 @@ class CategoriesList extends PureComponent {
                     </ScrollView>
                 </View>
                 }
-                <BannerAd />
+                <BannerAd/>
             </Template>
         )
     }

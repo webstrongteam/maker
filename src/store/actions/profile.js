@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import { SQLite } from 'expo-sqlite';
+import {SQLite} from 'expo-sqlite';
 
 const db = SQLite.openDatabase('maker.db');
 
@@ -48,7 +48,7 @@ export const changeAvatar = (avatar) => {
 
 export const addEndedTask = () => {
     return (dispatch, getState) => {
-        const value = getState().profile.endedTask+1;
+        const value = getState().profile.endedTask + 1;
         db.transaction(
             tx => {
                 tx.executeSql('update profile set endedTask = ? where id = 0;', [value], () => {

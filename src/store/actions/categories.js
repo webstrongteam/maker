@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import { SQLite } from 'expo-sqlite';
+import {SQLite} from 'expo-sqlite';
 
 const db = SQLite.openDatabase('maker.db');
 
@@ -40,7 +40,9 @@ export const saveCategory = (category, callback) => {
         if (category.id !== false) {
             db.transaction(
                 tx => {
-                    tx.executeSql(`update categories set name = ? where id = ?;`, [category.name, category.id], () => {
+                    tx.executeSql(`update categories
+                                   set name = ?
+                                   where id = ?;`, [category.name, category.id], () => {
                         dispatch(initCategories(), callback());
                     });
                 }, (err) => console.log(err)

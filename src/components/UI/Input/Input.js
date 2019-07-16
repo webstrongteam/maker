@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { TextField } from 'react-native-material-textfield';
+import {StyleSheet, View} from 'react-native';
+import {TextField} from 'react-native-material-textfield';
 import {fullWidth} from '../../../shared/styles';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 const input = (props) => {
     const inputElement = <TextField

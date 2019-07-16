@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import Dialog from '../../components/UI/Dialog/Dialog';
 import Input from '../../components/UI/Input/Input';
-import {valid} from '../../shared/utility';
-import {generateDialogObject} from "../../shared/utility";
+import {generateDialogObject, valid} from '../../shared/utility';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../../store/actions/index';
 
 class ConfigCategory extends Component {
@@ -34,8 +33,7 @@ class ConfigCategory extends Component {
                 this.setState({category, editCategory: true});
                 this.showDialog('Edit category');
             })
-        }
-        else {
+        } else {
             this.setState({editCategory: false});
             this.showDialog('New category');
         }
@@ -44,7 +42,7 @@ class ConfigCategory extends Component {
     updateCategory = (name, value) => {
         const category = this.state.category;
         category[name] = value;
-        this.setState({ category });
+        this.setState({category});
     };
 
     changeInputHandler = (name, save = false, value = this.state.category.name) => {
@@ -57,7 +55,8 @@ class ConfigCategory extends Component {
                     delete newControls[name].error;
                     this.props.toggleModal(category);
                 });
-            } this.setState({ controls: newControls });
+            }
+            this.setState({controls: newControls});
         })
     };
 
@@ -66,7 +65,7 @@ class ConfigCategory extends Component {
             title,
             false,
             {
-                Save: () => this.changeInputHandler('name',true),
+                Save: () => this.changeInputHandler('name', true),
                 Cancel: () => this.props.toggleModal()
             }
         );
@@ -74,8 +73,8 @@ class ConfigCategory extends Component {
     };
 
     render() {
-        const { dialog, controls, category } = this.state;
-        const { showModal } = this.props;
+        const {dialog, controls, category} = this.state;
+        const {showModal} = this.props;
 
         return (
             <React.Fragment>
@@ -88,7 +87,7 @@ class ConfigCategory extends Component {
                         elementConfig={controls.name}
                         focus={true}
                         value={category.name}
-                        changed={(value) => this.changeInputHandler('name',false, value)}
+                        changed={(value) => this.changeInputHandler('name', false, value)}
                     />
                 </Dialog>
                 }

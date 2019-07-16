@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import {View, StatusBar, Platform} from 'react-native';
-import {ThemeContext, getTheme} from 'react-native-material-ui';
+import React, {Component} from 'react';
+import {Platform, StatusBar, View} from 'react-native';
+import {getTheme, ThemeContext} from 'react-native-material-ui';
 import {initDatabase, initTheme} from "../../../db";
 import {content} from '../../shared/styles';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 class Template extends Component {
     state = {
@@ -49,14 +49,16 @@ class Template extends Component {
                     <View style={{
                         height: Platform.OS === 'ios' ?
                             20 : StatusBar.currentHeight,
-                        backgroundColor: this.props.theme.primaryColor}}>
-                        <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent />
+                        backgroundColor: this.props.theme.primaryColor
+                    }}>
+                        <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent/>
                     </View>
                     <View
                         style={[content, {
                             backgroundColor: this.props.bgColor ?
                                 this.props.bgColor :
-                                this.props.theme.primaryBackgroundColor}]}>
+                                this.props.theme.primaryBackgroundColor
+                        }]}>
                         {this.props.children}
                     </View>
                 </ThemeContext.Provider>

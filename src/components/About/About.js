@@ -1,16 +1,9 @@
 import React from 'react';
-import {
-    Text,
-    View,
-    StyleSheet,
-    Image,
-    TouchableOpacity,
-    ScrollView
-} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {separator} from '../../shared/styles';
 import * as WebBrowser from 'expo-web-browser';
 import Template from '../../container/Template/Template';
-import { Toolbar } from 'react-native-material-ui';
+import {Toolbar} from 'react-native-material-ui';
 
 import {connect} from "react-redux";
 
@@ -34,13 +27,13 @@ const about = (props) => {
                         style={styles.logo}
                         source={require('../../assets/icon.png')}
                     />
-                    <Text style={separator} />
-                    <Text style={[styles.primaryText, { color: props.theme.textColor }]}>
-                        Maker is a advanced ToDo mobile application created with React Native
-                        and Expo framework. This app working with Android and iOS.
+                    <Text style={separator}/>
+                    <Text style={[styles.primaryText, {color: props.theme.textColor}]}>
+                        Maker is an advanced ToDo mobile application created with React Native
+                        and Expo framework. This app works with Android and iOS.
                     </Text>
-                    <Text style={[styles.secondaryText, { color: props.theme.textColor }]}>
-                        Maker is open source app in GitHub:
+                    <Text style={[styles.secondaryText, {color: props.theme.textColor}]}>
+                        Maker source code is available on github:
                     </Text>
                     <TouchableOpacity onPress={openWebBrowser}>
                         <Image
@@ -50,8 +43,8 @@ const about = (props) => {
                         />
                     </TouchableOpacity>
                 </ScrollView>
-                <View style={{ opacity: 0.5 }}>
-                    <Text style={[styles.copy, { color: props.theme.textColor }]}>
+                <View style={{opacity: 0.5}}>
+                    <Text style={[styles.copy, {color: props.theme.textColor}]}>
                         &copy; by Mateusz Pijanowski (WebStrong team)
                     </Text>
                 </View>

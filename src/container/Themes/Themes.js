@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Toolbar, IconToggle, Icon, Snackbar, withTheme} from 'react-native-material-ui';
+import {Icon, IconToggle, Snackbar, Toolbar, withTheme} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import {View} from 'react-native';
@@ -8,7 +8,7 @@ import Dialog from "../../components/UI/Dialog/Dialog";
 import {iconStyle} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
 
 class Themes extends PureComponent {
@@ -27,7 +27,8 @@ class Themes extends PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.themes !== prevProps.themes || this.props.actualTheme.id !== prevProps.actualTheme.id) {
+        if (this.props.themes !== prevProps.themes ||
+            this.props.actualTheme.id !== prevProps.actualTheme.id) {
             this.initThemes();
         }
     }
@@ -39,12 +40,12 @@ class Themes extends PureComponent {
     initThemes = () => {
         if (this.props.actualTheme.id === false) this.props.onInitTheme();
         else {
-            const { themes } = this.props;
+            const {themes} = this.props;
             const selectedTheme = {};
             themes.map(theme => {
                 selectedTheme[theme.id] = +this.props.actualTheme.id === +theme.id;
             });
-            this.setState({ selectedTheme, loading: false });
+            this.setState({selectedTheme, loading: false});
         }
     };
 
@@ -72,8 +73,8 @@ class Themes extends PureComponent {
                     leftElement="arrow-back"
                     rightElement={
                         <IconToggle name="add"
-                            color={actualTheme.headerTextColor}
-                            onPress={() => navigation.navigate('Theme')} />
+                                    color={actualTheme.headerTextColor}
+                                    onPress={() => navigation.navigate('Theme')}/>
                     }
                     onLeftElementPress={() => navigation.goBack()}
                     centerElement='Themes'
@@ -82,7 +83,7 @@ class Themes extends PureComponent {
                 <Snackbar
                     visible={snackbar.visible}
                     message={snackbar.message}
-                    onRequestClose={() => this.toggleSnackbar('', false)} />
+                    onRequestClose={() => this.toggleSnackbar('', false)}/>
 
                 {showDialog &&
                 <Dialog
@@ -106,7 +107,9 @@ class Themes extends PureComponent {
                         <SettingsList.Item
                             icon={
                                 <View style={iconStyle}>
-                                    <Icon color={actualTheme.textColor} style={{alignSelf: 'center'}} name="home"/>
+                                    <Icon name="home"
+                                          color={actualTheme.textColor}
+                                          style={{alignSelf: 'center'}}/>
                                 </View>
                             }
                             hasNavArrow={false}
@@ -120,7 +123,10 @@ class Themes extends PureComponent {
                         <SettingsList.Item
                             icon={
                                 <View style={iconStyle}>
-                                    <Icon color={actualTheme.textColor} style={{alignSelf: 'center'}} name="brightness-2"/>
+                                    <Icon name="brightness-2"
+                                          color={actualTheme.textColor}
+                                          style={{alignSelf: 'center'}}/>
+
                                 </View>
                             }
                             hasNavArrow={false}
@@ -162,9 +168,9 @@ class Themes extends PureComponent {
                             onPress={() => navigation.navigate('Theme')}
                             titleStyle={{color: actualTheme.textColor, fontSize: 16}}
                         />
-                    </SettingsList> : <Spinner />
+                    </SettingsList> : <Spinner/>
                 }
-                <BannerAd />
+                <BannerAd/>
             </Template>
         );
     }
