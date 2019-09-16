@@ -1,10 +1,8 @@
 node_modules/**/*
 .expo*
-adsAPI.js
 /.idea/*
 npm-debug.*
 *.jks
 *.p12
 *.key
 *.mobileprovision
-*apiKey*
