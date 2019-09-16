@@ -247,7 +247,7 @@ class Settings extends PureComponent {
                             />
                         </SettingsList>
                         <View style={styles.version}>
-                            <Text style={{color: theme.textColor}}>Version: {settings.version}</Text>
+                            <Text style={{color: theme.textColor}}>Version: {settings.version} (hotfix 1)</Text>
                         </View>
                     </React.Fragment> : <Spinner/>
                 }

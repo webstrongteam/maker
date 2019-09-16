@@ -4,6 +4,7 @@ import {separator} from '../../shared/styles';
 import * as WebBrowser from 'expo-web-browser';
 import Template from '../../container/Template/Template';
 import {Toolbar} from 'react-native-material-ui';
+import {VERSION} from '../../../db'
 
 import {connect} from "react-redux";
 
@@ -45,7 +46,7 @@ const about = (props) => {
                 </ScrollView>
                 <View style={{opacity: 0.5}}>
                     <Text style={[styles.copy, {color: props.theme.textColor}]}>
-                        &copy; by Mateusz Pijanowski (WebStrong team)
+                        &copy; by Mateusz Pijanowski (WebStrong team) v.{VERSION} (hotfix 1)
                     </Text>
                 </View>
             </View>
