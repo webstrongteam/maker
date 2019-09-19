@@ -1,11 +1,13 @@
 import React, {PureComponent} from 'react';
 import {Animated, Easing, Platform, ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {ActionButton, BottomNavigation, Icon, Toolbar} from 'react-native-material-ui';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import ModalDropdown from 'react-native-modal-dropdown';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
 import ConfigCategory from "../ConfigCategory/ConfigCategory";
+import QuicklyList from '../QuicklyList/QuicklyList';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import {generateDialogObject} from "../../shared/utility";
 import {container, fullWidth} from '../../shared/styles';
@@ -33,7 +35,15 @@ class ToDo extends PureComponent {
         dialog: {},
         showDialog: false,
         showConfigCategory: false,
-        loading: true
+        loading: true,
+
+        tabs: {
+            index: 0,
+            routes: [
+                { key: 'tasks', title: 'Tasks' },
+                { key: 'lists', title: 'Quickly lists' },
+            ]
+        }
     };
 
     componentDidMount() {
@@ -41,6 +51,7 @@ class ToDo extends PureComponent {
         this.props.onInitCategories();
         this.props.onInitProfile();
         this.props.onInitToDo();
+        this.props.onInitLists();
         this.props.onInitSettings();
     }
 
@@ -238,7 +249,7 @@ class ToDo extends PureComponent {
     }
 
     render() {
-        const {showDialog, dialog, selectedCategory, tasks, loading, showConfigCategory, searchText, bottomHidden, dropdownData, selectedIndex, rotateInterpolate} = this.state;
+        const {showDialog, dialog, selectedCategory, tasks, loading, showConfigCategory, tabs, searchText, bottomHidden, dropdownData, selectedIndex, rotateInterpolate} = this.state;
         const {navigation, finished, theme, sortingType, sorting} = this.props;
 
         return (
@@ -313,12 +324,26 @@ class ToDo extends PureComponent {
                                     keyboardDismissMode="interactive"
                                     onScroll={this.onScroll}
                                     style={fullWidth}>
-                                    <TaskList
-                                        searchText={searchText}
-                                        tasks={tasks}
-                                        sortingType={sortingType}
-                                        sorting={sorting}
-                                        navigation={navigation}
+                                    <TabView
+                                        navigationState={this.state.tabs}
+                                        onIndexChange={index => {
+                                            tabs.index = index;
+                                            this.setState({ tabs });
+                                        }}
+                                        renderScene={SceneMap({
+                                            tasks: () => (
+                                                <TaskList
+                                                    searchText={searchText}
+                                                    tasks={tasks}
+                                                    sortingType={sortingType}
+                                                    sorting={sorting}
+                                                    navigation={navigation}
+                                                />
+                                            ),
+                                            lists: () => (
+                                                <QuicklyList />
+                                            )
+                                        })}
                                     />
                                 </ScrollView>
                             </View>
@@ -326,7 +351,7 @@ class ToDo extends PureComponent {
                                 {selectedCategory !== 'Finished' ?
                                     <ActionButton
                                         hidden={bottomHidden}
-                                        onPress={() => navigation.navigate('ConfigTask')}
+                                        onPress={() => +tabs.index === 0 ? navigation.navigate('ConfigTask') : navigation.navigate('QuicklyTaskList', {list: false})}
                                         icon="add"
                                         style={{
                                             container: {backgroundColor: theme.actionButtonColor},
@@ -447,6 +472,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onInitToDo: () => dispatch(actions.initToDo()),
+        onInitLists: () => dispatch(actions.initLists()),
         onInitCategories: () => dispatch(actions.initCategories()),
         onInitTheme: () => dispatch(actions.initTheme()),
         onInitProfile: () => dispatch(actions.initProfile()),

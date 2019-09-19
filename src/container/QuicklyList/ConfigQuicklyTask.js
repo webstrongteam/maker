@@ -24,10 +24,10 @@ class ConfigCategory extends Component {
     };
 
     componentDidMount() {
-        this.initCategory(this.props.task);
+        this.initQuicklyTask(this.props.task);
     };
 
-    initCategory = (task) => {
+    initQuicklyTask = (task) => {
         if (task !== false) {
             this.setState({task, editTask: true});
             this.showDialog('Edit task');
@@ -49,7 +49,7 @@ class ConfigCategory extends Component {
             this.updateTask('name', value);
             if (save && !newControls[name].error) {
                 const {task} = this.state;
-                this.props.onSaveTask(task, () => {
+                this.props.onSaveQuicklyTask(task, this.props.list_id, () => {
                     delete newControls[name].error;
                     this.props.toggleModal(task);
                 });
@@ -99,8 +99,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onInitCategory: (id, callback) => dispatch(actions.initCategory(id, callback)),
-        onSaveCategory: (task, callback) => dispatch(actions.saveCategory(task, callback)),
+        onSaveQuicklyTask: (task, list_id, callback) => dispatch(actions.saveCategory(task, list_id, callback)),
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigCategory);

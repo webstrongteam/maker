@@ -1,6 +1,6 @@
 import {SQLite} from 'expo-sqlite';
 
-export const VERSION = '1.0.3'; // APP VERSION
+export const VERSION = '1.1.0'; // APP VERSION
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
@@ -13,6 +13,12 @@ export const initDatabase = (callback) => {
         );
         tx.executeSql(
             'create table if not exists finished (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, finish integer);'
+        );
+        tx.executeSql(
+            'create table if not exists lists (id integer primary key not null, name text);'
+        );
+        tx.executeSql(
+            'create table if not exists quickly_tasks (id integer primary key not null, name text, list_id integer not null);'
         );
         tx.executeSql(
             'create table if not exists themes (id integer primary key not null, name text, primaryColor text, primaryBackgroundColor text, secondaryBackgroundColor text, textColor text, headerTextColor text, bottomNavigationColor text, actionButtonColor text, actionButtonIconColor text, overdueColor text, doneButtonColor text, doneButtonTextColor text, undoButtonColor text, undoButtonTextColor text, noneColor text, noneTextColor text, lowColor text, lowTextColor text, mediumColor text, mediumTextColor text, highColor text, highTextColor text);'

@@ -10,6 +10,18 @@ export {
 } from './tasks';
 
 export {
+    initLists,
+    initList,
+    initQuicklyTask,
+    saveQuicklyTasks,
+    saveList,
+    saveQuicklyTask,
+    removeList,
+    removeQuicklyTask,
+    removeQuicklyTasks
+} from './lists';
+
+export {
     initCategories,
     initCategory,
     saveCategory,

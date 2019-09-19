@@ -4,6 +4,7 @@ import {createAppContainer, createStackNavigator} from 'react-navigation';
 // Components
 import ToDo from "./src/container/ToDo/ToDo";
 import ConfigTask from "./src/container/ConfigTask/ConfigTask";
+import QuicklyTaskList from './src/container/QuicklyList/QuicklyTaskList';
 import CategoriesList from './src/container/CategoriesList/CategoriesList';
 import Drawer from './src/container/Drawer/Drawer';
 import Themes from './src/container/Themes/Themes';
@@ -17,6 +18,7 @@ const MainNavigator = createStackNavigator(
     {
         ToDo: {screen: ToDo},
         ConfigTask: {screen: ConfigTask},
+        QuicklyTaskList: {screen: QuicklyTaskList},
         CategoriesList: {screen: CategoriesList},
         Profile: {screen: Profile},
         Drawer: {screen: Drawer},

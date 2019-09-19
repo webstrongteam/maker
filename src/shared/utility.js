@@ -95,6 +95,23 @@ export const generateDialogObject = (title, description, buttons) => {
     return object;
 };
 
+export const generateInputDialogObject = (title, focus, value, onChange, buttons) => {
+    let object = {
+        title,
+        focus,
+        value,
+        onChange,
+        buttons: []
+    };
+    Object.keys(buttons).map(key => {
+        object.buttons.push({
+            label: key,
+            onPress: buttons[key]
+        })
+    });
+    return object;
+};
+
 export const valid = (controls, value, name, callback) => {
     let validStatus = true;
 

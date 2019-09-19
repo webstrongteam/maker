@@ -25,7 +25,7 @@ class QuicklyList extends Component {
                 {
                     Yes: () => {
                         this.setState({showDialog: false});
-                        this.props.onQuicklyList(this.state.selectedList);
+                        this.props.onRemoveQuicklyList(this.state.selectedList.id);
                     },
                     No: () => {
                         this.setState({showDialog: false});
@@ -44,11 +44,7 @@ class QuicklyList extends Component {
             // Searching system
             const searchText = this.props.searchText.toLowerCase();
             if (searchText.length > 0 && list.name.toLowerCase().indexOf(searchText) < 0) {
-                if (list.description.toLowerCase().indexOf(searchText) < 0) {
-                    if (list.category.toLowerCase().indexOf(searchText) < 0) {
-                        return null;
-                    }
-                }
+                return null
             }
 
             return (
@@ -58,7 +54,7 @@ class QuicklyList extends Component {
                             <ListItem
                                 divider
                                 dense
-                                onPress={() => navigation.navigate('QuicklyTaskList', {list: list.id})}
+                                onPress={() => navigation.navigate('QuicklyTaskList', {list: list})}
                                 style={{
                                     container: [
                                         styles.shadow,
@@ -131,13 +127,14 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
-        settings: state.settings
+        settings: state.settings,
+        lists: state.lists.lists
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onRemoveQuicklyList: (list) => dispatch(actions.removeQuicklyList(list))
+        onRemoveQuicklyList: (list) => dispatch(actions.removeList(list))
     }
 };
 
