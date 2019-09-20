@@ -1,6 +1,5 @@
 import * as actionTypes from './actionTypes';
 import {SQLite} from 'expo-sqlite';
-import {initCategories} from "./categories";
 
 const db = SQLite.openDatabase('maker.db');
 
@@ -11,12 +10,11 @@ export const onInitLists = (lists) => {
     }
 };
 
-export const initLists = (callback = () => null) => {
+export const initLists = () => {
     return dispatch => {
         db.transaction(
             tx => {
                 tx.executeSql('select * from lists', [], (_, {rows}) => {
-                    callback();
                     dispatch(onInitLists(rows._array));
                 });
             }, (err) => console.log(err)
@@ -28,7 +26,7 @@ export const initList = (id, callback = () => null) => {
     return () => {
         db.transaction(
             tx => {
-                tx.executeSql('select * from quckly_tasks where list_id = ?', [id], (_, {rows}) => {
+                tx.executeSql('select * from quickly_tasks where list_id = ?', [id], (_, {rows}) => {
                     callback(rows._array);
                 });
             }, (err) => console.log(err)
@@ -40,7 +38,7 @@ export const initQuicklyTask = (id, callback = () => null) => {
     return () => {
         db.transaction(
             tx => {
-                tx.executeSql('select * from quckly_tasks where id = ?', [id], (_, {rows}) => {
+                tx.executeSql('select * from quickly_tasks where id = ?', [id], (_, {rows}) => {
                     callback(rows._array[0]);
                 });
             }, (err) => console.log(err)
@@ -48,7 +46,7 @@ export const initQuicklyTask = (id, callback = () => null) => {
     };
 };
 
-export const saveList = (list, quicklyTasks, callback) => {
+export const saveList = (list, callback) => {
     return dispatch => {
         if (list.id !== false) {
             db.transaction(
@@ -56,15 +54,16 @@ export const saveList = (list, quicklyTasks, callback) => {
                     tx.executeSql(`update lists
                                    set name = ?
                                    where id = ?;`, [list.name, list.id], () => {
-                        dispatch(saveQuicklyTasks(list.id, quicklyTasks), callback());
+                        dispatch(initLists(), callback(list));
                     });
                 }, (err) => console.log(err)
             );
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into lists (name) values (?)', [list.name], (_, {rows}) => {
-                        dispatch(saveQuicklyTasks(rows._array[0].id), callback())
+                    tx.executeSql('insert into lists (name) values (?)', [list.name]);
+                    tx.executeSql('select * from lists ORDER BY id DESC', [], (_, {rows}) => {
+                        dispatch(initLists(), callback(rows._array[0]));
                     });
                 }, (err) => console.log(err)
             );
@@ -72,35 +71,23 @@ export const saveList = (list, quicklyTasks, callback) => {
     };
 };
 
-export const saveQuicklyTasks = (list_id, quicklyTasks) => {
-    return dispatch => {
-        quicklyTasks.map(task => {
-            db.transaction(
-                tx => {
-                    tx.executeSql('insert into quickly_tasks ', [task.name, list_id]);
-                }, (err) => console.log(err)
-            );
-        })
-    }
-};
-
 export const saveQuicklyTask = (quicklyTask, list_id, callback) => {
-    return dispatch => {
+    return () => {
         if (quicklyTask.id !== false) {
             db.transaction(
                 tx => {
                     tx.executeSql(`update quickly_tasks
                                    set name = ?
                                    where id = ?;`, [quicklyTask.name, quicklyTask.id], () => {
-                        dispatch(callback())
+                        callback();
                     });
                 }, (err) => console.log(err)
             );
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into quickly_tasks (name, list_id) values (?,?)', [quicklyTask.name, list_id], (_, {rows}) => {
-                        dispatch(callback())
+                    tx.executeSql('insert into quickly_tasks (name, list_id) values (?,?)', [quicklyTask.name, list_id], () => {
+                        callback();
                     });
                 }, (err) => console.log(err)
             );
@@ -112,32 +99,21 @@ export const removeList = (id) => {
     return dispatch => {
         db.transaction(
             tx => {
+                tx.executeSql('delete from quickly_tasks where list_id = ?', [id]);
                 tx.executeSql('delete from lists where id = ?', [id], () => {
-                    dispatch(removeQuicklyTasks(id));
+                    dispatch(initLists());
                 });
             }, (err) => console.log(err)
         );
     };
 };
 
-export const removeQuicklyTask = (id) => {
-    return dispatch => {
+export const removeQuicklyTask = (id, callback) => {
+    return () => {
         db.transaction(
             tx => {
                 tx.executeSql('delete from quickly_tasks where id = ?', [id], () => {
-                    dispatch(initLists());
-                });
-            }, (err) => console.log(err)
-        );
-    };
-};
-
-export const removeQuicklyTasks = (id) => {
-    return dispatch => {
-        db.transaction(
-            tx => {
-                tx.executeSql('delete from quickly_tasks where list_id = ?', [id], () => {
-                    dispatch(initLists());
+                    callback();
                 });
             }, (err) => console.log(err)
         );

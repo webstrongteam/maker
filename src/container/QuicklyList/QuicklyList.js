@@ -12,27 +12,23 @@ import * as actions from "../../store/actions";
 class QuicklyList extends Component {
     state = {
         dialog: {},
-        showDialog: false,
-        selectedList: false
+        showDialog: false
     };
 
-    showDialog = (action) => {
-        let dialog;
-        if (action === 'delete') {
-            dialog = generateDialogObject(
-                'Are you sure?',
-                'Delete this list?',
-                {
-                    Yes: () => {
-                        this.setState({showDialog: false});
-                        this.props.onRemoveQuicklyList(this.state.selectedList.id);
-                    },
-                    No: () => {
-                        this.setState({showDialog: false});
-                    }
+    showDialog = (list_id) => {
+        const dialog = generateDialogObject(
+            'Are you sure?',
+            'Delete this list?',
+            {
+                Yes: () => {
+                    this.setState({showDialog: false});
+                    this.props.onRemoveList(list_id);
+                },
+                No: () => {
+                    this.setState({showDialog: false});
                 }
-            );
-        }
+            }
+        );
         this.setState({showDialog: true, dialog});
     };
 
@@ -58,7 +54,7 @@ class QuicklyList extends Component {
                                 style={{
                                     container: [
                                         styles.shadow,
-                                        {bgColor: this.props.theme.noneColor, color: this.props.theme.noneTextColor}
+                                        {backgroundColor: theme.noneColor}
                                     ],
                                     primaryText: {
                                         fontSize: 18,
@@ -68,7 +64,7 @@ class QuicklyList extends Component {
                                 rightElement={
                                     <View style={styles.rightElements}>
                                         <IconToggle
-                                            onPress={() => this.showDialog('delete')}
+                                            onPress={() => this.showDialog(list.id)}
                                             name="delete"
                                             color={theme.actionButtonColor}
                                             size={26}
@@ -94,7 +90,7 @@ class QuicklyList extends Component {
                 />
                 }
                 {lists && lists.length ?
-                    <View style={{paddingBottom: 20}}>
+                    <View style={{paddingTop: 20}}>
                         {quicklyList}
                     </View>
                     : <Text style={[empty, {color: theme.textColor}]}>
@@ -134,7 +130,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onRemoveQuicklyList: (list) => dispatch(actions.removeList(list))
+        onRemoveList: (list_id) => dispatch(actions.removeList(list_id))
     }
 };
 

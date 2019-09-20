@@ -14,6 +14,7 @@ const inputDialog = (props) => (
         </Dialog.Title>
 
         <Input
+            elementConfig={props.elementConfig ? props.elementConfig : null}
             focus={props.focus}
             value={props.value}
             changed={props.onChange}

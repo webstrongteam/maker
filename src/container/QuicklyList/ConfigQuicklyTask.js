@@ -1,17 +1,13 @@
 import React, {Component} from "react";
-import Dialog from '../../components/UI/Dialog/Dialog';
-import Input from '../../components/UI/Input/Input';
-import {generateDialogObject, valid} from '../../shared/utility';
+import InputDialog from "../../components/UI/Dialog/InputDialog";
+import {generateInputDialogObject, valid} from '../../shared/utility';
 
 import {connect} from 'react-redux';
 import * as actions from '../../store/actions/index';
 
 class ConfigCategory extends Component {
     state = {
-        task: {
-            id: false,
-            name: ''
-        },
+        task: {id: false, name: '', list_id: false},
         controls: {
             name: {
                 label: 'Enter quickly task name',
@@ -24,13 +20,15 @@ class ConfigCategory extends Component {
     };
 
     componentDidMount() {
-        this.initQuicklyTask(this.props.task);
+        this.initQuicklyTask(this.props.task_id);
     };
 
-    initQuicklyTask = (task) => {
-        if (task !== false) {
-            this.setState({task, editTask: true});
-            this.showDialog('Edit task');
+    initQuicklyTask = (task_id) => {
+        if (task_id !== false) {
+            this.props.onInitQuicklyTask(task_id, (res) => {
+                this.setState({task: res, editTask: true});
+                this.showDialog('Edit task');
+            })
         } else {
             this.setState({editTask: false});
             this.showDialog('New task');
@@ -38,30 +36,35 @@ class ConfigCategory extends Component {
     };
 
     updateTask = (name, value) => {
-        const task = this.state.task;
+        const {task} = this.state;
         task[name] = value;
         this.setState({task});
     };
 
     changeInputHandler = (name, save = false, value = this.state.task.name) => {
-        const controls = this.state.controls;
+        const {task, controls} = this.state;
+        const {list_id, toggleModal} = this.props;
         valid(controls, value, name, (newControls) => {
-            this.updateTask('name', value);
+            this.updateTask(name, value);
             if (save && !newControls[name].error) {
-                const {task} = this.state;
-                this.props.onSaveQuicklyTask(task, this.props.list_id, () => {
-                    delete newControls[name].error;
-                    this.props.toggleModal(task);
-                });
+                if (list_id !== false) {
+                    this.props.onSaveQuicklyTask(task, list_id, () => {
+                        delete newControls[name].error;
+                        toggleModal(task);
+                    });
+                }
             }
             this.setState({controls: newControls});
         })
     };
 
     showDialog = (title) => {
-        const dialog = generateDialogObject(
+        const {task} = this.state;
+        const dialog = generateInputDialogObject(
             title,
-            false,
+            true,
+            task.name,
+            (value) => this.changeInputHandler('name', false, value),
             {
                 Save: () => this.changeInputHandler('name', true),
                 Cancel: () => this.props.toggleModal()
@@ -71,23 +74,20 @@ class ConfigCategory extends Component {
     };
 
     render() {
-        const {dialog, controls, task} = this.state;
-        const {showModal} = this.props;
+        const {dialog, controls} = this.state;
 
         return (
             <React.Fragment>
                 {dialog &&
-                <Dialog
-                    showModal={showModal}
+                <InputDialog
+                    showModal={this.props.showModal}
+                    elementConfig={controls.name}
                     title={dialog.title}
-                    buttons={dialog.buttons}>
-                    <Input
-                        elementConfig={controls.name}
-                        focus={true}
-                        value={task.name}
-                        changed={(value) => this.changeInputHandler('name', false, value)}
-                    />
-                </Dialog>
+                    focus={dialog.focus}
+                    value={dialog.value}
+                    onChange={dialog.onChange}
+                    buttons={dialog.buttons}
+                />
                 }
             </React.Fragment>
         );
@@ -99,7 +99,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onSaveQuicklyTask: (task, list_id, callback) => dispatch(actions.saveCategory(task, list_id, callback)),
+        onInitQuicklyTask: (id, callback) => dispatch(actions.initQuicklyTask(id, callback)),
+        onSaveQuicklyTask: (task, list_id, callback) => dispatch(actions.saveQuicklyTask(task, list_id, callback)),
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigCategory);

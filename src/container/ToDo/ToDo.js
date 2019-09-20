@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {Animated, Easing, Platform, ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {ActionButton, BottomNavigation, Icon, Toolbar} from 'react-native-material-ui';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import {SceneMap, TabView, TabBar} from 'react-native-tab-view';
 import ModalDropdown from 'react-native-modal-dropdown';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import TaskList from '../TaskList/TaskList';
@@ -40,8 +40,8 @@ class ToDo extends PureComponent {
         tabs: {
             index: 0,
             routes: [
-                { key: 'tasks', title: 'Tasks' },
-                { key: 'lists', title: 'Quickly lists' },
+                {key: 'tasks', title: 'Tasks'},
+                {key: 'lists', title: 'Quickly lists'},
             ]
         }
     };
@@ -323,12 +323,14 @@ class ToDo extends PureComponent {
                                     keyboardShouldPersistTaps="always"
                                     keyboardDismissMode="interactive"
                                     onScroll={this.onScroll}
+                                    lazy={true}
                                     style={fullWidth}>
                                     <TabView
                                         navigationState={this.state.tabs}
+                                        tabStyle={{backgroundColor: theme.primaryColor}}
                                         onIndexChange={index => {
                                             tabs.index = index;
-                                            this.setState({ tabs });
+                                            this.setState({tabs});
                                         }}
                                         renderScene={SceneMap({
                                             tasks: () => (
@@ -341,9 +343,22 @@ class ToDo extends PureComponent {
                                                 />
                                             ),
                                             lists: () => (
-                                                <QuicklyList />
+                                                <QuicklyList
+                                                    searchText={searchText}
+                                                    navigation={navigation}
+                                                />
                                             )
                                         })}
+                                        renderTabBar={(props) =>
+                                            <TabBar
+                                                {...props}
+                                                onTabPress={({ route, preventDefault }) => {
+                                                    props.jumpTo(route.key);
+                                                }}
+                                                indicatorStyle={{ backgroundColor: theme.headerTextColor }}
+                                                style={{backgroundColor: theme.primaryColor}}
+                                            />
+                                        }
                                     />
                                 </ScrollView>
                             </View>
