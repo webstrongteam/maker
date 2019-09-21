@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
-import {Icon, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
-import {container, fullWidth} from '../../shared/styles';
+import {ScrollView, Text, View} from 'react-native';
+import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
+import {container, empty, fullWidth} from '../../shared/styles';
 import InputDialog from '../../components/UI/Dialog/InputDialog';
 import ConfigQuicklyTask from './ConfigQuicklyTask';
 import Template from '../Template/Template';
@@ -35,7 +35,6 @@ class QuicklyTaskList extends Component {
 
     reloadTasks = (list = this.state.list) => {
         this.props.onInitList(list.id, (tasks) => {
-            console.log(tasks);
             this.setState({
                 quicklyTasks: tasks,
                 ready: true, list
@@ -130,30 +129,33 @@ class QuicklyTaskList extends Component {
                 />
                 }
                 <View style={container}>
-                    {ready &&
-                    <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
-                        {quicklyTasks.map(task => (
-                            <ListItem
-                                divider
-                                dense
-                                key={task.id}
-                                style={{
-                                    container: {marginTop: 5}
-                                }}
-                                onPress={() => this.toggleModalHandler(task.id)}
-                                rightElement={
-                                    <IconToggle onPress={() => {
-                                        this.props.onRemoveQuicklyTask(task.id, () => {
-                                            this.reloadTasks();
-                                        })
-                                    }} name="done"/>
-                                }
-                                centerElement={{
-                                    primaryText: `${task.name}`,
-                                }}
-                            />
-                        ))}
-                    </ScrollView>
+                    {ready && quicklyTasks.length ?
+                        <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
+                            {quicklyTasks.map(task => (
+                                <ListItem
+                                    divider
+                                    dense
+                                    key={task.id}
+                                    style={{
+                                        container: {marginTop: 5}
+                                    }}
+                                    onPress={() => this.toggleModalHandler(task.id)}
+                                    rightElement={
+                                        <IconToggle onPress={() => {
+                                            this.props.onRemoveQuicklyTask(task.id, () => {
+                                                this.reloadTasks();
+                                            })
+                                        }} name="done"/>
+                                    }
+                                    centerElement={{
+                                        primaryText: `${task.name}`,
+                                    }}
+                                />
+                            ))}
+                        </ScrollView> :
+                        <Text style={[empty, {color: theme.textColor}]}>
+                            Quickly list is empty!
+                        </Text>
                     }
                 </View>
             </Template>

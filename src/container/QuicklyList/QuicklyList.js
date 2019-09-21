@@ -1,24 +1,64 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {IconToggle, ListItem} from 'react-native-material-ui';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ActionButton, IconToggle, ListItem} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
-import {empty} from '../../shared/styles';
+import {empty, fullWidth} from '../../shared/styles';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
 
+const UP = 1;
+const DOWN = -1;
+
 class QuicklyList extends Component {
     state = {
         dialog: {},
-        showDialog: false
+        showDialog: false,
+        amounts: {},
+
+        scroll: 0,
+        offset: 0,
+        scrollDirection: 0,
+        bottomHidden: false
     };
 
-    showDialog = (list_id) => {
+    componentDidMount() {
+        const {lists} = this.props;
+        const {amounts} = this.state;
+        if (lists.length) {
+            lists.map(list => {
+                this.props.onInitList(list.id, (tasks) => {
+                    amounts[list.id] = tasks.length;
+                    this.setState({amounts});
+                });
+            });
+        }
+    }
+
+    onScroll = (e) => {
+        const currentOffset = e.nativeEvent.contentOffset.y;
+        const sub = this.state.offset - currentOffset;
+
+        if (sub > -10 && sub < 10) return;
+        this.state.offset = e.nativeEvent.contentOffset.y;
+
+        const currentDirection = sub > 0 ? UP : DOWN;
+
+        if (this.state.scrollDirection !== currentDirection) {
+            this.state.scrollDirection = currentDirection;
+
+            this.setState({
+                bottomHidden: currentDirection === DOWN,
+            });
+        }
+    };
+
+    showDialog = (list_id, list_name) => {
         const dialog = generateDialogObject(
             'Are you sure?',
-            'Delete this list?',
+            `Delete ${list_name} list?`,
             {
                 Yes: () => {
                     this.setState({showDialog: false});
@@ -33,7 +73,7 @@ class QuicklyList extends Component {
     };
 
     render() {
-        const {dialog, showDialog} = this.state;
+        const {dialog, showDialog, amounts, bottomHidden} = this.state;
         const {lists, theme, navigation} = this.props;
 
         const quicklyList = lists.map((list, index) => {
@@ -64,14 +104,17 @@ class QuicklyList extends Component {
                                 rightElement={
                                     <View style={styles.rightElements}>
                                         <IconToggle
-                                            onPress={() => this.showDialog(list.id)}
+                                            onPress={() => this.showDialog(list.id, list.name)}
                                             name="delete"
                                             color={theme.actionButtonColor}
                                             size={26}
                                         />
                                     </View>
                                 }
-                                centerElement={{primaryText: list.name}}
+                                centerElement={{
+                                    primaryText: list.name,
+                                    secondaryText: `Total tasks: ${amounts[list.id]}`
+                                }}
                             />
                         </View>
                     </AnimatedView>
@@ -80,7 +123,7 @@ class QuicklyList extends Component {
         });
 
         return (
-            <View>
+            <View style={{flex: 1}}>
                 {showDialog &&
                 <Dialog
                     showModal={showDialog}
@@ -89,14 +132,32 @@ class QuicklyList extends Component {
                     buttons={dialog.buttons}
                 />
                 }
-                {lists && lists.length ?
-                    <View style={{paddingTop: 20}}>
-                        {quicklyList}
-                    </View>
-                    : <Text style={[empty, {color: theme.textColor}]}>
-                        Quickly list is empty!
-                    </Text>
-                }
+                <ScrollView
+                    keyboardShouldPersistTaps="always"
+                    keyboardDismissMode="interactive"
+                    onScroll={this.onScroll}
+                    lazy={true}
+                    style={fullWidth}>
+                    {lists && lists.length ?
+                        <View style={{paddingTop: 20}}>
+                            {quicklyList}
+                        </View>
+                        : <Text style={[empty, {color: theme.textColor}]}>
+                            Quickly lists is empty!
+                        </Text>
+                    }
+                </ScrollView>
+                <View style={{marginBottom: -40}}>
+                    <ActionButton
+                        hidden={bottomHidden}
+                        onPress={() => navigation.navigate('QuicklyTaskList', {list: false})}
+                        icon="add"
+                        style={{
+                            container: {backgroundColor: theme.actionButtonColor},
+                            icon: {color: theme.actionButtonIconColor}
+                        }}
+                    />
+                </View>
             </View>
         )
     }
@@ -130,6 +191,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        onInitList: (id, callback) => dispatch(actions.initList(id, callback)),
         onRemoveList: (list_id) => dispatch(actions.removeList(list_id))
     }
 };

@@ -1,14 +1,17 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {Button, IconToggle, ListItem, Subheader} from 'react-native-material-ui';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ActionButton, BottomNavigation, Button, IconToggle, ListItem, Subheader} from 'react-native-material-ui';
 import {generateDialogObject, sortingByType} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
-import {empty} from '../../shared/styles';
+import {empty, fullWidth} from '../../shared/styles';
 import moment from 'moment';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
+
+const UP = 1;
+const DOWN = -1;
 
 class TaskList extends Component {
     state = {
@@ -21,7 +24,12 @@ class TaskList extends Component {
         dialog: {},
         showDialog: false,
         selectedTask: false,
-        initDivision: false
+        initDivision: false,
+
+        scroll: 0,
+        offset: 0,
+        scrollDirection: 0,
+        bottomHidden: false
     };
 
     componentDidMount() {
@@ -37,6 +45,24 @@ class TaskList extends Component {
             this.refreshPriorityColors();
         }
     }
+
+    onScroll = (e) => {
+        const currentOffset = e.nativeEvent.contentOffset.y;
+        const sub = this.state.offset - currentOffset;
+
+        if (sub > -10 && sub < 10) return;
+        this.state.offset = e.nativeEvent.contentOffset.y;
+
+        const currentDirection = sub > 0 ? UP : DOWN;
+
+        if (this.state.scrollDirection !== currentDirection) {
+            this.state.scrollDirection = currentDirection;
+
+            this.setState({
+                bottomHidden: currentDirection === DOWN,
+            });
+        }
+    };
 
     refreshPriorityColors = () => {
         this.setState({
@@ -100,8 +126,41 @@ class TaskList extends Component {
                     }
                 }
             );
+        } else if (action === 'finishAll') {
+            dialog = generateDialogObject(
+                'Are you sure?',
+                'Do you want to delete all finished task?',
+                {
+                    Yes: () => {
+                        this.setState({showDialog: false});
+                        this.deleteAllTask();
+                    },
+                    No: () => {
+                        this.setState({showDialog: false});
+                    },
+                }
+            );
         }
         this.setState({showDialog: true, dialog});
+    };
+
+    deleteAllTask = () => {
+        const {finished} = this.props;
+        finished.map(task => {
+            this.props.onRemoveTask(task);
+        });
+    };
+
+    setSortingType = (key) => {
+        if (key === this.props.sorting) {
+            if (this.props.sortingType === 'ASC') {
+                this.props.onChangeSorting(key, 'DESC');
+            } else {
+                this.props.onChangeSorting(key, 'ASC');
+            }
+        } else {
+            this.props.onChangeSorting(key, 'ASC');
+        }
     };
 
     divisionTask = () => {
@@ -189,8 +248,8 @@ class TaskList extends Component {
     };
 
     render() {
-        const {division, priorityColors, initDivision, dialog, showDialog} = this.state;
-        const {tasks, theme, navigation} = this.props;
+        const {division, priorityColors, initDivision, dialog, showDialog, bottomHidden} = this.state;
+        const {tasks, theme, navigation, sortingType, sorting, finished, selectedCategory} = this.props;
 
         const taskList = initDivision &&
             Object.keys(division).map(div => (
@@ -309,14 +368,73 @@ class TaskList extends Component {
                     buttons={dialog.buttons}
                 />
                 }
-                {tasks && tasks.length ?
-                    <View style={{paddingBottom: 20}}>
-                        {taskList}
-                    </View>
-                    : <Text style={[empty, {color: theme.textColor}]}>
-                        Task list is empty!
-                    </Text>
-                }
+                <ScrollView
+                    keyboardShouldPersistTaps="always"
+                    keyboardDismissMode="interactive"
+                    onScroll={this.onScroll}
+                    lazy={true}
+                    style={fullWidth}>
+                    {tasks && tasks.length ?
+                        <View style={{paddingBottom: 20}}>
+                            {taskList}
+                        </View>
+                        : <Text style={[empty, {color: theme.textColor}]}>
+                            Task list is empty!
+                        </Text>
+                    }
+                </ScrollView>
+                <View>
+                    {selectedCategory !== 'Finished' ?
+                        <ActionButton
+                            hidden={bottomHidden}
+                            onPress={() => navigation.navigate('ConfigTask')}
+                            icon="add"
+                            style={{
+                                container: {backgroundColor: theme.actionButtonColor},
+                                icon: {color: theme.actionButtonIconColor}
+                            }}
+                        /> :
+                        finished.length ?
+                            <ActionButton
+                                hidden={bottomHidden}
+                                style={{
+                                    container: {backgroundColor: theme.actionButtonColor},
+                                    icon: {color: theme.actionButtonIconColor}
+                                }}
+                                onPress={() => this.showDialog('finishAll')}
+                                icon="delete-sweep"
+                            /> : null
+                    }
+                </View>
+                <BottomNavigation
+                    style={{container: {backgroundColor: theme.bottomNavigationColor}}}
+                    hidden={bottomHidden}
+                    active={sorting}>
+                    <BottomNavigation.Action
+                        key="byAZ"
+                        icon="format-line-spacing"
+                        label={sortingType === 'ASC' ? "A-Z" : "Z-A"}
+                        onPress={() => this.setSortingType('byAZ')}
+                    />
+                    <BottomNavigation.Action
+                        key="byDate"
+                        icon="insert-invitation"
+                        label="Date"
+                        onPress={() => this.setSortingType('byDate')}
+                    />
+                    <BottomNavigation.Action
+                        key="byCategory"
+                        icon="bookmark-border"
+                        label="Category"
+                        onPress={() => this.setSortingType('byCategory')}
+                    />
+                    <BottomNavigation.Action
+                        key="byPriority"
+                        icon="priority-high"
+                        label="Priority"
+                        onPress={() => this.setSortingType('byPriority')}
+                    />
+                </BottomNavigation>
             </View>
         )
     }
@@ -342,6 +460,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
+        sorting: state.settings.sorting,
+        sortingType: state.settings.sortingType,
         theme: state.theme.theme,
         settings: state.settings
     }
@@ -352,6 +472,7 @@ const mapDispatchToProps = (dispatch) => {
         onFinishTask: (task, endTask = false) => dispatch(actions.finishTask(task, endTask)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onUndoTask: (task) => dispatch(actions.undoTask(task)),
+        onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),
         onAddEndedTask: () => dispatch(actions.addEndedTask())
     }
 };

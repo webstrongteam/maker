@@ -1,22 +1,16 @@
 import React, {PureComponent} from 'react';
-import {Animated, Easing, Platform, ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import {ActionButton, BottomNavigation, Icon, Toolbar} from 'react-native-material-ui';
-import {SceneMap, TabView, TabBar} from 'react-native-tab-view';
+import {Animated, Dimensions, Easing, Platform, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {Icon, Toolbar} from 'react-native-material-ui';
+import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import ModalDropdown from 'react-native-modal-dropdown';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import TaskList from '../TaskList/TaskList';
 import Template from '../Template/Template';
 import ConfigCategory from "../ConfigCategory/ConfigCategory";
 import QuicklyList from '../QuicklyList/QuicklyList';
-import Dialog from '../../components/UI/Dialog/Dialog';
-import {generateDialogObject} from "../../shared/utility";
-import {container, fullWidth} from '../../shared/styles';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
-
-const UP = 1;
-const DOWN = -1;
 
 class ToDo extends PureComponent {
     state = {
@@ -25,10 +19,6 @@ class ToDo extends PureComponent {
         selectedCategory: 'All',
         selectedIndex: 0,
         searchText: '',
-        scroll: 0,
-        offset: 0,
-        scrollDirection: 0,
-        bottomHidden: false,
         rotateAnimated: new Animated.Value(0),
         rotateInterpolate: '0deg',
 
@@ -75,41 +65,6 @@ class ToDo extends PureComponent {
         }
     }
 
-    showDialog = () => {
-        let dialog = generateDialogObject(
-            'Are you sure?',
-            'Do you want to delete all finished task?',
-            {
-                Yes: () => {
-                    this.setState({showDialog: false});
-                    this.deleteAllTask();
-                },
-                No: () => {
-                    this.setState({showDialog: false});
-                },
-            }
-        );
-        this.setState({showDialog: true, dialog});
-    };
-
-    onScroll = (e) => {
-        const currentOffset = e.nativeEvent.contentOffset.y;
-        const sub = this.state.offset - currentOffset;
-
-        if (sub > -10 && sub < 10) return;
-        this.state.offset = e.nativeEvent.contentOffset.y;
-
-        const currentDirection = sub > 0 ? UP : DOWN;
-
-        if (this.state.scrollDirection !== currentDirection) {
-            this.state.scrollDirection = currentDirection;
-
-            this.setState({
-                bottomHidden: currentDirection === DOWN,
-            });
-        }
-    };
-
     rotate = (value) => {
         const {rotateAnimated} = this.state;
         Animated.timing(rotateAnimated, {
@@ -130,25 +85,6 @@ class ToDo extends PureComponent {
     toggleConfigCategory = () => {
         const {showConfigCategory} = this.state;
         this.setState({showConfigCategory: !showConfigCategory});
-    };
-
-    deleteAllTask = () => {
-        const {finished} = this.props;
-        finished.map(task => {
-            this.props.onRemoveTask(task);
-        });
-    };
-
-    setSortingType = (key) => {
-        if (key === this.props.sorting) {
-            if (this.props.sortingType === 'ASC') {
-                this.props.onChangeSorting(key, 'DESC');
-            } else {
-                this.props.onChangeSorting(key, 'ASC');
-            }
-        } else {
-            this.props.onChangeSorting(key, 'ASC');
-        }
     };
 
     selectedCategoryHandler = (category, index) => {
@@ -249,8 +185,8 @@ class ToDo extends PureComponent {
     }
 
     render() {
-        const {showDialog, dialog, selectedCategory, tasks, loading, showConfigCategory, tabs, searchText, bottomHidden, dropdownData, selectedIndex, rotateInterpolate} = this.state;
-        const {navigation, finished, theme, sortingType, sorting} = this.props;
+        const {selectedCategory, tasks, loading, showConfigCategory, tabs, searchText, bottomHidden, dropdownData, selectedIndex, rotateInterpolate} = this.state;
+        const {navigation, finished, theme} = this.props;
 
         return (
             <React.Fragment>
@@ -308,112 +244,44 @@ class ToDo extends PureComponent {
                             toggleModal={this.toggleConfigCategory}
                         />
                         }
-                        {showDialog &&
-                        <Dialog
-                            showModal={showDialog}
-                            title={dialog.title}
-                            description={dialog.description}
-                            buttons={dialog.buttons}
-                        />
-                        }
-
                         <React.Fragment>
-                            <View style={container}>
-                                <ScrollView
-                                    keyboardShouldPersistTaps="always"
-                                    keyboardDismissMode="interactive"
-                                    onScroll={this.onScroll}
-                                    lazy={true}
-                                    style={fullWidth}>
-                                    <TabView
-                                        navigationState={this.state.tabs}
-                                        tabStyle={{backgroundColor: theme.primaryColor}}
-                                        onIndexChange={index => {
-                                            tabs.index = index;
-                                            this.setState({tabs});
-                                        }}
-                                        renderScene={SceneMap({
-                                            tasks: () => (
-                                                <TaskList
-                                                    searchText={searchText}
-                                                    tasks={tasks}
-                                                    sortingType={sortingType}
-                                                    sorting={sorting}
-                                                    navigation={navigation}
-                                                />
-                                            ),
-                                            lists: () => (
-                                                <QuicklyList
-                                                    searchText={searchText}
-                                                    navigation={navigation}
-                                                />
-                                            )
-                                        })}
-                                        renderTabBar={(props) =>
-                                            <TabBar
-                                                {...props}
-                                                onTabPress={({ route, preventDefault }) => {
-                                                    props.jumpTo(route.key);
-                                                }}
-                                                indicatorStyle={{ backgroundColor: theme.headerTextColor }}
-                                                style={{backgroundColor: theme.primaryColor}}
+                            <View style={{height: Dimensions.get('window').height - 80}}>
+                                <TabView
+                                    navigationState={this.state.tabs}
+                                    tabStyle={{backgroundColor: theme.primaryColor}}
+                                    onIndexChange={index => {
+                                        tabs.index = index;
+                                        this.setState({tabs});
+                                    }}
+                                    renderScene={SceneMap({
+                                        tasks: () => (
+                                            <TaskList
+                                                searchText={searchText}
+                                                tasks={tasks}
+                                                selectedCategory={selectedCategory}
+                                                finished={finished}
+                                                navigation={navigation}
                                             />
-                                        }
-                                    />
-                                </ScrollView>
-                            </View>
-                            <View>
-                                {selectedCategory !== 'Finished' ?
-                                    <ActionButton
-                                        hidden={bottomHidden}
-                                        onPress={() => +tabs.index === 0 ? navigation.navigate('ConfigTask') : navigation.navigate('QuicklyTaskList', {list: false})}
-                                        icon="add"
-                                        style={{
-                                            container: {backgroundColor: theme.actionButtonColor},
-                                            icon: {color: theme.actionButtonIconColor}
-                                        }}
-                                    /> :
-                                    finished.length ?
-                                        <ActionButton
-                                            hidden={bottomHidden}
-                                            style={{
-                                                container: {backgroundColor: theme.actionButtonColor},
-                                                icon: {color: theme.actionButtonIconColor}
+                                        ),
+                                        lists: () => (
+                                            <QuicklyList
+                                                searchText={searchText}
+                                                navigation={navigation}
+                                            />
+                                        )
+                                    })}
+                                    renderTabBar={(props) =>
+                                        <TabBar
+                                            {...props}
+                                            onTabPress={({route}) => {
+                                                props.jumpTo(route.key);
                                             }}
-                                            onPress={() => this.showDialog()}
-                                            icon="delete-sweep"
-                                        /> : null
-                                }
+                                            indicatorStyle={{backgroundColor: theme.headerTextColor}}
+                                            style={{backgroundColor: theme.primaryColor, height: 50}}
+                                        />
+                                    }
+                                />
                             </View>
-                            <BottomNavigation
-                                style={{container: {backgroundColor: theme.bottomNavigationColor}}}
-                                hidden={bottomHidden}
-                                active={sorting}>
-                                <BottomNavigation.Action
-                                    key="byAZ"
-                                    icon="format-line-spacing"
-                                    label={sortingType === 'ASC' ? "A-Z" : "Z-A"}
-                                    onPress={() => this.setSortingType('byAZ')}
-                                />
-                                <BottomNavigation.Action
-                                    key="byDate"
-                                    icon="insert-invitation"
-                                    label="Date"
-                                    onPress={() => this.setSortingType('byDate')}
-                                />
-                                <BottomNavigation.Action
-                                    key="byCategory"
-                                    icon="bookmark-border"
-                                    label="Category"
-                                    onPress={() => this.setSortingType('byCategory')}
-                                />
-                                <BottomNavigation.Action
-                                    key="byPriority"
-                                    icon="priority-high"
-                                    label="Priority"
-                                    onPress={() => this.setSortingType('byPriority')}
-                                />
-                            </BottomNavigation>
                         </React.Fragment>
                     </Template> : <Spinner color="#0000ff"/>
                 }
@@ -478,8 +346,6 @@ const mapStateToProps = state => {
     return {
         tasks: state.tasks.tasks,
         finished: state.tasks.finished,
-        sorting: state.settings.sorting,
-        sortingType: state.settings.sortingType,
         categories: state.categories.categories,
         theme: state.theme.theme
     }
@@ -492,8 +358,6 @@ const mapDispatchToProps = dispatch => {
         onInitTheme: () => dispatch(actions.initTheme()),
         onInitProfile: () => dispatch(actions.initProfile()),
         onInitSettings: () => dispatch(actions.initSettings()),
-        onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),
-        onRemoveTask: (task) => dispatch(actions.removeTask(task))
     }
 };
 

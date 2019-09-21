@@ -10,6 +10,7 @@ This app working with Android and iOS.
 ## Basic features  
   
 - Task list
+- Quickly list
 - Create, Edit and Remove task
 - Task categories
 - Task priority
@@ -39,6 +40,8 @@ This app working with Android and iOS.
 - React Native Material TextField <i>0.12.0</i>  
 - React Native Color Picker <i>0.4.1</i>  
 - React Native Settings List <i>1.8.0</i>  
+- React Native Reanimated <i>1.0.1</i>  
+- React Native Tab View <i>2.10.0</i>  
 - Moment.JS <i>2.24.0</i>
 - Expo <i>33.0.0</i>
 - Axios <i>0.19.0</i>
@@ -46,13 +49,13 @@ This app working with Android and iOS.
 ### ToDo list
 
 ##### 1.1v ToDo:
-* Add quickly list :x:
+* Add quickly list :heavy_minus_sign:
 * Add other languages :x:
-* Add notifications system :x:
+* Add remainder system :x:
 * Add custom repeating range :x:
-* Change datepicker theme :x:
+* Change datepicker :x:
 * Upgrade about tab design :x:
-* Create unit tests :x:
+* Clear and optimization code :x:
 
 #### Legend:
 :heavy_minus_sign: - I am working on it now \
