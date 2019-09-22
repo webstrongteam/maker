@@ -90,8 +90,9 @@ export const saveTask = (task) => {
                                        date        = ?,
                                        category    = ?,
                                        priority    = ?,
-                                       repeat      = ?
-                                   where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.id], () => {
+                                       repeat      = ?,
+                                       event_id    = ?
+                                   where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.id], () => {
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)
@@ -99,7 +100,7 @@ export const saveTask = (task) => {
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat) values (?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat], () => {
+                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat, event_id) values (?,?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id], () => {
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)

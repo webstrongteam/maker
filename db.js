@@ -9,7 +9,7 @@ export const initDatabase = (callback) => {
             'create table if not exists categories (id integer primary key not null, name text);'
         );
         tx.executeSql(
-            'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text);'
+            'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, event_id text);'
         );
         tx.executeSql(
             'create table if not exists finished (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, finish integer);'
@@ -56,11 +56,9 @@ const initApp = (callback) => {
             tx.executeSql("select version from settings", [], (_, {rows}) => {
                 const version = rows._array[0].version;
                 if (version !== VERSION) {
-                    tx.executeSql('DELETE FROM themes WHERE id = 0;', [], () => {
-                        tx.executeSql('DELETE FROM themes WHERE id = 1;', [], () => {
-                            tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {
-                                initDatabase(callback);
-                            });
+                    tx.executeSql('ALTER TABLE tasks ADD COLUMN event_id text;', [], () => {
+                        tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {
+                            initDatabase(callback);
                         });
                     });
                 } else callback();

@@ -49,17 +49,18 @@ This app working with Android and iOS.
 ### ToDo list
 
 ##### 1.1v ToDo:
-* Add quickly list :heavy_minus_sign:
-* Add other languages :x:
-* Add remainder system :x:
+* Add quickly list :heavy_check_mark:
+* Add polish language :x:
+* Integrate with calendar :heavy_minus_sign:
 * Add custom repeating range :x:
 * Change datepicker :x:
 * Upgrade about tab design :x:
 * Clear and optimization code :x:
 
 #### Legend:
-:heavy_minus_sign: - I am working on it now \
-:x: - I done not start work on this
+:heavy_check_mark: - Done \
+:heavy_minus_sign: - I'm working on it now \
+:x: - I don't start work on this
 
 ### WebStrong &copy;  
   
