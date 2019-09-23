@@ -1,9 +1,6 @@
 import React, {Component} from "react";
-import {Alert, Picker, Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {Picker, ScrollView, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-datepicker';
-import * as Calendar from 'expo-calendar';
-import * as Localization from 'expo-localization';
-import * as Permissions from 'expo-permissions';
 import {Button, Checkbox, IconToggle, Subheader, Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
@@ -11,7 +8,13 @@ import Input from '../../components/UI/Input/Input';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
-import {convertNumberToDate, generateDialogObject, valid} from '../../shared/utility';
+import {
+    convertNumberToDate,
+    deleteCalendarEvent,
+    generateDialogObject,
+    setCalendarEvent,
+    valid
+} from '../../shared/utility';
 import {fullWidth} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 import moment from 'moment';
@@ -81,8 +84,7 @@ class ConfigTask extends Component {
         editTask: null,
         showConfigCategory: false,
         changedSth: false,
-        setCalendarEvent: false,
-        allDay: true,
+        setEvent: false,
         loading: true
     };
 
@@ -104,6 +106,9 @@ class ConfigTask extends Component {
             let selectedTime = 0;
             let repeatValue = '1';
             let otherOption = 'Other...';
+            if (+task.event_id === 1 && !!task.event_id) {
+                task.event_id = false;
+            }
 
             if (+task.repeat === parseInt(task.repeat, 10)) {
                 selectedTime = task.repeat[0];
@@ -117,8 +122,7 @@ class ConfigTask extends Component {
             this.setState({
                 editTask: true, task,
                 otherOption, repeatValue,
-                setCalendarEvent: !!task.event_id,
-                allDay: task.date.length < 13,
+                setEvent: !!task.event_id,
                 selectedTime, loading: false
             });
         });
@@ -205,124 +209,59 @@ class ConfigTask extends Component {
     };
 
     saveTask = () => {
-        const {task} = this.state;
-        const {navigation} = this.props;
+        const {task, setEvent} = this.state;
+        const {navigation, theme} = this.props;
 
-        if (this.state.setCalendarEvent) {
-            // Set event
-            this.setCalendarEvent().then(() => {
-                this.props.onSaveTask(task);
-                navigation.goBack();
-            })
-        } else {
-            if (!!task.event_id) {
-                // Delete event
-                Calendar.deleteEventAsync(task.event_id, {futureEvent: true}).then(() => {
-                    task.event_id = false;
-                    this.props.onSaveTask(task);
-                    navigation.goBack();
-                });
+        if (setEvent) {
+            if (task.event_id !== false) {
+                // Update event
+                setCalendarEvent(task, theme)
+                    .then(() => {
+                        this.props.onSaveTask(task);
+                        navigation.goBack();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        this.props.onSaveTask(task);
+                        navigation.goBack();
+                    })
             } else {
+                // Create event
+                setCalendarEvent(task, theme)
+                    .then((id) => {
+                        task.event_id = id;
+                        this.props.onSaveTask(task);
+                        navigation.goBack();
+                    })
+            }
+        } else {
+            if (task.event_id) {
+                // Delete event
+                deleteCalendarEvent(task.event_id)
+                    .then(() => {
+                        task.event_id = false;
+                        this.props.onSaveTask(task);
+                        navigation.goBack();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        this.props.onSaveTask(task);
+                        navigation.goBack();
+                    });
+            } else {
+                console.log('test');
                 this.props.onSaveTask(task);
                 navigation.goBack();
             }
         }
     };
 
-    async setCalendarEvent(calendarId = false) {
-        const {task, allDay} = this.state;
-        const {theme} = this.props;
-
-        // Set calendar event
-        const {status} = await Permissions.askAsync('calendar');
-        const calendars = await Calendar.getCalendarsAsync();
-        if (status === 'granted' && Platform.OS !== 'ios') {
-            // For android
-            for (let i = 0; i < calendars.length; i++) {
-                if (calendars[i].ownerAccount === 'Maker' && calendars[i].allowsModifications) {
-                    calendarId = calendars[i].id
-                }
-            }
-            if (!calendarId) {
-                // Create new calendar
-                const details = {
-                    title: 'Maker - ToDo list',
-                    color: theme.primaryColor,
-                    source: {
-                        isLocalAccount: true,
-                        name: 'Maker'
-                    },
-                    name: 'Maker - ToDo list',
-                    ownerAccount: 'Maker',
-                    timeZone: Localization.timezone,
-                    allowsModifications: true,
-                    allowedAvailabilities: [Calendar.Availability.BUSY, Calendar.Availability.FREE, Calendar.Availability.TENTATIVE],
-                    allowedReminders: [Calendar.AlarmMethod.ALARM, Calendar.AlarmMethod.ALERT, Calendar.AlarmMethod.EMAIL, Calendar.AlarmMethod.SMS, Calendar.AlarmMethod.DEFAULT],
-                    allowedAttendeeTypes: [Calendar.AttendeeType.REQUIRED, Calendar.AttendeeType.NONE],
-                    type: Calendar.EntityTypes.REMINDER,
-                    isVisible: true,
-                    isSynced: true,
-                    accessLevel: Calendar.CalendarAccessLevel.ROOT
-                };
-                calendarId = await Calendar.createCalendarAsync(details);
-            }
-        } else if (Platform.OS === 'ios') {
-            // For iOS # To Fix #
-            const {statusIos} = await Permissions.askAsync('reminders');
-            if (statusIos === 'granted') {
-                for (let i = 0; i < calendars.length; i++) {
-                    if (calendars[i].ownerAccount === 'Maker' && calendars[i].allowsModifications) {
-                        calendarId = calendars[i].id
-                    }
-                }
-                if (!calendarId) {
-                    // Create new calendar
-                    const details = {
-                        title: 'Maker - ToDo list',
-                        color: theme.primaryColor,
-                        entityType: Calendar.EntityTypes.REMINDER,
-                        sourceId: 'Maker',
-                    };
-                    calendarId = await Calendar.createCalendarAsync(details);
-                }
-            }
-        }
-
-        // Create event
-        if (calendarId !== false) {
-            let date;
-            // Convert date
-            if (allDay) {
-                date = new Date(moment(task.date, 'DD-MM-YYYY').add(1, 'days').format());
-            } else {
-                date = new Date(moment(task.date, 'DD-MM-YYYY HH:mm').format());
-            }
-
-            const detailsEvent = {
-                title: task.name,
-                startDate: date,
-                endDate: date,
-                timeZone: Localization.timezone,
-                notes: task.description,
-                allDay
-            };
-
-            if (!!task.event_id) {
-                // Update existed event
-                console.log(task.event_id);
-                Calendar.updateEventAsync(task.event_id, detailsEvent, {futureEvent: true});
-            } else {
-                task.event_id = await Calendar.createEventAsync(calendarId, detailsEvent);
-                this.setState({task});
-            }
-        }
-    }
-
     render() {
         const {
             task, changedSth, controls, loading, editTask,
             showConfigCategory, repeat, dialog, showDialog,
-            otherOption, selectedTime, showOtherRepeat, repeatValue, setCalendarEvent
+            otherOption, selectedTime, showOtherRepeat, repeatValue,
+            setEvent
         } = this.state;
         const {navigation, categories, theme, settings} = this.props;
         let date;
@@ -448,7 +387,6 @@ class ConfigTask extends Component {
                                     iconComponent={
                                         task.date.slice(13, 18) ?
                                             <IconToggle onPress={() => {
-                                                this.setState({allDay: true});
                                                 this.updateTask('date', task.date.slice(0, 10))
                                             }}
                                                         name='clear'/> :
@@ -466,15 +404,14 @@ class ConfigTask extends Component {
                                         }
                                     }}
                                     onDateChange={(date) => {
-                                        this.setState({allDay: false});
                                         this.updateTask('date', `${task.date.slice(0, 10)} - ${date}`);
                                     }}
                                 />
                                 <Checkbox
                                     label="Set calendar event"
                                     value='set'
-                                    checked={setCalendarEvent}
-                                    onCheck={(value) => this.setState({setCalendarEvent: value})}
+                                    checked={setEvent}
+                                    onCheck={(value) => this.setState({setEvent: value})}
                                 />
                                 <Subheader text="Repeat"
                                            style={{

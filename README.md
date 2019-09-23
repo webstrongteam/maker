@@ -16,6 +16,7 @@ This app working with Android and iOS.
 - Task priority
 - Repeating task system
 - Finished task list
+- Integrate with calendar
 - Sorting task
 - Searching task system
 - Dark mode and own themes
@@ -50,11 +51,12 @@ This app working with Android and iOS.
 
 ##### 1.1v ToDo:
 * Add quickly list :heavy_check_mark:
-* Add polish language :x:
-* Integrate with calendar :heavy_minus_sign:
-* Add custom repeating range :x:
+* Integrate with calendar (add alarm) :heavy_minus_sign:
 * Change datepicker :x:
+* Add custom repeating range :x:
 * Upgrade about tab design :x:
+* Fix re-render task list :x:
+* Add polish language :x:
 * Clear and optimization code :x:
 
 #### Legend:

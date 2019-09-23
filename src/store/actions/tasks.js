@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
 import {SQLite} from 'expo-sqlite';
-import {convertNumberToDate} from '../../shared/utility';
+import {setCalendarEvent, deleteCalendarEvent, convertNumberToDate} from '../../shared/utility';
 import moment from 'moment';
 
 const db = SQLite.openDatabase('maker.db');
@@ -109,7 +109,7 @@ export const saveTask = (task) => {
     };
 };
 
-export const finishTask = (task, endTask) => {
+export const finishTask = (task, endTask, theme) => {
     let nextDate = task.date;
     const dateFormat = task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
 
@@ -144,6 +144,9 @@ export const finishTask = (task, endTask) => {
                 tx => {
                     tx.executeSql('delete from tasks where id = ?', [task.id]);
                     tx.executeSql('insert into finished (name, description, date, category, priority, repeat, finish) values (?,?,?,?,?,?,1)', [task.name, task.description, task.date, task.category, task.priority, task.repeat], () => {
+                        if (task.event_id !== false) {
+                            deleteCalendarEvent(task.event_id);
+                        }
                         dispatch(initToDo());
                     });
                 }, (err) => console.log(err)
@@ -154,6 +157,10 @@ export const finishTask = (task, endTask) => {
                     tx.executeSql(`update tasks
                                    set date = ?
                                    where id = ?;`, [nextDate, task.id], () => {
+                        if (task.event_id) {
+                            task.date = nextDate;
+                            setCalendarEvent(task, theme);
+                        }
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)
@@ -189,6 +196,9 @@ export const removeTask = (task, finished = true) => {
             db.transaction(
                 tx => {
                     tx.executeSql('delete from tasks where id = ?', [task.id], () => {
+                        if (task.event_id !== false) {
+                            deleteCalendarEvent(task.event_id);
+                        }
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)

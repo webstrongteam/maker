@@ -90,7 +90,7 @@ class TaskList extends Component {
                     No: () => {
                         this.setState({showDialog: false, selectedTask: false});
                         this.props.onAddEndedTask();
-                        this.props.onFinishTask(this.state.selectedTask, true);
+                        this.props.onFinishTask(this.state.selectedTask, true, this.props.theme);
                     },
                     Cancel: () => this.setState({showDialog: false, selectedTask: false})
                 }
@@ -102,7 +102,7 @@ class TaskList extends Component {
                 {
                     Yes: () => {
                         this.setState({showDialog: false});
-                        this.props.onFinishTask(this.state.selectedTask);
+                        this.props.onFinishTask(this.state.selectedTask, false, this.props.theme);
                         this.props.onAddEndedTask();
                         this.props.navigation.goBack();
                     },
@@ -234,7 +234,7 @@ class TaskList extends Component {
             if (!!this.props.settings.confirmFinishingTask) {
                 this.showDialog('finish');
             } else {
-                this.props.onFinishTask(task);
+                this.props.onFinishTask(task, false, this.props.theme);
                 this.setState({selectedTask: false});
             }
         }
@@ -469,7 +469,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onFinishTask: (task, endTask = false) => dispatch(actions.finishTask(task, endTask)),
+        onFinishTask: (task, endTask) => dispatch(actions.finishTask(task, endTask)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onUndoTask: (task) => dispatch(actions.undoTask(task)),
         onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),

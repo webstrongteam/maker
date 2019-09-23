@@ -185,7 +185,9 @@ class ToDo extends PureComponent {
     }
 
     render() {
-        const {selectedCategory, tasks, loading, showConfigCategory, tabs, searchText, bottomHidden, dropdownData, selectedIndex, rotateInterpolate} = this.state;
+        const {selectedCategory, tasks, loading, showConfigCategory, tabs,
+            searchText, dropdownData, selectedIndex, rotateInterpolate
+        } = this.state;
         const {navigation, finished, theme} = this.props;
 
         return (

@@ -56,7 +56,7 @@ const initApp = (callback) => {
             tx.executeSql("select version from settings", [], (_, {rows}) => {
                 const version = rows._array[0].version;
                 if (version !== VERSION) {
-                    tx.executeSql('ALTER TABLE tasks ADD COLUMN event_id text;', [], () => {
+                    tx.executeSql('ALTER TABLE tasks ADD COLUMN event_id text DEFAULT false;', [], () => {
                         tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {
                             initDatabase(callback);
                         });
