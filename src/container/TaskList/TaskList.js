@@ -4,7 +4,7 @@ import {ActionButton, BottomNavigation, Button, IconToggle, ListItem, Subheader}
 import {generateDialogObject, sortingByType} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
-import {empty, fullWidth} from '../../shared/styles';
+import {content, empty, fullWidth} from '../../shared/styles';
 import moment from 'moment';
 
 import {connect} from 'react-redux';
@@ -37,10 +37,6 @@ class TaskList extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.tasks !== this.props.tasks ||
-            this.props.settings !== prevProps.settings) {
-            this.divisionTask();
-        }
         if (prevProps.theme !== this.props.theme) {
             this.refreshPriorityColors();
         }
@@ -359,7 +355,7 @@ class TaskList extends Component {
             ));
 
         return (
-            <View>
+            <View style={content}>
                 {showDialog &&
                 <Dialog
                     showModal={showDialog}
@@ -372,7 +368,6 @@ class TaskList extends Component {
                     keyboardShouldPersistTaps="always"
                     keyboardDismissMode="interactive"
                     onScroll={this.onScroll}
-                    lazy={true}
                     style={fullWidth}>
                     {tasks && tasks.length ?
                         <View style={{paddingBottom: 20}}>

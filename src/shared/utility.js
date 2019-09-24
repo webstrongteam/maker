@@ -197,17 +197,26 @@ export const setCalendarEvent = async (task, theme, calendarId = false) => {
             allDay
         };
 
-        if (!!task.event_id) {
+        // Check and set alarm
+        if (task.set_alarm) {
+            detailsEvent.alarms = [{
+                relativeOffset: '0',
+                method: 'Calendar.AlarmMethod.DEFAULT'
+            }];
+        }
+
+        if (task.event_id) {
             // Update existed event
-            return await Calendar.updateEventAsync(task.event_id, detailsEvent, {futureEvent: true});
+            return await Calendar.updateEventAsync(task.event_id+'', detailsEvent, {futureEvent: true});
         } else {
+            // Create new event
             return await Calendar.createEventAsync(calendarId, detailsEvent);
         }
     }
 };
 
 export const deleteCalendarEvent = async (event_id) => {
-    await Calendar.deleteEventAsync(event_id, {futureEvent: true})
+    await Calendar.deleteEventAsync(event_id+'', {futureEvent: true})
         .catch((err) => err)
 };
 

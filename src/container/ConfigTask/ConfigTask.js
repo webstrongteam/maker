@@ -32,7 +32,8 @@ class ConfigTask extends Component {
             repeat: 'noRepeat',
             category: '',
             priority: 'none',
-            event_id: false
+            event_id: null,
+            set_alarm: 0
         },
         controls: {
             name: {
@@ -106,9 +107,8 @@ class ConfigTask extends Component {
             let selectedTime = 0;
             let repeatValue = '1';
             let otherOption = 'Other...';
-            if (+task.event_id === 1 && !!task.event_id) {
-                task.event_id = false;
-            }
+
+            console.log(task)
 
             if (+task.repeat === parseInt(task.repeat, 10)) {
                 selectedTime = task.repeat[0];
@@ -213,7 +213,7 @@ class ConfigTask extends Component {
         const {navigation, theme} = this.props;
 
         if (setEvent) {
-            if (task.event_id !== false) {
+            if (task.event_id) {
                 // Update event
                 setCalendarEvent(task, theme)
                     .then(() => {
@@ -249,7 +249,6 @@ class ConfigTask extends Component {
                         navigation.goBack();
                     });
             } else {
-                console.log('test');
                 this.props.onSaveTask(task);
                 navigation.goBack();
             }
@@ -413,6 +412,18 @@ class ConfigTask extends Component {
                                     checked={setEvent}
                                     onCheck={(value) => this.setState({setEvent: value})}
                                 />
+                                {(task.date.length > 13) && setEvent &&
+                                    <Checkbox
+                                        label="Set alarm"
+                                        value='set'
+                                        checked={!!task.set_alarm}
+                                        onCheck={(value) => {
+                                            if (value) task.set_alarm = 1;
+                                            else task.set_alarm = 0;
+                                            this.setState({task})
+                                        }}
+                                    />
+                                }
                                 <Subheader text="Repeat"
                                            style={{
                                                container: fullWidth,
@@ -532,7 +543,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onInitTask: (id, callback) => dispatch(actions.initTask(id, callback)),
         onSaveTask: (task) => dispatch(actions.saveTask(task)),
-        onRemoveTask: (task) => dispatch(actions.removeTask(task, false)),
+        onRemoveTask: (task) => dispatch(actions.removeTask(task, false))
     }
 };
 

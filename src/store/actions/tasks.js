@@ -80,7 +80,7 @@ export const initFinished = () => {
 };
 
 export const saveTask = (task) => {
-    return dispatch => {
+    console.log(task);   return dispatch => {
         if (task.id) {
             db.transaction(
                 tx => {
@@ -91,8 +91,9 @@ export const saveTask = (task) => {
                                        category    = ?,
                                        priority    = ?,
                                        repeat      = ?,
-                                       event_id    = ?
-                                   where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.id], () => {
+                                       event_id    = ?,
+                                       set_alarm   = ?
+                                   where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.set_alarm, task.id], () => {
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)
@@ -100,7 +101,7 @@ export const saveTask = (task) => {
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat, event_id) values (?,?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id], () => {
+                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat, event_id, set_alarm) values (?,?,?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.set_alarm], () => {
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)

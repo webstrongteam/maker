@@ -1,6 +1,6 @@
 import {SQLite} from 'expo-sqlite';
 
-export const VERSION = '1.1.0'; // APP VERSION
+export const VERSION = '1.1.1'; // APP VERSION
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
@@ -9,7 +9,7 @@ export const initDatabase = (callback) => {
             'create table if not exists categories (id integer primary key not null, name text);'
         );
         tx.executeSql(
-            'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, event_id text);'
+            'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, event_id text default null, set_alarm integer default 0);'
         );
         tx.executeSql(
             'create table if not exists finished (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, finish integer);'
@@ -56,7 +56,7 @@ const initApp = (callback) => {
             tx.executeSql("select version from settings", [], (_, {rows}) => {
                 const version = rows._array[0].version;
                 if (version !== VERSION) {
-                    tx.executeSql('ALTER TABLE tasks ADD COLUMN event_id text DEFAULT false;', [], () => {
+                    tx.executeSql('ALTER TABLE tasks ADD COLUMN set_alarm integer DEFAULT 0;', [], () => {
                         tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {
                             initDatabase(callback);
                         });

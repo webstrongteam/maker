@@ -51,7 +51,7 @@ This app working with Android and iOS.
 
 ##### 1.1v ToDo:
 * Add quickly list :heavy_check_mark:
-* Integrate with calendar (add alarm) :heavy_minus_sign:
+* Integrate with calendar (to fix: alarm) :heavy_check_mark:
 * Change datepicker :x:
 * Add custom repeating range :x:
 * Upgrade about tab design :x:

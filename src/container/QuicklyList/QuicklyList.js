@@ -4,7 +4,7 @@ import {ActionButton, IconToggle, ListItem} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
-import {empty, fullWidth} from '../../shared/styles';
+import {content, empty, fullWidth} from '../../shared/styles';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
@@ -123,7 +123,7 @@ class QuicklyList extends Component {
         });
 
         return (
-            <View style={{flex: 1}}>
+            <View style={content}>
                 {showDialog &&
                 <Dialog
                     showModal={showDialog}
@@ -136,7 +136,6 @@ class QuicklyList extends Component {
                     keyboardShouldPersistTaps="always"
                     keyboardDismissMode="interactive"
                     onScroll={this.onScroll}
-                    lazy={true}
                     style={fullWidth}>
                     {lists && lists.length ?
                         <View style={{paddingTop: 20}}>
