@@ -91,8 +91,12 @@ class ConfigTask extends Component {
 
     componentDidMount() {
         const task = this.props.navigation.getParam('task', false);
+        const category = this.props.navigation.getParam('category', false);
         if (task !== false) this.initTask(task);
         else {
+            if (category && category !== 'All') {
+                this.updateTask('category', category);
+            }
             const checkExistCategory = this.props.categories.filter(cate => cate.name === this.state.task.category);
             if (!checkExistCategory.length) {
                 this.updateTask('category', this.props.categories[0].name);

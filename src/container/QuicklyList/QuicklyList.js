@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {ActionButton, IconToggle, ListItem} from 'react-native-material-ui';
+import {Animated, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ActionButton, Icon, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
 import {content, empty, fullWidth} from '../../shared/styles';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
@@ -17,25 +18,37 @@ class QuicklyList extends Component {
         dialog: {},
         showDialog: false,
         amounts: {},
+        searchText: '',
 
         scroll: 0,
         offset: 0,
         scrollDirection: 0,
-        bottomHidden: false
+        bottomHidden: false,
+        loading: true
     };
 
     componentDidMount() {
+        this.reloadListsAmount();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.lists !== this.props.lists) {
+            this.reloadListsAmount();
+        }
+    }
+
+    reloadListsAmount = () => {
         const {lists} = this.props;
         const {amounts} = this.state;
         if (lists.length) {
             lists.map(list => {
                 this.props.onInitList(list.id, (tasks) => {
                     amounts[list.id] = tasks.length;
-                    this.setState({amounts});
+                    this.setState({amounts, loading: false});
                 });
             });
         }
-    }
+    };
 
     onScroll = (e) => {
         const currentOffset = e.nativeEvent.contentOffset.y;
@@ -73,12 +86,12 @@ class QuicklyList extends Component {
     };
 
     render() {
-        const {dialog, showDialog, amounts, bottomHidden} = this.state;
+        const {dialog, showDialog, amounts, bottomHidden, loading} = this.state;
         const {lists, theme, navigation} = this.props;
 
         const quicklyList = lists.map((list, index) => {
             // Searching system
-            const searchText = this.props.searchText.toLowerCase();
+            const searchText = this.state.searchText.toLowerCase();
             if (searchText.length > 0 && list.name.toLowerCase().indexOf(searchText) < 0) {
                 return null
             }
@@ -124,6 +137,17 @@ class QuicklyList extends Component {
 
         return (
             <View style={content}>
+                <Toolbar
+                    searchable={{
+                        autoFocus: true,
+                        placeholder: 'Search',
+                        onChangeText: value => this.setState({searchText: value}),
+                        onSearchClosed: () => this.setState({searchText: ''}),
+                    }}
+                    leftElement="menu"
+                    onLeftElementPress={() => navigation.navigate('Drawer')}
+                />
+
                 {showDialog &&
                 <Dialog
                     showModal={showDialog}
@@ -132,20 +156,24 @@ class QuicklyList extends Component {
                     buttons={dialog.buttons}
                 />
                 }
-                <ScrollView
-                    keyboardShouldPersistTaps="always"
-                    keyboardDismissMode="interactive"
-                    onScroll={this.onScroll}
-                    style={fullWidth}>
-                    {lists && lists.length ?
-                        <View style={{paddingTop: 20}}>
-                            {quicklyList}
-                        </View>
-                        : <Text style={[empty, {color: theme.textColor}]}>
-                            Quickly lists is empty!
-                        </Text>
-                    }
-                </ScrollView>
+
+                {!loading ?
+                    <ScrollView
+                        keyboardShouldPersistTaps="always"
+                        keyboardDismissMode="interactive"
+                        onScroll={this.onScroll}
+                        style={fullWidth}>
+                        {lists && lists.length ?
+                            <View style={{paddingTop: 20}}>
+                                {quicklyList}
+                            </View>
+                            : <Text style={[empty, {color: theme.textColor}]}>
+                                Quickly lists is empty!
+                            </Text>
+                        }
+                    </ScrollView> : <Spinner/>
+                }
+
                 <View style={{marginBottom: -40}}>
                     <ActionButton
                         hidden={bottomHidden}

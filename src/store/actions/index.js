@@ -13,12 +13,10 @@ export {
     initLists,
     initList,
     initQuicklyTask,
-    saveQuicklyTasks,
     saveList,
     saveQuicklyTask,
     removeList,
-    removeQuicklyTask,
-    removeQuicklyTasks
+    removeQuicklyTask
 } from './lists';
 
 export {

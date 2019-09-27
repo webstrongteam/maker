@@ -56,11 +56,11 @@ const initApp = (callback) => {
             tx.executeSql("select version from settings", [], (_, {rows}) => {
                 const version = rows._array[0].version;
                 if (version !== VERSION) {
-                    tx.executeSql('ALTER TABLE tasks ADD COLUMN set_alarm integer DEFAULT 0;', [], () => {
+                    //tx.executeSql('ALTER TABLE tasks ADD COLUMN set_alarm integer DEFAULT 0;', [], () => {
                         tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {
                             initDatabase(callback);
                         });
-                    });
+                    //});
                 } else callback();
             });
         }, (err) => console.log(err)
