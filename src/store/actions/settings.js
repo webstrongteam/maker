@@ -106,3 +106,15 @@ export const changeConfirmDeletingTask = (value) => {
         );
     };
 };
+
+export const changeHideTabView = (value) => {
+    return dispatch => {
+        db.transaction(
+            tx => {
+                tx.executeSql('update settings set hideTabView = ? where id = 0;', [value], () => {
+                    dispatch(initSettings())
+                });
+            }, (err) => console.log(err)
+        );
+    };
+};

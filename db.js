@@ -1,6 +1,6 @@
 import {SQLite} from 'expo-sqlite';
 
-export const VERSION = '1.1.1'; // APP VERSION
+export const VERSION = '1.1.0'; // APP VERSION
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
@@ -27,7 +27,7 @@ export const initDatabase = (callback) => {
             'create table if not exists profile (id integer primary key not null, name text, avatar text, endedTask integer);'
         );
         tx.executeSql(
-            'create table if not exists settings (id integer primary key not null, sorting text, sortingType text, timeFormat integer, firstDayOfWeek text, confirmFinishingTask integer, confirmRepeatingTask integer, confirmDeletingTask integer, version text, theme integer DEFAULT 0 REFERENCES themes(id) ON DELETE SET DEFAULT, lang text);'
+            'create table if not exists settings (id integer primary key not null, sorting text, sortingType text, timeFormat integer, firstDayOfWeek text, confirmFinishingTask integer, confirmRepeatingTask integer, confirmDeletingTask integer, hideTabView integer, version text, theme integer DEFAULT 0 REFERENCES themes(id) ON DELETE SET DEFAULT, lang text);'
         );
         tx.executeSql(
             "INSERT OR IGNORE INTO categories (id, name) values (0, 'Default');"
@@ -56,11 +56,11 @@ const initApp = (callback) => {
             tx.executeSql("select version from settings", [], (_, {rows}) => {
                 const version = rows._array[0].version;
                 if (version !== VERSION) {
-                    //tx.executeSql('ALTER TABLE tasks ADD COLUMN set_alarm integer DEFAULT 0;', [], () => {
+                    tx.executeSql('ALTER TABLE settings ADD COLUMN hideTabView integer DEFAULT 0;', [], () => {
                         tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {
                             initDatabase(callback);
                         });
-                    //});
+                    });
                 } else callback();
             });
         }, (err) => console.log(err)

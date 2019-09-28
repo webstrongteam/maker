@@ -5,9 +5,9 @@ import ColorPicker from '../../components/UI/ColorPicker/ColorPicker';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
-import Input from '../../components/UI/Input/Input';
-import {StyleSheet, View} from "react-native";
-import {generateDialogObject, valid} from "../../shared/utility";
+import InputDialog from '../../components/UI/Dialog/InputDialog';
+import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {generateDialogObject, generateInputDialogObject, valid} from "../../shared/utility";
 import Dialog from '../../components/UI/Dialog/Dialog';
 import {BannerAd} from "../../../adsAPI";
 
@@ -16,7 +16,8 @@ import * as actions from "../../store/actions";
 
 class Theme extends Component {
     state = {
-        customTheme: {id: false},
+        customTheme: {id: false, name: ''},
+        defaultName: 'Tap to change name',
         names: [
             'id', 'name', 'Primary color', 'Primary background color', 'Secondary background color', 'Text color', 'Header text color',
             'Bottom navigation color', 'Action button color', 'Action button icon color', 'Overdue color',
@@ -32,13 +33,13 @@ class Theme extends Component {
         controls: {
             name: {
                 label: 'Enter theme name',
-                focus: true,
                 required: true,
                 characterRestriction: 30
             }
         },
 
         showDialog: false,
+        showInputDialog: false,
         dialog: {},
         loading: true
     };
@@ -56,15 +57,18 @@ class Theme extends Component {
         } else {
             this.props.onInitTheme(customTheme => {
                 customTheme.id = false;
-                customTheme.name = '';
+                customTheme.name = 'Tap to change name';
                 this.setState({customTheme, loading: false});
             });
         }
     };
 
     showDialog = (action) => {
+        let showInputDialog = false;
+        let showDialog = true;
         let dialog;
         if (action === 'exit') {
+            showDialog = true;
             dialog = generateDialogObject(
                 'Are you sure?',
                 'Quit without saving?',
@@ -81,6 +85,7 @@ class Theme extends Component {
                 }
             );
         } else if (action === 'delete') {
+            showDialog = true;
             dialog = generateDialogObject(
                 'Are you sure?',
                 'Delete this theme?',
@@ -95,8 +100,30 @@ class Theme extends Component {
                     }
                 }
             );
+        } else if (action === 'changeName') {
+            showInputDialog = true;
+            const {customTheme, controls} = this.state;
+            let copyName = customTheme.name;
+            dialog = generateInputDialogObject(
+                'Edit theme name',
+                true,
+                this.basicValid(customTheme.name) ? copyName : '',
+                (value) => copyName = value,
+                {
+                    Save: () => {
+                        this.checkValid('name', false, copyName);
+                        if (!controls.name.error && this.basicValid(copyName)) {
+                            this.setState({showDialog: false});
+                        }
+                    },
+                    Cancel: () => {
+                        this.setState({showDialog: false});
+                    },
+                }
+            );
         }
-        this.setState({showDialog: true, dialog});
+
+        this.setState({showDialog, showInputDialog, dialog});
     };
 
     deleteTheme = () => {
@@ -125,10 +152,19 @@ class Theme extends Component {
         this.setState({customTheme, showColorPicker: false});
     };
 
+    basicValid = (name = this.state.customTheme.name) => {
+        const {defaultName} = this.state;
+        return name.trim() !== '' && name !== defaultName;
+    };
+
     checkValid = (name, save = false, value = this.state.customTheme.name) => {
         const controls = this.state.controls;
+
+        this.basicValid(value) &&
         valid(controls, value, name, (newControls) => {
-            this.changeNameHandler(value);
+            if (!newControls[name].error) {
+                this.changeNameHandler(value);
+            }
             if (save && !newControls[name].error) {
                 const {customTheme} = this.state;
                 const {navigation} = this.props;
@@ -140,7 +176,11 @@ class Theme extends Component {
     };
 
     render() {
-        const {customTheme, controls, showDialog, dialog, loading, names, showColorPicker, selectedColor, colorPickerTitle, actualColor} = this.state;
+        const {
+            customTheme, controls, showDialog, showInputDialog,
+            dialog, loading, names, showColorPicker, selectedColor,
+            colorPickerTitle, actualColor
+        } = this.state;
         const {navigation, theme} = this.props;
 
         return (
@@ -149,11 +189,13 @@ class Theme extends Component {
                     leftElement="arrow-back"
                     rightElement={
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            {this.basicValid() &&
                             <Button
                                 text="Save"
                                 style={{text: {color: theme.headerTextColor}}}
                                 onPress={() => this.checkValid('name', true)}
                             />
+                            }
                             {customTheme.id !== false &&
                             <IconToggle name="delete"
                                         color={theme.headerTextColor}
@@ -162,16 +204,22 @@ class Theme extends Component {
                         </View>
                     }
                     onLeftElementPress={() => {
-                        if (customTheme.name.trim() !== '') {
+                        if (this.basicValid()) {
                             this.showDialog('exit');
                         } else navigation.goBack();
                     }}
                     centerElement={
                         !loading ?
-                            customTheme.id ?
-                                "Edit theme" :
-                                "New theme" :
-                            <View style={{marginTop: 10}}>
+                            <TouchableOpacity onPress={() => this.showDialog('changeName')}>
+                                <Text style={{
+                                    color: theme.headerTextColor,
+                                    fontWeight: 'bold',
+                                    fontSize: 18
+                                }}>
+                                    {customTheme.name}
+                                </Text>
+                            </TouchableOpacity> :
+                            <View style={{marginTop: 10, marginRight: 40}}>
                                 <Spinner color={theme.secondaryBackgroundColor} size='small'/>
                             </View>
                     }
@@ -182,6 +230,18 @@ class Theme extends Component {
                     showModal={showDialog}
                     title={dialog.title}
                     description={dialog.description}
+                    buttons={dialog.buttons}
+                />
+                }
+
+                {showInputDialog &&
+                <InputDialog
+                    showModal={showDialog}
+                    elementConfig={controls.name}
+                    title={dialog.title}
+                    focus={dialog.focus}
+                    value={dialog.value}
+                    onChange={dialog.onChange}
                     buttons={dialog.buttons}
                 />
                 }
@@ -198,11 +258,6 @@ class Theme extends Component {
 
                 {!loading ?
                     <React.Fragment>
-                        <Input
-                            elementConfig={controls.name}
-                            value={customTheme.name}
-                            changed={value => this.checkValid('name', false, value)}
-                        />
                         <SettingsList backgroundColor={theme.primaryBackgroundColor}
                                       borderColor={theme.secondaryBackgroundColor}
                                       defaultItemSize={50}>

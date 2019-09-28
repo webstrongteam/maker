@@ -245,6 +245,20 @@ class Settings extends PureComponent {
                                 titleStyle={{color: theme.textColor, fontSize: 16}}
                                 title='Confirm deleting task'
                             />
+                            <SettingsList.Item
+                                icon={
+                                    <View style={iconStyle}>
+                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="view-compact"/>
+                                    </View>
+                                }
+                                hasNavArrow={false}
+                                itemWidth={70}
+                                hasSwitch={true}
+                                switchState={!!settings.hideTabView}
+                                switchOnValueChange={(value) => this.toggleSetting(value, 'HideTabView')}
+                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                title='Hide tab view'
+                            />
                         </SettingsList>
                         <View style={styles.version}>
                             <Text style={{color: theme.textColor}}>Version: {settings.version} (hotfix 1)</Text>
@@ -259,7 +273,7 @@ class Settings extends PureComponent {
 
 const styles = StyleSheet.create({
     version: {
-        marginTop: 20,
+        marginTop: 10,
         marginLeft: 'auto',
         marginRight: 'auto',
         opacity: 0.35
@@ -281,6 +295,7 @@ const mapDispatchToProps = dispatch => {
         onChangeConfirmRepeatingTask: (value) => dispatch(actions.changeConfirmRepeatingTask(value)),
         onChangeConfirmFinishingTask: (value) => dispatch(actions.changeConfirmFinishingTask(value)),
         onChangeConfirmDeletingTask: (value) => dispatch(actions.changeConfirmDeletingTask(value)),
+        onChangeHideTabView: (value) => dispatch(actions.changeHideTabView(value)),
     }
 };
 

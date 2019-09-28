@@ -30,14 +30,14 @@ class ToDo extends PureComponent {
 
     render() {
         const {tabs} = this.state;
-        const {navigation, theme} = this.props;
+        const {navigation, theme, hideTabView} = this.props;
 
         return (
             <React.Fragment>
                 {theme ?
                     <Template bgColor={theme.secondaryBackgroundColor}>
                         <TabView
-                            navigationState={this.state.tabs}
+                            navigationState={tabs}
                             tabStyle={{backgroundColor: theme.primaryColor}}
                             onIndexChange={index => {
                                 tabs.index = index;
@@ -58,7 +58,10 @@ class ToDo extends PureComponent {
                                         props.jumpTo(route.key);
                                     }}
                                     indicatorStyle={{backgroundColor: theme.headerTextColor}}
-                                    style={{backgroundColor: theme.primaryColor, height: 50}}
+                                    style={{
+                                        backgroundColor: theme.primaryColor,
+                                        height: !!hideTabView ? 0 : 50
+                                    }}
                                 />
                             }
                             renderLazyPlaceholder={() => <Spinner/>}
@@ -72,7 +75,10 @@ class ToDo extends PureComponent {
 }
 
 const mapStateToProps = state => {
-    return {theme: state.theme.theme}
+    return {
+        theme: state.theme.theme,
+        hideTabView: state.settings.hideTabView
+    }
 };
 const mapDispatchToProps = dispatch => {
     return {

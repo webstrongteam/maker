@@ -52,8 +52,10 @@ This app working with Android and iOS.
 ##### 1.1v ToDo:
 * Add quickly list :heavy_check_mark:
 * Integrate with calendar (to fix: alarm) :heavy_check_mark:
-* Upgrade about tab design :x:
 * Fix re-render task list :heavy_check_mark:
+* Change theme editing name :heavy_check_mark:
+* Fix updating theme :heavy_check_mark:
+* Update themes :x:
 * Add polish language :x:
 * Clear and optimization code :x:
 

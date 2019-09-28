@@ -75,7 +75,7 @@ export const saveTheme = (theme) => {
                 tx => {
                     tx.executeSql("UPDATE themes SET name = ?, primaryColor = ?, primaryBackgroundColor = ?, secondaryBackgroundColor = ?, textColor = ?, headerTextColor = ?, bottomNavigationColor = ?, actionButtonColor = ?, actionButtonIconColor = ?, overdueColor = ?, doneButtonColor = ?, doneButtonTextColor = ?, undoButtonColor = ?, undoButtonTextColor = ?, noneColor = ?, noneTextColor = ?, lowColor = ?, lowTextColor = ?, mediumColor = ?, mediumTextColor = ?, highColor = ?, highTextColor = ? WHERE id = ?;",
                         [theme.name, theme.primaryColor, theme.primaryBackgroundColor, theme.secondaryBackgroundColor, theme.textColor, theme.headerTextColor, theme.bottomNavigationColor, theme.actionButtonColor, theme.actionButtonIconColor, theme.overdueColor, theme.doneButtonColor, theme.doneButtonTextColor, theme.undoButtonColor, theme.undoButtonTextColor, theme.noneColor, theme.noneTextColor, theme.lowColor, theme.lowTextColor, theme.mediumColor, theme.mediumTextColor, theme.highColor, theme.highTextColor, theme.id], () => {
-                            dispatch(initThemes());
+                            dispatch(initTheme());
                         });
                 }, (err) => console.log(err)
             );

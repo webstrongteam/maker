@@ -95,6 +95,23 @@ class TaskList extends Component {
         }
     };
 
+    rotate = (value) => {
+        const {rotateAnimated} = this.state;
+        Animated.timing(rotateAnimated, {
+            toValue: value,
+            duration: 250,
+            easing: Easing.bezier(0.0, 0.0, 0.2, 1),
+            useNativeDriver: Platform.OS === 'android',
+        }).start();
+
+        const rotateInterpolate = rotateAnimated.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '180deg']
+        });
+
+        this.setState({rotateInterpolate});
+    };
+
     refreshPriorityColors = () => {
         this.setState({
             priorityColors: {
@@ -277,23 +294,6 @@ class TaskList extends Component {
             this.setState({selectedTask: task});
             this.showDialog('delete');
         } else this.props.onRemoveTask(task);
-    };
-
-    rotate = (value) => {
-        const {rotateAnimated} = this.state;
-        Animated.timing(rotateAnimated, {
-            toValue: value,
-            duration: 250,
-            easing: Easing.bezier(0.0, 0.0, 0.2, 1),
-            useNativeDriver: Platform.OS === 'android',
-        }).start();
-
-        const rotateInterpolate = rotateAnimated.interpolate({
-            inputRange: [0, 1],
-            outputRange: ['0deg', '180deg']
-        });
-
-        this.setState({rotateInterpolate});
     };
 
     toggleConfigCategory = () => {

@@ -32,6 +32,7 @@ export {
     changeConfirmDeletingTask,
     changeConfirmFinishingTask,
     changeConfirmRepeatingTask,
+    changeHideTabView,
     changeFirstDayOfWeek,
     changeTimeFormat,
     changeLang

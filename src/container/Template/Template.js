@@ -49,7 +49,7 @@ class Template extends Component {
                     <View style={{
                         height: Platform.OS === 'ios' ?
                             20 : StatusBar.currentHeight,
-                        backgroundColor: this.props.theme.primaryColor
+                        backgroundColor: "#af3f1f"
                     }}>
                         <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent/>
                     </View>

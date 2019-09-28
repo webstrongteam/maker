@@ -145,6 +145,7 @@ class QuicklyList extends Component {
                         onSearchClosed: () => this.setState({searchText: ''}),
                     }}
                     leftElement="menu"
+                    centerElement="Quickly lists"
                     onLeftElementPress={() => navigation.navigate('Drawer')}
                 />
 
