@@ -1,6 +1,7 @@
 import * as actionTypes from './actionTypes';
 import {SQLite} from 'expo-sqlite';
-import {setCalendarEvent, deleteCalendarEvent, convertNumberToDate} from '../../shared/utility';
+import {convertNumberToDate} from '../../shared/utility';
+import {configTask, deleteCalendarEvent, deleteLocalNotification} from '../../shared/configTask';
 import moment from 'moment';
 
 const db = SQLite.openDatabase('maker.db');
@@ -80,20 +81,20 @@ export const initFinished = () => {
 };
 
 export const saveTask = (task) => {
-    console.log(task);   return dispatch => {
+    return dispatch => {
         if (task.id) {
             db.transaction(
                 tx => {
                     tx.executeSql(`update tasks
-                                   set name        = ?,
-                                       description = ?,
-                                       date        = ?,
-                                       category    = ?,
-                                       priority    = ?,
-                                       repeat      = ?,
-                                       event_id    = ?,
-                                       set_alarm   = ?
-                                   where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.set_alarm, task.id], () => {
+                                   set name            = ?,
+                                       description     = ?,
+                                       date            = ?,
+                                       category        = ?,
+                                       priority        = ?,
+                                       repeat          = ?,
+                                       event_id        = ?,
+                                       notification_id = ?
+                                   where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.notification_id, task.id], () => {
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)
@@ -101,7 +102,7 @@ export const saveTask = (task) => {
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat, event_id, set_alarm) values (?,?,?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.set_alarm], () => {
+                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat, event_id, notification_id) values (?,?,?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.notification_id], () => {
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)
@@ -158,14 +159,12 @@ export const finishTask = (task, endTask, theme) => {
                     tx.executeSql(`update tasks
                                    set date = ?
                                    where id = ?;`, [nextDate, task.id], () => {
-                        if (task.event_id) {
                             task.date = nextDate;
-                            setCalendarEvent(task, theme);
-                        }
-                        dispatch(initTasks());
-                    });
-                }, (err) => console.log(err)
-            );
+                            configTask(task, theme.primaryColor, task.event_id, false);
+                            dispatch(initTasks());
+                        }, (err) => console.log(err)
+                    );
+                })
         }
     };
 };
@@ -197,8 +196,11 @@ export const removeTask = (task, finished = true) => {
             db.transaction(
                 tx => {
                     tx.executeSql('delete from tasks where id = ?', [task.id], () => {
-                        if (task.event_id !== false) {
+                        if (task.event_id !== null) {
                             deleteCalendarEvent(task.event_id);
+                        }
+                        if (task.notification_id !== null) {
+                            deleteLocalNotification(task.notification_id);
                         }
                         dispatch(initTasks());
                     });

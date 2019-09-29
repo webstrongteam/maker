@@ -10,11 +10,10 @@ import Dialog from '../../components/UI/Dialog/Dialog';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
 import {
     convertNumberToDate,
-    deleteCalendarEvent,
     generateDialogObject,
-    setCalendarEvent,
     valid
 } from '../../shared/utility';
+import {configTask} from '../../shared/configTask';
 import {fullWidth} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 import moment from 'moment';
@@ -33,7 +32,7 @@ class ConfigTask extends Component {
             category: '',
             priority: 'none',
             event_id: null,
-            set_alarm: 0
+            notification_id: null
         },
         controls: {
             name: {
@@ -86,6 +85,7 @@ class ConfigTask extends Component {
         showConfigCategory: false,
         changedSth: false,
         setEvent: false,
+        setNotification: false,
         loading: true
     };
 
@@ -112,8 +112,6 @@ class ConfigTask extends Component {
             let repeatValue = '1';
             let otherOption = 'Other...';
 
-            console.log(task)
-
             if (+task.repeat === parseInt(task.repeat, 10)) {
                 selectedTime = task.repeat[0];
                 repeatValue = task.repeat.substring(1);
@@ -126,7 +124,8 @@ class ConfigTask extends Component {
             this.setState({
                 editTask: true, task,
                 otherOption, repeatValue,
-                setEvent: !!task.event_id,
+                setEvent: task.event_id !== null,
+                setNotification: task.notification_id !== null,
                 selectedTime, loading: false
             });
         });
@@ -212,51 +211,32 @@ class ConfigTask extends Component {
         })
     };
 
+    convertDate = (newDate) => {
+        const {date} = this.state.task;
+
+        if (date.length > 12) {
+            newDate = newDate + date.slice(10, 18);
+        }
+
+        return newDate;
+    };
+
     saveTask = () => {
-        const {task, setEvent} = this.state;
+        let {task, setEvent, setNotification} = this.state;
         const {navigation, theme} = this.props;
 
-        if (setEvent) {
-            if (task.event_id) {
-                // Update event
-                setCalendarEvent(task, theme)
-                    .then(() => {
-                        this.props.onSaveTask(task);
-                        navigation.goBack();
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        this.props.onSaveTask(task);
-                        navigation.goBack();
-                    })
-            } else {
-                // Create event
-                setCalendarEvent(task, theme)
-                    .then((id) => {
-                        task.event_id = id;
-                        this.props.onSaveTask(task);
-                        navigation.goBack();
-                    })
-            }
-        } else {
-            if (task.event_id) {
-                // Delete event
-                deleteCalendarEvent(task.event_id)
-                    .then(() => {
-                        task.event_id = false;
-                        this.props.onSaveTask(task);
-                        navigation.goBack();
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        this.props.onSaveTask(task);
-                        navigation.goBack();
-                    });
-            } else {
+        if (task.date.length < 13) setNotification = false;
+
+        configTask(task, theme.primaryColor, setEvent, setNotification)
+            .then((task) => {
                 this.props.onSaveTask(task);
                 navigation.goBack();
-            }
-        }
+            })
+            .catch((err) => {
+                console.log(err);
+                this.props.onSaveTask(task);
+                navigation.goBack();
+            });
     };
 
     render() {
@@ -264,7 +244,7 @@ class ConfigTask extends Component {
             task, changedSth, controls, loading, editTask,
             showConfigCategory, repeat, dialog, showDialog,
             otherOption, selectedTime, showOtherRepeat, repeatValue,
-            setEvent
+            setEvent, setNotification
         } = this.state;
         const {navigation, categories, theme, settings} = this.props;
         let date;
@@ -377,7 +357,7 @@ class ConfigTask extends Component {
                                         color: +date < +now ? theme.overdueColor : theme.textColor
                                     }
                                 }}
-                                onDateChange={(date) => this.updateTask('date', date)}
+                                onDateChange={(date) => this.updateTask('date', this.convertDate(date))}
                             />
                             {task.date !== '' &&
                             <React.Fragment>
@@ -416,17 +396,13 @@ class ConfigTask extends Component {
                                     checked={setEvent}
                                     onCheck={(value) => this.setState({setEvent: value})}
                                 />
-                                {(task.date.length > 13) && setEvent &&
-                                    <Checkbox
-                                        label="Set alarm"
-                                        value='set'
-                                        checked={!!task.set_alarm}
-                                        onCheck={(value) => {
-                                            if (value) task.set_alarm = 1;
-                                            else task.set_alarm = 0;
-                                            this.setState({task})
-                                        }}
-                                    />
+                                {task.date.length > 12 &&
+                                <Checkbox
+                                    label="Set notification"
+                                    value='set'
+                                    checked={setNotification}
+                                    onCheck={(value) => this.setState({setNotification: value})}
+                                />
                                 }
                                 <Subheader text="Repeat"
                                            style={{

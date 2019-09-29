@@ -1,8 +1,4 @@
-import {Platform} from 'react-native';
 import moment from 'moment';
-import * as Calendar from 'expo-calendar';
-import * as Localization from 'expo-localization';
-import * as Permissions from 'expo-permissions';
 
 export const updateObject = (oldObject, newProps) => {
     return {
@@ -114,110 +110,6 @@ export const generateInputDialogObject = (title, focus, value, onChange, buttons
         })
     });
     return object;
-};
-
-export const setCalendarEvent = async (task, theme, calendarId = false) => {
-    // Set calendar event
-    const {status} = await Permissions.askAsync('calendar');
-    const calendars = await Calendar.getCalendarsAsync();
-    if (status === 'granted' && Platform.OS !== 'ios') {
-        // For android
-        for (let i = 0; i < calendars.length; i++) {
-            if (calendars[i].ownerAccount === 'Maker' && calendars[i].allowsModifications) {
-                calendarId = calendars[i].id
-            }
-        }
-        if (!calendarId) {
-            // Create new calendar
-            const details = {
-                title: 'Maker - ToDo list',
-                color: theme.primaryColor,
-                source: {
-                    isLocalAccount: true,
-                    name: 'Maker'
-                },
-                name: 'Maker - ToDo list',
-                ownerAccount: 'Maker',
-                timeZone: Localization.timezone,
-                allowsModifications: true,
-                allowedAvailabilities: [Calendar.Availability.BUSY, Calendar.Availability.FREE, Calendar.Availability.TENTATIVE],
-                allowedReminders: [Calendar.AlarmMethod.ALARM, Calendar.AlarmMethod.ALERT, Calendar.AlarmMethod.EMAIL, Calendar.AlarmMethod.SMS, Calendar.AlarmMethod.DEFAULT],
-                allowedAttendeeTypes: [Calendar.AttendeeType.REQUIRED, Calendar.AttendeeType.NONE],
-                type: Calendar.EntityTypes.REMINDER,
-                isVisible: true,
-                isSynced: true,
-                accessLevel: Calendar.CalendarAccessLevel.ROOT
-            };
-            await Calendar.createCalendarAsync(details)
-                .then((id) => calendarId = id)
-                .catch(() => calendarId = false)
-        }
-    } else if (Platform.OS === 'ios') {
-        // For iOS # To Fix #
-        const {statusIos} = await Permissions.askAsync('reminders');
-        if (statusIos === 'granted') {
-            for (let i = 0; i < calendars.length; i++) {
-                if (calendars[i].ownerAccount === 'Maker' && calendars[i].allowsModifications) {
-                    calendarId = calendars[i].id
-                }
-            }
-            if (!calendarId) {
-                // Create new calendar
-                const details = {
-                    title: 'Maker - ToDo list',
-                    color: theme.primaryColor,
-                    entityType: Calendar.EntityTypes.REMINDER,
-                    sourceId: 'Maker',
-                };
-                await Calendar.createCalendarAsync(details)
-                    .then((id) => calendarId = id)
-                    .catch(() => calendarId = false)
-            }
-        }
-    }
-
-    // Create event
-    if (calendarId !== false) {
-        const allDay = task.date.length < 13;
-
-        let date;
-        // Convert date
-        if (allDay) {
-            date = new Date(moment(task.date, 'DD-MM-YYYY').add(1, 'days').format());
-        } else {
-            date = new Date(moment(task.date, 'DD-MM-YYYY HH:mm').format());
-        }
-
-        const detailsEvent = {
-            title: task.name,
-            startDate: date,
-            endDate: date,
-            timeZone: Localization.timezone,
-            notes: task.description,
-            allDay
-        };
-
-        // Check and set alarm
-        if (task.set_alarm) {
-            detailsEvent.alarms = [{
-                relativeOffset: '0',
-                method: 'Calendar.AlarmMethod.DEFAULT'
-            }];
-        }
-
-        if (task.event_id) {
-            // Update existed event
-            return await Calendar.updateEventAsync(task.event_id+'', detailsEvent, {futureEvent: true});
-        } else {
-            // Create new event
-            return await Calendar.createEventAsync(calendarId, detailsEvent);
-        }
-    }
-};
-
-export const deleteCalendarEvent = async (event_id) => {
-    await Calendar.deleteEventAsync(event_id+'', {futureEvent: true})
-        .catch((err) => err)
 };
 
 export const valid = (controls, value, name, callback) => {
