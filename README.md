@@ -59,6 +59,7 @@ This app working with Android and iOS.
 * Fix updating theme :heavy_check_mark:
 * Update themes :x:
 * Add polish language :x:
+* Fix database :x:
 * Clear and optimization code :x:
 
 #### Legend:

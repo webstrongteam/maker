@@ -47,6 +47,8 @@ class QuicklyList extends Component {
                     this.setState({amounts, loading: false});
                 });
             });
+        } else {
+            this.setState({loading: false});
         }
     };
 
