@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
-        settings: state.settings,
+        settings: state.settings.settings,
         lists: state.lists.lists
     }
 };

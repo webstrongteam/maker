@@ -77,7 +77,7 @@ class ToDo extends PureComponent {
 const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
-        hideTabView: state.settings.hideTabView
+        hideTabView: state.settings.settings.hideTabView
     }
 };
 const mapDispatchToProps = dispatch => {

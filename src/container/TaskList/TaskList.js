@@ -53,6 +53,7 @@ class TaskList extends Component {
     };
 
     componentDidMount() {
+        console.log(this.props.translations['taskList.done']);
         this.setState({tasks: this.props.tasks}, () => {
             this.divisionTask();
             this.renderDropdownData();
@@ -716,7 +717,8 @@ const mapStateToProps = state => {
         sorting: state.settings.sorting,
         sortingType: state.settings.sortingType,
         theme: state.theme.theme,
-        settings: state.settings,
+        settings: state.settings.settings,
+        translations: state.settings.translations,
         tasks: state.tasks.tasks,
         finished: state.tasks.finished,
         categories: state.categories.categories

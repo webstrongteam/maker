@@ -297,7 +297,7 @@ This will delete your current database!`,
 const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
-        timeFormat: state.settings.timeFormat
+        timeFormat: state.settings.settings.timeFormat
     }
 };
 

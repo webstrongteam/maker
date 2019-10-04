@@ -18,3 +18,4 @@ export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 
 // Settings
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
+export const CHANGE_LANG = 'CHANGE_LANG';

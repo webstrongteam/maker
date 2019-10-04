@@ -516,7 +516,7 @@ const mapStateToProps = state => {
     return {
         categories: state.categories.categories,
         theme: state.theme.theme,
-        settings: state.settings
+        settings: state.settings.settings
     }
 };
 const mapDispatchToProps = dispatch => {

@@ -25,6 +25,7 @@
     "expo-web-browser": "^5.0.3",
     "moment": "^2.24.0",
     "react": "16.8.3",
+    "react-intl": "2.4.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
     "react-native-color-picker": "^0.4.1",
     "react-native-datepicker": "^1.7.2",
@@ -42,7 +43,8 @@
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
-    "babel-preset-expo": "^5.0.0"
+    "babel-preset-expo": "^5.0.0",
+    "react-intl-translations-manager": "^5.0.3"
   },
   "private": true
 }

@@ -21,7 +21,10 @@ class Settings extends PureComponent {
         showFirstDayOfWeek: false,
         showLanguages: false,
         daysOfWeek: ['Sunday', 'Monday'],
-        languages: [{name: 'English', short_name: 'en'}],
+        languages: [
+            {name: 'English', short_name: 'en'},
+            {name: 'Polish', short_name: 'pl'}
+        ],
         snackbar: {
             visible: false,
             message: ''
@@ -283,7 +286,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
-        settings: state.settings
+        settings: state.settings.settings
     }
 };
 const mapDispatchToProps = dispatch => {

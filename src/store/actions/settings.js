@@ -10,6 +10,13 @@ export const onUpdateSettings = (settings) => {
     }
 };
 
+export const onChangeLang = (lang) => {
+    return {
+        type: actionTypes.CHANGE_LANG,
+        lang
+    }
+};
+
 export const initSettings = (callback = () => null) => {
     return dispatch => {
         db.transaction(
@@ -64,7 +71,9 @@ export const changeLang = (value) => {
         db.transaction(
             tx => {
                 tx.executeSql('update settings set lang = ? where id = 0;', [value], () => {
-                    dispatch(initSettings())
+                    initSettings()
+                    console.log(value)
+                    dispatch(onChangeLang(value))
                 });
             }, (err) => console.log(err)
         );
