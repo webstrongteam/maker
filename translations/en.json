@@ -1,11 +1,14 @@
 {
   "common": {
     "yes": "Yes",
+    "save": "Save",
     "cancel": "Cancel",
+    "no": "No",
     "confirm": "Confirm",
-    "search": "Search"
+    "search": "Search",
+    "defaultTitle": "Are you sure?"
   },
-  "taskList": {
+  "TaskList": {
     "done": "Done",
     "undo": "Undo",
     "overdue": "Overdue",
@@ -28,22 +31,20 @@
 
     "repeatTitle": "Repeat task?",
     "repeatDescription": "Do you want to repeat this task?",
-    "finishTitle": "Are you sure?",
     "finishDescription": "Finish this task?",
-    "deleteTitle": "Are you sure?",
     "deleteDescription": "Delete this task?",
-    "finishAllTitle": "Are you sure?",
     "finishAllDescription": "Do you want to delete all finished task?"
   },
-  "themes": {
+  "Themes": {
     "snackbar": "Theme has been updated",
-    "title": "Themes list",
+    "title": "Themes",
+    "themesList": "Themes list",
     "defaultTheme": "Default theme",
     "darkTheme": "Dark theme",
     "yourThemes": "Your themes",
     "addTheme": "Add your own theme"
   },
-  "theme": {
+  "Theme": {
     "defaultName": "Tap to change name",
     "themeNameLabel": "Enter theme name",
 
@@ -52,13 +53,11 @@
     "buttons": "Buttons",
     "priorities": "Priorities",
 
-    "exitTitle": "Are you sure?",
     "exitDescription": "Quit without saving?",
-    "deleteTitle": "Are you sure?",
     "deleteDescription": "Delete this theme?",
     "changeNameTitle": "Edit theme name"
   },
-  "settings": {
+  "Settings": {
     "sunday": "Sunday",
     "monday": "Monday",
     "english": "English",
@@ -78,25 +77,24 @@
     "hideTabView": "Hide tab view",
     "version": "Version"
   },
-  "quicklyList": {
-    "dialogTitle": "Are you sure?",
+  "QuicklyList": {
     "dialogDescription1": "Delete",
     "dialogDescription2": "list?",
     "totalTasks": "Total tasks:",
     "quicklyLists": "Quickly lists",
     "emptyList": "Quickly lists is empty!"
   },
-  "quicklyTaskList": {
+  "QuicklyTaskList": {
     "listName": "List name",
     "dialogTitle": "Edit list name",
     "emptyList": "Quickly list is empty!"
   },
-  "configQuicklyTask": {
+  "ConfigQuicklyTask": {
     "quicklyTaskName": "Enter quickly task name",
     "editTask": "Edit task",
     "newTask": "New task"
   },
-  "profile": {
+  "Profile": {
     "permission": "Sorry, we need camera roll permissions to make this work!",
     "allTask": "All task",
     "finishedTask": "Finished task",
@@ -104,7 +102,7 @@
     "allCategories": "All categories",
     "title": "Your profile"
   },
-  "drawer": {
+  "Drawer": {
     "back": "Back",
     "categories": "Categories",
     "profile": "Profile",
@@ -125,9 +123,7 @@
     "onceYear": "Once a Year",
     "other": "Other",
     "all": "All",
-    "exitTitle": "Are you sure?",
     "exitDescription": "Quit without saving?",
-    "deleteTitle": "Are you sure?",
     "deleteDescription": "Delete this task?",
     "editTask": "Edit task",
     "newTask": "New task",
@@ -138,6 +134,7 @@
     "setNotification": "Set notification",
     "repeat": "Repeat",
     "category": "Category",
+    "priority": "Priority",
     "priorityNone": "None",
     "priorityLow": "Low",
     "priorityMedium": "Medium",
@@ -147,9 +144,9 @@
     "valueLabel": "Enter repeat value",
     "dialogTitle": "Config custom repeat",
     "days": "Days",
-    "week": "Week",
-    "month": "Month",
-    "year": "Year"
+    "week": "Weeks",
+    "month": "Months",
+    "year": "Years"
   },
   "ConfigCategory": {
     "nameLabel": "Enter category name",
@@ -169,11 +166,9 @@
     "backupRemoved": "Backup has been removed",
     "backupRemovedError": "Removing backup error!",
     "incorrectFile": "This file is incorrect!",
-    "showBackupAlertTitle": "Are you sure?",
     "showBackupAlertDescription1": "Replace current database by",
     "showBackupAlertDescription2": "This will delete your current database!",
     "showSelectBackupSourceTitle": "Add database from...",
-    "showConfirmDeleteTitle": "Are you sure?",
     "showConfirmDeleteDescription": "Delete this backup?",
     "yourApp": "Your app",
     "yourStorage": "Your storage",

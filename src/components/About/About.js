@@ -20,7 +20,7 @@ const about = (props) => {
                 onLeftElementPress={() => {
                     props.navigation.goBack();
                 }}
-                centerElement='About'
+                centerElement={props.translations.title}
             />
             <View style={styles.container}>
                 <ScrollView>
@@ -30,11 +30,10 @@ const about = (props) => {
                     />
                     <Text style={separator}/>
                     <Text style={[styles.primaryText, {color: props.theme.textColor}]}>
-                        Maker is an advanced ToDo mobile application created with React Native
-                        and Expo framework. This app works with Android and iOS.
+                        {props.translations.primaryText}
                     </Text>
                     <Text style={[styles.secondaryText, {color: props.theme.textColor}]}>
-                        Maker source code is available on github:
+                        {props.translations.secondaryText}
                     </Text>
                     <TouchableOpacity onPress={openWebBrowser}>
                         <Image
@@ -101,7 +100,10 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-    return {theme: state.theme.theme}
+    return {
+        theme: state.theme.theme,
+        translations: state.settings.translations.About
+    }
 };
 
 export default connect(mapStateToProps)(about);

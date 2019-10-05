@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import TaskList from '../Tasks/TaskList/TaskList';
+import TaskList from '../Tasks/TaskList';
 import Template from '../Template/Template';
 import QuicklyList from '../QuicklyList/QuicklyList';
 
@@ -10,6 +10,7 @@ import * as actions from "../../store/actions";
 
 class ToDo extends PureComponent {
     state = {
+        loading: true,
         tabs: {
             index: 0,
             routes: [
@@ -25,16 +26,26 @@ class ToDo extends PureComponent {
         this.props.onInitProfile();
         this.props.onInitToDo();
         this.props.onInitLists();
-        this.props.onInitSettings();
+        this.props.onInitSettings((lang) => {
+            const {tabs} = this.state;
+            if (lang === 'en') {
+                tabs.routes[0].title = 'Tasks';
+                tabs.routes[1].title = 'Quickly lists';
+            } else if (lang === 'pl') {
+                tabs.routes[0].title = 'Zadania';
+                tabs.routes[1].title = 'Szybkie listy';
+            }
+            this.setState({tabs, loading: false});
+        });
     }
 
     render() {
-        const {tabs} = this.state;
+        const {tabs, loading} = this.state;
         const {navigation, theme, hideTabView} = this.props;
 
         return (
             <React.Fragment>
-                {theme ?
+                {theme && !loading ?
                     <Template bgColor={theme.secondaryBackgroundColor}>
                         <TabView
                             navigationState={tabs}
@@ -77,7 +88,7 @@ class ToDo extends PureComponent {
 const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
-        locale: state.settings.locale,
+        lang: state.settings.settings.lang,
         hideTabView: state.settings.settings.hideTabView
     }
 };
@@ -88,7 +99,7 @@ const mapDispatchToProps = dispatch => {
         onInitCategories: () => dispatch(actions.initCategories()),
         onInitTheme: () => dispatch(actions.initTheme()),
         onInitProfile: () => dispatch(actions.initProfile()),
-        onInitSettings: () => dispatch(actions.initSettings()),
+        onInitSettings: (callback) => dispatch(actions.initSettings(callback)),
     }
 };
 

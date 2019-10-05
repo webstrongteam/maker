@@ -59,13 +59,13 @@ class Themes extends PureComponent {
             });
 
             this.setState({selectedTheme});
-            this.toggleSnackbar('Theme has been updated');
+            this.toggleSnackbar(this.props.translations.snackbar);
         }
     };
 
     render() {
         const {selectedTheme, loading, dialog, showDialog, snackbar} = this.state;
-        const {navigation, themes, actualTheme} = this.props;
+        const {navigation, themes, actualTheme, translations} = this.props;
 
         return (
             <Template bgColor={actualTheme.secondaryBackgroundColor}>
@@ -77,7 +77,7 @@ class Themes extends PureComponent {
                                     onPress={() => navigation.navigate('Theme')}/>
                     }
                     onLeftElementPress={() => navigation.goBack()}
-                    centerElement='Themes'
+                    centerElement={translations.title}
                 />
 
                 <Snackbar
@@ -99,7 +99,7 @@ class Themes extends PureComponent {
                                   borderColor='#d6d5d9' defaultItemSize={50}>
                         <SettingsList.Item
                             hasNavArrow={false}
-                            title='Themes list'
+                            title={translations.themesList}
                             titleStyle={{color: '#009688', fontWeight: '500'}}
                             itemWidth={50}
                             borderHide={'Both'}
@@ -118,7 +118,7 @@ class Themes extends PureComponent {
                             switchState={selectedTheme['0']}
                             switchOnValueChange={(value) => this.selectedThemeHandler(value, 0)}
                             titleStyle={{color: actualTheme.textColor, fontSize: 16}}
-                            title='Default theme'
+                            title={translations.defaultTheme}
                         />
                         <SettingsList.Item
                             icon={
@@ -135,12 +135,12 @@ class Themes extends PureComponent {
                             switchState={selectedTheme['1']}
                             switchOnValueChange={(value) => this.selectedThemeHandler(value, 1)}
                             titleStyle={{color: actualTheme.textColor, fontSize: 16}}
-                            title='Dark theme'
+                            title={translations.darkTheme}
                         />
                         <SettingsList.Header headerStyle={{marginTop: -5}}/>
                         <SettingsList.Item
                             hasNavArrow={false}
-                            title='Your themes'
+                            title={translations.yourThemes}
                             titleStyle={{color: '#009688', fontWeight: 'bold'}}
                             itemWidth={70}
                             borderHide={'Both'}
@@ -163,7 +163,7 @@ class Themes extends PureComponent {
                             }
                         })}
                         <SettingsList.Item
-                            title='Add your own theme'
+                            title={translations.addTheme}
                             itemWidth={70}
                             onPress={() => navigation.navigate('Theme')}
                             titleStyle={{color: actualTheme.textColor, fontSize: 16}}
@@ -179,7 +179,8 @@ class Themes extends PureComponent {
 const mapStateToProps = state => {
     return {
         actualTheme: state.theme.theme,
-        themes: state.theme.themes
+        themes: state.theme.themes,
+        translations: state.settings.translations.Themes
     }
 };
 const mapDispatchToProps = dispatch => {

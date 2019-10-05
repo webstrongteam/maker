@@ -16,11 +16,14 @@ class QuicklyTaskList extends Component {
         quicklyTasks: [],
         showModal: false,
         selectedTask: false,
-        list: {id: false, name: 'List name'},
+        list: {
+            id: false,
+            name: this.props.translations.listName
+        },
         showDialog: false,
         dialog: {},
         loading: true,
-        control: {label: 'List name'}
+        control: {label: this.props.translations.listName}
     };
 
     componentDidMount() {
@@ -68,19 +71,20 @@ class QuicklyTaskList extends Component {
 
     showDialog = () => {
         const {list} = this.state;
+        const {translations} = this.props;
         let copyName = list.name;
         let dialog = generateInputDialogObject(
-            'Edit list name',
+            translations.dialogTitle,
             true,
             copyName,
             (value) => copyName = value,
             {
-                Save: () => {
+                [translations.save]: () => {
                     list.name = copyName;
                     this.setState({list, showDialog: false});
                     this.saveList(list, false);
                 },
-                Cancel: () => {
+                [translations.cancel]: () => {
                     this.setState({showDialog: false});
                 },
             }
@@ -93,7 +97,7 @@ class QuicklyTaskList extends Component {
             showDialog, control, showModal, dialog, selectedTask,
             list, quicklyTasks, loading
         } = this.state;
-        const {navigation, theme} = this.props;
+        const {navigation, theme, translations} = this.props;
 
         return (
             <Template>
@@ -176,7 +180,7 @@ class QuicklyTaskList extends Component {
                                 ))}
                             </ScrollView> :
                             <Text style={[empty, {color: theme.textColor}]}>
-                                Quickly list is empty!
+                                {translations.emptyList}
                             </Text>
                         }
                     </View> : <Spinner/>
@@ -188,7 +192,11 @@ class QuicklyTaskList extends Component {
 
 const mapStateToProps = state => {
     return {
-        theme: state.theme.theme
+        theme: state.theme.theme,
+        translations: {
+            ...state.settings.translations.QuicklyTaskList,
+            ...state.settings.translations.common
+        }
     }
 };
 

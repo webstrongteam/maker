@@ -1,10 +1,10 @@
 import React, {Component} from "react";
-import Dialog from '../../../components/UI/Dialog/Dialog';
-import Input from '../../../components/UI/Input/Input';
-import {generateDialogObject, valid} from '../../../shared/utility';
+import Dialog from '../../components/UI/Dialog/Dialog';
+import Input from '../../components/UI/Input/Input';
+import {generateDialogObject, valid} from '../../shared/utility';
 
 import {connect} from 'react-redux';
-import * as actions from '../../../store/actions';
+import * as actions from '../../store/actions';
 
 class ConfigCategory extends Component {
     state = {
@@ -14,7 +14,7 @@ class ConfigCategory extends Component {
         },
         controls: {
             name: {
-                label: 'Enter category name',
+                label: this.props.translations.nameLabel,
                 required: true,
                 characterRestriction: 30
             }
@@ -28,14 +28,15 @@ class ConfigCategory extends Component {
     };
 
     initCategory = (id) => {
+        const {translations} = this.props;
         if (id !== false) {
             this.props.onInitCategory(id, (category) => {
                 this.setState({category, editCategory: true});
-                this.showDialog('Edit category');
+                this.showDialog(translations.editCategory);
             })
         } else {
             this.setState({editCategory: false});
-            this.showDialog('New category');
+            this.showDialog(translations.newCategory);
         }
     };
 
@@ -46,8 +47,9 @@ class ConfigCategory extends Component {
     };
 
     changeInputHandler = (name, save = false, value = this.state.category.name) => {
+        const {translations} = this.props;
         const controls = this.state.controls;
-        valid(controls, value, name, (newControls) => {
+        valid(controls, value, name, translations, (newControls) => {
             this.updateCategory('name', value);
             if (save && !newControls[name].error) {
                 const {category} = this.state;
@@ -61,12 +63,13 @@ class ConfigCategory extends Component {
     };
 
     showDialog = (title) => {
+        const {translations} = this.props;
         const dialog = generateDialogObject(
             title,
             false,
             {
-                Save: () => this.changeInputHandler('name', true),
-                Cancel: () => this.props.toggleModal()
+                [translations.save]: () => this.changeInputHandler('name', true),
+                [translations.cancel]: () => this.props.toggleModal()
             }
         );
         this.setState({dialog});
@@ -97,7 +100,14 @@ class ConfigCategory extends Component {
 }
 
 const mapStateToProps = state => {
-    return {theme: state.theme.theme}
+    return {
+        theme: state.theme.theme,
+        translations: {
+            ...state.settings.translations.ConfigCategory,
+            ...state.settings.translations.validation,
+            ...state.settings.translations.common
+        }
+    }
 };
 const mapDispatchToProps = dispatch => {
     return {

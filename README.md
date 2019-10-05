@@ -24,6 +24,7 @@ This app working with Android and iOS.
 - App settings
 - Profile tab with statistics
 - Save data in local database
+- Support languages: English, Polish
 - Database backup system
 
 ## Technologies  
@@ -57,9 +58,9 @@ This app working with Android and iOS.
 * Fix re-render task list :heavy_check_mark:
 * Change theme editing name :heavy_check_mark:
 * Fix updating theme :heavy_check_mark:
-* Update themes :x:
-* Add polish language :x:
-* Fix database :x:
+* Update themes :heavy_check_mark:
+* Add polish language :heavy_check_mark:
+* Auto-update database :x:
 * Clear and optimization code :x:
 
 #### Legend:

@@ -10,16 +10,16 @@ import {
     Subheader,
     Toolbar
 } from 'react-native-material-ui';
-import {generateDialogObject, sortingByType} from '../../../shared/utility';
-import Dialog from '../../../components/UI/Dialog/Dialog';
-import AnimatedView from '../../AnimatedView/AnimatedView';
-import {content, empty, fullWidth} from '../../../shared/styles';
+import {generateDialogObject, sortingByType} from '../../shared/utility';
+import Dialog from '../../components/UI/Dialog/Dialog';
+import AnimatedView from '../AnimatedView/AnimatedView';
+import {content, empty, fullWidth} from '../../shared/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
-import ConfigCategory from "../../Categories/ConfigCategory/ConfigCategory";
+import ConfigCategory from "../Categories/ConfigCategory";
 import moment from 'moment';
 
 import {connect} from 'react-redux';
-import * as actions from "../../../store/actions";
+import * as actions from "../../store/actions";
 
 const UP = 1;
 const DOWN = -1;
@@ -131,60 +131,60 @@ class TaskList extends Component {
                 translations.repeatTitle,
                 translations.repeatDescription,
                 {
-                    Yes: () => {
+                    [translations.yes]: () => {
                         this.setState({showDialog: false, selectedTask: false});
                         this.checkTaskRepeatHandler(this.state.selectedTask);
                         this.props.onAddEndedTask();
                     },
-                    No: () => {
+                    [translations.no]: () => {
                         this.setState({showDialog: false, selectedTask: false});
                         this.props.onAddEndedTask();
                         this.props.onFinishTask(this.state.selectedTask, true, this.props.theme);
                     },
-                    Cancel: () => this.setState({showDialog: false, selectedTask: false})
+                    [translations.cancel]: () => this.setState({showDialog: false, selectedTask: false})
                 }
             );
         } else if (action === 'finish') {
             dialog = generateDialogObject(
-                translations.finishTitle,
+                translations.defaultTitle,
                 translations.finishDescription,
                 {
-                    Yes: () => {
+                    [translations.yes]: () => {
                         this.setState({showDialog: false});
                         this.props.onFinishTask(this.state.selectedTask, false, this.props.theme);
                         this.props.onAddEndedTask();
                         this.props.navigation.goBack();
                     },
-                    No: () => {
+                    [translations.no]: () => {
                         this.setState({showDialog: false});
                     }
                 }
             );
         } else if (action === 'delete') {
             dialog = generateDialogObject(
-                translations.deleteTitle,
+                translations.defaultTitle,
                 translations.deleteDescription,
                 {
-                    Yes: () => {
+                    [translations.yes]: () => {
                         this.setState({showDialog: false});
                         this.props.onRemoveTask(this.state.selectedTask);
                         this.props.navigation.goBack();
                     },
-                    No: () => {
+                    [translations.no]: () => {
                         this.setState({showDialog: false});
                     }
                 }
             );
         } else if (action === 'finishAll') {
             dialog = generateDialogObject(
-                translations.finishAllTitle,
+                translations.defaultAllTitle,
                 translations.finishAllDescription,
                 {
-                    Yes: () => {
+                    [translations.yes]: () => {
                         this.setState({showDialog: false});
                         this.deleteAllTask();
                     },
-                    No: () => {
+                    [translations.no]: () => {
                         this.setState({showDialog: false});
                     },
                 }
@@ -719,7 +719,10 @@ const mapStateToProps = state => {
         sortingType: state.settings.settings.sortingType,
         theme: state.theme.theme,
         settings: state.settings.settings,
-        translations: state.settings.translations.taskList,
+        translations: {
+            ...state.settings.translations.TaskList,
+            ...state.settings.translations.common
+        },
         tasks: state.tasks.tasks,
         finished: state.tasks.finished,
         categories: state.categories.categories

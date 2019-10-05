@@ -20,10 +20,10 @@ class Settings extends PureComponent {
         dialog: null,
         showFirstDayOfWeek: false,
         showLanguages: false,
-        daysOfWeek: ['Sunday', 'Monday'],
+        daysOfWeek: [this.props.translations.sunday, this.props.translations.monday],
         languages: [
-            {name: 'English', short_name: 'en'},
-            {name: 'Polish', short_name: 'pl'}
+            {name: this.props.translations.english, short_name: 'en'},
+            {name: this.props.translations.polish, short_name: 'pl'}
         ],
         snackbar: {
             visible: false,
@@ -46,23 +46,24 @@ class Settings extends PureComponent {
     };
 
     showDialog = (action) => {
+        const {translations} = this.props;
         let dialog;
         if (action === 'showFirstDayOfWeek') {
             dialog = generateDialogObject(
-                'Select first day of week',
+                translations.showFirstDayOfWeekTitle,
                 false,
                 {
-                    Cancel: () => {
+                    [translations.cancel]: () => {
                         this.setState({[action]: false});
                     }
                 }
             );
         } else if (action === 'showLanguages') {
             dialog = generateDialogObject(
-                'Select language',
+                translations.showLanguagesTitle,
                 false,
                 {
-                    Cancel: () => {
+                    [translations.cancel]: () => {
                         this.setState({[action]: false});
                     }
                 }
@@ -73,7 +74,7 @@ class Settings extends PureComponent {
 
     render() {
         const {loading, snackbar, showFirstDayOfWeek, showLanguages, daysOfWeek, languages, dialog} = this.state;
-        const {navigation, settings, theme} = this.props;
+        const {navigation, settings, theme, translations} = this.props;
         let viewDialog = null;
 
         if (showFirstDayOfWeek) {
@@ -91,7 +92,7 @@ class Settings extends PureComponent {
                             onPress={() => {
                                 this.setState({showFirstDayOfWeek: false});
                                 this.props.onChangeFirstDayOfWeek(day);
-                                this.toggleSnackbar('First day of week has been changed');
+                                this.toggleSnackbar(translations.firstDaySnackbar);
                             }}
                             style={{
                                 primaryText: {
@@ -122,6 +123,7 @@ class Settings extends PureComponent {
                             onPress={() => {
                                 this.setState({showLanguages: false});
                                 this.props.onChangeLang(lang.short_name);
+                                this.toggleSnackbar(translations.langSnackbar);
                             }}
                             style={{
                                 primaryText: {
@@ -146,7 +148,7 @@ class Settings extends PureComponent {
                     onLeftElementPress={() => {
                         navigation.goBack();
                     }}
-                    centerElement='Settings'
+                    centerElement={translations.settings}
                 />
 
                 <Snackbar visible={snackbar.visible} message={snackbar.message}
@@ -159,7 +161,7 @@ class Settings extends PureComponent {
                                       borderColor='#d6d5d9' defaultItemSize={50}>
                             <SettingsList.Item
                                 hasNavArrow={false}
-                                title='General'
+                                title={translations.general}
                                 titleStyle={{color: '#009688', fontWeight: '500'}}
                                 itemWidth={50}
                                 borderHide={'Both'}
@@ -176,7 +178,7 @@ class Settings extends PureComponent {
                                 switchState={!!settings.timeFormat}
                                 switchOnValueChange={(value) => this.toggleSetting(value, 'TimeFormat')}
                                 titleStyle={{color: theme.textColor, fontSize: 16}}
-                                title='24H time cycle'
+                                title={translations.timeCycle}
                             />
                             <SettingsList.Item
                                 icon={
@@ -190,7 +192,7 @@ class Settings extends PureComponent {
                                 titleInfo={settings.firstDayOfWeek}
                                 onPress={() => this.showDialog('showFirstDayOfWeek')}
                                 titleStyle={{color: theme.textColor, fontSize: 16}}
-                                title='First day of week'
+                                title={translations.firstDayOfWeek}
                             />
                             <SettingsList.Item
                                 icon={
@@ -204,7 +206,7 @@ class Settings extends PureComponent {
                                 titleInfo={settings.lang}
                                 onPress={() => this.showDialog('showLanguages')}
                                 titleStyle={{color: theme.textColor, fontSize: 16}}
-                                title='Language'
+                                title={translations.language}
                             />
                             <SettingsList.Item
                                 icon={
@@ -218,7 +220,7 @@ class Settings extends PureComponent {
                                 switchState={!!settings.confirmFinishingTask}
                                 switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmFinishingTask')}
                                 titleStyle={{color: theme.textColor, fontSize: 16}}
-                                title='Confirm finishing task'
+                                title={translations.confirmFinishing}
                             />
                             <SettingsList.Item
                                 icon={
@@ -232,7 +234,7 @@ class Settings extends PureComponent {
                                 switchState={!!settings.confirmRepeatingTask}
                                 switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmRepeatingTask')}
                                 titleStyle={{color: theme.textColor, fontSize: 16}}
-                                title='Confirm repeating task'
+                                title={translations.confirmRepeating}
                             />
                             <SettingsList.Item
                                 icon={
@@ -246,12 +248,13 @@ class Settings extends PureComponent {
                                 switchState={!!settings.confirmDeletingTask}
                                 switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmDeletingTask')}
                                 titleStyle={{color: theme.textColor, fontSize: 16}}
-                                title='Confirm deleting task'
+                                title={translations.confirmDeleting}
                             />
                             <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
-                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="view-compact"/>
+                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}}
+                                              name="view-compact"/>
                                     </View>
                                 }
                                 hasNavArrow={false}
@@ -260,11 +263,11 @@ class Settings extends PureComponent {
                                 switchState={!!settings.hideTabView}
                                 switchOnValueChange={(value) => this.toggleSetting(value, 'HideTabView')}
                                 titleStyle={{color: theme.textColor, fontSize: 16}}
-                                title='Hide tab view'
+                                title={translations.hideTabView}
                             />
                         </SettingsList>
                         <View style={styles.version}>
-                            <Text style={{color: theme.textColor}}>Version: {settings.version} (hotfix 1)</Text>
+                            <Text style={{color: theme.textColor}}>{translations.version}: {settings.version} (hotfix 1)</Text>
                         </View>
                     </React.Fragment> : <Spinner/>
                 }
@@ -286,7 +289,11 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
-        settings: state.settings.settings
+        settings: state.settings.settings,
+        translations: {
+            ...state.settings.translations.Settings,
+            ...state.settings.translations.common
+        }
     }
 };
 const mapDispatchToProps = dispatch => {

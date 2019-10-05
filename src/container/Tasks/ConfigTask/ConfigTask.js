@@ -5,14 +5,10 @@ import {Button, Checkbox, IconToggle, Subheader, Toolbar} from 'react-native-mat
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Template from '../../Template/Template';
 import Input from '../../../components/UI/Input/Input';
-import ConfigCategory from '../../Categories/ConfigCategory/ConfigCategory';
+import ConfigCategory from '../../Categories/ConfigCategory';
 import Dialog from '../../../components/UI/Dialog/Dialog';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
-import {
-    convertNumberToDate,
-    generateDialogObject,
-    valid
-} from '../../../shared/utility';
+import {convertNumberToDate, generateDialogObject, valid} from '../../../shared/utility';
 import {configTask} from '../../../shared/configTask';
 import {fullWidth} from '../../../shared/styles';
 import {BannerAd} from "../../../../adsAPI";
@@ -36,47 +32,47 @@ class ConfigTask extends Component {
         },
         controls: {
             name: {
-                label: 'Enter task name',
+                label: this.props.translations.nameLabel,
                 required: true,
                 characterRestriction: 40,
             },
             description: {
-                label: 'Enter task description',
+                label: this.props.translations.descriptionLabel,
                 multiline: true
             }
         },
         repeat: {
             noRepeat: {
-                name: 'No repeat',
+                name: this.props.translations.noRepeat,
                 value: 'noRepeat'
             },
             onceDay: {
-                name: 'Once a Day',
+                name: this.props.translations.onceDay,
                 value: 'onceDay'
             },
             onceDayMonFri: {
-                name: 'Once a Week (Mon-Fri)',
+                name: this.props.translations.onceWeekMonFri,
                 value: 'onceDayMonFri'
             },
             onceDaySatSun: {
-                name: 'Once a Week (Sat-Sun)',
+                name: this.props.translations.onceWeekSatSun,
                 value: 'onceDaySatSun'
             },
             onceWeek: {
-                name: 'Once a Week',
+                name: this.props.translations.onceWeek,
                 value: 'onceWeek'
             },
             onceMonth: {
-                name: 'Once a Month',
+                name: this.props.translations.onceMonth,
                 value: 'onceMonth'
             },
             onceYear: {
-                name: 'Once a Year',
+                name: this.props.translations.onceYear,
                 value: 'onceYear'
             }
         },
         dialog: null,
-        otherOption: 'Other...',
+        otherOption: `${this.props.translations.other}...`,
         selectedTime: 0,
         repeatValue: '1',
         showOtherRepeat: false,
@@ -94,7 +90,7 @@ class ConfigTask extends Component {
         const category = this.props.navigation.getParam('category', false);
         if (task !== false) this.initTask(task);
         else {
-            if (category && category !== 'All') {
+            if (category && category !== this.props.translations.all) {
                 this.updateTask('category', category);
             }
             const checkExistCategory = this.props.categories.filter(cate => cate.name === this.state.task.category);
@@ -106,16 +102,16 @@ class ConfigTask extends Component {
     };
 
     initTask = (id) => {
-        const {categories} = this.props;
+        const {categories, translations} = this.props;
         this.props.onInitTask(id, (task) => {
             let selectedTime = 0;
             let repeatValue = '1';
-            let otherOption = 'Other...';
+            let otherOption = `${translations.other}...`;
 
             if (+task.repeat === parseInt(task.repeat, 10)) {
                 selectedTime = task.repeat[0];
                 repeatValue = task.repeat.substring(1);
-                otherOption = `Other (${+repeatValue} ${convertNumberToDate(+selectedTime)})`;
+                otherOption = `${translations.other} (${+repeatValue} ${convertNumberToDate(+selectedTime)})`;
             }
 
             const checkExistCategory = categories.filter(cate => cate.name === task.category);
@@ -140,36 +136,37 @@ class ConfigTask extends Component {
 
     showDialog = (action) => {
         const {task} = this.state;
+        const {translations} = this.props;
         let dialog;
         if (action === 'exit') {
             dialog = generateDialogObject(
-                'Are you sure?',
-                'Quit without saving?',
+                translations.defaultTitle,
+                translations.exitDescription,
                 {
-                    Yes: () => {
+                    [translations.yes]: () => {
                         this.setState({showDialog: false});
                         this.props.navigation.goBack();
                     },
-                    Save: () => {
+                    [translations.save]: () => {
                         this.checkValid('name', true);
                         this.setState({showDialog: false});
                     },
-                    Cancel: () => {
+                    [translations.cancel]: () => {
                         this.setState({showDialog: false});
                     }
                 }
             );
         } else if (action === 'delete') {
             dialog = generateDialogObject(
-                'Are you sure?',
-                'Delete this task?',
+                translations.defaultTitle,
+                translations.deleteDescription,
                 {
-                    Yes: () => {
+                    [translations.save]: () => {
                         this.setState({showDialog: false});
                         this.props.onRemoveTask(task);
                         this.props.navigation.goBack();
                     },
-                    Cancel: () => {
+                    [translations.cancel]: () => {
                         this.setState({showDialog: false});
                     }
                 }
@@ -194,15 +191,17 @@ class ConfigTask extends Component {
 
     saveOtherRepeat = () => {
         const {selectedTime, repeatValue} = this.state;
+        const {translations} = this.props;
         const repeat = selectedTime + repeatValue;
-        const otherOption = `Other (${repeatValue} ${convertNumberToDate(+selectedTime)})`;
+        const otherOption = `${translations.other} (${repeatValue} ${convertNumberToDate(+selectedTime)})`;
         this.updateTask('repeat', repeat);
         this.setState({otherOption, showOtherRepeat: false});
     };
 
     checkValid = (name, save = false, value = this.state.task.name) => {
+        const {translations} = this.props;
         const controls = this.state.controls;
-        valid(controls, value, name, (newControls) => {
+        valid(controls, value, name, translations, (newControls) => {
             this.updateTask(name, value);
             if (save && !newControls[name].error) {
                 this.saveTask();
@@ -232,8 +231,7 @@ class ConfigTask extends Component {
                 this.props.onSaveTask(task);
                 navigation.goBack();
             })
-            .catch((err) => {
-                console.log(err);
+            .catch(() => {
                 this.props.onSaveTask(task);
                 navigation.goBack();
             });
@@ -246,7 +244,7 @@ class ConfigTask extends Component {
             otherOption, selectedTime, showOtherRepeat, repeatValue,
             setEvent, setNotification
         } = this.state;
-        const {navigation, categories, theme, settings} = this.props;
+        const {navigation, categories, theme, settings, translations} = this.props;
         let date;
         let now;
 
@@ -265,7 +263,7 @@ class ConfigTask extends Component {
                     rightElement={
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <Button
-                                text="Save"
+                                text={translations.save}
                                 style={{text: {color: theme.headerTextColor}}}
                                 onPress={() => this.checkValid('name', true)}
                             />
@@ -282,8 +280,8 @@ class ConfigTask extends Component {
                     centerElement={
                         !loading ?
                             editTask ?
-                                "Edit task" :
-                                "New task" :
+                                translations.editTask :
+                                translations.newTask :
                             <View style={{marginTop: 10}}>
                                 <Spinner color={theme.secondaryBackgroundColor} size='small'/>
                             </View>
@@ -347,10 +345,10 @@ class ConfigTask extends Component {
                                         <IconToggle onPress={() => this.updateTask('date', '')} name='clear'/> :
                                         <IconToggle onPress={() => this.datepickerDate.onPressDate()} name='event'/>
                                 }
-                                placeholder="Select due date"
+                                placeholder={translations.selectDueDate}
                                 format="DD-MM-YYYY"
-                                confirmBtnText="Confirm"
-                                cancelBtnText="Cancel"
+                                confirmBtnText={translations.confirm}
+                                cancelBtnText={translations.cancel}
                                 customStyles={{
                                     dateInput: [styles.datePicker, {borderColor: theme.primaryColor}],
                                     dateText: {
@@ -376,10 +374,10 @@ class ConfigTask extends Component {
                                             <IconToggle onPress={() => this.datepickerTime.onPressDate()}
                                                         name='access-time'/>
                                     }
-                                    placeholder="Select due time"
+                                    placeholder={translations.selectDueTime}
                                     format="HH:mm"
-                                    confirmBtnText="Confirm"
-                                    cancelBtnText="Cancel"
+                                    confirmBtnText={translations.confirm}
+                                    cancelBtnText={translations.cancel}
                                     customStyles={{
                                         dateInput: [styles.datePicker, {borderColor: theme.primaryColor}],
                                         dateText: {
@@ -391,20 +389,22 @@ class ConfigTask extends Component {
                                     }}
                                 />
                                 <Checkbox
-                                    label="Set calendar event"
+                                    style={{label: {color: theme.textColor}}}
+                                    label={translations.setCalendarEvent}
                                     value='set'
                                     checked={setEvent}
                                     onCheck={(value) => this.setState({setEvent: value})}
                                 />
                                 {task.date.length > 12 &&
                                 <Checkbox
-                                    label="Set notification"
+                                    style={{label: {color: theme.textColor}}}
+                                    label={translations.setNotification}
                                     value='set'
                                     checked={setNotification}
                                     onCheck={(value) => this.setState({setNotification: value})}
                                 />
                                 }
-                                <Subheader text="Repeat"
+                                <Subheader text={translations.repeat}
                                            style={{
                                                container: fullWidth,
                                                text: {color: theme.primaryColor}
@@ -430,7 +430,7 @@ class ConfigTask extends Component {
                                 </View>
                             </React.Fragment>
                             }
-                            <Subheader text="Category"
+                            <Subheader text={translations.category}
                                        style={{
                                            container: fullWidth,
                                            text: {color: theme.primaryColor}
@@ -451,7 +451,7 @@ class ConfigTask extends Component {
                                 </View>
                                 <IconToggle onPress={() => this.toggleConfigCategory()} name="playlist-add"/>
                             </View>
-                            <Subheader text="Priority"
+                            <Subheader text={translations.priority}
                                        style={{
                                            container: fullWidth,
                                            text: {color: theme.primaryColor}
@@ -462,10 +462,10 @@ class ConfigTask extends Component {
                                     style={{color: theme.textColor}}
                                     selectedValue={task.priority}
                                     onValueChange={value => this.updateTask('priority', value)}>
-                                    <Picker.Item label="None" value="none"/>
-                                    <Picker.Item label="Low" value="low"/>
-                                    <Picker.Item label="Medium" value="medium"/>
-                                    <Picker.Item label="High" value="high"/>
+                                    <Picker.Item label={translations.priorityNone} value="none"/>
+                                    <Picker.Item label={translations.priorityLow} value="low"/>
+                                    <Picker.Item label={translations.priorityMedium} value="medium"/>
+                                    <Picker.Item label={translations.priorityHigh} value="high"/>
                                 </Picker>
                             </View>
                         </View>
@@ -516,7 +516,12 @@ const mapStateToProps = state => {
     return {
         categories: state.categories.categories,
         theme: state.theme.theme,
-        settings: state.settings.settings
+        settings: state.settings.settings,
+        translations: {
+            ...state.settings.translations.ConfigTask,
+            ...state.settings.translations.validation,
+            ...state.settings.translations.common
+        }
     }
 };
 const mapDispatchToProps = dispatch => {

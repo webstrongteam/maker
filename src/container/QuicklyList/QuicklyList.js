@@ -71,15 +71,17 @@ class QuicklyList extends Component {
     };
 
     showDialog = (list_id, list_name) => {
+        const {translations} = this.props;
+
         const dialog = generateDialogObject(
-            'Are you sure?',
-            `Delete ${list_name} list?`,
+            translations.defaultTitle,
+            `${translations.dialogDescription1} ${list_name} ${translations.dialogDescription2}`,
             {
-                Yes: () => {
+                [translations.yes]: () => {
                     this.setState({showDialog: false});
                     this.props.onRemoveList(list_id);
                 },
-                No: () => {
+                [translations.no]: () => {
                     this.setState({showDialog: false});
                 }
             }
@@ -89,7 +91,7 @@ class QuicklyList extends Component {
 
     render() {
         const {dialog, showDialog, amounts, bottomHidden, loading} = this.state;
-        const {lists, theme, navigation} = this.props;
+        const {lists, theme, navigation, translations} = this.props;
 
         const quicklyList = lists.map((list, index) => {
             // Searching system
@@ -128,7 +130,7 @@ class QuicklyList extends Component {
                                 }
                                 centerElement={{
                                     primaryText: list.name,
-                                    secondaryText: `Total tasks: ${amounts[list.id]}`
+                                    secondaryText: `${translations.totalTasks} ${amounts[list.id]}`
                                 }}
                             />
                         </View>
@@ -142,12 +144,12 @@ class QuicklyList extends Component {
                 <Toolbar
                     searchable={{
                         autoFocus: true,
-                        placeholder: 'Search',
+                        placeholder: translations.search,
                         onChangeText: value => this.setState({searchText: value}),
                         onSearchClosed: () => this.setState({searchText: ''}),
                     }}
                     leftElement="menu"
-                    centerElement="Quickly lists"
+                    centerElement={translations.quicklyLists}
                     onLeftElementPress={() => navigation.navigate('Drawer')}
                 />
 
@@ -171,7 +173,7 @@ class QuicklyList extends Component {
                                 {quicklyList}
                             </View>
                             : <Text style={[empty, {color: theme.textColor}]}>
-                                Quickly lists is empty!
+                                {translations.emptyList}
                             </Text>
                         }
                     </ScrollView> : <Spinner/>
@@ -215,7 +217,11 @@ const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
         settings: state.settings.settings,
-        lists: state.lists.lists
+        lists: state.lists.lists,
+        translations: {
+            ...state.settings.translations.QuicklyList,
+            ...state.settings.translations.common
+        }
     }
 };
 

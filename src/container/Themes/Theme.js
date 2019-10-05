@@ -17,7 +17,7 @@ import * as actions from "../../store/actions";
 class Theme extends Component {
     state = {
         customTheme: {id: false, name: ''},
-        defaultName: 'Tap to change name',
+        defaultName: this.props.translations.defaultName,
         names: [
             'id', 'name', 'Primary color', 'Primary background color', 'Secondary background color', 'Text color', 'Header text color',
             'Bottom navigation color', 'Action button color', 'Action button icon color', 'Overdue color',
@@ -32,7 +32,7 @@ class Theme extends Component {
 
         controls: {
             name: {
-                label: 'Enter theme name',
+                label: this.props.translations.themeNameLabel,
                 required: true,
                 characterRestriction: 30
             }
@@ -57,45 +57,46 @@ class Theme extends Component {
         } else {
             this.props.onInitTheme(customTheme => {
                 customTheme.id = false;
-                customTheme.name = 'Tap to change name';
+                customTheme.name = this.props.translations.defaultName;
                 this.setState({customTheme, loading: false});
             });
         }
     };
 
     showDialog = (action) => {
+        const {translations} = this.props;
         let showInputDialog = false;
         let showDialog = true;
         let dialog;
         if (action === 'exit') {
             showDialog = true;
             dialog = generateDialogObject(
-                'Are you sure?',
-                'Quit without saving?',
+                translations.defaultTitle,
+                translations.exitDescription,
                 {
-                    Yes: () => {
+                    [translations.yes]: () => {
                         this.setState({showDialog: false});
                         this.props.navigation.goBack();
                     },
-                    Save: () => {
+                    [translations.save]: () => {
                         this.checkValid('name', true);
                         this.setState({showDialog: false});
                     },
-                    Cancel: () => this.setState({showDialog: false})
+                    [translations.cancel]: () => this.setState({showDialog: false})
                 }
             );
         } else if (action === 'delete') {
             showDialog = true;
             dialog = generateDialogObject(
-                'Are you sure?',
-                'Delete this theme?',
+                translations.defaultTitle,
+                translations.deleteDescription,
                 {
-                    Yes: () => {
+                    [translations.yes]: () => {
                         this.setState({showDialog: false});
                         this.deleteTheme();
                         this.props.navigation.goBack();
                     },
-                    No: () => {
+                    [translations.no]: () => {
                         this.setState({showDialog: false});
                     }
                 }
@@ -105,18 +106,18 @@ class Theme extends Component {
             const {customTheme, controls} = this.state;
             let copyName = customTheme.name;
             dialog = generateInputDialogObject(
-                'Edit theme name',
+                translations.changeNameTitle,
                 true,
                 this.basicValid(customTheme.name) ? copyName : '',
                 (value) => copyName = value,
                 {
-                    Save: () => {
+                    [translations.save]: () => {
                         this.checkValid('name', false, copyName);
                         if (!controls.name.error && this.basicValid(copyName)) {
                             this.setState({showDialog: false});
                         }
                     },
-                    Cancel: () => {
+                    [translations.cancel]: () => {
                         this.setState({showDialog: false});
                     },
                 }
@@ -158,10 +159,11 @@ class Theme extends Component {
     };
 
     checkValid = (name, save = false, value = this.state.customTheme.name) => {
+        const {translations} = this.props;
         const controls = this.state.controls;
 
         this.basicValid(value) &&
-        valid(controls, value, name, (newControls) => {
+        valid(controls, value, name, translations, (newControls) => {
             if (!newControls[name].error) {
                 this.changeNameHandler(value);
             }
@@ -181,7 +183,7 @@ class Theme extends Component {
             dialog, loading, names, showColorPicker, selectedColor,
             colorPickerTitle, actualColor
         } = this.state;
-        const {navigation, theme} = this.props;
+        const {navigation, theme, translations} = this.props;
 
         return (
             <Template bgColor={theme.secondaryBackgroundColor}>
@@ -191,7 +193,7 @@ class Theme extends Component {
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             {this.basicValid() &&
                             <Button
-                                text="Save"
+                                text={translations.save}
                                 style={{text: {color: theme.headerTextColor}}}
                                 onPress={() => this.checkValid('name', true)}
                             />
@@ -263,7 +265,7 @@ class Theme extends Component {
                                       defaultItemSize={50}>
                             <SettingsList.Item
                                 hasNavArrow={false}
-                                title='Main'
+                                title={translations.main}
                                 titleStyle={{color: '#009688', fontWeight: '500'}}
                                 itemWidth={50}
                                 borderHide={'Both'}
@@ -276,7 +278,7 @@ class Theme extends Component {
                                     themeList.push(
                                         <SettingsList.Item
                                             hasNavArrow={false}
-                                            title='Elements'
+                                            title={translations.elements}
                                             titleStyle={{color: '#009688', fontWeight: 'bold'}}
                                             itemWidth={70}
                                             borderHide={'Both'}
@@ -287,7 +289,7 @@ class Theme extends Component {
                                     themeList.push(
                                         <SettingsList.Item
                                             hasNavArrow={false}
-                                            title='Buttons'
+                                            title={translations.buttons}
                                             titleStyle={{color: '#009688', fontWeight: 'bold'}}
                                             itemWidth={70}
                                             borderHide={'Both'}
@@ -298,7 +300,7 @@ class Theme extends Component {
                                     themeList.push(
                                         <SettingsList.Item
                                             hasNavArrow={false}
-                                            title='Priorities'
+                                            title={translations.priorities}
                                             titleStyle={{color: '#009688', fontWeight: 'bold'}}
                                             itemWidth={70}
                                             borderHide={'Both'}
@@ -348,7 +350,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-    return {theme: state.theme.theme}
+    return {
+        theme: state.theme.theme,
+        translations: {
+            ...state.settings.translations.Theme,
+            ...state.settings.translations.validation,
+            ...state.settings.translations.common
+        }
+    }
 };
 const mapDispatchToProps = dispatch => {
     return {

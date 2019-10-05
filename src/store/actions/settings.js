@@ -15,7 +15,7 @@ export const initSettings = (callback = () => null) => {
         db.transaction(
             tx => {
                 tx.executeSql('select * from settings;', [], (_, {rows}) => {
-                    callback();
+                    callback(rows._array[0].lang);
                     dispatch(onUpdateSettings(rows._array[0]));
                 });
             }, (err) => console.log(err)

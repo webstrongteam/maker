@@ -40,12 +40,13 @@ class TaskList extends PureComponent {
                 this.setState({backups, loading: false});
             })
             .catch(() => {
-                this.toggleSnackbar('Loading backups error!');
+                this.toggleSnackbar(this.props.translations.loadingError);
                 this.setState({backups: [], loading: false});
             });
     };
 
     useBackupDB = (name) => {
+        const {translations} = this.props;
         FileSystem.copyAsync({
             from: FileSystem.documentDirectory + 'Backup/' + name,
             to: FileSystem.documentDirectory + 'SQLite/maker.db'
@@ -58,15 +59,17 @@ class TaskList extends PureComponent {
                 this.props.onInitToDo();
                 this.props.onInitSettings(() => {
                     this.setState({loading: false});
-                    this.toggleSnackbar('Database has been replaced');
+                    this.toggleSnackbar(translations.dbReplaced);
                 });
             })
             .catch(() => {
-                this.toggleSnackbar('Replacing database error!');
+                this.toggleSnackbar(translations.dbReplacedError);
             });
     };
 
     createBackup = (ownUri = false) => {
+        const {translations} = this.props;
+
         let date;
         let uri = FileSystem.documentDirectory + 'SQLite/maker.db';
         if (ownUri) uri = ownUri;
@@ -80,10 +83,10 @@ class TaskList extends PureComponent {
         })
             .then(() => {
                 this.loadBackupFiles();
-                this.toggleSnackbar('Backup has been created');
+                this.toggleSnackbar(translations.backupCreated);
             })
             .catch(() => {
-                this.toggleSnackbar('Creating backup error!');
+                this.toggleSnackbar(translations.backupCreatedError);
             });
     };
 
@@ -101,7 +104,7 @@ class TaskList extends PureComponent {
                     this.checkDatabase();
                 })
                 .catch(() => {
-                    this.toggleSnackbar('Creating backup error!');
+                    this.toggleSnackbar(this.props.translations.backupCreatedError);
                 });
         }
     };
@@ -113,17 +116,19 @@ class TaskList extends PureComponent {
     };
 
     removeBackup = (path) => {
+        const {translations} = this.props;
         FileSystem.deleteAsync(FileSystem.documentDirectory + path)
             .then(() => {
                 this.loadBackupFiles();
-                this.toggleSnackbar('Backup has been removed');
+                this.toggleSnackbar(translations.backupRemoved);
             })
             .catch(() => {
-                this.toggleSnackbar('Removing backup error!');
+                this.toggleSnackbar(translations.backupRemovedError);
             });
     };
 
     checkDatabase = () => {
+        const {translations} = this.props;
         const db = SQLite.openDatabase('maker_test.db');
         db.transaction(
             tx => {
@@ -132,11 +137,11 @@ class TaskList extends PureComponent {
                         this.createBackup(FileSystem.documentDirectory + 'SQLite/maker_test.db');
                     },
                     () => {
-                        this.toggleSnackbar('This file is incorrect!');
+                        this.toggleSnackbar(translations.incorrectFile);
                     }
                 )
             }, () => {
-                this.toggleSnackbar('This file is incorrect!');
+                this.toggleSnackbar(translations.incorrectFile);
             }
         );
     };
@@ -146,26 +151,27 @@ class TaskList extends PureComponent {
     };
 
     showDialog = (action, name = null) => {
+        const {translations} = this.props;
         let dialog;
         if (action === 'showBackupAlert') {
             dialog = generateDialogObject(
-                'Are you sure?',
-                `Replace current database by '${name}' backup? 
+                translations.defaultTitle,
+                `${translations.showBackupAlertDescription1} '${name}' backup? 
 
-This will delete your current database!`,
+${translations.showBackupAlertDescription2}`,
                 {
-                    Yes: () => {
+                    [translations.yes]: () => {
                         this.setState({showDialog: false});
                         this.useBackupDB(name);
                     },
-                    Cancel: () => {
+                    [translations.cancel]: () => {
                         this.setState({showDialog: false});
                     }
                 }
             );
         } else if (action === 'showSelectBackupSource') {
             dialog = generateDialogObject(
-                'Add database from...',
+                translations.showSelectBackupSourceTitle,
                 false,
                 {
                     Cancel: () => {
@@ -175,14 +181,14 @@ This will delete your current database!`,
             );
         } else if (action === 'showConfirmDelete') {
             dialog = generateDialogObject(
-                'Are you sure?',
-                'Delete this backup?',
+                translations.defaultTitle,
+                translations.showConfirmDeleteDescription,
                 {
-                    Yes: () => {
+                    [translations.yes]: () => {
                         this.setState({showDialog: false});
                         this.removeBackup(`Backup/${name}`)
                     },
-                    Cancel: () => {
+                    [translations.cancel]: () => {
                         this.setState({showDialog: false});
                     }
                 }
@@ -194,7 +200,7 @@ This will delete your current database!`,
 
     render() {
         const {loading, showDialog, dialog, snackbar, backups, showSelectBackupSource} = this.state;
-        const {navigation, theme} = this.props;
+        const {navigation, theme, translations} = this.props;
 
         return (
             <Template>
@@ -209,7 +215,7 @@ This will delete your current database!`,
                     onLeftElementPress={() => {
                         navigation.goBack();
                     }}
-                    centerElement='Backups'
+                    centerElement={translations.title}
                 />
 
                 <Snackbar
@@ -239,7 +245,7 @@ This will delete your current database!`,
                             this.createBackup();
                         }}
                         centerElement={{
-                            primaryText: "Your app",
+                            primaryText: translations.yourApp,
                         }}
                     />
                     <ListItem
@@ -249,7 +255,7 @@ This will delete your current database!`,
                             this.addBackupFromStorage();
                         }}
                         centerElement={{
-                            primaryText: "Your storage",
+                            primaryText: translations.yourStorage,
                         }}
                     />
                 </Dialog>
@@ -284,7 +290,7 @@ This will delete your current database!`,
                                     />
                                 )) :
                                 <Text style={[empty, {color: theme.textColor}]}>
-                                    Backup list is empty!
+                                    {translations.emptyList}
                                 </Text>
                             }
                         </ScrollView>
@@ -299,7 +305,11 @@ This will delete your current database!`,
 const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
-        timeFormat: state.settings.settings.timeFormat
+        timeFormat: state.settings.settings.timeFormat,
+        translations: {
+            ...state.settings.translations.Backup,
+            ...state.settings.translations.common
+        }
     }
 };
 

@@ -10,7 +10,7 @@ class ConfigQuicklyTask extends Component {
         task: {id: false, name: '', list_id: false},
         controls: {
             name: {
-                label: 'Enter quickly task name',
+                label: this.props.translations.quicklyTaskName,
                 required: true,
                 characterRestriction: 40
             }
@@ -24,14 +24,15 @@ class ConfigQuicklyTask extends Component {
     };
 
     initQuicklyTask = (task_id) => {
+        const {translations} = this.props;
         if (task_id !== false) {
             this.props.onInitQuicklyTask(task_id, (res) => {
                 this.setState({task: res, editTask: true});
-                this.showDialog('Edit task');
+                this.showDialog(translations.editTask);
             })
         } else {
             this.setState({editTask: false});
-            this.showDialog('New task');
+            this.showDialog(translations.newTask);
         }
     };
 
@@ -43,8 +44,8 @@ class ConfigQuicklyTask extends Component {
 
     changeInputHandler = (name, save = false, value = this.state.task.name) => {
         const {task, controls} = this.state;
-        const {list_id, toggleModal} = this.props;
-        valid(controls, value, name, (newControls) => {
+        const {list_id, toggleModal, translations} = this.props;
+        valid(controls, value, name, translations, (newControls) => {
             this.updateTask(name, value);
             if (save && !newControls[name].error) {
                 if (list_id !== false) {
@@ -95,7 +96,13 @@ class ConfigQuicklyTask extends Component {
 }
 
 const mapStateToProps = state => {
-    return {theme: state.theme.theme}
+    return {
+        theme: state.theme.theme,
+        translations: {
+            ...state.settings.translations.ConfigQuicklyTask,
+            ...state.settings.translations.validation
+        }
+    }
 };
 const mapDispatchToProps = dispatch => {
     return {

@@ -9,14 +9,12 @@ const messages = {
 
 const initState = {
     settings: {},
-    locale: 'en',
     translations: messages['en']
 };
 
 const updateSettings = (state, action) => {
     return updateObject(state, {
         settings: action.settings,
-        locale: action.settings.lang,
         translations: messages[action.settings.lang]
     });
 };

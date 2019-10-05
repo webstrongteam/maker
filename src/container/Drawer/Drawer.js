@@ -7,14 +7,14 @@ import {connect} from 'react-redux';
 
 class DrawerContainer extends Component {
     render() {
-        const {navigation, theme} = this.props;
+        const {navigation, theme, translations} = this.props;
 
         return (
             <Template bgColor={theme.secondaryBackgroundColor}>
                 <Toolbar
                     leftElement="arrow-back"
                     onLeftElementPress={() => navigation.goBack()}
-                    centerElement="Back"
+                    centerElement={translations.back}
                 />
                 <Drawer style={{container: {backgroundColor: theme.secondaryBackgroundColor}}}>
                     <Drawer.Section
@@ -23,20 +23,20 @@ class DrawerContainer extends Component {
                         items={[
                             {
                                 icon: 'bookmark-border',
-                                value: 'Categories',
+                                value: translations.categories,
                                 onPress: () => navigation.navigate('CategoriesList')
                             },
-                            {icon: 'people', value: 'Profile', onPress: () => navigation.navigate('Profile')},
+                            {icon: 'people', value: translations.profile, onPress: () => navigation.navigate('Profile')},
                         ]}
                     />
                     <Drawer.Section
                         title="App"
                         style={{container: {backgroundColor: theme.secondaryBackgroundColor}}}
                         items={[
-                            {icon: 'assessment', value: 'Themes', onPress: () => navigation.navigate('Themes')},
-                            {icon: 'settings', value: 'Settings', onPress: () => navigation.navigate('Settings')},
-                            {icon: 'backup', value: 'Backups', onPress: () => navigation.navigate('Backups')},
-                            {icon: 'info', value: 'About Maker', onPress: () => navigation.navigate('About')}
+                            {icon: 'assessment', value: translations.themes, onPress: () => navigation.navigate('Themes')},
+                            {icon: 'settings', value: translations.settings, onPress: () => navigation.navigate('Settings')},
+                            {icon: 'backup', value: translations.backups, onPress: () => navigation.navigate('Backups')},
+                            {icon: 'info', value: translations.about, onPress: () => navigation.navigate('About')}
                         ]}
                     />
                 </Drawer>
@@ -47,7 +47,10 @@ class DrawerContainer extends Component {
 }
 
 const mapStateToProps = state => {
-    return {theme: state.theme.theme}
+    return {
+        theme: state.theme.theme,
+        translations: state.settings.translations.Drawer
+    }
 };
 
 export default connect(mapStateToProps)(DrawerContainer);
