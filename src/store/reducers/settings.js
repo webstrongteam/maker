@@ -21,19 +21,10 @@ const updateSettings = (state, action) => {
     });
 };
 
-const changeLang = (state, action) => {
-    return updateObject(state, {
-        locale: action.locale,
-        translations: messages[action.locale]
-    });
-};
-
 const reducer = (state = initState, action) => {
     switch (action.type) {
         case actionTypes.UPDATE_SETTINGS:
             return updateSettings(state, action);
-        case actionTypes.CHANGE_LANG:
-            return changeLang(state, action);
         default:
             return state;
     }

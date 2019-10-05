@@ -1,3 +1,33 @@
 {
-  "taskList.done": "Done"
+  "taskList": {
+    "done": "Done",
+    "undo": "Undo",
+    "overdue": "Overdue",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "thisWeek": "This week",
+    "nextWeek": "Next week",
+    "thisMonth": "This month",
+    "nextMonth": "Next month",
+    "later": "Later",
+    "other": "Other",
+    "finished": "Finished",
+    "newCategory": "New category",
+    "all": "All",
+    "search": "Search",
+    "emptyList": "Task list is empty!",
+
+    "date": "Date",
+    "category": "Category",
+    "priority": "Priority",
+
+    "repeatTitle": "Repeat task?",
+    "repeatDescription": "Do you want to repeat this task?",
+    "finishTitle": "Are you sure?",
+    "finishDescription": "Finish this task?",
+    "deleteTitle": "Are you sure?",
+    "deleteDescription": "Delete this task?",
+    "finishAllTitle": "Are you sure?",
+    "finishAllDescription": "Do you want to delete all finished task?"
+  }
 }

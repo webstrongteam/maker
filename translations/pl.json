@@ -1,3 +1,33 @@
 {
-  "taskList.done": "Zrobione"
+  "taskList": {
+    "done": "Gotowe",
+    "undo": "Cofnij",
+    "overdue": "Opóźnienia",
+    "today": "Dzisiaj",
+    "tomorrow": "Jutro",
+    "thisWeek": "Ten tydzień",
+    "nextWeek": "Następny tydzień",
+    "thisMonth": "Ten miesiąć",
+    "nextMonth": "Następny miesiąc",
+    "later": "Później",
+    "other": "Inne",
+    "finished": "Skończone",
+    "newCategory": "Nowa kategoria",
+    "all": "Wszystkie",
+    "search": "Wyszukaj",
+    "emptyList": "Lista zadań jest pusta!",
+
+    "date": "Date",
+    "category": "Kategorie",
+    "priority": "Piorytet",
+
+    "repeatTitle": "Powtórzyć zadanie?",
+    "repeatDescription": "Czy chcesz powtórzyć to zadanie?",
+    "finishTitle": "Jesteś pewnien?",
+    "finishDescription": "Zakończyć to zadanie?",
+    "deleteTitle": "Jesteś pewnien?",
+    "deleteDescription": "Usunąć to zadanie?",
+    "finishAllTitle": "Jesteś pewnien?",
+    "finishAllDescription": "Czy na pewno chcesz usunąć wszystkie zakończone zadania?"
+  }
 }

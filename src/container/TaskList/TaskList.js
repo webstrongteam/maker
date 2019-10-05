@@ -45,7 +45,7 @@ class TaskList extends Component {
 
         tasks: [],
         dropdownData: null,
-        selectedCategory: 'All',
+        selectedCategory: this.props.translations.all,
         selectedIndex: 0,
         searchText: '',
         rotateAnimated: new Animated.Value(0),
@@ -53,7 +53,6 @@ class TaskList extends Component {
     };
 
     componentDidMount() {
-        console.log(this.props.translations['taskList.done']);
         this.setState({tasks: this.props.tasks}, () => {
             this.divisionTask();
             this.renderDropdownData();
@@ -125,11 +124,12 @@ class TaskList extends Component {
     };
 
     showDialog = (action) => {
+        const {translations} = this.props;
         let dialog;
         if (action === 'repeat') {
             dialog = generateDialogObject(
-                'Repeat task?',
-                'Do you want to repeat this task?',
+                translations.repeatTitle,
+                translations.repeatDescription,
                 {
                     Yes: () => {
                         this.setState({showDialog: false, selectedTask: false});
@@ -146,8 +146,8 @@ class TaskList extends Component {
             );
         } else if (action === 'finish') {
             dialog = generateDialogObject(
-                'Are you sure?',
-                'Finish this task?',
+                translations.finishTitle,
+                translations.finishDescription,
                 {
                     Yes: () => {
                         this.setState({showDialog: false});
@@ -162,8 +162,8 @@ class TaskList extends Component {
             );
         } else if (action === 'delete') {
             dialog = generateDialogObject(
-                'Are you sure?',
-                'Delete this task?',
+                translations.deleteTitle,
+                translations.deleteDescription,
                 {
                     Yes: () => {
                         this.setState({showDialog: false});
@@ -177,8 +177,8 @@ class TaskList extends Component {
             );
         } else if (action === 'finishAll') {
             dialog = generateDialogObject(
-                'Are you sure?',
-                'Do you want to delete all finished task?',
+                translations.finishAllTitle,
+                translations.finishAllDescription,
                 {
                     Yes: () => {
                         this.setState({showDialog: false});
@@ -214,24 +214,24 @@ class TaskList extends Component {
 
     divisionTask = () => {
         const {tasks} = this.state;
-        const {sorting, sortingType} = this.props;
+        const {sorting, sortingType, translations} = this.props;
         const division = {
-            Overdue: [],
-            Today: [],
-            Tomorrow: [],
-            'This week': [],
-            'Next week': [],
-            'This month': [],
-            'Next month': [],
-            Later: [],
-            Other: [],
-            Finished: []
+            [translations.overdue]: [],
+            [translations.today]: [],
+            [translations.tomorrow]: [],
+            [translations.thisWeek]: [],
+            [translations.nextWeek]: [],
+            [translations.thisMonth]: [],
+            [translations.nextMonth]: [],
+            [translations.later]: [],
+            [translations.other]: [],
+            [translations.finished]: []
         };
 
         tasks && tasks.map(task => {
             let div;
             if (task.finish) {
-                div = "Finished";
+                div = translations.finished;
                 division[div].push(task);
             } else {
                 div = this.getDateDivision(task.date);
@@ -244,10 +244,11 @@ class TaskList extends Component {
     };
 
     getDateDivision = (date) => {
+        const {translations} = this.props;
         let text;
         let now;
         if (!date) {
-            text = 'Other';
+            text = translations.other;
             return text;
         } else {
             if (date.length > 12) {
@@ -262,14 +263,14 @@ class TaskList extends Component {
         let week = 'week';
         if (this.props.settings.firstDayOfWeek === 'Monday') week = 'isoWeek';
 
-        if (+date < +now) text = 'Overdue';
-        else if (+date <= moment(now).endOf("day")) text = 'Today';
-        else if (+date <= +moment(now).add(1, 'days').endOf("day")) text = 'Tomorrow';
-        else if (date <= moment(now).endOf(week)) text = 'This week';
-        else if (+date <= +moment(now).add(1, 'week').endOf(week)) text = 'Next week';
-        else if (date <= moment(now).endOf("month")) text = 'This month';
-        else if (date <= moment(now).add(1, 'month').endOf("month")) text = 'Next month';
-        else text = 'Later';
+        if (+date < +now) text = translations.overdue;
+        else if (+date <= moment(now).endOf("day")) text = translations.today;
+        else if (+date <= +moment(now).add(1, 'days').endOf("day")) text = translations.tomorrow;
+        else if (date <= moment(now).endOf(week)) text = translations.thisWeek;
+        else if (+date <= +moment(now).add(1, 'week').endOf(week)) text = translations.nextWeek;
+        else if (date <= moment(now).endOf("month")) text = translations.thisMonth;
+        else if (date <= moment(now).add(1, 'month').endOf("month")) text = translations.nextMonth;
+        else text = translations.later;
 
         return text;
     };
@@ -303,14 +304,14 @@ class TaskList extends Component {
     };
 
     selectedCategoryHandler = (category, index) => {
-        const {tasks, finished} = this.props;
+        const {tasks, finished, translations} = this.props;
         let filterTask = tasks;
 
-        if (category === 'Finished') {
+        if (category === translations.finished) {
             filterTask = finished;
-        } else if (category === 'New category') {
+        } else if (category === translations.newCategory) {
             return this.toggleConfigCategory();
-        } else if (category !== 'All') {
+        } else if (category !== translations.all) {
             filterTask = tasks.filter(task => task.category === category);
         }
 
@@ -322,20 +323,20 @@ class TaskList extends Component {
     };
 
     renderDropdownData = () => {
-        const {categories} = this.props;
+        const {categories, translations} = this.props;
         if (!categories.length) return null;
         const dropdownData = [];
         const all = {
             id: -1,
-            name: 'All'
+            name: translations.all
         };
         const finish = {
             id: -2,
-            name: 'Finished'
+            name: translations.finished
         };
         const newCate = {
             id: -3,
-            name: 'New category'
+            name: translations.newCategory
         };
         dropdownData.push(all, ...categories, finish, newCate);
         this.setState({dropdownData});
@@ -401,7 +402,7 @@ class TaskList extends Component {
             rotateInterpolate, initDivision, dialog, showDialog, bottomHidden, tasks,
             selectedCategory
         } = this.state;
-        const {theme, navigation, sortingType, sorting, finished} = this.props;
+        const {theme, navigation, sortingType, sorting, finished, translations} = this.props;
 
         const taskList = initDivision &&
             Object.keys(division).map(div => (
@@ -423,7 +424,7 @@ class TaskList extends Component {
                                 <Subheader
                                     text={div}
                                     style={{
-                                        text: div === 'Overdue' ? {color: theme.overdueColor} : {color: theme.textColor}
+                                        text: div === translations.overdue ? {color: theme.overdueColor} : {color: theme.textColor}
                                     }}
                                 />
                                 }
@@ -451,7 +452,7 @@ class TaskList extends Component {
                                                 fontWeight: '500',
                                                 color: task.finished ?
                                                     theme.textColor :
-                                                    div === 'Overdue' ?
+                                                    div === translations.overdue ?
                                                         theme.overdueColor :
                                                         priorityColors[task.priority].color
                                             },
@@ -478,7 +479,7 @@ class TaskList extends Component {
                                                                 theme.doneButtonTextColor
                                                         }
                                                     }}
-                                                    text={task.finish ? 'Undo' : 'Done'}
+                                                    text={task.finish ? translations.undo : translations.done}
                                                     icon={task.finish ? 'replay' : 'done'}
                                                     onPress={() => {
                                                         task.finish ?
@@ -515,7 +516,7 @@ class TaskList extends Component {
                 <Toolbar
                     searchable={{
                         autoFocus: true,
-                        placeholder: 'Search',
+                        placeholder: translations.search,
                         onChangeText: value => this.setState({searchText: value}),
                         onSearchClosed: () => this.setState({searchText: ''}),
                     }}
@@ -583,13 +584,13 @@ class TaskList extends Component {
                             {taskList}
                         </View>
                         : <Text style={[empty, {color: theme.textColor}]}>
-                            Task list is empty!
+                            {translations.emptyList}
                         </Text>
                     }
                 </ScrollView>
 
                 <View>
-                    {selectedCategory !== 'Finished' ?
+                    {selectedCategory !== translations.finished ?
                         <ActionButton
                             hidden={bottomHidden}
                             onPress={() => navigation.navigate('ConfigTask', {category: selectedCategory})}
@@ -624,19 +625,19 @@ class TaskList extends Component {
                     <BottomNavigation.Action
                         key="byDate"
                         icon="insert-invitation"
-                        label="Date"
+                        label={translations.date}
                         onPress={() => this.setSortingType('byDate')}
                     />
                     <BottomNavigation.Action
                         key="byCategory"
                         icon="bookmark-border"
-                        label="Category"
+                        label={translations.category}
                         onPress={() => this.setSortingType('byCategory')}
                     />
                     <BottomNavigation.Action
                         key="byPriority"
                         icon="priority-high"
-                        label="Priority"
+                        label={translations.priority}
                         onPress={() => this.setSortingType('byPriority')}
                     />
                 </BottomNavigation>
@@ -714,11 +715,11 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        sorting: state.settings.sorting,
-        sortingType: state.settings.sortingType,
+        sorting: state.settings.settings.sorting,
+        sortingType: state.settings.settings.sortingType,
         theme: state.theme.theme,
         settings: state.settings.settings,
-        translations: state.settings.translations,
+        translations: state.settings.translations.taskList,
         tasks: state.tasks.tasks,
         finished: state.tasks.finished,
         categories: state.categories.categories
