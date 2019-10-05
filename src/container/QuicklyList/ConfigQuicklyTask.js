@@ -5,7 +5,7 @@ import {generateInputDialogObject, valid} from '../../shared/utility';
 import {connect} from 'react-redux';
 import * as actions from '../../store/actions/index';
 
-class ConfigCategory extends Component {
+class ConfigQuicklyTask extends Component {
     state = {
         task: {id: false, name: '', list_id: false},
         controls: {
@@ -103,4 +103,4 @@ const mapDispatchToProps = dispatch => {
         onSaveQuicklyTask: (task, list_id, callback) => dispatch(actions.saveQuicklyTask(task, list_id, callback)),
     }
 };
-export default connect(mapStateToProps, mapDispatchToProps)(ConfigCategory);
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigQuicklyTask);

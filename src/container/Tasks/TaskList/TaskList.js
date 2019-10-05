@@ -10,16 +10,16 @@ import {
     Subheader,
     Toolbar
 } from 'react-native-material-ui';
-import {generateDialogObject, sortingByType} from '../../shared/utility';
-import Dialog from '../../components/UI/Dialog/Dialog';
-import AnimatedView from '../AnimatedView/AnimatedView';
-import {content, empty, fullWidth} from '../../shared/styles';
+import {generateDialogObject, sortingByType} from '../../../shared/utility';
+import Dialog from '../../../components/UI/Dialog/Dialog';
+import AnimatedView from '../../AnimatedView/AnimatedView';
+import {content, empty, fullWidth} from '../../../shared/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
-import ConfigCategory from "../ConfigCategory/ConfigCategory";
+import ConfigCategory from "../../Categories/ConfigCategory/ConfigCategory";
 import moment from 'moment';
 
 import {connect} from 'react-redux';
-import * as actions from "../../store/actions";
+import * as actions from "../../../store/actions";
 
 const UP = 1;
 const DOWN = -1;

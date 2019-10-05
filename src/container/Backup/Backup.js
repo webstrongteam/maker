@@ -283,7 +283,9 @@ This will delete your current database!`,
                                         }}
                                     />
                                 )) :
-                                <Text style={[empty, {color: theme.textColor}]}>Backup list is empty!</Text>
+                                <Text style={[empty, {color: theme.textColor}]}>
+                                    Backup list is empty!
+                                </Text>
                             }
                         </ScrollView>
                     </View> : <Spinner/>

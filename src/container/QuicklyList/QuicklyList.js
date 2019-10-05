@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Animated, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {ActionButton, Icon, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ActionButton, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';

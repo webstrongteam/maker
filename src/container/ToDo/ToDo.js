@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import TaskList from '../TaskList/TaskList';
+import TaskList from '../Tasks/TaskList/TaskList';
 import Template from '../Template/Template';
 import QuicklyList from '../QuicklyList/QuicklyList';
 

@@ -1,13 +1,13 @@
 import React, {PureComponent} from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {Icon, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
-import {container, fullWidth} from '../../shared/styles';
+import {container, fullWidth} from '../../../shared/styles';
 import ConfigCategory from '../ConfigCategory/ConfigCategory';
-import Template from '../Template/Template';
-import {BannerAd} from '../../../adsAPI';
+import Template from '../../Template/Template';
+import {BannerAd} from '../../../../adsAPI';
 
 import {connect} from 'react-redux';
-import * as actions from "../../store/actions";
+import * as actions from "../../../store/actions";
 
 class CategoriesList extends PureComponent {
     state = {

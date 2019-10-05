@@ -2,24 +2,24 @@ import React, {Component} from "react";
 import {Picker, ScrollView, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import {Button, Checkbox, IconToggle, Subheader, Toolbar} from 'react-native-material-ui';
-import Spinner from '../../components/UI/Spinner/Spinner';
-import Template from '../Template/Template';
-import Input from '../../components/UI/Input/Input';
-import ConfigCategory from '../ConfigCategory/ConfigCategory';
-import Dialog from '../../components/UI/Dialog/Dialog';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import Template from '../../Template/Template';
+import Input from '../../../components/UI/Input/Input';
+import ConfigCategory from '../../Categories/ConfigCategory/ConfigCategory';
+import Dialog from '../../../components/UI/Dialog/Dialog';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
 import {
     convertNumberToDate,
     generateDialogObject,
     valid
-} from '../../shared/utility';
-import {configTask} from '../../shared/configTask';
-import {fullWidth} from '../../shared/styles';
-import {BannerAd} from "../../../adsAPI";
+} from '../../../shared/utility';
+import {configTask} from '../../../shared/configTask';
+import {fullWidth} from '../../../shared/styles';
+import {BannerAd} from "../../../../adsAPI";
 import moment from 'moment';
 
 import {connect} from 'react-redux';
-import * as actions from '../../store/actions/index';
+import * as actions from '../../../store/actions';
 
 class ConfigTask extends Component {
     state = {

@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import {Picker} from "react-native";
-import Dialog from '../../../components/UI/Dialog/Dialog';
-import Input from '../../../components/UI/Input/Input';
-import {generateDialogObject, valid} from "../../../shared/utility";
+import Dialog from '../../../../components/UI/Dialog/Dialog';
+import Input from '../../../../components/UI/Input/Input';
+import {generateDialogObject, valid} from "../../../../shared/utility";
 
 import {connect} from "react-redux";
 
