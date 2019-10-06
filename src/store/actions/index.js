@@ -10,6 +10,16 @@ export {
 } from './tasks';
 
 export {
+    initLists,
+    initList,
+    initQuicklyTask,
+    saveList,
+    saveQuicklyTask,
+    removeList,
+    removeQuicklyTask
+} from './lists';
+
+export {
     initCategories,
     initCategory,
     saveCategory,
@@ -22,6 +32,7 @@ export {
     changeConfirmDeletingTask,
     changeConfirmFinishingTask,
     changeConfirmRepeatingTask,
+    changeHideTabView,
     changeFirstDayOfWeek,
     changeTimeFormat,
     changeLang

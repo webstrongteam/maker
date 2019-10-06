@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Platform, StatusBar, View} from 'react-native';
 import {getTheme, ThemeContext} from 'react-native-material-ui';
 import {initDatabase, initTheme} from "../../../db";
-import {content} from '../../shared/styles';
+import {flex} from '../../shared/styles';
 
 import {connect} from 'react-redux';
 
@@ -49,12 +49,12 @@ class Template extends Component {
                     <View style={{
                         height: Platform.OS === 'ios' ?
                             20 : StatusBar.currentHeight,
-                        backgroundColor: this.props.theme.primaryColor
+                        backgroundColor: "#af3f1f"
                     }}>
                         <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent/>
                     </View>
                     <View
-                        style={[content, {
+                        style={[flex, {
                             backgroundColor: this.props.bgColor ?
                                 this.props.bgColor :
                                 this.props.theme.primaryBackgroundColor

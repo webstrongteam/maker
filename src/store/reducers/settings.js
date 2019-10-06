@@ -1,11 +1,21 @@
 import * as actionTypes from '../actions/actionTypes';
 import {updateObject} from '../../shared/utility';
+import en from "../../../translations/en";
+import pl from "../../../translations/pl";
 
-const initState = {};
+const messages = {
+    en, pl
+};
+
+const initState = {
+    settings: {},
+    translations: messages['en']
+};
 
 const updateSettings = (state, action) => {
     return updateObject(state, {
-        ...action.settings
+        settings: action.settings,
+        translations: messages[action.settings.lang]
     });
 };
 

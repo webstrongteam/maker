@@ -1,6 +1,7 @@
 // GLOBAL STYLES
 
-export const content = {flex: 1};
+export const flex = {flex: 1};
+export const row = {flexDirection: 'row'};
 
 export const container = {
     flex: 1,

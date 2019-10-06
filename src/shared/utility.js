@@ -95,24 +95,41 @@ export const generateDialogObject = (title, description, buttons) => {
     return object;
 };
 
-export const valid = (controls, value, name, callback) => {
+export const generateInputDialogObject = (title, focus, value, onChange, buttons) => {
+    let object = {
+        title,
+        focus,
+        value,
+        onChange,
+        buttons: []
+    };
+    Object.keys(buttons).map(key => {
+        object.buttons.push({
+            label: key,
+            onPress: buttons[key]
+        })
+    });
+    return object;
+};
+
+export const valid = (controls, value, name, translations, callback) => {
     let validStatus = true;
 
     // Validation system
     if (controls[name].characterRestriction) {
         if (value.length > controls[name].characterRestriction) {
-            controls[name].error = `${capitalize(name)} is too long!`;
+            controls[name].error = `${capitalize(name)} ${translations.tooLong}`;
             validStatus = false;
         }
     }
     if (controls[name].number) {
         if (+value !== parseInt(value, 10)) {
-            controls[name].error = `${capitalize(name)} must be a number!`;
+            controls[name].error = `${capitalize(name)} ${translations.number}`;
             validStatus = false;
         } else {
             if (controls[name].positiveNumber) {
                 if (+value < 1) {
-                    controls[name].error = `${capitalize(name)} must be greater than zero!`;
+                    controls[name].error = `${capitalize(name)} ${translations.greaterThanZero}`;
                     validStatus = false;
                 }
             }
@@ -120,7 +137,7 @@ export const valid = (controls, value, name, callback) => {
     }
     if (controls[name].required) {
         if (value.trim() === '') {
-            controls[name].error = `${capitalize(name)} is required!`;
+            controls[name].error = `${capitalize(name)} ${translations.required}`;
             validStatus = false;
         }
     }

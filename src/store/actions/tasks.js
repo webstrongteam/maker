@@ -1,6 +1,7 @@
 import * as actionTypes from './actionTypes';
 import {SQLite} from 'expo-sqlite';
 import {convertNumberToDate} from '../../shared/utility';
+import {configTask, deleteCalendarEvent, deleteLocalNotification} from '../../shared/configTask';
 import moment from 'moment';
 
 const db = SQLite.openDatabase('maker.db');
@@ -85,13 +86,15 @@ export const saveTask = (task) => {
             db.transaction(
                 tx => {
                     tx.executeSql(`update tasks
-                                   set name        = ?,
-                                       description = ?,
-                                       date        = ?,
-                                       category    = ?,
-                                       priority    = ?,
-                                       repeat      = ?
-                                   where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.id], () => {
+                                   set name            = ?,
+                                       description     = ?,
+                                       date            = ?,
+                                       category        = ?,
+                                       priority        = ?,
+                                       repeat          = ?,
+                                       event_id        = ?,
+                                       notification_id = ?
+                                   where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.notification_id, task.id], () => {
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)
@@ -99,7 +102,7 @@ export const saveTask = (task) => {
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat) values (?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat], () => {
+                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat, event_id, notification_id) values (?,?,?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.notification_id], () => {
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)
@@ -108,7 +111,7 @@ export const saveTask = (task) => {
     };
 };
 
-export const finishTask = (task, endTask) => {
+export const finishTask = (task, endTask, theme) => {
     let nextDate = task.date;
     const dateFormat = task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
 
@@ -143,6 +146,9 @@ export const finishTask = (task, endTask) => {
                 tx => {
                     tx.executeSql('delete from tasks where id = ?', [task.id]);
                     tx.executeSql('insert into finished (name, description, date, category, priority, repeat, finish) values (?,?,?,?,?,?,1)', [task.name, task.description, task.date, task.category, task.priority, task.repeat], () => {
+                        if (task.event_id !== false) {
+                            deleteCalendarEvent(task.event_id);
+                        }
                         dispatch(initToDo());
                     });
                 }, (err) => console.log(err)
@@ -153,10 +159,12 @@ export const finishTask = (task, endTask) => {
                     tx.executeSql(`update tasks
                                    set date = ?
                                    where id = ?;`, [nextDate, task.id], () => {
-                        dispatch(initTasks());
-                    });
-                }, (err) => console.log(err)
-            );
+                            task.date = nextDate;
+                            configTask(task, theme.primaryColor, task.event_id, false);
+                            dispatch(initTasks());
+                        }, (err) => console.log(err)
+                    );
+                })
         }
     };
 };
@@ -188,6 +196,12 @@ export const removeTask = (task, finished = true) => {
             db.transaction(
                 tx => {
                     tx.executeSql('delete from tasks where id = ?', [task.id], () => {
+                        if (task.event_id !== null) {
+                            deleteCalendarEvent(task.event_id);
+                        }
+                        if (task.notification_id !== null) {
+                            deleteLocalNotification(task.notification_id);
+                        }
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)

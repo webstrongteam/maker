@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import {Picker} from "react-native";
-import Dialog from '../../../components/UI/Dialog/Dialog';
-import Input from '../../../components/UI/Input/Input';
-import {generateDialogObject, valid} from "../../../shared/utility";
+import Dialog from '../../../../components/UI/Dialog/Dialog';
+import Input from '../../../../components/UI/Input/Input';
+import {generateDialogObject, valid} from "../../../../shared/utility";
 
 import {connect} from "react-redux";
 
@@ -10,7 +10,7 @@ class OtherRepeat extends Component {
     state = {
         controls: {
             value: {
-                label: 'Enter repeat value',
+                label: this.props.translations.valueLabel,
                 number: true,
                 positiveNumber: true,
                 required: true,
@@ -26,8 +26,9 @@ class OtherRepeat extends Component {
     }
 
     checkValid = (name, save = false, value = this.props.repeat) => {
+        const {translations} = this.props;
         const controls = this.state.controls;
-        valid(controls, value, name, (newControls) => {
+        valid(controls, value, name, translations, (newControls) => {
             this.props.onSetRepeat(value);
             if (save && !newControls[name].error) {
                 this.props.save();
@@ -38,7 +39,7 @@ class OtherRepeat extends Component {
 
     showDialog = () => {
         const dialog = generateDialogObject(
-            'Config custom repeat',
+            this.props.translations.dialogTitle,
             false,
             {
                 Save: () => {
@@ -52,7 +53,7 @@ class OtherRepeat extends Component {
 
     render() {
         const {loading, dialog, controls} = this.state;
-        const {showModal, repeat, selectedTime, theme} = this.props;
+        const {showModal, repeat, selectedTime, theme, translations} = this.props;
 
         return (
             <React.Fragment>
@@ -72,10 +73,10 @@ class OtherRepeat extends Component {
                         style={{marginLeft: 10, color: theme.textColor}}
                         selectedValue={selectedTime}
                         onValueChange={value => this.props.onSelectTime(value)}>
-                        <Picker.Item label="Days" value="0"/>
-                        <Picker.Item label="Week" value="1"/>
-                        <Picker.Item label="Month" value="2"/>
-                        <Picker.Item label="Year" value="3"/>
+                        <Picker.Item label={translations.days} value="0"/>
+                        <Picker.Item label={translations.week} value="1"/>
+                        <Picker.Item label={translations.month} value="2"/>
+                        <Picker.Item label={translations.year} value="3"/>
                     </Picker>
                 </Dialog>
                 }
@@ -85,7 +86,13 @@ class OtherRepeat extends Component {
 }
 
 const mapStateToProps = state => {
-    return {theme: state.theme.theme}
+    return {
+        theme: state.theme.theme,
+        translations: {
+            ...state.settings.translations.OtherRepeat,
+            ...state.settings.translations.validation
+        }
+    }
 };
 
 export default connect(mapStateToProps)(OtherRepeat);

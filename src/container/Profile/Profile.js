@@ -7,7 +7,7 @@ import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import {Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import {separator} from '../../shared/styles';
+import {flex, separator} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
 import {connect} from 'react-redux';
@@ -26,10 +26,11 @@ class Profile extends PureComponent {
     }
 
     getPermissionAsync = async () => {
+        const {translations} = this.props;
         if (Constants.platform.ios) {
             const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to make this work!');
+                alert(translations.permission);
                 return false;
             } else {
                 return this.pickImage();
@@ -53,13 +54,13 @@ class Profile extends PureComponent {
 
     render() {
         const {loading} = this.state;
-        const {navigation, theme, tasks, finished, profile, categories} = this.props;
+        const {navigation, theme, tasks, finished, profile, categories, translations} = this.props;
         let list;
         const listData = [];
-        listData.push({label: 'All task', data: tasks.length + finished.length});
-        listData.push({label: 'Finished task', data: finished.length});
-        listData.push({label: 'Ended task', data: profile.endedTask});
-        listData.push({label: 'All categories', data: categories.length});
+        listData.push({label: translations.allTask, data: tasks.length + finished.length});
+        listData.push({label: translations.finishedTask, data: finished.length});
+        listData.push({label: translations.endedTask, data: profile.endedTask});
+        listData.push({label: translations.allCategories, data: categories.length});
 
         if (profile.id === 0) {
             list = listData.map((item, index) => (
@@ -82,7 +83,7 @@ class Profile extends PureComponent {
                 <Toolbar
                     leftElement="arrow-back"
                     onLeftElementPress={() => navigation.goBack()}
-                    centerElement='Your profile'
+                    centerElement={translations.title}
                 />
 
                 {!loading ?
@@ -107,7 +108,7 @@ class Profile extends PureComponent {
                                 changed={value => this.props.onChangeName(value)}/>
                         </View>
                         }
-                        <ScrollView style={{flex: 1}}>
+                        <ScrollView style={flex}>
                             {list}
                         </ScrollView>
                     </React.Fragment> : <Spinner/>
@@ -142,11 +143,12 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
-        settings: state.settings,
+        settings: state.settings.settings,
         tasks: state.tasks.tasks,
         finished: state.tasks.finished,
         profile: state.profile,
         categories: state.categories.categories,
+        translations: state.settings.translations.Profile
     }
 };
 const mapDispatchToProps = dispatch => {

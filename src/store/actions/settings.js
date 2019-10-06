@@ -15,7 +15,7 @@ export const initSettings = (callback = () => null) => {
         db.transaction(
             tx => {
                 tx.executeSql('select * from settings;', [], (_, {rows}) => {
-                    callback();
+                    callback(rows._array[0].lang);
                     dispatch(onUpdateSettings(rows._array[0]));
                 });
             }, (err) => console.log(err)
@@ -100,6 +100,18 @@ export const changeConfirmDeletingTask = (value) => {
         db.transaction(
             tx => {
                 tx.executeSql('update settings set confirmDeletingTask = ? where id = 0;', [value], () => {
+                    dispatch(initSettings())
+                });
+            }, (err) => console.log(err)
+        );
+    };
+};
+
+export const changeHideTabView = (value) => {
+    return dispatch => {
+        db.transaction(
+            tx => {
+                tx.executeSql('update settings set hideTabView = ? where id = 0;', [value], () => {
                     dispatch(initSettings())
                 });
             }, (err) => console.log(err)

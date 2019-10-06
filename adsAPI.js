@@ -7,5 +7,5 @@ export const BannerAd = () => (
     <AdMobBanner
         bannerSize="fullBanner"
         adUnitID={bannerAPI}
-        testDeviceID="EMULATOR" />
+        testDeviceID="EMULATOR"/>
 );

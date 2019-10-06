@@ -1,0 +1,184 @@
+{
+  "common": {
+    "yes": "Yes",
+    "save": "Save",
+    "cancel": "Cancel",
+    "no": "No",
+    "confirm": "Confirm",
+    "search": "Search",
+    "defaultTitle": "Are you sure?"
+  },
+  "TaskList": {
+    "done": "Done",
+    "undo": "Undo",
+    "overdue": "Overdue",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "thisWeek": "This week",
+    "nextWeek": "Next week",
+    "thisMonth": "This month",
+    "nextMonth": "Next month",
+    "later": "Later",
+    "other": "Other",
+    "finished": "Finished",
+    "newCategory": "New category",
+    "all": "All",
+    "emptyList": "Task list is empty!",
+    "date": "Date",
+    "category": "Category",
+    "priority": "Priority",
+    "repeatTitle": "Repeat task?",
+    "repeatDescription": "Do you want to repeat this task?",
+    "finishDescription": "Finish this task?",
+    "deleteDescription": "Delete this task?",
+    "finishAllDescription": "Do you want to delete all finished task?"
+  },
+  "Themes": {
+    "snackbar": "Theme has been updated",
+    "title": "Themes",
+    "themesList": "Themes list",
+    "defaultTheme": "Default theme",
+    "darkTheme": "Dark theme",
+    "yourThemes": "Your themes",
+    "addTheme": "Add your own theme"
+  },
+  "Theme": {
+    "defaultName": "Tap to change name",
+    "themeNameLabel": "Enter theme name",
+    "main": "Main",
+    "elements": "Elements",
+    "buttons": "Buttons",
+    "priorities": "Priorities",
+    "exitDescription": "Quit without saving?",
+    "deleteDescription": "Delete this theme?",
+    "changeNameTitle": "Edit theme name"
+  },
+  "Settings": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "english": "English",
+    "polish": "Polish",
+    "showFirstDayOfWeekTitle": "Select first day of week",
+    "showLanguagesTitle": "Select language",
+    "firstDaySnackbar": "First day of week has been changed",
+    "langSnackbar": "Language has been changed",
+    "settings": "Settings",
+    "general": "General",
+    "timeCycle": "24H time cycle",
+    "firstDayOfWeek": "First day of week",
+    "language": "Language",
+    "confirmFinishing": "Confirm finishing task",
+    "confirmRepeating": "Confirm repeating task",
+    "confirmDeleting": "Confirm deleting task",
+    "hideTabView": "Hide tab view",
+    "version": "Version"
+  },
+  "QuicklyList": {
+    "dialogDescription1": "Delete",
+    "dialogDescription2": "list?",
+    "totalTasks": "Total tasks:",
+    "quicklyLists": "Quickly lists",
+    "emptyList": "Quickly lists is empty!"
+  },
+  "QuicklyTaskList": {
+    "listName": "List name",
+    "dialogTitle": "Edit list name",
+    "emptyList": "Quickly list is empty!"
+  },
+  "ConfigQuicklyTask": {
+    "quicklyTaskName": "Enter quickly task name",
+    "editTask": "Edit task",
+    "newTask": "New task"
+  },
+  "Profile": {
+    "permission": "Sorry, we need camera roll permissions to make this work!",
+    "allTask": "All task",
+    "finishedTask": "Finished task",
+    "endedTask": "Ended task",
+    "allCategories": "All categories",
+    "title": "Your profile"
+  },
+  "Drawer": {
+    "back": "Back",
+    "categories": "Categories",
+    "profile": "Profile",
+    "themes": "Themes",
+    "settings": "Settings",
+    "backups": "Backups",
+    "about": "About Maker"
+  },
+  "ConfigTask": {
+    "nameLabel": "Enter task name",
+    "descriptionLabel": "Enter task description",
+    "noRepeat": "No repeat",
+    "onceDay": "Once a Day",
+    "onceWeekMonFri": "Once a Week (Mon-Fri)",
+    "onceWeekSatSun": "Once a Week (Sat-Sun)",
+    "onceWeek": "Once a Week",
+    "onceMonth": "Once a Month",
+    "onceYear": "Once a Year",
+    "other": "Other",
+    "all": "All",
+    "exitDescription": "Quit without saving?",
+    "deleteDescription": "Delete this task?",
+    "editTask": "Edit task",
+    "newTask": "New task",
+    "dueDate": "Due date",
+    "selectDueDate": "Select due date",
+    "selectDueTime": "Select due time",
+    "setCalendarEvent": "Set calendar event",
+    "setNotification": "Set notification",
+    "repeat": "Repeat",
+    "category": "Category",
+    "priority": "Priority",
+    "priorityNone": "None",
+    "priorityLow": "Low",
+    "priorityMedium": "Medium",
+    "priorityHigh": "High"
+  },
+  "OtherRepeat": {
+    "valueLabel": "Enter repeat value",
+    "dialogTitle": "Config custom repeat",
+    "days": "Days",
+    "week": "Weeks",
+    "month": "Months",
+    "year": "Years"
+  },
+  "ConfigCategory": {
+    "nameLabel": "Enter category name",
+    "editCategory": "Edit category",
+    "newCategory": "New category"
+  },
+  "Categories": {
+    "title": "Categories"
+  },
+  "Backup": {
+    "title": "Backups",
+    "loadingError": "Loading backups error!",
+    "dbReplaced": "Database has been replaced",
+    "dbReplacedError": "Replacing database error!",
+    "backupCreated": "Backup has been created",
+    "backupCreatedError": "Creating backup error!",
+    "backupRemoved": "Backup has been removed",
+    "backupRemovedError": "Removing backup error!",
+    "incorrectFile": "This file is incorrect!",
+    "showBackupAlertDescription1": "Replace current database by",
+    "showBackupAlertDescription2": "This will delete your current database!",
+    "showSelectBackupSourceTitle": "Add database from...",
+    "showConfirmDeleteDescription": "Delete this backup?",
+    "yourApp": "Your app",
+    "yourStorage": "Your storage",
+    "emptyList": "Backup list is empty!"
+  },
+  "About": {
+    "title": "About",
+    "primaryText": "Maker is an advanced ToDo mobile application created with React Native and Expo framework.\n This app works with Android and iOS.",
+    "secondaryText": "Maker source code is available on github:"
+  },
+  "validation": {
+    "tooLong": "is too long!",
+    "number": "must be a number!",
+    "greaterThanZero": "must be greater than zero!",
+    "required": "is required!"
+  }
+}

@@ -10,17 +10,21 @@ This app working with Android and iOS.
 ## Basic features  
   
 - Task list
+- Quickly list
 - Create, Edit and Remove task
 - Task categories
 - Task priority
 - Repeating task system
 - Finished task list
-- Sorting task
-- Searching task system
+- Integrate with calendar
+- Notification system
+- Advanced sorting
+- Searching system
 - Dark mode and own themes
 - App settings
 - Profile tab with statistics
 - Save data in local database
+- Support languages: English, Polish
 - Database backup system
 
 ## Technologies  
@@ -39,24 +43,34 @@ This app working with Android and iOS.
 - React Native Material TextField <i>0.12.0</i>  
 - React Native Color Picker <i>0.4.1</i>  
 - React Native Settings List <i>1.8.0</i>  
+- React Native Reanimated <i>1.0.1</i>  
+- React Native Tab View <i>2.10.0</i>  
 - Moment.JS <i>2.24.0</i>
 - Expo <i>33.0.0</i>
 - Axios <i>0.19.0</i>
 
-### ToDo list
+### Change logs:
+##### v1.1:
+* Quickly list :heavy_check_mark:
+* Integration with calendar :heavy_check_mark:
+* Add notification system :heavy_check_mark:
+* Add polish language :heavy_check_mark:
+* Update database :heavy_check_mark:
+* Fix re-render task list :heavy_check_mark:
+* Change theme editing name :heavy_check_mark:
+* Fix updating theme :heavy_check_mark:
+* Update themes :heavy_check_mark:
+* Clear and optimization code :heavy_check_mark:
 
-##### 1.1v ToDo:
-* Add quickly list :x:
-* Add other languages :x:
-* Add notifications system :x:
-* Add custom repeating range :x:
-* Change datepicker theme :x:
-* Upgrade about tab design :x:
-* Create unit tests :x:
+### ToDo list
+* Support more languages
+* Change calendar
+* Optimization code
 
 #### Legend:
-:heavy_minus_sign: - I am working on it now \
-:x: - I done not start work on this
+:heavy_check_mark: - Done \
+:heavy_minus_sign: - I'm working on it now \
+:x: - I don't start work on this
 
 ### WebStrong &copy;  
   

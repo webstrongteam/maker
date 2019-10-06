@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {Icon, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {container, fullWidth} from '../../shared/styles';
-import ConfigCategory from '../ConfigCategory/ConfigCategory';
+import ConfigCategory from './ConfigCategory';
 import Template from '../Template/Template';
 import {BannerAd} from '../../../adsAPI';
 
@@ -46,7 +46,7 @@ class CategoriesList extends PureComponent {
 
     render() {
         const {showModal, selectedCategory, taskPerCategory, ready} = this.state;
-        const {categories, navigation, theme} = this.props;
+        const {categories, navigation, theme, translations} = this.props;
 
         return (
             <Template>
@@ -60,7 +60,7 @@ class CategoriesList extends PureComponent {
                     onLeftElementPress={() => {
                         navigation.goBack();
                     }}
-                    centerElement='Categories'
+                    centerElement={translations.title}
                 />
                 {showModal &&
                 <ConfigCategory
@@ -109,7 +109,8 @@ const mapStateToProps = state => {
     return {
         tasks: state.tasks.tasks,
         categories: state.categories.categories,
-        theme: state.theme.theme
+        theme: state.theme.theme,
+        translations: state.settings.translations.Categories
     }
 };
 

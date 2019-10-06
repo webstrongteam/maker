@@ -1,10 +1,10 @@
 import React from 'react';
 import {createAppContainer, createStackNavigator} from 'react-navigation';
-
 // Components
 import ToDo from "./src/container/ToDo/ToDo";
-import ConfigTask from "./src/container/ConfigTask/ConfigTask";
-import CategoriesList from './src/container/CategoriesList/CategoriesList';
+import ConfigTask from "./src/container/Tasks/ConfigTask/ConfigTask";
+import QuicklyTaskList from './src/container/QuicklyList/QuicklyTaskList';
+import CategoriesList from './src/container/Categories/CategoriesList';
 import Drawer from './src/container/Drawer/Drawer';
 import Themes from './src/container/Themes/Themes';
 import Theme from './src/container/Themes/Theme';
@@ -17,6 +17,7 @@ const MainNavigator = createStackNavigator(
     {
         ToDo: {screen: ToDo},
         ConfigTask: {screen: ConfigTask},
+        QuicklyTaskList: {screen: QuicklyTaskList},
         CategoriesList: {screen: CategoriesList},
         Profile: {screen: Profile},
         Drawer: {screen: Drawer},

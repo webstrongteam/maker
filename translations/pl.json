@@ -1,0 +1,189 @@
+{
+  "common": {
+    "yes": "Tak",
+    "cancel": "Anuluj",
+    "confirm": "Potwierdź",
+    "search": "Wyszukaj",
+    "save": "Zapisz",
+    "no": "Nie",
+    "defaultTitle": "Jesteś pewien?"
+  },
+  "TaskList": {
+    "done": "Gotowe",
+    "undo": "Confij",
+    "overdue": "Opóźnienia",
+    "today": "Dzisiaj",
+    "tomorrow": "Jutro",
+    "thisWeek": "W tym tygodniu",
+    "nextWeek": "W następnym tygodniu",
+    "thisMonth": "W tym miesiącu",
+    "nextMonth": "W następnym miesiącu",
+    "later": "Później",
+    "other": "Inne",
+    "finished": "Ukończone",
+    "newCategory": "Nowa kategoria",
+    "all": "Wszystkie",
+    "emptyList": "Lista zadań jest pusta!",
+    "date": "Date",
+    "category": "Kategorie",
+    "priority": "Piorytet",
+    "repeatTitle": "Powtórzyć zadanie?",
+    "repeatDescription": "Czy na pewno chcesz powtórzyć to zadanie?",
+    "finishDescription": "Zakończyć to zadanie?",
+    "deleteTitle": "Jesteś pewnien?",
+    "deleteDescription": "Usunąć to zadanie?",
+    "finishAllDescription": "Czy na pewno chcesz usunąć ukończone zadania?"
+  },
+  "Themes": {
+    "snackbar": "Motyw został zaktualizowany",
+    "themesList": "Lista motywów",
+    "title": "Motywy",
+    "defaultTheme": "Domyślny motyw",
+    "darkTheme": "Ciemny motyw",
+    "yourThemes": "Twoje motywy",
+    "addTheme": "Dodaj własny motyw"
+  },
+  "Theme": {
+    "defaultName": "Kliknij by zmienić nazwę",
+    "themeNameLabel": "Wprowadź nazwę motywu",
+    "main": "Główne",
+    "elements": "Elementy",
+    "buttons": "Przyciski",
+    "priorities": "Piorytety",
+    "exitTitle": "Jesteś pewnien?",
+    "exitDescription": "Wyjść bez zapisywania?",
+    "deleteTitle": "Jesteś pewnien?",
+    "deleteDescription": "Usunąć ten motyw?",
+    "changeNameTitle": "Edycja nazwy motywu"
+  },
+  "Settings": {
+    "sunday": "Niedziela",
+    "monday": "Poniedziałek",
+    "english": "Angielski",
+    "polish": "Polski",
+    "showFirstDayOfWeekTitle": "Wybierz pierwszy dzień tygodnia",
+    "showLanguagesTitle": "Wybierz język",
+    "firstDaySnackbar": "Pierwszy dzień tygodnia został zaktualizowany",
+    "langSnackbar": "Język został zaktualizowany",
+    "settings": "Ustawienia",
+    "general": "Generalne",
+    "timeCycle": "24-godzinny cykl",
+    "firstDayOfWeek": "Pierwszy dzień tygodnia",
+    "language": "Język",
+    "confirmFinishing": "Potwierdź ukończenie zadania",
+    "confirmRepeating": "Potwierdź powtórzenie zadania",
+    "confirmDeleting": "Potwierdź usuwanie zadania",
+    "hideTabView": "Ukryj widok zakładek",
+    "version": "Wersja"
+  },
+  "QuicklyList": {
+    "dialogTitle": "Jesteś pewnien?",
+    "dialogDescription1": "Usunąć",
+    "dialogDescription2": "listę?",
+    "totalTasks": "Wszystkie zadania:",
+    "quicklyLists": "Szybkie listy",
+    "emptyList": "Szybkie listy są puste!"
+  },
+  "QuicklyTaskList": {
+    "listName": "Nazwa listy",
+    "dialogTitle": "Edycja nazwy listy",
+    "emptyList": "Szybka lista jest pusta!"
+  },
+  "ConfigQuicklyTask": {
+    "quicklyTaskName": "Wprowadź nazwę szybkiego zadania",
+    "editTask": "Edytuj zadanie",
+    "newTask": "Nowe zadanie"
+  },
+  "Profile": {
+    "permission": "Przepraszamy, ale potrzebujemy dostępu do obsługi kamery by ta opcja działała!",
+    "allTask": "Wszystkie zadania",
+    "finishedTask": "Ukończone zadania",
+    "endedTask": "Usunięte zadania",
+    "allCategories": "Wszystkie kategorie",
+    "title": "Twój profil"
+  },
+  "Drawer": {
+    "back": "Powrót",
+    "categories": "Kategorie",
+    "profile": "Profil",
+    "themes": "Motywy",
+    "settings": "Ustawienia",
+    "backups": "Kopie zapasowe",
+    "about": "Informacje o aplikacji"
+  },
+  "ConfigTask": {
+    "nameLabel": "Wprowadź nazwę zadania",
+    "descriptionLabel": "Wprowadź opis zadania",
+    "noRepeat": "Nie powtarzaj",
+    "onceDay": "Raz dziennie",
+    "onceWeekMonFri": "Raz w tygodniu (Pon-Pt)",
+    "onceWeekSatSun": "Raz w tygodniu (Sob-Niedz)",
+    "onceWeek": "Raz w tygodniu",
+    "onceMonth": "Raz w miesiącu",
+    "onceYear": "Raz w roku",
+    "other": "Inne",
+    "all": "Wszystkie",
+    "exitDescription": "Wyjść bez zapisywania?",
+    "deleteTitle": "Jesteś pewnien?",
+    "deleteDescription": "Usunąć to zadanie?",
+    "editTask": "Edytuj zadanie",
+    "newTask": "Nowe zadanie",
+    "dueDate": "Termin",
+    "selectDueDate": "Wybierz termin",
+    "selectDueTime": "Wybierz godzinę",
+    "setCalendarEvent": "Ustaw wydarzenie w kalendarzu",
+    "setNotification": "Ustaw powiadomienie",
+    "repeat": "Powtarzaj co",
+    "category": "Kategoria",
+    "priority": "Piorytet",
+    "priorityNone": "Brak",
+    "priorityLow": "Mały",
+    "priorityMedium": "Średni",
+    "priorityHigh": "Wysoki"
+  },
+  "OtherRepeat": {
+    "valueLabel": "Wprowadź wartość powtórzeń",
+    "dialogTitle": "Ustawienia niestandardowych powtórzeń",
+    "days": "Dni",
+    "week": "Tygodnie",
+    "month": "Miesiące",
+    "year": "Lata"
+  },
+  "ConfigCategory": {
+    "nameLabel": "Wprowadź nazwę kategorii",
+    "editCategory": "Edytuj kategorie",
+    "newCategory": "Nowa kategoria"
+  },
+  "Categories": {
+    "title": "Kategorie"
+  },
+  "Backup": {
+    "title": "Kopie zapasowe",
+    "loadingError": "Błąd ładowania kopii zapasowych!",
+    "dbReplaced": "Baza danych została zastąpiona",
+    "dbReplacedError": "Błąd nadpisywania bazy danych!",
+    "backupCreated": "Kopia zapasowa została stworzona",
+    "backupCreatedError": "Błąd tworzenia kopii zapasowej!",
+    "backupRemoved": "Kopia zapasowa została usunięta",
+    "backupRemovedError": "Błąd usuwania kopii zapasowej!",
+    "incorrectFile": "Ten plik jest niepoprawny!",
+    "showBackupAlertDescription1": "Nadpisać aktualną bazę danych przez",
+    "showBackupAlertDescription2": "To spowoduje usunięcie aktualnej bazy danych!",
+    "showSelectBackupSourceTitle": "Dodaj bazę danych z...",
+    "showConfirmDeleteDescription": "Usunąć kopie bazy danych?",
+    "yourApp": "Twojej aplikacji",
+    "yourStorage": "Twojego telefonu",
+    "emptyList": "Lista kopii zapasowych jest pusta!"
+  },
+  "About": {
+    "title": "Informacje",
+    "primaryText": "Maker to zaawansowana aplikacja moblna przeznaczona do zarządzania zadaniami.\n Aplikacja ta została stworzona z wykorzystaniem technologii React Native i Expo framework. Aplikacja działan na platformie Android i iOS.",
+    "secondaryText": "Kod źródłowy aplikacji znajduje się w repozytorium GitHub'a:"
+  },
+  "validation": {
+    "tooLong": "jest zbyt długi!",
+    "number": "musi zawierać liczbe!",
+    "greaterThanZero": "musi być większę od zera!",
+    "required": "jest wymagane!"
+  }
+}
