@@ -24,11 +24,9 @@
     "newCategory": "Nowa kategoria",
     "all": "Wszystkie",
     "emptyList": "Lista zadań jest pusta!",
-
     "date": "Date",
     "category": "Kategorie",
     "priority": "Piorytet",
-
     "repeatTitle": "Powtórzyć zadanie?",
     "repeatDescription": "Czy na pewno chcesz powtórzyć to zadanie?",
     "finishDescription": "Zakończyć to zadanie?",
@@ -48,12 +46,10 @@
   "Theme": {
     "defaultName": "Kliknij by zmienić nazwę",
     "themeNameLabel": "Wprowadź nazwę motywu",
-
     "main": "Główne",
     "elements": "Elementy",
     "buttons": "Przyciski",
     "priorities": "Piorytety",
-
     "exitTitle": "Jesteś pewnien?",
     "exitDescription": "Wyjść bez zapisywania?",
     "deleteTitle": "Jesteś pewnien?",
@@ -181,7 +177,7 @@
   },
   "About": {
     "title": "Informacje",
-    "primaryText": "Maker to zaawansowana aplikacja moblna przeznaczona do zarządzania zadaniami. Aplikacja ta została stworzona z wykorzystaniem technologii React Native i Expo framework. Aplikacja działan na platformie Android i iOS.",
+    "primaryText": "Maker to zaawansowana aplikacja moblna przeznaczona do zarządzania zadaniami.\n Aplikacja ta została stworzona z wykorzystaniem technologii React Native i Expo framework. Aplikacja działan na platformie Android i iOS.",
     "secondaryText": "Kod źródłowy aplikacji znajduje się w repozytorium GitHub'a:"
   },
   "validation": {

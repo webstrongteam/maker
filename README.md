@@ -49,19 +49,23 @@ This app working with Android and iOS.
 - Expo <i>33.0.0</i>
 - Axios <i>0.19.0</i>
 
-### ToDo list
-
-##### 1.1v ToDo:
-* Add quickly list :heavy_check_mark:
-* Integrate with calendar :heavy_check_mark:
-* Add notification :heavy_check_mark:
+### Change logs:
+##### v1.1:
+* Quickly list :heavy_check_mark:
+* Integration with calendar :heavy_check_mark:
+* Add notification system :heavy_check_mark:
+* Add polish language :heavy_check_mark:
+* Update database :heavy_check_mark:
 * Fix re-render task list :heavy_check_mark:
 * Change theme editing name :heavy_check_mark:
 * Fix updating theme :heavy_check_mark:
 * Update themes :heavy_check_mark:
-* Add polish language :heavy_check_mark:
-* Auto-update database :x:
-* Clear and optimization code :x:
+* Clear and optimization code :heavy_check_mark:
+
+### ToDo list
+* Support more languages
+* Change calendar
+* Optimization code
 
 #### Legend:
 :heavy_check_mark: - Done \

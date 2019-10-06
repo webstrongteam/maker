@@ -1,16 +1,17 @@
 import React from "react";
 import {View} from 'react-native';
+import {flex} from '../../../shared/styles'
 import {ColorPicker} from 'react-native-color-picker'
 import Dialog from "react-native-dialog";
 
 const colorPicker = (props) => (
     <Dialog.Container visible={props.show}>
         <Dialog.Title>{props.title}</Dialog.Title>
-        <View style={{flex: 1}}>
+        <View style={flex}>
             <ColorPicker
                 defaultColor={props.defaultColor}
                 onColorChange={color => props.changeColor(color)}
-                style={{flex: 1}}
+                style={flex}
             />
         </View>
         <Dialog.Button

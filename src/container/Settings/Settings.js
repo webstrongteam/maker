@@ -20,7 +20,10 @@ class Settings extends PureComponent {
         dialog: null,
         showFirstDayOfWeek: false,
         showLanguages: false,
-        daysOfWeek: [this.props.translations.sunday, this.props.translations.monday],
+        daysOfWeek: [
+            {name: this.props.translations.sunday, value: 'Sunday'},
+            {name: this.props.translations.monday, value: 'Monday'}
+        ],
         languages: [
             {name: this.props.translations.english, short_name: 'en'},
             {name: this.props.translations.polish, short_name: 'pl'}
@@ -34,6 +37,21 @@ class Settings extends PureComponent {
     componentDidMount() {
         this.props.onInitSettings(() => this.setState({loading: false}));
     };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.settings.lang !== this.props.settings.lang) {
+            const {translations} = this.props;
+            const daysOfWeek = [
+                {name: translations.sunday, value: 'Sunday'},
+                {name: translations.monday, value: 'Monday'}
+            ];
+            const languages = [
+                {name: translations.english, short_name: 'en'},
+                {name: translations.polish, short_name: 'pl'}
+            ];
+            this.setState({daysOfWeek, languages});
+        }
+    }
 
     toggleSnackbar = (message, visible = true) => {
         this.setState({snackbar: {visible, message}});
@@ -91,17 +109,17 @@ class Settings extends PureComponent {
                             key={index}
                             onPress={() => {
                                 this.setState({showFirstDayOfWeek: false});
-                                this.props.onChangeFirstDayOfWeek(day);
+                                this.props.onChangeFirstDayOfWeek(day.value);
                                 this.toggleSnackbar(translations.firstDaySnackbar);
                             }}
                             style={{
                                 primaryText: {
-                                    color: settings.firstDayOfWeek === day ?
+                                    color: settings.firstDayOfWeek === day.value ?
                                         theme.primaryColor : theme.textColor
                                 }
                             }}
                             centerElement={{
-                                primaryText: day,
+                                primaryText: day.name,
                             }}
                         />
                     ))
@@ -189,7 +207,7 @@ class Settings extends PureComponent {
                                 hasNavArrow={true}
                                 itemWidth={70}
                                 hasSwitch={false}
-                                titleInfo={settings.firstDayOfWeek}
+                                titleInfo={daysOfWeek.find(d => d.value === settings.firstDayOfWeek).name}
                                 onPress={() => this.showDialog('showFirstDayOfWeek')}
                                 titleStyle={{color: theme.textColor, fontSize: 16}}
                                 title={translations.firstDayOfWeek}
@@ -267,7 +285,9 @@ class Settings extends PureComponent {
                             />
                         </SettingsList>
                         <View style={styles.version}>
-                            <Text style={{color: theme.textColor}}>{translations.version}: {settings.version} (hotfix 1)</Text>
+                            <Text style={{color: theme.textColor}}>
+                                {translations.version}: {settings.version}
+                            </Text>
                         </View>
                     </React.Fragment> : <Spinner/>
                 }

@@ -45,7 +45,7 @@ const about = (props) => {
                 </ScrollView>
                 <View style={{opacity: 0.5}}>
                     <Text style={[styles.copy, {color: props.theme.textColor}]}>
-                        &copy; by Mateusz Pijanowski (WebStrong team) v.{VERSION} (hotfix 1)
+                        &copy; by Mateusz Pijanowski (WebStrong team) v.{VERSION}
                     </Text>
                 </View>
             </View>

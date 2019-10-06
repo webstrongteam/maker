@@ -7,7 +7,7 @@ import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import {Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import {separator} from '../../shared/styles';
+import {flex, separator} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
 import {connect} from 'react-redux';
@@ -108,7 +108,7 @@ class Profile extends PureComponent {
                                 changed={value => this.props.onChangeName(value)}/>
                         </View>
                         }
-                        <ScrollView style={{flex: 1}}>
+                        <ScrollView style={flex}>
                             {list}
                         </ScrollView>
                     </React.Fragment> : <Spinner/>

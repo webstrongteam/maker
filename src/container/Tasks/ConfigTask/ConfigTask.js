@@ -337,7 +337,7 @@ class ConfigTask extends Component {
                             />
                             <DatePicker
                                 ref={(e) => this.datepickerDate = e}
-                                style={{width: '100%'}}
+                                style={fullWidth}
                                 date={task.date.slice(0, 10)}
                                 mode="date"
                                 iconComponent={
@@ -361,7 +361,7 @@ class ConfigTask extends Component {
                             <React.Fragment>
                                 <DatePicker
                                     ref={(e) => this.datepickerTime = e}
-                                    style={{width: '100%'}}
+                                    style={fullWidth}
                                     date={task.date.slice(13, 18)}
                                     is24Hour={!!settings.timeFormat}
                                     mode="time"

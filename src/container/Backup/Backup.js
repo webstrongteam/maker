@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {IconToggle, ListItem, Snackbar, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
-import {container, empty, fullWidth} from '../../shared/styles';
+import {container, empty, fullWidth, row} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import * as FileSystem from "expo-file-system";
@@ -275,7 +275,7 @@ ${translations.showBackupAlertDescription2}`,
                                             container: {height: 50}
                                         }}
                                         rightElement={
-                                            <View style={{flexDirection: 'row'}}>
+                                            <View style={row}>
                                                 <IconToggle
                                                     onPress={() => this.shareBackup(name)}
                                                     name="share"/>

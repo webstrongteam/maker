@@ -55,9 +55,9 @@ class App extends Component {
         return (
             ready ?
                 <Provider store={store}>
-                        <ThemeContext.Provider value={getTheme(uiTheme)}>
-                            <Router/>
-                        </ThemeContext.Provider>
+                    <ThemeContext.Provider value={getTheme(uiTheme)}>
+                        <Router/>
+                    </ThemeContext.Provider>
                 </Provider> :
                 <View style={activity}>
                     <ActivityIndicator size="large" color="#0000ff"/>

@@ -13,7 +13,7 @@ import {
 import {generateDialogObject, sortingByType} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
-import {content, empty, fullWidth} from '../../shared/styles';
+import {empty, flex, fullWidth} from '../../shared/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
 import ConfigCategory from "../Categories/ConfigCategory";
 import moment from 'moment';
@@ -512,7 +512,7 @@ class TaskList extends Component {
             ));
 
         return (
-            <View style={content}>
+            <View style={flex}>
                 <Toolbar
                     searchable={{
                         autoFocus: true,

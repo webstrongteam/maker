@@ -24,11 +24,9 @@
     "newCategory": "New category",
     "all": "All",
     "emptyList": "Task list is empty!",
-
     "date": "Date",
     "category": "Category",
     "priority": "Priority",
-
     "repeatTitle": "Repeat task?",
     "repeatDescription": "Do you want to repeat this task?",
     "finishDescription": "Finish this task?",
@@ -47,12 +45,10 @@
   "Theme": {
     "defaultName": "Tap to change name",
     "themeNameLabel": "Enter theme name",
-
     "main": "Main",
     "elements": "Elements",
     "buttons": "Buttons",
     "priorities": "Priorities",
-
     "exitDescription": "Quit without saving?",
     "deleteDescription": "Delete this theme?",
     "changeNameTitle": "Edit theme name"
@@ -176,7 +172,7 @@
   },
   "About": {
     "title": "About",
-    "primaryText": "Maker is an advanced ToDo mobile application created with React Native and Expo framework. This app works with Android and iOS.",
+    "primaryText": "Maker is an advanced ToDo mobile application created with React Native and Expo framework.\n This app works with Android and iOS.",
     "secondaryText": "Maker source code is available on github:"
   },
   "validation": {

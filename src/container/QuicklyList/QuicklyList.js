@@ -4,7 +4,7 @@ import {ActionButton, IconToggle, ListItem, Toolbar} from 'react-native-material
 import {generateDialogObject} from '../../shared/utility';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
-import {content, empty, fullWidth} from '../../shared/styles';
+import {empty, flex, fullWidth} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 
 import {connect} from 'react-redux';
@@ -140,7 +140,7 @@ class QuicklyList extends Component {
         });
 
         return (
-            <View style={content}>
+            <View style={flex}>
                 <Toolbar
                     searchable={{
                         autoFocus: true,

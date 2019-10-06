@@ -26,16 +26,32 @@ class DrawerContainer extends Component {
                                 value: translations.categories,
                                 onPress: () => navigation.navigate('CategoriesList')
                             },
-                            {icon: 'people', value: translations.profile, onPress: () => navigation.navigate('Profile')},
+                            {
+                                icon: 'people',
+                                value: translations.profile,
+                                onPress: () => navigation.navigate('Profile')
+                            },
                         ]}
                     />
                     <Drawer.Section
                         title="App"
                         style={{container: {backgroundColor: theme.secondaryBackgroundColor}}}
                         items={[
-                            {icon: 'assessment', value: translations.themes, onPress: () => navigation.navigate('Themes')},
-                            {icon: 'settings', value: translations.settings, onPress: () => navigation.navigate('Settings')},
-                            {icon: 'backup', value: translations.backups, onPress: () => navigation.navigate('Backups')},
+                            {
+                                icon: 'assessment',
+                                value: translations.themes,
+                                onPress: () => navigation.navigate('Themes')
+                            },
+                            {
+                                icon: 'settings',
+                                value: translations.settings,
+                                onPress: () => navigation.navigate('Settings')
+                            },
+                            {
+                                icon: 'backup',
+                                value: translations.backups,
+                                onPress: () => navigation.navigate('Backups')
+                            },
                             {icon: 'info', value: translations.about, onPress: () => navigation.navigate('About')}
                         ]}
                     />
