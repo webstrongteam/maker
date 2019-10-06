@@ -176,9 +176,9 @@
     "secondaryText": "Maker source code is available on github:"
   },
   "validation": {
-    "tooLong": "is too long!",
-    "number": "must be a number!",
-    "greaterThanZero": "must be greater than zero!",
-    "required": "is required!"
+    "tooLong": "Text is too long!",
+    "number": "Value must be a number!",
+    "greaterThanZero": "Value must be greater than zero!",
+    "required": "Field is required!"
   }
 }

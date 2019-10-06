@@ -118,18 +118,18 @@ export const valid = (controls, value, name, translations, callback) => {
     // Validation system
     if (controls[name].characterRestriction) {
         if (value.length > controls[name].characterRestriction) {
-            controls[name].error = `${capitalize(name)} ${translations.tooLong}`;
+            controls[name].error = translations.tooLong;
             validStatus = false;
         }
     }
     if (controls[name].number) {
         if (+value !== parseInt(value, 10)) {
-            controls[name].error = `${capitalize(name)} ${translations.number}`;
+            controls[name].error = translations.number;
             validStatus = false;
         } else {
             if (controls[name].positiveNumber) {
                 if (+value < 1) {
-                    controls[name].error = `${capitalize(name)} ${translations.greaterThanZero}`;
+                    controls[name].error = translations.greaterThanZero;
                     validStatus = false;
                 }
             }
@@ -137,7 +137,7 @@ export const valid = (controls, value, name, translations, callback) => {
     }
     if (controls[name].required) {
         if (value.trim() === '') {
-            controls[name].error = `${capitalize(name)} ${translations.required}`;
+            controls[name].error = translations.required;
             validStatus = false;
         }
     }

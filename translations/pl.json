@@ -181,9 +181,9 @@
     "secondaryText": "Kod źródłowy aplikacji znajduje się w repozytorium GitHub'a:"
   },
   "validation": {
-    "tooLong": "jest zbyt długi!",
-    "number": "musi zawierać liczbe!",
-    "greaterThanZero": "musi być większę od zera!",
-    "required": "jest wymagane!"
+    "tooLong": "Tekst jest zbyt długi!",
+    "number": "Wartość musi zawierać liczbę!",
+    "greaterThanZero": "Wartość musi być większę od zera!",
+    "required": "Pole jest wymagane!"
   }
 }
