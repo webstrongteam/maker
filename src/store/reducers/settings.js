@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
 import {updateObject} from '../../shared/utility';
-import en from "../../../translations/en";
-import pl from "../../../translations/pl";
+import en from "../../../translations/en.json";
+import pl from "../../../translations/pl.json";
 
 const messages = {
     en, pl
