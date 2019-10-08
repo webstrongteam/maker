@@ -65,7 +65,8 @@ const setScheduleLocalNotification = async (task, date, color) => {
             body: task.description,
             data: date,
             android: {
-                color: color
+                color: color,
+                icon: 'http://webstrong.pl/Maker/app_images/logo.png'
             },
             ios: {
                 sound: true
