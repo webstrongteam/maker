@@ -132,14 +132,16 @@ class TaskList extends Component {
                 translations.repeatDescription,
                 {
                     [translations.yes]: () => {
-                        this.setState({showDialog: false, selectedTask: false});
-                        this.checkTaskRepeatHandler(this.state.selectedTask);
-                        this.props.onAddEndedTask();
+                        this.props.onFinishTask(this.state.selectedTask, false, this.props.theme.primaryColor, () => {
+                            this.setState({showDialog: false, selectedTask: false});
+                            this.props.onAddEndedTask();
+                        });
                     },
                     [translations.no]: () => {
-                        this.setState({showDialog: false, selectedTask: false});
-                        this.props.onAddEndedTask();
-                        this.props.onFinishTask(this.state.selectedTask, true, this.props.theme);
+                        this.props.onFinishTask(this.state.selectedTask, true, this.props.theme.primaryColor, () => {
+                            this.setState({showDialog: false, selectedTask: false});
+                            this.props.onAddEndedTask();
+                        });
                     },
                     [translations.cancel]: () => this.setState({showDialog: false, selectedTask: false})
                 }
@@ -150,10 +152,11 @@ class TaskList extends Component {
                 translations.finishDescription,
                 {
                     [translations.yes]: () => {
-                        this.setState({showDialog: false});
-                        this.props.onFinishTask(this.state.selectedTask, false, this.props.theme);
-                        this.props.onAddEndedTask();
-                        this.props.navigation.goBack();
+                        this.props.onFinishTask(this.state.selectedTask, true, this.props.theme.primaryColor, () => {
+                            this.setState({showDialog: false, selectedTask: false});
+                            this.props.onAddEndedTask();
+                            this.props.navigation.goBack();
+                        });
                     },
                     [translations.no]: () => {
                         this.setState({showDialog: false});
@@ -278,15 +281,15 @@ class TaskList extends Component {
     checkTaskRepeatHandler = (task) => {
         this.setState({selectedTask: task});
         if (task.repeat !== 'noRepeat' &&
-            !this.state.selectedTask &&
             !!this.props.settings.confirmRepeatingTask) {
             this.showDialog('repeat');
         } else {
             if (!!this.props.settings.confirmFinishingTask) {
                 this.showDialog('finish');
             } else {
-                this.props.onFinishTask(task, false, this.props.theme);
-                this.setState({selectedTask: false});
+                this.props.onFinishTask(task, false, this.props.theme.primaryColor, () => {
+                    this.setState({selectedTask: false});
+                });
             }
         }
     };
@@ -731,7 +734,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onFinishTask: (task, endTask) => dispatch(actions.finishTask(task, endTask)),
+        onFinishTask: (task, endTask, primaryColor, callback) => dispatch(actions.finishTask(task, endTask, primaryColor, callback)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onUndoTask: (task) => dispatch(actions.undoTask(task)),
         onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),

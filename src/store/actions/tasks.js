@@ -111,7 +111,7 @@ export const saveTask = (task) => {
     };
 };
 
-export const finishTask = (task, endTask, theme) => {
+export const finishTask = (task, endTask, primaryColor, callback) => {
     let nextDate = task.date;
     const dateFormat = task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
 
@@ -149,6 +149,7 @@ export const finishTask = (task, endTask, theme) => {
                         if (task.event_id !== false) {
                             deleteCalendarEvent(task.event_id);
                         }
+                        callback();
                         dispatch(initToDo());
                     });
                 }, (err) => console.log(err)
@@ -160,7 +161,8 @@ export const finishTask = (task, endTask, theme) => {
                                    set date = ?
                                    where id = ?;`, [nextDate, task.id], () => {
                             task.date = nextDate;
-                            configTask(task, theme.primaryColor, task.event_id, false);
+                            configTask(task, primaryColor, task.event_id, false);
+                            callback();
                             dispatch(initTasks());
                         }, (err) => console.log(err)
                     );

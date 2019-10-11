@@ -71,6 +71,7 @@ class ConfigTask extends Component {
                 value: 'onceYear'
             }
         },
+        taskCopy: null,
         dialog: null,
         otherOption: `${this.props.translations.other}...`,
         selectedTime: 0,
@@ -79,7 +80,6 @@ class ConfigTask extends Component {
         showDialog: false,
         editTask: null,
         showConfigCategory: false,
-        changedSth: false,
         setEvent: false,
         setNotification: false,
         loading: true
@@ -97,7 +97,10 @@ class ConfigTask extends Component {
             if (!checkExistCategory.length) {
                 this.updateTask('category', this.props.categories[0].name);
             }
-            this.setState({editTask: false, loading: false});
+            this.setState({
+                copyTask: JSON.parse(JSON.stringify(this.state.task)),
+                editTask: false, loading: false
+            });
         }
     };
 
@@ -118,6 +121,7 @@ class ConfigTask extends Component {
             if (!checkExistCategory.length) task.category = categories[0].name;
 
             this.setState({
+                taskCopy: JSON.parse(JSON.stringify(task)),
                 editTask: true, task,
                 otherOption, repeatValue,
                 setEvent: task.event_id !== null,
@@ -131,7 +135,7 @@ class ConfigTask extends Component {
         const task = this.state.task;
         if (task[name] + '' === value + '') return null;
         task[name] = value;
-        this.setState({task, changedSth: true});
+        this.setState({task});
     };
 
     showDialog = (action) => {
@@ -161,7 +165,7 @@ class ConfigTask extends Component {
                 translations.defaultTitle,
                 translations.deleteDescription,
                 {
-                    [translations.save]: () => {
+                    [translations.yes]: () => {
                         this.setState({showDialog: false});
                         this.props.onRemoveTask(task);
                         this.props.navigation.goBack();
@@ -220,6 +224,13 @@ class ConfigTask extends Component {
         return newDate;
     };
 
+    checkChanges = () => {
+        const {task, taskCopy} = this.state;
+
+        return task.name.trim() !== '' &&
+            JSON.stringify(task) !== JSON.stringify(taskCopy);
+    };
+
     saveTask = () => {
         let {task, setEvent, setNotification} = this.state;
         const {navigation, theme} = this.props;
@@ -239,7 +250,7 @@ class ConfigTask extends Component {
 
     render() {
         const {
-            task, changedSth, controls, loading, editTask,
+            task, controls, loading, editTask,
             showConfigCategory, repeat, dialog, showDialog,
             otherOption, selectedTime, showOtherRepeat, repeatValue,
             setEvent, setNotification
@@ -274,7 +285,7 @@ class ConfigTask extends Component {
                         </View>
                     }
                     onLeftElementPress={() => {
-                        if (changedSth) this.showDialog('exit');
+                        if (this.checkChanges()) this.showDialog('exit');
                         else navigation.goBack();
                     }}
                     centerElement={

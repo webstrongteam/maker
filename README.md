@@ -63,9 +63,9 @@ This app working with Android and iOS.
 * Clear and optimization code :heavy_check_mark:
 
 ### ToDo list
-* Support more languages
-* Change calendar
-* Optimization code
+* Support more languages :x:
+* Change calendar :x:
+* Optimization code :heavy_minus_sign:
 
 #### Legend:
 :heavy_check_mark: - Done \
