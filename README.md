@@ -51,21 +51,23 @@ This app working with Android and iOS.
 
 ### Change logs:
 ##### v1.1:
-* Quickly list :heavy_check_mark:
-* Integration with calendar :heavy_check_mark:
-* Add notification system :heavy_check_mark:
-* Add polish language :heavy_check_mark:
-* Update database :heavy_check_mark:
-* Fix re-render task list :heavy_check_mark:
-* Change theme editing name :heavy_check_mark:
-* Fix updating theme :heavy_check_mark:
-* Update themes :heavy_check_mark:
-* Clear and optimization code :heavy_check_mark:
+* Quickly list
+* Integration with system calendar
+* Add notification system
+* Add polish language
+* Update database
+* Fix re-render task list
+* Change theme editing nam
+* Fix updating theme
+* Update themes
+* Clear and optimization code
 
 ### ToDo list
+##### v1.2:
 * Support more languages :x:
 * Change calendar :x:
-* Optimization code :heavy_minus_sign:
+* Support and publish iOS :x:
+* Update dark theme :x:
 
 #### Legend:
 :heavy_check_mark: - Done \
