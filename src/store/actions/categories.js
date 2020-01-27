@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import {SQLite} from 'expo-sqlite';
+import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('maker.db');
 

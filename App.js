@@ -13,6 +13,7 @@ import themeReducer from './src/store/reducers/theme';
 import profileReducer from './src/store/reducers/profile';
 import settingsReducer from './src/store/reducers/settings';
 import {initDatabase, initTheme} from './db';
+import * as Font from "expo-font";
 
 const UIManager = NativeModules.UIManager;
 
@@ -35,7 +36,13 @@ class App extends Component {
         ready: false
     };
 
-    componentDidMount() {
+    async componentDidMount() {
+        await Font.loadAsync({
+            'Roboto': require('./src/assets/fonts/Roboto-Regular.ttf'),
+            'Roboto-bold': require('./src/assets/fonts/Roboto-Bold.ttf'),
+            'Roboto-light': require('./src/assets/fonts/Roboto-Light.ttf'),
+        });
+
         initDatabase(() => {
             initTheme(state => {
                 this.setState(state);
@@ -51,6 +58,7 @@ class App extends Component {
 
     render() {
         const {uiTheme, ready} = this.state;
+        console.disableYellowBox = true;
 
         return (
             ready ?
