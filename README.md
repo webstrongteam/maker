@@ -1,6 +1,6 @@
 # Maker - ToDo app 
-<a href="https://play.google.com/store/apps/details?id=com.webStrong.maker" target="_blank"><img src="http://webstrong.pl/templates/google_play_en.png" width="150"/></a>
-<a href="https://expo.io/@mateuszpijanowski/maker" target="_blank"><img src="http://webstrong.pl/templates/expo_logo.png" width="160"/></a>
+<a href="https://play.google.com/store/apps/details?id=com.webStrong.maker" target="_blank"><img src="http://webstrong.pl/templates/google_play_pl.png" width="150"/></a>
+<a href="#" target="_blank"><img src="http://webstrong.pl/templates/apple_store_pl.png" width="150"/></a>
 
 **Maker** is an advanced ToDo mobile application created with React Native and Expo framework. 
 This app working with Android and iOS. 
@@ -49,33 +49,24 @@ This app working with Android and iOS.
 - Expo <i>33.0.0</i>
 - Axios <i>0.19.0</i>
 
-### Change logs:
-##### v1.1:
-* Quickly list
-* Integration with system calendar
-* Add notification system
-* Add polish language
-* Update database
-* Fix re-render task list
-* Change theme editing nam
-* Fix updating theme
-* Update themes
-* Clear and optimization code
-
-### ToDo list
-##### v1.2:
-* Support more languages :x:
-* Change calendar :x:
-* Support and publish iOS :x:
-* Update dark theme :x:
-
-#### Legend:
-:heavy_check_mark: - Done \
-:heavy_minus_sign: - I'm working on it now \
-:x: - I don't start work on this
+### Update 2.0:
+- Zmienić ekran ładowania | MATT
+- Uprościć tworzenie motywów | MATT
+- Zmienić dropdowny | MATT
+- Wywalic wszystkie style do osobynych plikow | MICH
+- Usunąć przyciskai na zadaniach i zastąpić swipem | MICH
+- Zapisywać id kategorii a nie jego nazwe | MICH
+- Dropdown jest zle ustawiony na iOS | MATT
+- Modal z usuwania wszystkich ukonczonych zadan zwraca blad w konsoli
+- Zmienic wszedzie czcionke
+- kalendarz na iosie nie jest widoczny | MATT
+- color picker nie dziala na iosie | MATT
+- Edycja nazwy theme nie dziala na iosie | MATT
+- poprawic wyglad modali na iosie | MATT
 
 ### WebStrong &copy;  
   
-This web was created by **Mateusz Pijanowski** (<i>WebStrong team</i>) <br />
+This application was created by **WebStrong Team** <br />
 > **Google Play:** https://play.google.com/store/apps/details?id=com.webStrong.maker <br />
+> **Apple Store:** xxx <br />
 > **Expo:** https://expo.io/@mateuszpijanowski/maker

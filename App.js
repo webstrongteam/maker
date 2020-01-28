@@ -5,14 +5,14 @@ import {getTheme, ThemeContext} from 'react-native-material-ui';
 import {activity} from './src/shared/styles';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
-import Router from './router';
+import Router from './src/router';
 import tasksReducer from './src/store/reducers/tasks';
 import listsReducer from './src/store/reducers/lists';
 import cateReducer from './src/store/reducers/categories';
 import themeReducer from './src/store/reducers/theme';
 import profileReducer from './src/store/reducers/profile';
 import settingsReducer from './src/store/reducers/settings';
-import {initDatabase, initTheme} from './db';
+import {initDatabase, initTheme} from './src/db';
 import * as Font from "expo-font";
 
 const UIManager = NativeModules.UIManager;

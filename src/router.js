@@ -1,17 +1,17 @@
 import React from 'react';
 import {createAppContainer, createStackNavigator} from 'react-navigation';
 // Components
-import ToDo from "./src/container/ToDo/ToDo";
-import ConfigTask from "./src/container/Tasks/ConfigTask/ConfigTask";
-import QuicklyTaskList from './src/container/QuicklyList/QuicklyTaskList';
-import CategoriesList from './src/container/Categories/CategoriesList';
-import Drawer from './src/container/Drawer/Drawer';
-import Themes from './src/container/Themes/Themes';
-import Theme from './src/container/Themes/Theme';
-import Profile from './src/container/Profile/Profile';
-import Settings from './src/container/Settings/Settings';
-import Backups from './src/container/Backup/Backup';
-import About from './src/components/About/About';
+import ToDo from "./container/ToDo/ToDo";
+import ConfigTask from "./container/Tasks/ConfigTask/ConfigTask";
+import QuicklyTaskList from './container/QuicklyList/QuicklyTaskList';
+import CategoriesList from './container/Categories/CategoriesList';
+import Drawer from './container/Drawer/Drawer';
+import Themes from './container/Themes/Themes';
+import Theme from './container/Themes/Theme';
+import Profile from './container/Profile/Profile';
+import Settings from './container/Settings/Settings';
+import Backups from './container/Backup/Backup';
+import About from './components/About/About';
 
 const MainNavigator = createStackNavigator(
     {

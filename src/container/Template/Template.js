@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, StatusBar, View} from 'react-native';
 import {getTheme, ThemeContext} from 'react-native-material-ui';
-import {initDatabase, initTheme} from "../../../db";
+import {initDatabase, initTheme} from "../../db";
 import {flex} from '../../shared/styles';
 
 import {connect} from 'react-redux';
