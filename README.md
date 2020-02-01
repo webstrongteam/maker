@@ -50,19 +50,18 @@ This app working with Android and iOS.
 - Axios <i>0.19.0</i>
 
 ### Update 2.0:
-- Zmienić ekran ładowania | MATT
-- Uprościć tworzenie motywów | MATT
-- Zmienić dropdowny | MATT
-- Wywalic wszystkie style do osobynych plikow | MICH
-- Usunąć przyciskai na zadaniach i zastąpić swipem | MICH
+- Wywalic wszystkie możliwe style do osobynych plikow | MICH
+- Dodać swipa dla każdego zadania | MICH
 - Zapisywać id kategorii a nie jego nazwe | MICH
-- Dropdown jest zle ustawiony na iOS | MATT
-- Modal z usuwania wszystkich ukonczonych zadan zwraca blad w konsoli
-- Zmienic wszedzie czcionke
-- kalendarz na iosie nie jest widoczny | MATT
-- color picker nie dziala na iosie | MATT
+- Color picker w theme nie dziala na iosie (trzeba będzie znaleźć inną biblioteke) | MICH
+- Zmianić wszystkie modale na jeden globalny | MATT
+- Zmianić wszystkie snackbary na jeden globalny | MATT
 - Edycja nazwy theme nie dziala na iosie | MATT
-- poprawic wyglad modali na iosie | MATT
+- Uprościć tworzenie motywów | MATT
+- Zmienic wszedzie czcionke | MATT
+- Zmienić animacje usuwania zadań | MATT / MICH
+- Dodać brakujące tłumaczenia | MATT
+- Zmienić ekran ładowania | MATT
 
 ### WebStrong &copy;  
   

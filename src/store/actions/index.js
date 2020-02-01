@@ -39,6 +39,11 @@ export {
 } from './settings';
 
 export {
+    updateModal,
+    updateSnackbar
+} from './config';
+
+export {
     initProfile,
     changeName,
     changeAvatar,

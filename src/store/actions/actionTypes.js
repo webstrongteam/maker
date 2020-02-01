@@ -18,3 +18,7 @@ export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 
 // Settings
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
+
+// CONFIG
+export const UPDATE_MODAL = 'UPDATE_MODAL';
+export const UPDATE_SNACKBAR = 'UPDATE_SNACKBAR';

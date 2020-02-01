@@ -3,17 +3,18 @@ import {applyMiddleware, combineReducers, createStore} from 'redux';
 import {ActivityIndicator, NativeModules, View} from 'react-native';
 import {getTheme, ThemeContext} from 'react-native-material-ui';
 import {activity} from './src/shared/styles';
+import {initDatabase, initTheme} from './src/db';
+import * as Font from "expo-font";
+import Router from './src/router';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
-import Router from './src/router';
 import tasksReducer from './src/store/reducers/tasks';
 import listsReducer from './src/store/reducers/lists';
 import cateReducer from './src/store/reducers/categories';
 import themeReducer from './src/store/reducers/theme';
 import profileReducer from './src/store/reducers/profile';
 import settingsReducer from './src/store/reducers/settings';
-import {initDatabase, initTheme} from './src/db';
-import * as Font from "expo-font";
+import configReducer from './src/store/reducers/config';
 
 const UIManager = NativeModules.UIManager;
 
@@ -23,7 +24,8 @@ const rootReducer = combineReducers({
     categories: cateReducer,
     theme: themeReducer,
     profile: profileReducer,
-    settings: settingsReducer
+    settings: settingsReducer,
+    config: configReducer
 });
 
 const store = createStore(rootReducer, (

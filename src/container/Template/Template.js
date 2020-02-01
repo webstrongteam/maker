@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {Platform, StatusBar, View} from 'react-native';
-import {getTheme, ThemeContext} from 'react-native-material-ui';
+import {getTheme, Snackbar, ThemeContext} from 'react-native-material-ui';
 import {initDatabase, initTheme} from "../../db";
 import {flex} from '../../shared/styles';
+import Dialog from "../../components/UI/Dialog/Dialog";
 
 import {connect} from 'react-redux';
+import * as actions from "../../store/actions";
 
 class Template extends Component {
     state = {
@@ -41,6 +43,7 @@ class Template extends Component {
 
     render() {
         const {uiTheme, ready} = this.state;
+        const {showModal, modal, showSnackbar, snackbarText} = this.props;
 
         return (
             <React.Fragment>
@@ -61,6 +64,23 @@ class Template extends Component {
                         }]}>
                         {this.props.children}
                     </View>
+
+                    {showModal &&
+                    <Dialog
+                        showModal={showModal}
+
+                        select={modal.select}
+                        selectedValue={modal.selectedValue}
+
+                        title={modal.title}
+                        body={modal.body}
+                        buttons={modal.buttons}
+                    />
+                    }
+
+                    <Snackbar visible={showSnackbar} message={snackbarText}
+                              onRequestClose={() => this.props.onUpdateSnackbar(false, '')}/>
+
                 </ThemeContext.Provider>
                 }
             </React.Fragment>
@@ -69,7 +89,18 @@ class Template extends Component {
 }
 
 const mapStateToProps = state => {
-    return {theme: state.theme.theme}
+    return {
+        theme: state.theme.theme,
+        showModal: state.config.showModal,
+        modal: state.config.modal,
+        showSnackbar: state.config.showSnackbar,
+        snackbarText: state.config.snackbarText
+    }
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.showSnackbar(showSnackbar, snackbarText))
+    }
 };
 
-export default connect(mapStateToProps)(Template);
+export default connect(mapStateToProps, mapDispatchToProps)(Template);

@@ -1,17 +1,7 @@
 import React, {Component} from 'react';
 import {Animated, Easing, Platform, ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import {
-    ActionButton,
-    BottomNavigation,
-    Button,
-    Icon,
-    IconToggle,
-    ListItem,
-    Subheader,
-    Toolbar
-} from 'react-native-material-ui';
+import {ActionButton, BottomNavigation, Icon, IconToggle, ListItem, Subheader, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject, sortingByType} from '../../shared/utility';
-import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
 import {empty, flex, fullWidth} from '../../shared/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -27,13 +17,11 @@ const DOWN = -1;
 class TaskList extends Component {
     state = {
         priorityColors: {
-            none: {bgColor: this.props.theme.noneColor, color: this.props.theme.noneTextColor},
-            low: {bgColor: this.props.theme.lowColor, color: this.props.theme.lowTextColor},
-            medium: {bgColor: this.props.theme.mediumColor, color: this.props.theme.mediumTextColor},
-            high: {bgColor: this.props.theme.highColor, color: this.props.theme.highTextColor},
+            none: {bgColor: this.props.theme.noneColor},
+            low: {bgColor: this.props.theme.lowColor},
+            medium: {bgColor: this.props.theme.mediumColor},
+            high: {bgColor: this.props.theme.highColor},
         },
-        dialog: {},
-        showDialog: false,
         showConfigCategory: false,
         selectedTask: false,
         initDivision: false,
@@ -115,10 +103,10 @@ class TaskList extends Component {
     refreshPriorityColors = () => {
         this.setState({
             priorityColors: {
-                none: {bgColor: this.props.theme.noneColor, color: this.props.theme.noneTextColor},
-                low: {bgColor: this.props.theme.lowColor, color: this.props.theme.lowTextColor},
-                medium: {bgColor: this.props.theme.mediumColor, color: this.props.theme.mediumTextColor},
-                high: {bgColor: this.props.theme.highColor, color: this.props.theme.highTextColor}
+                none: {bgColor: this.props.theme.noneColor},
+                low: {bgColor: this.props.theme.lowColor},
+                medium: {bgColor: this.props.theme.mediumColor},
+                high: {bgColor: this.props.theme.highColor}
             }
         })
     };
@@ -133,17 +121,22 @@ class TaskList extends Component {
                 {
                     [translations.yes]: () => {
                         this.props.onFinishTask(this.state.selectedTask, false, this.props.theme.primaryColor, () => {
-                            this.setState({showDialog: false, selectedTask: false});
+                            this.props.onUpdateModal(false, {});
+                            this.setState({selectedTask: false});
                             this.props.onAddEndedTask();
                         });
                     },
                     [translations.no]: () => {
                         this.props.onFinishTask(this.state.selectedTask, true, this.props.theme.primaryColor, () => {
-                            this.setState({showDialog: false, selectedTask: false});
+                            this.props.onUpdateModal(false, {});
+                            this.setState({showDialog: false});
                             this.props.onAddEndedTask();
                         });
                     },
-                    [translations.cancel]: () => this.setState({showDialog: false, selectedTask: false})
+                    [translations.cancel]: () => {
+                        this.props.onUpdateModal(false, {});
+                        this.setState({selectedTask: false});
+                    }
                 }
             );
         } else if (action === 'finish') {
@@ -153,14 +146,13 @@ class TaskList extends Component {
                 {
                     [translations.yes]: () => {
                         this.props.onFinishTask(this.state.selectedTask, true, this.props.theme.primaryColor, () => {
-                            this.setState({showDialog: false, selectedTask: false});
+                            this.props.onUpdateModal(false, {});
+                            this.setState({selectedTask: false});
                             this.props.onAddEndedTask();
                             this.props.navigation.goBack();
                         });
                     },
-                    [translations.no]: () => {
-                        this.setState({showDialog: false});
-                    }
+                    [translations.no]: () => this.props.onUpdateModal(false, {})
                 }
             );
         } else if (action === 'delete') {
@@ -169,13 +161,11 @@ class TaskList extends Component {
                 translations.deleteDescription,
                 {
                     [translations.yes]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false, {});
                         this.props.onRemoveTask(this.state.selectedTask);
                         this.props.navigation.goBack();
                     },
-                    [translations.no]: () => {
-                        this.setState({showDialog: false});
-                    }
+                    [translations.no]: () => this.props.onUpdateModal(false, {})
                 }
             );
         } else if (action === 'finishAll') {
@@ -184,16 +174,17 @@ class TaskList extends Component {
                 translations.finishAllDescription,
                 {
                     [translations.yes]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false, {});
                         this.deleteAllTask();
                     },
                     [translations.no]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false, {});
                     },
                 }
             );
         }
-        this.setState({showDialog: true, dialog});
+
+        this.props.onUpdateModal(true, dialog);
     };
 
     deleteAllTask = () => {
@@ -376,19 +367,19 @@ class TaskList extends Component {
 
         return (
             <TouchableHighlight underlayColor={theme.primaryColor}>
-                <View style={[styles.dropdown_row, {backgroundColor: data.bgColor}]}>
+                <View style={[styles.dropdownRow, {backgroundColor: data.bgColor}]}>
                     <Icon name={data.icon}
-                          style={styles.dropdown_icon}
+                          style={styles.dropdownIcon}
                           color={selectedCategory === rowData.name ?
                               theme.primaryColor :
                               theme.textColor}/>
-                    <Text style={[styles.dropdown_row_text,
+                    <Text style={[styles.dropdownRowText,
                         selectedCategory === rowData.name ?
                             {color: theme.primaryColor} :
                             {color: theme.textColor}]}>
                         {rowData.name}
                     </Text>
-                    <Text style={[styles.dropdown_row_text,
+                    <Text style={[styles.dropdownRowText,
                         selectedCategory === rowData.name ?
                             {color: theme.primaryColor} :
                             {color: theme.textColor}]}>
@@ -402,7 +393,7 @@ class TaskList extends Component {
     render() {
         const {
             division, priorityColors, showConfigCategory, dropdownData, selectedIndex,
-            rotateInterpolate, initDivision, dialog, showDialog, bottomHidden, tasks,
+            rotateInterpolate, initDivision, bottomHidden, tasks,
             selectedCategory
         } = this.state;
         const {theme, navigation, sortingType, sorting, finished, translations} = this.props;
@@ -431,7 +422,7 @@ class TaskList extends Component {
                                     }}
                                 />
                                 }
-                                <View style={{marginLeft: 10, marginRight: 10, marginBottom: 10}}>
+                                <View style={{marginLeft: 15, marginRight: 15, marginBottom: 15}}>
                                     <ListItem
                                         divider
                                         dense
@@ -439,17 +430,14 @@ class TaskList extends Component {
                                         style={{
                                             container: [
                                                 styles.shadow,
-                                                {
-                                                    backgroundColor: task.finish ?
-                                                        priorityColors.none.bgColor :
-                                                        priorityColors[task.priority].bgColor
-                                                }
+                                                {backgroundColor: "#fff"}
                                             ],
+                                            leftElementContainer: {
+                                                marginRight: -50
+                                            },
                                             primaryText: {
                                                 fontSize: 18,
-                                                color: task.finish ?
-                                                    theme.textColor :
-                                                    priorityColors[task.priority].color
+                                                color: "#000"
                                             },
                                             secondaryText: {
                                                 fontWeight: '500',
@@ -457,33 +445,41 @@ class TaskList extends Component {
                                                     theme.textColor :
                                                     div === translations.overdue ?
                                                         theme.overdueColor :
-                                                        priorityColors[task.priority].color
+                                                        theme.textColor
                                             },
                                             tertiaryText: {
-                                                color: task.finish ?
-                                                    theme.textColor :
-                                                    priorityColors[task.priority].color
+                                                color: theme.textColor
                                             }
+                                        }}
+                                        leftElement={
+                                            <View style={{
+                                                marginLeft: -20,
+                                                width: 15,
+                                                height: '100%',
+                                                backgroundColor: priorityColors[task.priority].bgColor
+                                            }}/>
+                                        }
+                                        centerElement={{
+                                            primaryText: task.name,
+                                            secondaryText: task.date ?
+                                                task.date : task.description ?
+                                                    task.description : ' ',
+                                            tertiaryText: task.category ? task.category : ' '
                                         }}
                                         rightElement={
                                             <View style={styles.rightElements}>
-                                                <Button
-                                                    raised
+                                                <IconToggle
+                                                    color={task.finish ?
+                                                        theme.undoButtonColor :
+                                                        theme.doneButtonColor
+                                                    }
                                                     style={{
                                                         container: {
-                                                            backgroundColor: task.finish ?
-                                                                theme.undoButtonColor :
-                                                                theme.doneButtonColor,
-                                                            marginRight: task.finish ? 0 : 15
-                                                        },
-                                                        text: {
-                                                            color: task.finish ?
-                                                                theme.undoButtonTextColor :
-                                                                theme.doneButtonTextColor
+                                                            marginRight: task.finish ? -10 : 5
                                                         }
                                                     }}
-                                                    text={task.finish ? translations.undo : translations.done}
-                                                    icon={task.finish ? 'replay' : 'done'}
+                                                    size={32}
+                                                    name={task.finish ? 'replay' : 'done'}
                                                     onPress={() => {
                                                         task.finish ?
                                                             this.props.onUndoTask(task) :
@@ -495,17 +491,10 @@ class TaskList extends Component {
                                                     onPress={() => this.checkDeleteHandler(task)}
                                                     name="delete"
                                                     color={theme.actionButtonColor}
-                                                    size={26}
+                                                    size={28}
                                                 />}
                                             </View>
                                         }
-                                        centerElement={{
-                                            primaryText: task.name,
-                                            secondaryText: task.date ?
-                                                task.date : task.description ?
-                                                    task.description : ' ',
-                                            tertiaryText: task.category ? task.category : ' '
-                                        }}
                                     />
                                 </View>
                             </AnimatedView>
@@ -529,8 +518,8 @@ class TaskList extends Component {
                         <ModalDropdown
                             ref={e => this.dropdown = e}
                             style={styles.dropdown}
-                            textStyle={styles.dropdown_text}
-                            dropdownStyle={styles.dropdown_dropdown}
+                            textStyle={styles.dropdownText}
+                            dropdownStyle={styles.dropdownDropdown}
                             defaultValue={selectedCategory}
                             defaultIndex={selectedIndex}
                             options={dropdownData}
@@ -543,8 +532,8 @@ class TaskList extends Component {
                             renderButtonText={(rowData) => rowData.name}
                             renderRow={this.dropdownRenderRow.bind(this)}
                         >
-                            <View style={styles.dropdown_button}>
-                                <Text style={[styles.dropdown_text, {
+                            <View style={styles.dropdownButton}>
+                                <Text style={[styles.dropdownText, {
                                     color: theme.headerTextColor,
                                     fontWeight: '500'
                                 }]}>
@@ -552,7 +541,7 @@ class TaskList extends Component {
                                 </Text>
                                 <Animated.View style={{transform: [{rotate: rotateInterpolate}]}}>
                                     <Icon
-                                        style={styles.dropdown_button_icon}
+                                        style={styles.dropdownButtonIcon}
                                         color={theme.headerTextColor}
                                         name="expand-more"/>
                                 </Animated.View>
@@ -566,14 +555,6 @@ class TaskList extends Component {
                     category={false}
                     showModal={showConfigCategory}
                     toggleModal={this.toggleConfigCategory}
-                />
-                }
-                {showDialog &&
-                <Dialog
-                    showModal={showDialog}
-                    title={dialog.title}
-                    description={dialog.description}
-                    buttons={dialog.buttons}
                 />
                 }
 
@@ -656,25 +637,25 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         alignSelf: 'flex-start'
     },
-    dropdown_button: {
+    dropdownButton: {
         width: 230,
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    dropdown_button_icon: {
+    dropdownButtonIcon: {
         marginVertical: 10,
         marginHorizontal: 6,
         textAlignVertical: 'center'
     },
-    dropdown_text: {
+    dropdownText: {
         marginVertical: 10,
         marginHorizontal: 6,
         fontSize: 18,
         textAlign: 'left',
         textAlignVertical: 'center',
     },
-    dropdown_dropdown: {
-        marginTop: -20,
+    dropdownDropdown: {
+        marginTop: Platform.OS === 'ios' ? 5 : -20,
         justifyContent: 'flex-start',
         width: 230,
         height: 'auto',
@@ -682,19 +663,19 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 3,
     },
-    dropdown_row: {
+    dropdownRow: {
         flexDirection: 'row',
         height: 45,
         width: '100%',
         alignItems: 'center',
     },
-    dropdown_icon: {
+    dropdownIcon: {
         marginLeft: 4,
         width: 30,
         height: 30,
         textAlignVertical: 'center',
     },
-    dropdown_row_text: {
+    dropdownRowText: {
         marginHorizontal: 4,
         fontSize: 17,
         textAlignVertical: 'center',
@@ -738,7 +719,8 @@ const mapDispatchToProps = (dispatch) => {
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onUndoTask: (task) => dispatch(actions.undoTask(task)),
         onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),
-        onAddEndedTask: () => dispatch(actions.addEndedTask())
+        onAddEndedTask: () => dispatch(actions.addEndedTask()),
+        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }
 };
 

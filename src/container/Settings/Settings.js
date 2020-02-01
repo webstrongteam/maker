@@ -169,8 +169,6 @@ class Settings extends PureComponent {
                     centerElement={translations.settings}
                 />
 
-                <Snackbar visible={snackbar.visible} message={snackbar.message}
-                          onRequestClose={() => this.toggleSnackbar('', false)}/>
                 {viewDialog}
 
                 {!loading ?

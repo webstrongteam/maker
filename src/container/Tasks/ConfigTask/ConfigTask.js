@@ -1,14 +1,20 @@
 import React, {Component} from "react";
-import {Picker, ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import DatePicker from 'react-native-datepicker';
-import {Button, Checkbox, IconToggle, Subheader, Toolbar} from 'react-native-material-ui';
+import {Checkbox, IconToggle, Toolbar} from 'react-native-material-ui';
+import Subheader from '../../../components/UI/Subheader/Subheader';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Template from '../../Template/Template';
 import Input from '../../../components/UI/Input/Input';
 import ConfigCategory from '../../Categories/ConfigCategory';
-import Dialog from '../../../components/UI/Dialog/Dialog';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
-import {convertNumberToDate, generateDialogObject, valid} from '../../../shared/utility';
+import {
+    convertNumberToDate,
+    convertPriorityNames,
+    convertRepeatNames,
+    generateDialogObject,
+    valid
+} from '../../../shared/utility';
 import {configTask} from '../../../shared/configTask';
 import {fullWidth} from '../../../shared/styles';
 import {BannerAd} from "../../../../adsAPI";
@@ -41,43 +47,11 @@ class ConfigTask extends Component {
                 multiline: true
             }
         },
-        repeat: {
-            noRepeat: {
-                name: this.props.translations.noRepeat,
-                value: 'noRepeat'
-            },
-            onceDay: {
-                name: this.props.translations.onceDay,
-                value: 'onceDay'
-            },
-            onceDayMonFri: {
-                name: this.props.translations.onceWeekMonFri,
-                value: 'onceDayMonFri'
-            },
-            onceDaySatSun: {
-                name: this.props.translations.onceWeekSatSun,
-                value: 'onceDaySatSun'
-            },
-            onceWeek: {
-                name: this.props.translations.onceWeek,
-                value: 'onceWeek'
-            },
-            onceMonth: {
-                name: this.props.translations.onceMonth,
-                value: 'onceMonth'
-            },
-            onceYear: {
-                name: this.props.translations.onceYear,
-                value: 'onceYear'
-            }
-        },
+        otherOption: null,
         taskCopy: null,
         dialog: null,
-        otherOption: `${this.props.translations.other}...`,
         selectedTime: 0,
-        repeatValue: '1',
         showOtherRepeat: false,
-        showDialog: false,
         editTask: null,
         showConfigCategory: false,
         setEvent: false,
@@ -148,15 +122,15 @@ class ConfigTask extends Component {
                 translations.exitDescription,
                 {
                     [translations.yes]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false, {});
                         this.props.navigation.goBack();
                     },
                     [translations.save]: () => {
                         this.checkValid('name', true);
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false, {});
                     },
                     [translations.cancel]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false, {});
                     }
                 }
             );
@@ -166,17 +140,96 @@ class ConfigTask extends Component {
                 translations.deleteDescription,
                 {
                     [translations.yes]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false, {});
                         this.props.onRemoveTask(task);
                         this.props.navigation.goBack();
                     },
                     [translations.cancel]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false, {});
                     }
                 }
             );
+        } else if (action === 'repeat') {
+            const repeats = ['noRepeat', 'onceDay', 'onceDayMonFri', 'onceDaySatSun', 'onceWeek',
+                'onceMonth', 'onceYear', 'otherOption'];
+            const options = [];
+            repeats.map(p => {
+                options.push({
+                    name: convertRepeatNames(p, translations),
+                    value: p,
+                    onClick: (value) => {
+                        this.updateRepeat(value);
+                        this.props.onUpdateModal(false, {});
+                    }
+                })
+            });
+            dialog = generateDialogObject(
+                translations.repeat,
+                options,
+                {
+                    [translations.cancel]: () => {
+                        this.props.onUpdateModal(false, {});
+                    }
+                }
+            );
+            dialog.select = true;
+            dialog.selectedValue = task.repeat;
+        } else if (action === 'category') {
+            const {task} = this.state;
+            const {categories} = this.props;
+            const options = [];
+            categories.map(c => {
+                options.push({
+                    name: c.name,
+                    value: c.name,
+                    onClick: (value) => {
+                        this.updateTask('category', value);
+                        this.props.onUpdateModal(false, {});
+                    }
+                })
+            });
+
+            dialog = generateDialogObject(
+                translations.category,
+                options,
+                {
+                    [translations.cancel]: () => {
+                        this.props.onUpdateModal(false, {});
+                    }
+                }
+            );
+            dialog.select = true;
+            dialog.selectedValue = task.category;
+        } else if (action === 'priority') {
+            const {task} = this.state;
+            const {translations} = this.props;
+            const priorities = ['none', 'low', 'medium', 'high'];
+            const options = [];
+            priorities.map(p => {
+                options.push({
+                    name: convertPriorityNames(p, translations),
+                    value: p,
+                    onClick: (value) => {
+                        this.updateTask('priority', value);
+                        this.props.onUpdateModal(false, {});
+                    }
+                })
+            });
+
+            dialog = generateDialogObject(
+                translations.priority,
+                options,
+                {
+                    [translations.cancel]: () => {
+                        this.props.onUpdateModal(false, {});
+                    }
+                }
+            );
+            dialog.select = true;
+            dialog.selectedValue = task.priority;
         }
-        this.setState({showDialog: true, dialog});
+
+        this.props.onUpdateModal(true, dialog);
     };
 
     toggleConfigCategory = (category) => {
@@ -185,11 +238,11 @@ class ConfigTask extends Component {
         this.setState({showConfigCategory: !showConfigCategory});
     };
 
-    updateRepeat = (repeat) => {
-        if (repeat === this.state.otherOption) {
+    updateRepeat = (value) => {
+        if (value === 'otherOption') {
             this.setState({showOtherRepeat: true});
         } else {
-            this.updateTask('repeat', repeat);
+            this.updateTask('repeat', value);
         }
     };
 
@@ -250,12 +303,11 @@ class ConfigTask extends Component {
 
     render() {
         const {
-            task, controls, loading, editTask,
-            showConfigCategory, repeat, dialog, showDialog,
-            otherOption, selectedTime, showOtherRepeat, repeatValue,
+            task, controls, loading, editTask, showConfigCategory,
+            selectedTime, showOtherRepeat, repeatValue, otherOption,
             setEvent, setNotification
         } = this.state;
-        const {navigation, categories, theme, settings, translations} = this.props;
+        const {navigation, theme, settings, translations} = this.props;
         let date;
         let now;
 
@@ -271,13 +323,20 @@ class ConfigTask extends Component {
             <Template>
                 <Toolbar
                     leftElement="arrow-back"
+                    centerElement={
+                        !loading ?
+                            editTask ?
+                                translations.editTask :
+                                translations.newTask :
+                            <View style={{marginTop: 10}}>
+                                <Spinner color={theme.secondaryBackgroundColor} size='small'/>
+                            </View>
+                    }
                     rightElement={
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <Button
-                                text={translations.save}
-                                style={{text: {color: theme.headerTextColor}}}
-                                onPress={() => this.checkValid('name', true)}
-                            />
+                            <IconToggle name="save"
+                                        color={theme.headerTextColor}
+                                        onPress={() => this.checkValid('name', true)}/>
                             {editTask && <IconToggle name="delete"
                                                      color={theme.headerTextColor}
                                                      onPress={() => this.showDialog('delete')}/>
@@ -288,15 +347,6 @@ class ConfigTask extends Component {
                         if (this.checkChanges()) this.showDialog('exit');
                         else navigation.goBack();
                     }}
-                    centerElement={
-                        !loading ?
-                            editTask ?
-                                translations.editTask :
-                                translations.newTask :
-                            <View style={{marginTop: 10}}>
-                                <Spinner color={theme.secondaryBackgroundColor} size='small'/>
-                            </View>
-                    }
                 />
 
                 {showOtherRepeat &&
@@ -310,19 +360,12 @@ class ConfigTask extends Component {
                     cancel={() => this.setState({showOtherRepeat: false})}
                 />
                 }
+
                 {showConfigCategory &&
                 <ConfigCategory
                     showModal={showConfigCategory}
                     category={false}
                     toggleModal={this.toggleConfigCategory}
-                />
-                }
-                {showDialog &&
-                <Dialog
-                    showModal={showDialog}
-                    title={dialog.title}
-                    description={dialog.description}
-                    buttons={dialog.buttons}
                 />
                 }
 
@@ -340,12 +383,7 @@ class ConfigTask extends Component {
                             value={task.description}
                             changed={value => this.updateTask('description', value)}/>
                         <View style={styles.container}>
-                            <Subheader text="Due date"
-                                       style={{
-                                           container: fullWidth,
-                                           text: {color: theme.primaryColor}
-                                       }}
-                            />
+                            <Subheader text="Due date"/>
                             <DatePicker
                                 ref={(e) => this.datepickerDate = e}
                                 style={fullWidth}
@@ -362,6 +400,7 @@ class ConfigTask extends Component {
                                 cancelBtnText={translations.cancel}
                                 customStyles={{
                                     dateInput: [styles.datePicker, {borderColor: theme.primaryColor}],
+                                    datePickerCon: {backgroundColor: '#3b3b3b'},
                                     dateText: {
                                         color: +date < +now ? theme.overdueColor : theme.textColor
                                     }
@@ -391,6 +430,7 @@ class ConfigTask extends Component {
                                     cancelBtnText={translations.cancel}
                                     customStyles={{
                                         dateInput: [styles.datePicker, {borderColor: theme.primaryColor}],
+                                        datePickerCon: {backgroundColor: '#3b3b3b'},
                                         dateText: {
                                             color: +date < +now ? theme.overdueColor : theme.textColor
                                         }
@@ -415,69 +455,35 @@ class ConfigTask extends Component {
                                     onCheck={(value) => this.setState({setNotification: value})}
                                 />
                                 }
-                                <Subheader text={translations.repeat}
-                                           style={{
-                                               container: fullWidth,
-                                               text: {color: theme.primaryColor}
-                                           }}
-                                />
-                                <View style={styles.picker}>
-                                    <Picker
-                                        style={{color: theme.textColor}}
-                                        selectedValue={
-                                            repeat[task.repeat] ?
-                                                repeat[task.repeat].value :
-                                                otherOption
-                                        }
-                                        onValueChange={value => this.updateRepeat(value)}>
-                                        {Object.keys(repeat).map(name => (
-                                            <Picker.Item key={name}
-                                                         label={repeat[name].name}
-                                                         value={repeat[name].value}/>
-                                        ))}
-                                        <Picker.Item label={otherOption}
-                                                     value={otherOption}/>
-                                    </Picker>
+                                <Subheader text={translations.repeat}/>
+                                <View style={styles.select}>
+                                    <TouchableOpacity onPress={() => this.showDialog('repeat')}>
+                                        <Text
+                                            style={styles.selectedOption}>
+                                            {+task.repeat ?
+                                                otherOption :
+                                                convertRepeatNames(task.repeat, translations)
+                                            }
+                                        </Text>
+                                    </TouchableOpacity>
                                 </View>
                             </React.Fragment>
                             }
-                            <Subheader text={translations.category}
-                                       style={{
-                                           container: fullWidth,
-                                           text: {color: theme.primaryColor}
-                                       }}
-                            />
+                            <Subheader text={translations.category}/>
                             <View style={styles.selectCategory}>
                                 <View style={styles.category}>
-                                    <Picker
-                                        style={{color: theme.textColor}}
-                                        selectedValue={task.category}
-                                        onValueChange={value => this.updateTask('category', value)}>
-                                        {categories.map(cate => (
-                                            <Picker.Item key={cate.id}
-                                                         label={cate.name}
-                                                         value={cate.name}/>
-                                        ))}
-                                    </Picker>
+                                    <TouchableOpacity onPress={() => this.showDialog('category')}>
+                                        <Text style={styles.selectedOption}>{task.category}</Text>
+                                    </TouchableOpacity>
                                 </View>
                                 <IconToggle onPress={() => this.toggleConfigCategory()} name="playlist-add"/>
                             </View>
-                            <Subheader text={translations.priority}
-                                       style={{
-                                           container: fullWidth,
-                                           text: {color: theme.primaryColor}
-                                       }}
-                            />
-                            <View style={styles.picker}>
-                                <Picker
-                                    style={{color: theme.textColor}}
-                                    selectedValue={task.priority}
-                                    onValueChange={value => this.updateTask('priority', value)}>
-                                    <Picker.Item label={translations.priorityNone} value="none"/>
-                                    <Picker.Item label={translations.priorityLow} value="low"/>
-                                    <Picker.Item label={translations.priorityMedium} value="medium"/>
-                                    <Picker.Item label={translations.priorityHigh} value="high"/>
-                                </Picker>
+                            <Subheader text={translations.priority}/>
+                            <View style={styles.select}>
+                                <TouchableOpacity onPress={() => this.showDialog('priority')}>
+                                    <Text
+                                        style={styles.selectedOption}>{convertPriorityNames(task.priority, translations)}</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </ScrollView> : <Spinner/>
@@ -507,19 +513,23 @@ const
             borderTopWidth: 0
         },
         category: {
-            width: '85%',
-            height: 50,
+            flex: 1,
             borderWidth: 0
         },
         selectCategory: {
-            display: 'flex',
+            height: 50,
+            width: '100%',
             flexDirection: 'row',
             alignItems: 'center',
+            justifyContent: 'space-between'
         },
-        picker: {
+        select: {
             width: '100%',
             height: 50,
             borderWidth: 0
+        },
+        selectedOption: {
+            marginLeft: 10
         }
     });
 
@@ -539,7 +549,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onInitTask: (id, callback) => dispatch(actions.initTask(id, callback)),
         onSaveTask: (task) => dispatch(actions.saveTask(task)),
-        onRemoveTask: (task) => dispatch(actions.removeTask(task, false))
+        onRemoveTask: (task) => dispatch(actions.removeTask(task, false)),
+        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }
 };
 

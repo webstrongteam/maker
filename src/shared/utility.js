@@ -80,10 +80,26 @@ export const convertNumberToDate = (number) => {
     }
 };
 
-export const generateDialogObject = (title, description, buttons) => {
+export const generateDialogObject = (title, body, buttons) => {
     let object = {
         title,
-        description,
+        body,
+        buttons: []
+    };
+    Object.keys(buttons).map(key => {
+        object.buttons.push({
+            label: key,
+            onPress: buttons[key]
+        })
+    });
+    return object;
+};
+
+export const generateSelectDialogObject = (title, selectedOption, options, buttons) => {
+    let object = {
+        title,
+        selectedOption,
+        options,
         buttons: []
     };
     Object.keys(buttons).map(key => {
@@ -110,6 +126,26 @@ export const generateInputDialogObject = (title, focus, value, onChange, buttons
         })
     });
     return object;
+};
+
+export const convertPriorityNames = (priority, translations) => {
+    if (priority === 'none') {
+        return translations.priorityNone
+    } else if (priority === 'low') {
+        return translations.priorityLow
+    } else if (priority === 'medium') {
+        return translations.priorityMedium
+    } else if (priority === 'high') {
+        return translations.priorityHigh
+    }
+};
+
+export const convertRepeatNames = (repeat, translations) => {
+    if (repeat !== 'otherOption') {
+        return translations[repeat]
+    } else {
+        return `${translations.other}...`
+    }
 };
 
 export const valid = (controls, value, name, translations, callback) => {

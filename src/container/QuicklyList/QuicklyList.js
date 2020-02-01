@@ -111,7 +111,7 @@ class QuicklyList extends Component {
                                 style={{
                                     container: [
                                         styles.shadow,
-                                        {backgroundColor: theme.noneColor}
+                                        {backgroundColor: "#fff"}
                                     ],
                                     primaryText: {
                                         fontSize: 18,

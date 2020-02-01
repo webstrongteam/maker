@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import {Picker} from "react-native";
+import {View} from 'react-native';
+import {ListItem} from "react-native-material-ui";
 import Dialog from '../../../../components/UI/Dialog/Dialog';
 import Input from '../../../../components/UI/Input/Input';
 import {generateDialogObject, valid} from "../../../../shared/utility";
@@ -17,6 +18,7 @@ class OtherRepeat extends Component {
                 characterRestriction: 4,
             }
         },
+        repeatTimes: ['days', 'week', 'month', 'year'],
         dialog: null,
         loading: true
     };
@@ -52,7 +54,7 @@ class OtherRepeat extends Component {
     };
 
     render() {
-        const {loading, dialog, controls} = this.state;
+        const {loading, dialog, repeatTimes, controls} = this.state;
         const {showModal, repeat, selectedTime, theme, translations} = this.props;
 
         return (
@@ -69,15 +71,28 @@ class OtherRepeat extends Component {
                         value={repeat}
                         changed={value => this.checkValid('value', false, value)}
                     />
-                    <Picker
-                        style={{marginLeft: 10, color: theme.textColor}}
-                        selectedValue={selectedTime}
-                        onValueChange={value => this.props.onSelectTime(value)}>
-                        <Picker.Item label={translations.days} value="0"/>
-                        <Picker.Item label={translations.week} value="1"/>
-                        <Picker.Item label={translations.month} value="2"/>
-                        <Picker.Item label={translations.year} value="3"/>
-                    </Picker>
+
+                    <View style={{marginBottom: 10, color: theme.textColor}}>
+                        {repeatTimes.map((time, index) => (
+                            <ListItem
+                                divider
+                                dense
+                                onPress={() => this.props.onSelectTime(index + '')}
+                                style={{
+                                    contentViewContainer: {
+                                        backgroundColor: '#fff'
+                                    },
+                                    primaryText: {
+                                        color: index + '' === selectedTime ?
+                                            theme.primaryColor : theme.textColor
+                                    }
+                                }}
+                                centerElement={{
+                                    primaryText: translations[time]
+                                }}
+                            />
+                        ))}
+                    </View>
                 </Dialog>
                 }
             </React.Fragment>
