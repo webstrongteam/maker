@@ -1,5 +1,6 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
+import {IconToggle} from 'react-native-material-ui';
 import {TextField} from 'react-native-material-textfield';
 import {fullWidth} from '../../../shared/styles';
 
@@ -15,6 +16,7 @@ const input = (props) => {
         autoFocus={props.focus ? props.focus : false}
         onChangeText={props.changed}
         value={props.value}
+        clearButtonMode='always'
     />;
 
     return (

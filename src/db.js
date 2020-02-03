@@ -78,6 +78,7 @@ export const initTheme = (callback) => {
                     const theme = rows._array[0];
                     callback({
                         uiTheme: {
+                            fontFamily: 'Ubuntu',
                             palette: {
                                 primaryColor: theme.primaryColor,
                                 accentColor: theme.actionButtonColor,

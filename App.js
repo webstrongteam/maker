@@ -15,6 +15,14 @@ import themeReducer from './src/store/reducers/theme';
 import profileReducer from './src/store/reducers/profile';
 import settingsReducer from './src/store/reducers/settings';
 import configReducer from './src/store/reducers/config';
+import {setCustomText} from 'react-native-global-props';
+
+// Setting default styles for all Text components.
+const customTextProps = {
+    style: {fontFamily: 'Ubuntu'}
+};
+
+setCustomText(customTextProps);
 
 const UIManager = NativeModules.UIManager;
 
@@ -40,9 +48,7 @@ class App extends Component {
 
     async componentDidMount() {
         await Font.loadAsync({
-            'Roboto': require('./src/assets/fonts/Roboto-Regular.ttf'),
-            'Roboto-bold': require('./src/assets/fonts/Roboto-Bold.ttf'),
-            'Roboto-light': require('./src/assets/fonts/Roboto-Light.ttf'),
+            'Ubuntu': require('./src/assets/fonts/Ubuntu.ttf')
         });
 
         initDatabase(() => {

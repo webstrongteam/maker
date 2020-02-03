@@ -346,16 +346,18 @@ class TaskList extends Component {
                 amount: false,
                 bgColor: theme.secondaryBackgroundColor
             };
-        } else if (rowData.id === -1) data = {
-            icon: 'dehaze',
-            amount: tasks.length,
-            bgColor: theme.primaryBackgroundColor
-        };
-        else if (rowData.id === -2) data = {
-            icon: 'done',
-            amount: finished.length,
-            bgColor: theme.primaryBackgroundColor
-        };
+        } else if (rowData.id === -1)
+            data = {
+                icon: 'dehaze',
+                amount: tasks.length,
+                bgColor: theme.primaryBackgroundColor
+            };
+        else if (rowData.id === -2)
+            data = {
+                icon: 'done',
+                amount: finished.length,
+                bgColor: theme.primaryBackgroundColor
+            };
         else {
             const amountOfTasks = this.props.tasks.filter(task => task.category === rowData.name);
             data = {

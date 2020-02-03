@@ -51,14 +51,11 @@ This app working with Android and iOS.
 
 ### Update 2.0:
 - Wywalic wszystkie możliwe style do osobynych plikow (np. TaskList.styles.js) | MICH
-- Dodać swipa dla każdego zadania (https://github.com/jemise111/react-native-swipe-list-view) | MICH
 - Zapisywać id kategorii w zadaniu a nie jego nazwe | MICH
 - Color picker w theme nie dziala na iosie (trzeba będzie znaleźć inną biblioteke) | MICH
 ---
-- Dodać możliwość usuwania całej zawartości inputa | MATT
 - Dodać możliwość zmieniania kolejności szybkich zadań | MATT
 - Uprościć tworzenie motywów | MATT
-- Zmienic wszedzie czcionke | MATT
 - Zmienić animacje usuwania zadań | MATT / MICH
 - Dodać brakujące tłumaczenia | MATT
 - Naprawić dodawanie backupa z plików telefonu na iosie | MATT
