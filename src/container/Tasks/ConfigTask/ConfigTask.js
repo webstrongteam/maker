@@ -6,7 +6,7 @@ import Subheader from '../../../components/UI/Subheader/Subheader';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Template from '../../Template/Template';
 import Input from '../../../components/UI/Input/Input';
-import ConfigCategory from '../../Categories/ConfigCategory';
+import ConfigCategory from '../../Categories/ConfigCategory/ConfigCategory';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
 import {
     convertNumberToDate,
@@ -122,15 +122,15 @@ class ConfigTask extends Component {
                 translations.exitDescription,
                 {
                     [translations.yes]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                         this.props.navigation.goBack();
                     },
                     [translations.save]: () => {
                         this.checkValid('name', true);
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                     },
                     [translations.cancel]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                     }
                 }
             );
@@ -140,12 +140,12 @@ class ConfigTask extends Component {
                 translations.deleteDescription,
                 {
                     [translations.yes]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                         this.props.onRemoveTask(task);
                         this.props.navigation.goBack();
                     },
                     [translations.cancel]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                     }
                 }
             );
@@ -159,7 +159,7 @@ class ConfigTask extends Component {
                     value: p,
                     onClick: (value) => {
                         this.updateRepeat(value);
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                     }
                 })
             });
@@ -168,7 +168,7 @@ class ConfigTask extends Component {
                 options,
                 {
                     [translations.cancel]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                     }
                 }
             );
@@ -184,7 +184,7 @@ class ConfigTask extends Component {
                     value: c.name,
                     onClick: (value) => {
                         this.updateTask('category', value);
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                     }
                 })
             });
@@ -194,7 +194,7 @@ class ConfigTask extends Component {
                 options,
                 {
                     [translations.cancel]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                     }
                 }
             );
@@ -211,7 +211,7 @@ class ConfigTask extends Component {
                     value: p,
                     onClick: (value) => {
                         this.updateTask('priority', value);
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                     }
                 })
             });
@@ -221,7 +221,7 @@ class ConfigTask extends Component {
                 options,
                 {
                     [translations.cancel]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                     }
                 }
             );
@@ -349,7 +349,6 @@ class ConfigTask extends Component {
                     }}
                 />
 
-                {showOtherRepeat &&
                 <OtherRepeat
                     showModal={showOtherRepeat}
                     repeat={repeatValue}
@@ -359,7 +358,6 @@ class ConfigTask extends Component {
                     save={this.saveOtherRepeat}
                     cancel={() => this.setState({showOtherRepeat: false})}
                 />
-                }
 
                 {showConfigCategory &&
                 <ConfigCategory

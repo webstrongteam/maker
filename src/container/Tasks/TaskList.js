@@ -5,7 +5,7 @@ import {generateDialogObject, sortingByType} from '../../shared/utility';
 import AnimatedView from '../AnimatedView/AnimatedView';
 import {empty, flex, fullWidth} from '../../shared/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
-import ConfigCategory from "../Categories/ConfigCategory";
+import ConfigCategory from "../Categories/ConfigCategory/ConfigCategory";
 import moment from 'moment';
 
 import {connect} from 'react-redux';
@@ -121,20 +121,20 @@ class TaskList extends Component {
                 {
                     [translations.yes]: () => {
                         this.props.onFinishTask(this.state.selectedTask, false, this.props.theme.primaryColor, () => {
-                            this.props.onUpdateModal(false, {});
+                            this.props.onUpdateModal(false);
                             this.setState({selectedTask: false});
                             this.props.onAddEndedTask();
                         });
                     },
                     [translations.no]: () => {
                         this.props.onFinishTask(this.state.selectedTask, true, this.props.theme.primaryColor, () => {
-                            this.props.onUpdateModal(false, {});
+                            this.props.onUpdateModal(false);
                             this.setState({showDialog: false});
                             this.props.onAddEndedTask();
                         });
                     },
                     [translations.cancel]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                         this.setState({selectedTask: false});
                     }
                 }
@@ -146,13 +146,13 @@ class TaskList extends Component {
                 {
                     [translations.yes]: () => {
                         this.props.onFinishTask(this.state.selectedTask, true, this.props.theme.primaryColor, () => {
-                            this.props.onUpdateModal(false, {});
+                            this.props.onUpdateModal(false);
                             this.setState({selectedTask: false});
                             this.props.onAddEndedTask();
                             this.props.navigation.goBack();
                         });
                     },
-                    [translations.no]: () => this.props.onUpdateModal(false, {})
+                    [translations.no]: () => this.props.onUpdateModal(false)
                 }
             );
         } else if (action === 'delete') {
@@ -161,11 +161,11 @@ class TaskList extends Component {
                 translations.deleteDescription,
                 {
                     [translations.yes]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                         this.props.onRemoveTask(this.state.selectedTask);
                         this.props.navigation.goBack();
                     },
-                    [translations.no]: () => this.props.onUpdateModal(false, {})
+                    [translations.no]: () => this.props.onUpdateModal(false)
                 }
             );
         } else if (action === 'finishAll') {
@@ -174,11 +174,11 @@ class TaskList extends Component {
                 translations.finishAllDescription,
                 {
                     [translations.yes]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                         this.deleteAllTask();
                     },
                     [translations.no]: () => {
-                        this.props.onUpdateModal(false, {});
+                        this.props.onUpdateModal(false);
                     },
                 }
             );
@@ -392,9 +392,9 @@ class TaskList extends Component {
 
     render() {
         const {
-            division, priorityColors, showConfigCategory, dropdownData, selectedIndex,
+            division, priorityColors, dropdownData, selectedIndex,
             rotateInterpolate, initDivision, bottomHidden, tasks,
-            selectedCategory
+            selectedCategory, showConfigCategory
         } = this.state;
         const {theme, navigation, sortingType, sorting, finished, translations} = this.props;
 
@@ -709,7 +709,8 @@ const mapStateToProps = state => {
         },
         tasks: state.tasks.tasks,
         finished: state.tasks.finished,
-        categories: state.categories.categories
+        categories: state.categories.categories,
+        showModal: state.config.showModal
     }
 };
 

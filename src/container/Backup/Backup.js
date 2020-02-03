@@ -1,14 +1,13 @@
 import React, {PureComponent} from 'react';
 import {ScrollView, Text, View} from 'react-native';
-import {IconToggle, ListItem, Snackbar, Toolbar} from 'react-native-material-ui';
+import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
 import {container, empty, fullWidth, row} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import Dialog from '../../components/UI/Dialog/Dialog';
 import * as FileSystem from "expo-file-system";
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
-import {SQLite} from 'expo-sqlite';
+import * as SQLite from 'expo-sqlite';
 import Template from '../Template/Template';
 import {BannerAd} from "../../../adsAPI";
 import moment from 'moment';
@@ -147,7 +146,7 @@ class TaskList extends PureComponent {
     };
 
     toggleSnackbar = (message, visible = true) => {
-        this.setState({snackbar: {visible, message}});
+        this.props.onUpdateSnackbar(visible, message);
     };
 
     showDialog = (action, name = null) => {
@@ -161,21 +160,11 @@ class TaskList extends PureComponent {
 ${translations.showBackupAlertDescription2}`,
                 {
                     [translations.yes]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false);
                         this.useBackupDB(name);
                     },
                     [translations.cancel]: () => {
-                        this.setState({showDialog: false});
-                    }
-                }
-            );
-        } else if (action === 'showSelectBackupSource') {
-            dialog = generateDialogObject(
-                translations.showSelectBackupSourceTitle,
-                false,
-                {
-                    Cancel: () => {
-                        this.setState({[action]: false});
+                        this.props.onUpdateModal(false);
                     }
                 }
             );
@@ -185,21 +174,51 @@ ${translations.showBackupAlertDescription2}`,
                 translations.showConfirmDeleteDescription,
                 {
                     [translations.yes]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false);
                         this.removeBackup(`Backup/${name}`)
                     },
                     [translations.cancel]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false);
                     }
                 }
             );
+        } else if (action === 'showSelectBackupSource') {
+            dialog = generateDialogObject(
+                translations.showSelectBackupSourceTitle,
+                [
+                    {
+                        name: translations.yourApp,
+                        value: translations.yourApp,
+                        onClick: () => {
+                            this.props.onUpdateModal(false);
+                            this.setState({showSelectBackupSource: false});
+                            this.createBackup();
+                        }
+                    },
+                    {
+                        name: translations.yourStorage,
+                        value: translations.yourStorage,
+                        onClick: () => {
+                            this.props.onUpdateModal(false);
+                            this.setState({showSelectBackupSource: false});
+                            this.addBackupFromStorage();
+                        }
+                    }
+                ],
+                {
+                    Cancel: () => {
+                        this.props.onUpdateModal(false);
+                    }
+                }
+            );
+            dialog.select = true;
         }
-        if (dialog.description) this.setState({showDialog: true, dialog});
-        else this.setState({[action]: true, dialog});
+
+        this.props.onUpdateModal(true, dialog);
     };
 
     render() {
-        const {loading, showDialog, dialog, snackbar, backups, showSelectBackupSource} = this.state;
+        const {loading, backups} = this.state;
         const {navigation, theme, translations} = this.props;
 
         return (
@@ -217,49 +236,6 @@ ${translations.showBackupAlertDescription2}`,
                     }}
                     centerElement={translations.title}
                 />
-
-                <Snackbar
-                    visible={snackbar.visible}
-                    message={snackbar.message}
-                    onRequestClose={() => this.toggleSnackbar('', false)}/>
-
-                {showDialog &&
-                <Dialog
-                    showModal={showDialog}
-                    title={dialog.title}
-                    description={dialog.description}
-                    buttons={dialog.buttons}
-                />
-                }
-
-                {showSelectBackupSource &&
-                <Dialog
-                    showModal={showSelectBackupSource}
-                    title={dialog.title}
-                    buttons={dialog.buttons}>
-                    <ListItem
-                        divider
-                        dense
-                        onPress={() => {
-                            this.setState({showSelectBackupSource: false});
-                            this.createBackup();
-                        }}
-                        centerElement={{
-                            primaryText: translations.yourApp,
-                        }}
-                    />
-                    <ListItem
-                        dense
-                        onPress={() => {
-                            this.setState({showSelectBackupSource: false});
-                            this.addBackupFromStorage();
-                        }}
-                        centerElement={{
-                            primaryText: translations.yourStorage,
-                        }}
-                    />
-                </Dialog>
-                }
 
                 {!loading ?
                     <View style={container}>
@@ -319,7 +295,9 @@ const mapDispatchToProps = dispatch => {
         onInitCategories: () => dispatch(actions.initCategories()),
         onInitTheme: () => dispatch(actions.initTheme()),
         onInitProfile: () => dispatch(actions.initProfile()),
-        onInitSettings: (callback) => dispatch(actions.initSettings(callback))
+        onInitSettings: (callback) => dispatch(actions.initSettings(callback)),
+        onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
+        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }
 };
 

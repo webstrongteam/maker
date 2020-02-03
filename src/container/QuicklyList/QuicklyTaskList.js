@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {container, empty, fullWidth} from '../../shared/styles';
-import InputDialog from '../../components/UI/Dialog/InputDialog';
-import ConfigQuicklyTask from './ConfigQuicklyTask';
+import {generateDialogObject} from '../../shared/utility';
+import ConfigQuicklyTask from './ConfigQuicklyTask/ConfigQuicklyTask';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
-import {generateInputDialogObject} from "../../shared/utility";
 
 class QuicklyTaskList extends Component {
     state = {
@@ -20,8 +19,6 @@ class QuicklyTaskList extends Component {
             id: false,
             name: this.props.translations.listName
         },
-        showDialog: false,
-        dialog: {},
         loading: true,
         control: {label: this.props.translations.listName}
     };
@@ -70,37 +67,39 @@ class QuicklyTaskList extends Component {
     };
 
     showDialog = () => {
-        const {list} = this.state;
+        const {list, control} = this.state;
         const {translations} = this.props;
         let copyName = list.name;
-        let dialog = generateInputDialogObject(
+        const dialog = generateDialogObject(
             translations.dialogTitle,
-            true,
-            copyName,
-            (value) => copyName = value,
+            {
+                elementConfig: control,
+                focus: true,
+                value: copyName,
+                onChange: (value) => copyName = value
+            },
             {
                 [translations.save]: () => {
                     list.name = copyName;
-                    this.setState({list, showDialog: false});
+                    this.props.onUpdateModal(false);
                     this.saveList(list, false);
                 },
                 [translations.cancel]: () => {
-                    this.setState({showDialog: false});
+                    this.props.onUpdateModal(false);
                 },
             }
         );
-        this.setState({showDialog: true, dialog});
+
+        dialog.input = true;
+        this.props.onUpdateModal(true, dialog);
     };
 
     render() {
-        const {
-            showDialog, control, showModal, dialog, selectedTask,
-            list, quicklyTasks, loading
-        } = this.state;
+        const {showModal, selectedTask, list, quicklyTasks, loading} = this.state;
         const {navigation, theme, translations} = this.props;
 
         return (
-            <Template>
+            <Template bgColor={theme.secondaryBackgroundColor}>
                 <Toolbar
                     leftElement="arrow-back"
                     rightElement={
@@ -134,6 +133,7 @@ class QuicklyTaskList extends Component {
                             </View>
                     }
                 />
+
                 {showModal &&
                 <ConfigQuicklyTask
                     showModal={showModal}
@@ -142,36 +142,41 @@ class QuicklyTaskList extends Component {
                     toggleModal={this.toggleModalHandler}
                 />
                 }
-                {showDialog &&
-                <InputDialog
-                    showModal={showDialog}
-                    elementConfig={control}
-                    title={dialog.title}
-                    focus={dialog.focus}
-                    value={dialog.value}
-                    onChange={dialog.onChange}
-                    buttons={dialog.buttons}
-                />
-                }
+
                 {!loading ?
                     <View style={container}>
                         {quicklyTasks.length ?
-                            <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
+                            <ScrollView style={fullWidth}>
                                 {quicklyTasks.map(task => (
                                     <ListItem
-                                        divider
                                         dense
                                         key={task.id}
                                         style={{
-                                            container: {marginTop: 5}
+                                            container: [
+                                                styles.shadow,
+                                                {
+                                                    backgroundColor: "#fff",
+                                                    marginTop: 10,
+                                                    marginLeft: 10,
+                                                    marginRight: 10,
+                                                    height: 50
+                                                }
+                                            ],
+                                            primaryText: {
+                                                fontSize: 18,
+                                                color: "#000"
+                                            }
                                         }}
                                         onPress={() => this.toggleModalHandler(task.id)}
                                         rightElement={
-                                            <IconToggle onPress={() => {
-                                                this.props.onRemoveQuicklyTask(task.id, () => {
-                                                    this.reloadTasks();
-                                                })
-                                            }} name="done"/>
+                                            <IconToggle
+                                                color={theme.doneButtonColor}
+                                                onPress={() => {
+                                                    this.props.onRemoveQuicklyTask(task.id, () => {
+                                                        this.reloadTasks();
+                                                    })
+                                                }}
+                                                name="done"/>
                                         }
                                         centerElement={{
                                             primaryText: `${task.name}`,
@@ -190,6 +195,19 @@ class QuicklyTaskList extends Component {
     }
 }
 
+const styles = StyleSheet.create({
+    shadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 3
+    }
+});
+
 const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
@@ -205,7 +223,8 @@ const mapDispatchToProps = dispatch => {
         onInitLists: () => dispatch(actions.initLists()),
         onInitList: (id, callback) => dispatch(actions.initList(id, callback)),
         onSaveList: (list, callback) => dispatch(actions.saveList(list, callback)),
-        onRemoveQuicklyTask: (id, callback) => dispatch(actions.removeQuicklyTask(id, callback))
+        onRemoveQuicklyTask: (id, callback) => dispatch(actions.removeQuicklyTask(id, callback)),
+        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }
 };
 

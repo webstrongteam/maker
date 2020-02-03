@@ -11,6 +11,7 @@
       "buildNumber": "2.0.0",
       "supportsTablet": false,
       "bundleIdentifier": "com.webStrong.maker",
+      "usesIcloudStorage": true,
       "infoPlist": {
         "NSCameraUsageDescription": "...",
         "NSPhotoLibraryUsageDescription": "..."

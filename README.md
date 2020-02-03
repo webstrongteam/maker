@@ -55,13 +55,13 @@ This app working with Android and iOS.
 - Zapisywać id kategorii w zadaniu a nie jego nazwe | MICH
 - Color picker w theme nie dziala na iosie (trzeba będzie znaleźć inną biblioteke) | MICH
 ---
-- Zmianić wszystkie modale na jeden globalny | MATT
-- Zmianić wszystkie snackbary na jeden globalny | MATT
-- Edycja nazwy theme nie dziala na iosie | MATT
+- Dodać możliwość usuwania całej zawartości inputa | MATT
+- Dodać możliwość zmieniania kolejności szybkich zadań | MATT
 - Uprościć tworzenie motywów | MATT
 - Zmienic wszedzie czcionke | MATT
 - Zmienić animacje usuwania zadań | MATT / MICH
 - Dodać brakujące tłumaczenia | MATT
+- Naprawić dodawanie backupa z plików telefonu na iosie | MATT
 - Zmienić ekran ładowania | MATT
 
 ### WebStrong &copy;  

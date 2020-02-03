@@ -65,21 +65,19 @@ class Template extends Component {
                         {this.props.children}
                     </View>
 
-                    {showModal &&
                     <Dialog
                         showModal={showModal}
-
+                        input={modal.input}
                         select={modal.select}
                         selectedValue={modal.selectedValue}
-
                         title={modal.title}
                         body={modal.body}
                         buttons={modal.buttons}
                     />
-                    }
 
                     <Snackbar visible={showSnackbar} message={snackbarText}
-                              onRequestClose={() => this.props.onUpdateSnackbar(false, '')}/>
+                              onPress={() => this.props.onUpdateSnackbar(false)}
+                              onRequestClose={() => this.props.onUpdateSnackbar(false)}/>
 
                 </ThemeContext.Provider>
                 }
@@ -99,7 +97,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.showSnackbar(showSnackbar, snackbarText))
+        onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText))
     }
 };
 

@@ -95,39 +95,6 @@ export const generateDialogObject = (title, body, buttons) => {
     return object;
 };
 
-export const generateSelectDialogObject = (title, selectedOption, options, buttons) => {
-    let object = {
-        title,
-        selectedOption,
-        options,
-        buttons: []
-    };
-    Object.keys(buttons).map(key => {
-        object.buttons.push({
-            label: key,
-            onPress: buttons[key]
-        })
-    });
-    return object;
-};
-
-export const generateInputDialogObject = (title, focus, value, onChange, buttons) => {
-    let object = {
-        title,
-        focus,
-        value,
-        onChange,
-        buttons: []
-    };
-    Object.keys(buttons).map(key => {
-        object.buttons.push({
-            label: key,
-            onPress: buttons[key]
-        })
-    });
-    return object;
-};
-
 export const convertPriorityNames = (priority, translations) => {
     if (priority === 'none') {
         return translations.priorityNone

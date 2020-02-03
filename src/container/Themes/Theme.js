@@ -5,10 +5,8 @@ import ColorPicker from '../../components/UI/ColorPicker/ColorPicker';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
-import InputDialog from '../../components/UI/Dialog/InputDialog';
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {generateDialogObject, generateInputDialogObject, valid} from "../../shared/utility";
-import Dialog from '../../components/UI/Dialog/Dialog';
+import {generateDialogObject, valid} from "../../shared/utility";
 import {BannerAd} from "../../../adsAPI";
 
 import {connect} from 'react-redux';
@@ -37,10 +35,6 @@ class Theme extends Component {
                 characterRestriction: 30
             }
         },
-
-        showDialog: false,
-        showInputDialog: false,
-        dialog: {},
         loading: true
     };
 
@@ -65,66 +59,66 @@ class Theme extends Component {
 
     showDialog = (action) => {
         const {translations} = this.props;
-        let showInputDialog = false;
-        let showDialog = true;
         let dialog;
         if (action === 'exit') {
-            showDialog = true;
             dialog = generateDialogObject(
                 translations.defaultTitle,
                 translations.exitDescription,
                 {
                     [translations.yes]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false);
                         this.props.navigation.goBack();
                     },
                     [translations.save]: () => {
+                        this.props.onUpdateModal(false);
                         this.checkValid('name', true);
-                        this.setState({showDialog: false});
                     },
-                    [translations.cancel]: () => this.setState({showDialog: false})
+                    [translations.cancel]: () => this.props.onUpdateModal(false)
                 }
             );
         } else if (action === 'delete') {
-            showDialog = true;
             dialog = generateDialogObject(
                 translations.defaultTitle,
                 translations.deleteDescription,
                 {
                     [translations.yes]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false);
                         this.deleteTheme();
                         this.props.navigation.goBack();
                     },
                     [translations.no]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false);
                     }
                 }
             );
         } else if (action === 'changeName') {
-            showInputDialog = true;
             const {customTheme, controls} = this.state;
             let copyName = customTheme.name;
-            dialog = generateInputDialogObject(
+
+            dialog = generateDialogObject(
                 translations.changeNameTitle,
-                true,
-                this.basicValid(customTheme.name) ? copyName : '',
-                (value) => copyName = value,
+                {
+                    elementConfig: controls.name,
+                    focus: true,
+                    value: this.basicValid(customTheme.name) ? copyName : '',
+                    onChange: (value) => copyName = value
+                },
                 {
                     [translations.save]: () => {
                         this.checkValid('name', false, copyName);
                         if (!controls.name.error && this.basicValid(copyName)) {
-                            this.setState({showDialog: false});
+                            this.props.onUpdateModal(false);
                         }
                     },
                     [translations.cancel]: () => {
-                        this.setState({showDialog: false});
+                        this.props.onUpdateModal(false);
                     },
                 }
             );
+            dialog.input = true;
         }
 
-        this.setState({showDialog, showInputDialog, dialog});
+        this.props.onUpdateModal(true, dialog);
     };
 
     deleteTheme = () => {
@@ -179,8 +173,7 @@ class Theme extends Component {
 
     render() {
         const {
-            customTheme, controls, showDialog, showInputDialog,
-            dialog, loading, names, showColorPicker, selectedColor,
+            customTheme, loading, names, showColorPicker, selectedColor,
             colorPickerTitle, actualColor
         } = this.state;
         const {navigation, theme, translations} = this.props;
@@ -226,27 +219,6 @@ class Theme extends Component {
                             </View>
                     }
                 />
-
-                {showDialog &&
-                <Dialog
-                    showModal={showDialog}
-                    title={dialog.title}
-                    description={dialog.description}
-                    buttons={dialog.buttons}
-                />
-                }
-
-                {showInputDialog &&
-                <InputDialog
-                    showModal={showDialog}
-                    elementConfig={controls.name}
-                    title={dialog.title}
-                    focus={dialog.focus}
-                    value={dialog.value}
-                    onChange={dialog.onChange}
-                    buttons={dialog.buttons}
-                />
-                }
 
                 <ColorPicker
                     show={showColorPicker}
@@ -365,7 +337,8 @@ const mapDispatchToProps = dispatch => {
         onInitCustomTheme: (id, callback) => dispatch(actions.initCustomTheme(id, callback)),
         onSaveTheme: (theme) => dispatch(actions.saveTheme(theme)),
         onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),
-        onDeleteTheme: (id) => dispatch(actions.deleteTheme(id))
+        onDeleteTheme: (id) => dispatch(actions.deleteTheme(id)),
+        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }
 };
 

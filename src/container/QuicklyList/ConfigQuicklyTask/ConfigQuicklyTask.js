@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import InputDialog from "../../components/UI/Dialog/InputDialog";
-import {generateInputDialogObject, valid} from '../../shared/utility';
+import Dialog from "../../../components/UI/Dialog/Dialog";
+import {generateDialogObject, valid} from '../../../shared/utility';
 
 import {connect} from 'react-redux';
-import * as actions from '../../store/actions/index';
+import * as actions from '../../../store/actions';
 
 class ConfigQuicklyTask extends Component {
     state = {
@@ -60,12 +60,15 @@ class ConfigQuicklyTask extends Component {
     };
 
     showDialog = (title) => {
-        const {task} = this.state;
-        const dialog = generateInputDialogObject(
+        const {task, controls} = this.state;
+        const dialog = generateDialogObject(
             title,
-            true,
-            task.name,
-            (value) => this.changeInputHandler('name', false, value),
+            {
+                elementConfig: controls.name,
+                focus: true,
+                value: task.name,
+                onChange: (value) => this.changeInputHandler('name', false, value)
+            },
             {
                 Save: () => this.changeInputHandler('name', true),
                 Cancel: () => this.props.toggleModal()
@@ -80,13 +83,11 @@ class ConfigQuicklyTask extends Component {
         return (
             <React.Fragment>
                 {dialog &&
-                <InputDialog
+                <Dialog
                     showModal={this.props.showModal}
-                    elementConfig={controls.name}
+                    input={true}
                     title={dialog.title}
-                    focus={dialog.focus}
-                    value={dialog.value}
-                    onChange={dialog.onChange}
+                    body={dialog.body}
                     buttons={dialog.buttons}
                 />
                 }

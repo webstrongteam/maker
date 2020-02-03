@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {Icon, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {container, fullWidth} from '../../shared/styles';
-import ConfigCategory from './ConfigCategory';
+import ConfigCategory from './ConfigCategory/ConfigCategory';
 import Template from '../Template/Template';
 import {BannerAd} from '../../../adsAPI';
 
@@ -62,6 +62,7 @@ class CategoriesList extends PureComponent {
                     }}
                     centerElement={translations.title}
                 />
+
                 {showModal &&
                 <ConfigCategory
                     showModal={showModal}
@@ -69,6 +70,7 @@ class CategoriesList extends PureComponent {
                     toggleModal={this.toggleModalHandler}
                 />
                 }
+
                 {ready &&
                 <View style={container}>
                     <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>

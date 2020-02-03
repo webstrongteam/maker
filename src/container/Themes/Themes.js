@@ -1,10 +1,9 @@
 import React, {PureComponent} from 'react';
-import {Icon, IconToggle, Snackbar, Toolbar, withTheme} from 'react-native-material-ui';
+import {Icon, IconToggle, Toolbar, withTheme} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import {View} from 'react-native';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import Dialog from "../../components/UI/Dialog/Dialog";
 import {iconStyle} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 
@@ -14,12 +13,7 @@ import * as actions from "../../store/actions";
 class Themes extends PureComponent {
     state = {
         selectedTheme: null,
-        loading: true,
-        dialog: null,
-        snackbar: {
-            visible: false,
-            message: ''
-        }
+        loading: true
     };
 
     componentDidMount() {
@@ -34,7 +28,7 @@ class Themes extends PureComponent {
     }
 
     toggleSnackbar = (message, visible = true) => {
-        this.setState({snackbar: {visible, message}});
+        this.props.onUpdateSnackbar(visible, message);
     };
 
     initThemes = () => {
@@ -64,7 +58,7 @@ class Themes extends PureComponent {
     };
 
     render() {
-        const {selectedTheme, loading, dialog, showDialog, snackbar} = this.state;
+        const {selectedTheme, loading} = this.state;
         const {navigation, themes, actualTheme, translations} = this.props;
 
         return (
@@ -79,20 +73,6 @@ class Themes extends PureComponent {
                     onLeftElementPress={() => navigation.goBack()}
                     centerElement={translations.title}
                 />
-
-                <Snackbar
-                    visible={snackbar.visible}
-                    message={snackbar.message}
-                    onRequestClose={() => this.toggleSnackbar('', false)}/>
-
-                {showDialog &&
-                <Dialog
-                    showModal={showDialog}
-                    title={dialog.title}
-                    description={dialog.description}
-                    buttons={dialog.buttons}
-                />
-                }
 
                 {!loading ?
                     <SettingsList backgroundColor={actualTheme.primaryBackgroundColor}
@@ -187,7 +167,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onInitTheme: (callback) => dispatch(actions.initTheme(callback)),
         onInitThemes: () => dispatch(actions.initThemes()),
-        onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id))
+        onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),
+        onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText))
     }
 };
 

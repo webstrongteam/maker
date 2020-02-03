@@ -11,14 +11,14 @@ const initState = {
 const updateModal = (state, action) => {
     return updateObject(state, {
         showModal: action.showModal,
-        modal: action.modal
+        modal: action.modal ? action.modal : state.modal
     });
 };
 
 const updateSnackbar = (state, action) => {
     return updateObject(state, {
         showSnackbar: action.showSnackbar,
-        snackbarText: action.snackbarText
+        snackbarText: action.snackbarText ? action.snackbarText : state.snackbarText
     });
 };
 

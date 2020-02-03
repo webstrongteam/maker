@@ -1,14 +1,18 @@
 import React from "react";
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import Dialog from "react-native-dialog";
 import {ListItem} from "react-native-material-ui";
+import Input from "../Input/Input";
 
 import {connect} from 'react-redux';
 
 const dialog = (props) => {
     if (props.select) {
-        return select(props);
-    } else {
+        return selectDialog(props);
+    } else if (props.input) {
+        return inputDialog(props);
+    }
+    else {
         return defaultDialog(props);
     }
 };
@@ -34,25 +38,30 @@ const defaultDialog = (props) => (
             </View>
         }
 
-        {props.buttons.map(button => (
+        {props.buttons &&
+        props.buttons.map(button => (
             <Dialog.Button
                 key={button.label}
                 label={button.label}
                 onPress={button.onPress}
             />
-        ))}
+        ))
+        }
     </Dialog.Container>
 );
 
-const select = (props) => (
+const selectDialog = (props) => (
     <Dialog.Container
         contentStyle={{backgroundColor: props.theme.secondaryBackgroundColor}}
         visible={props.showModal}>
+        {props.title &&
         <Dialog.Title
             style={{color: props.theme.textColor}}>
             {props.title}
         </Dialog.Title>
+        }
 
+        {props.body &&
         <View style={{marginBottom: 10}}>
             {props.body.map((option, index) => (
                 <ListItem
@@ -62,7 +71,7 @@ const select = (props) => (
                     onPress={() => option.onClick(option.value)}
                     style={{
                         contentViewContainer: {
-                            backgroundColor: '#fff'
+                            backgroundColor: Platform.OS === 'ios' ? '#fff' : 'transparent'
                         },
                         primaryText: {
                             color: option.value === props.selectedValue ?
@@ -76,14 +85,49 @@ const select = (props) => (
                 />
             ))}
         </View>
+        }
 
-        {props.buttons.map(button => (
+        {props.buttons &&
+        props.buttons.map(button => (
             <Dialog.Button
                 key={button.label}
                 label={button.label}
                 onPress={button.onPress}
             />
-        ))}
+        ))
+        }
+    </Dialog.Container>
+);
+
+const inputDialog = (props) => (
+    <Dialog.Container
+        contentStyle={{backgroundColor: props.theme.secondaryBackgroundColor}}
+        visible={props.showModal}>
+        {props.title &&
+        <Dialog.Title
+            style={{color: props.theme.textColor}}>
+            {props.title}
+        </Dialog.Title>
+        }
+
+        {props.body &&
+        <Input
+            elementConfig={props.body.elementConfig ? props.body.elementConfig : null}
+            focus={props.body.focus}
+            value={props.body.value}
+            changed={props.body.onChange}
+        />
+        }
+
+        {props.buttons &&
+        props.buttons.map(button => (
+            <Dialog.Button
+                key={button.label}
+                label={button.label}
+                onPress={button.onPress}
+            />
+        ))
+        }
     </Dialog.Container>
 );
 

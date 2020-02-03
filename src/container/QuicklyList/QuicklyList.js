@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {ActionButton, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
-import Dialog from '../../components/UI/Dialog/Dialog';
 import AnimatedView from '../AnimatedView/AnimatedView';
 import {empty, flex, fullWidth} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -15,8 +14,6 @@ const DOWN = -1;
 
 class QuicklyList extends Component {
     state = {
-        dialog: {},
-        showDialog: false,
         amounts: {},
         searchText: '',
 
@@ -78,19 +75,20 @@ class QuicklyList extends Component {
             `${translations.dialogDescription1} ${list_name} ${translations.dialogDescription2}`,
             {
                 [translations.yes]: () => {
-                    this.setState({showDialog: false});
+                    this.props.onUpdateModal(false);
                     this.props.onRemoveList(list_id);
                 },
                 [translations.no]: () => {
-                    this.setState({showDialog: false});
+                    this.props.onUpdateModal(false);
                 }
             }
         );
-        this.setState({showDialog: true, dialog});
+
+        this.props.onUpdateModal(true, dialog);
     };
 
     render() {
-        const {dialog, showDialog, amounts, bottomHidden, loading} = this.state;
+        const {amounts, bottomHidden, loading} = this.state;
         const {lists, theme, navigation, translations} = this.props;
 
         const quicklyList = lists.map((list, index) => {
@@ -152,15 +150,6 @@ class QuicklyList extends Component {
                     centerElement={translations.quicklyLists}
                     onLeftElementPress={() => navigation.navigate('Drawer')}
                 />
-
-                {showDialog &&
-                <Dialog
-                    showModal={showDialog}
-                    title={dialog.title}
-                    description={dialog.description}
-                    buttons={dialog.buttons}
-                />
-                }
 
                 {!loading ?
                     <ScrollView
@@ -228,7 +217,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onInitList: (id, callback) => dispatch(actions.initList(id, callback)),
-        onRemoveList: (list_id) => dispatch(actions.removeList(list_id))
+        onRemoveList: (list_id) => dispatch(actions.removeList(list_id)),
+        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }
 };
 

@@ -1,10 +1,10 @@
 import React, {Component} from "react";
-import Dialog from '../../components/UI/Dialog/Dialog';
-import Input from '../../components/UI/Input/Input';
-import {generateDialogObject, valid} from '../../shared/utility';
+import Dialog from '../../../components/UI/Dialog/Dialog';
+import Input from '../../../components/UI/Input/Input';
+import {generateDialogObject, valid} from '../../../shared/utility';
 
 import {connect} from 'react-redux';
-import * as actions from '../../store/actions';
+import * as actions from '../../../store/actions';
 
 class ConfigCategory extends Component {
     state = {
@@ -55,6 +55,7 @@ class ConfigCategory extends Component {
                 const {category} = this.state;
                 this.props.onSaveCategory(category, () => {
                     delete newControls[name].error;
+                    console.log('test')
                     this.props.toggleModal(category);
                 });
             }

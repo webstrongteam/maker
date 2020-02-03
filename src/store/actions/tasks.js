@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import {SQLite} from 'expo-sqlite';
+import * as SQLite from 'expo-sqlite';
 import {convertNumberToDate} from '../../shared/utility';
 import {configTask, deleteCalendarEvent, deleteLocalNotification} from '../../shared/configTask';
 import moment from 'moment';

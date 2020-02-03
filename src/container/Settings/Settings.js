@@ -1,12 +1,11 @@
 import React, {PureComponent} from 'react';
-import {Icon, ListItem, Snackbar, Toolbar} from 'react-native-material-ui';
+import {Icon, Toolbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import {StyleSheet, Text, View} from 'react-native';
 import {iconStyle} from '../../shared/styles';
 import {generateDialogObject} from "../../shared/utility";
-import Dialog from '../../components/UI/Dialog/Dialog';
 import {BannerAd} from "../../../adsAPI";
 
 import {connect} from 'react-redux';
@@ -14,12 +13,6 @@ import * as actions from "../../store/actions";
 
 class Settings extends PureComponent {
     state = {
-        loading: true,
-        showWeekDialog: false,
-        showLangDialog: false,
-        dialog: null,
-        showFirstDayOfWeek: false,
-        showLanguages: false,
         daysOfWeek: [
             {name: this.props.translations.sunday, value: 'Sunday'},
             {name: this.props.translations.monday, value: 'Monday'}
@@ -28,10 +21,7 @@ class Settings extends PureComponent {
             {name: this.props.translations.english, short_name: 'en'},
             {name: this.props.translations.polish, short_name: 'pl'}
         ],
-        snackbar: {
-            visible: false,
-            message: ''
-        }
+        loading: true
     };
 
     componentDidMount() {
@@ -54,7 +44,7 @@ class Settings extends PureComponent {
     }
 
     toggleSnackbar = (message, visible = true) => {
-        this.setState({snackbar: {visible, message}});
+        this.props.onUpdateSnackbar(visible, message);
     };
 
     toggleSetting = (value, name) => {
@@ -67,109 +57,75 @@ class Settings extends PureComponent {
         const {translations} = this.props;
         let dialog;
         if (action === 'showFirstDayOfWeek') {
+            const {daysOfWeek} = this.state;
+            const {settings} = this.props;
+            const options = [];
+            daysOfWeek.map(day => {
+                options.push({
+                    name: day.name,
+                    value: day.value,
+                    onClick: (value) => {
+                        this.props.onUpdateModal(false);
+                        this.props.onChangeFirstDayOfWeek(value);
+                        this.toggleSnackbar(translations.firstDaySnackbar);
+                    }
+                })
+            });
             dialog = generateDialogObject(
                 translations.showFirstDayOfWeekTitle,
-                false,
+                options,
                 {
                     [translations.cancel]: () => {
-                        this.setState({[action]: false});
+                        this.props.onUpdateModal(false);
                     }
                 }
             );
+
+            dialog.select = true;
+            dialog.selectedValue = settings.firstDayOfWeek;
         } else if (action === 'showLanguages') {
+            const {languages} = this.state;
+            const {settings} = this.props;
+            const options = [];
+            languages.map(lang => {
+                options.push({
+                    name: lang.name,
+                    value: lang.short_name,
+                    onClick: (value) => {
+                        this.props.onUpdateModal(false);
+                        this.props.onChangeLang(value);
+                        this.toggleSnackbar(translations.langSnackbar);
+                    }
+                })
+            });
             dialog = generateDialogObject(
                 translations.showLanguagesTitle,
-                false,
+                options,
                 {
                     [translations.cancel]: () => {
-                        this.setState({[action]: false});
+                        this.props.onUpdateModal(false);
                     }
                 }
             );
+
+            dialog.select = true;
+            dialog.selectedValue = settings.lang
         }
-        this.setState({[action]: true, dialog});
+
+        this.props.onUpdateModal(true, dialog);
     };
 
     render() {
-        const {loading, snackbar, showFirstDayOfWeek, showLanguages, daysOfWeek, languages, dialog} = this.state;
+        const {loading, daysOfWeek} = this.state;
         const {navigation, settings, theme, translations} = this.props;
-        let viewDialog = null;
-
-        if (showFirstDayOfWeek) {
-            viewDialog = (
-                <Dialog
-                    showModal={showFirstDayOfWeek}
-                    title={dialog.title}
-                    buttons={dialog.buttons}
-                >
-                    {daysOfWeek.map((day, index) => (
-                        <ListItem
-                            divider
-                            dense
-                            key={index}
-                            onPress={() => {
-                                this.setState({showFirstDayOfWeek: false});
-                                this.props.onChangeFirstDayOfWeek(day.value);
-                                this.toggleSnackbar(translations.firstDaySnackbar);
-                            }}
-                            style={{
-                                primaryText: {
-                                    color: settings.firstDayOfWeek === day.value ?
-                                        theme.primaryColor : theme.textColor
-                                }
-                            }}
-                            centerElement={{
-                                primaryText: day.name,
-                            }}
-                        />
-                    ))
-                    }
-                </Dialog>
-            )
-        } else if (showLanguages) {
-            viewDialog = (
-                <Dialog
-                    showModal={showLanguages}
-                    title={dialog.title}
-                    buttons={dialog.buttons}
-                >
-                    {languages.map((lang, index) => (
-                        <ListItem
-                            divider
-                            dense
-                            key={index}
-                            onPress={() => {
-                                this.setState({showLanguages: false});
-                                this.props.onChangeLang(lang.short_name);
-                                this.toggleSnackbar(translations.langSnackbar);
-                            }}
-                            style={{
-                                primaryText: {
-                                    color: settings.lang === lang.short_name ?
-                                        theme.primaryColor : theme.textColor
-                                }
-                            }}
-                            centerElement={{
-                                primaryText: lang.name,
-                            }}
-                        />
-                    ))
-                    }
-                </Dialog>
-            )
-        }
 
         return (
             <Template bgColor={theme.secondaryBackgroundColor}>
                 <Toolbar
                     leftElement="arrow-back"
-                    onLeftElementPress={() => {
-                        navigation.goBack();
-                    }}
+                    onLeftElementPress={() => navigation.goBack()}
                     centerElement={translations.settings}
                 />
-
-                {viewDialog}
 
                 {!loading ?
                     <React.Fragment>
@@ -324,6 +280,8 @@ const mapDispatchToProps = dispatch => {
         onChangeConfirmFinishingTask: (value) => dispatch(actions.changeConfirmFinishingTask(value)),
         onChangeConfirmDeletingTask: (value) => dispatch(actions.changeConfirmDeletingTask(value)),
         onChangeHideTabView: (value) => dispatch(actions.changeHideTabView(value)),
+        onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
+        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }
 };
 

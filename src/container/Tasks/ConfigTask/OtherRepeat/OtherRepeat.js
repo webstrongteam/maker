@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import {ListItem} from "react-native-material-ui";
 import Dialog from '../../../../components/UI/Dialog/Dialog';
 import Input from '../../../../components/UI/Input/Input';
@@ -80,7 +80,7 @@ class OtherRepeat extends Component {
                                 onPress={() => this.props.onSelectTime(index + '')}
                                 style={{
                                     contentViewContainer: {
-                                        backgroundColor: '#fff'
+                                        backgroundColor: Platform.OS === 'ios' ? '#fff' : 'transparent'
                                     },
                                     primaryText: {
                                         color: index + '' === selectedTime ?

@@ -12,7 +12,7 @@ export const initDatabase = (callback) => {
             'create table if not exists categories (id integer primary key not null, name text);'
         );
         tx.executeSql(
-            'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text);'
+            'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, event_id text default null, notification_id text default null);'
         );
         tx.executeSql(
             'create table if not exists finished (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, finish integer);'
@@ -30,7 +30,7 @@ export const initDatabase = (callback) => {
             'create table if not exists profile (id integer primary key not null, name text, avatar text, endedTask integer);'
         );
         tx.executeSql(
-            'create table if not exists settings (id integer primary key not null, sorting text, sortingType text, timeFormat integer, firstDayOfWeek text, confirmFinishingTask integer, confirmRepeatingTask integer, confirmDeletingTask integer, version text, theme integer DEFAULT 0 REFERENCES themes(id) ON DELETE SET DEFAULT, lang text);'
+            'create table if not exists settings (id integer primary key not null, sorting text, sortingType text, timeFormat integer, firstDayOfWeek text, confirmFinishingTask integer, confirmRepeatingTask integer, confirmDeletingTask integer, version text, hideTabView integer DEFAULT 0, theme integer DEFAULT 0 REFERENCES themes(id) ON DELETE SET DEFAULT, lang text);'
         );
         tx.executeSql(
             "INSERT OR IGNORE INTO categories (id, name) values (0, 'Default');"
@@ -45,7 +45,7 @@ export const initDatabase = (callback) => {
             "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker user', '', 0);"
         );
         tx.executeSql(
-            "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 'en');", [VERSION + "_INIT"], () => {
+            "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, hideTabView, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 0, 'en');", [VERSION + "_INIT"], () => {
                 initApp(callback);
             }
         );
@@ -87,7 +87,7 @@ export const initTheme = (callback) => {
                                 alternateTextColor: theme.headerTextColor,
                                 disabledColor: theme.textColor,
                                 pickerHeaderColor: theme.textColor
-                            },
+                            }
                         },
                         ready: true
                     })
