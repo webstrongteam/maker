@@ -1,6 +1,5 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
-import {IconToggle} from 'react-native-material-ui';
 import {TextField} from 'react-native-material-textfield';
 import {fullWidth} from '../../../shared/styles';
 

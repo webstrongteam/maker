@@ -7,7 +7,7 @@ import * as actions from '../../../store/actions';
 
 class ConfigQuicklyTask extends Component {
     state = {
-        task: {id: false, name: '', list_id: false},
+        task: {id: false, name: '', order_nr: null, list_id: false},
         controls: {
             name: {
                 label: this.props.translations.quicklyTaskName,
@@ -44,11 +44,14 @@ class ConfigQuicklyTask extends Component {
 
     changeInputHandler = (name, save = false, value = this.state.task.name) => {
         const {task, controls} = this.state;
-        const {list_id, toggleModal, translations} = this.props;
+        const {list_id, toggleModal, translations, taskLength} = this.props;
         valid(controls, value, name, translations, (newControls) => {
             this.updateTask(name, value);
             if (save && !newControls[name].error) {
                 if (list_id !== false) {
+                    if (task.order_nr === null) {
+                        task.order_nr = taskLength;
+                    }
                     this.props.onSaveQuicklyTask(task, list_id, () => {
                         delete newControls[name].error;
                         toggleModal(task);
@@ -78,7 +81,7 @@ class ConfigQuicklyTask extends Component {
     };
 
     render() {
-        const {dialog, controls} = this.state;
+        const {dialog} = this.state;
 
         return (
             <React.Fragment>

@@ -37,11 +37,13 @@
     "react-native-modal-dropdown": "^0.7.0",
     "react-native-reanimated": "~1.4.0",
     "react-native-settings-list": "^1.8.0",
+    "react-native-sortable-listview": "^0.2.9",
     "react-native-tab-view": "^2.10.0",
     "react-navigation": "^3.11.1",
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "expo-haptics": "~8.0.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.0.0"

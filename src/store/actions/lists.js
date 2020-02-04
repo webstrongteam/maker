@@ -71,14 +71,15 @@ export const saveList = (list, callback) => {
     };
 };
 
-export const saveQuicklyTask = (quicklyTask, list_id, callback) => {
+export const saveQuicklyTask = (quicklyTask, list_id, callback = () => null) => {
     return () => {
         if (quicklyTask.id !== false) {
             db.transaction(
                 tx => {
                     tx.executeSql(`update quickly_tasks
-                                   set name = ?
-                                   where id = ?;`, [quicklyTask.name, quicklyTask.id], () => {
+                                   set name = ?,
+                                       order_nr = ?
+                                   where id = ?;`, [quicklyTask.name, quicklyTask.order_nr, quicklyTask.id], () => {
                         callback();
                     });
                 }, (err) => console.log(err)
@@ -86,7 +87,7 @@ export const saveQuicklyTask = (quicklyTask, list_id, callback) => {
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into quickly_tasks (name, list_id) values (?,?)', [quicklyTask.name, list_id], () => {
+                    tx.executeSql('insert into quickly_tasks (name, order_nr, list_id) values (?,?,?)', [quicklyTask.name, quicklyTask.order_nr, list_id], () => {
                         callback();
                     });
                 }, (err) => console.log(err)

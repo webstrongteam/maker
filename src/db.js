@@ -6,7 +6,7 @@ const db = SQLite.openDatabase('maker.db', VERSION);
 export const initDatabase = (callback) => {
     db.transaction(tx => {
         tx.executeSql(
-            'DROP TABLE IF EXISTS themes;'
+            'DROP TABLE IF EXISTS quickly_tasks;'
         );
         tx.executeSql(
             'create table if not exists categories (id integer primary key not null, name text);'
@@ -21,7 +21,7 @@ export const initDatabase = (callback) => {
             'create table if not exists lists (id integer primary key not null, name text);'
         );
         tx.executeSql(
-            'create table if not exists quickly_tasks (id integer primary key not null, name text, list_id integer not null);'
+            'create table if not exists quickly_tasks (id integer primary key not null, name text, list_id integer not null, order_nr integer DEFAULT 0);'
         );
         tx.executeSql(
             'create table if not exists themes (id integer primary key not null, name text, primaryColor text, primaryBackgroundColor text, secondaryBackgroundColor text, textColor text, headerTextColor text, bottomNavigationColor text, actionButtonColor text, actionButtonIconColor text, overdueColor text, doneButtonColor text, doneButtonTextColor text, undoButtonColor text, undoButtonTextColor text, noneColor text, lowColor text, mediumColor text, highColor text);'

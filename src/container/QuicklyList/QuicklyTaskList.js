@@ -1,14 +1,18 @@
 import React, {Component} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
-import {container, empty, fullWidth} from '../../shared/styles';
+import {StyleSheet, Text, TouchableOpacity, View, Dimensions} from 'react-native';
+import {IconToggle, Icon, Toolbar} from 'react-native-material-ui';
+import {container, empty} from '../../shared/styles';
 import {generateDialogObject} from '../../shared/utility';
 import ConfigQuicklyTask from './ConfigQuicklyTask/ConfigQuicklyTask';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
+import SortableListView from 'react-native-sortable-listview'
+import {selectionAsync} from 'expo-haptics';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
+
+const width = Dimensions.get('window').width;
 
 class QuicklyTaskList extends Component {
     state = {
@@ -19,6 +23,7 @@ class QuicklyTaskList extends Component {
             id: false,
             name: this.props.translations.listName
         },
+        order: [],
         loading: true,
         control: {label: this.props.translations.listName}
     };
@@ -29,24 +34,19 @@ class QuicklyTaskList extends Component {
             this.reloadTasks(list);
         } else {
             const {list} = this.state;
-            this.saveList(list, false);
+            this.saveList(list);
             this.setState({loading: false});
         }
     };
 
     reloadTasks = (list = this.state.list) => {
+        this.setState({loading: true});
         this.props.onInitList(list.id, (tasks) => {
+            const order = [...tasks.map(t => t.order_nr)];
             this.setState({
                 quicklyTasks: tasks,
-                loading: false, list
+                order, list, loading: false
             });
-        });
-    };
-
-    saveList = (list, goBack = true) => {
-        this.props.onSaveList(list, (savedList) => {
-            this.setState({list: savedList});
-            if (goBack) this.props.navigation.goBack();
         });
     };
 
@@ -80,13 +80,11 @@ class QuicklyTaskList extends Component {
             },
             {
                 [translations.save]: () => {
+                    this.props.onUpdateModal(false);
                     list.name = copyName;
-                    this.props.onUpdateModal(false);
-                    this.saveList(list, false);
+                    this.saveList(list);
                 },
-                [translations.cancel]: () => {
-                    this.props.onUpdateModal(false);
-                },
+                [translations.cancel]: () => this.props.onUpdateModal(false)
             }
         );
 
@@ -94,8 +92,42 @@ class QuicklyTaskList extends Component {
         this.props.onUpdateModal(true, dialog);
     };
 
+    removeTask = (row) => {
+        this.props.onRemoveQuicklyTask(row.id, () => {
+            const {quicklyTasks, list} = this.state;
+            Promise.all(
+                quicklyTasks.map(task => {
+                    return new Promise((resolve) => {
+                        if (task.order_nr > row.order_nr) {
+                            task.order_nr -= 1;
+                            this.props.onSaveQuicklyTask(task, list.id, () => {
+                                resolve();
+                            });
+                        } else resolve();
+                    })
+                })
+            ).then(() => {
+                this.reloadTasks()
+            })
+        })
+    };
+
+    updateOrder = (order) => {
+        const {quicklyTasks, list} = this.state;
+        order.map((o, i) => {
+            quicklyTasks[i].order_nr = +o;
+            this.props.onSaveQuicklyTask(quicklyTasks[i], list.id);
+        });
+    };
+
+    saveList = (list) => {
+        this.props.onSaveList(list, (savedList) => {
+            this.setState({list: savedList});
+        });
+    };
+
     render() {
-        const {showModal, selectedTask, list, quicklyTasks, loading} = this.state;
+        const {showModal, selectedTask, list, quicklyTasks, order, loading} = this.state;
         const {navigation, theme, translations} = this.props;
 
         return (
@@ -139,6 +171,7 @@ class QuicklyTaskList extends Component {
                     showModal={showModal}
                     task_id={selectedTask}
                     list_id={list.id}
+                    taskLength={quicklyTasks.length}
                     toggleModal={this.toggleModalHandler}
                 />
                 }
@@ -146,44 +179,55 @@ class QuicklyTaskList extends Component {
                 {!loading ?
                     <View style={container}>
                         {quicklyTasks.length ?
-                            <ScrollView style={fullWidth}>
-                                {quicklyTasks.map(task => (
-                                    <ListItem
-                                        dense
-                                        key={task.id}
-                                        style={{
-                                            container: [
-                                                styles.shadow,
-                                                {
-                                                    backgroundColor: "#fff",
-                                                    marginTop: 10,
-                                                    marginLeft: 10,
-                                                    marginRight: 10,
-                                                    height: 50
-                                                }
-                                            ],
-                                            primaryText: {
-                                                fontSize: 18,
-                                                color: "#000"
-                                            }
-                                        }}
-                                        onPress={() => this.toggleModalHandler(task.id)}
-                                        rightElement={
-                                            <IconToggle
-                                                color={theme.doneButtonColor}
-                                                onPress={() => {
-                                                    this.props.onRemoveQuicklyTask(task.id, () => {
-                                                        this.reloadTasks();
-                                                    })
+                            <SortableListView
+                                activeOpacity={0.4}
+                                data={{...quicklyTasks}}
+                                order={order}
+                                onRowActive={selectionAsync}
+                                onRowMoved={e => {
+                                    order.splice(e.to, 0, order.splice(e.from, 1)[0]);
+                                    this.updateOrder(order);
+                                }}
+                                renderRow={row => {
+                                    return (
+                                        <TouchableOpacity style={{
+                                            ...styles.shadow,
+                                            backgroundColor: "#fff",
+                                            marginTop: 10,
+                                            marginLeft: 10,
+                                            marginRight: 10,
+                                            height: 50,
+                                            width: width - 20,
+                                        }} onPress={() => this.toggleModalHandler(row.id)}>
+                                            <View
+                                                style={{
+                                                    flex: 1,
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center'
                                                 }}
-                                                name="done"/>
-                                        }
-                                        centerElement={{
-                                            primaryText: `${task.name}`,
-                                        }}
-                                    />
-                                ))}
-                            </ScrollView> :
+                                            >
+                                                <Text style={{
+                                                    marginLeft: 15,
+                                                    fontSize: 18,
+                                                    color: "#000"
+                                                }}>{row.name}</Text>
+                                                <View style={{
+                                                    flexDirection: 'row',
+                                                    alignItems: 'center',
+                                                    marginRight: 15
+                                                }}>
+                                                    <IconToggle
+                                                        color={theme.doneButtonColor}
+                                                        onPress={() => this.removeTask(row)}
+                                                        name="done"/>
+                                                    <Icon name="dehaze"/>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                }}
+                            /> :
                             <Text style={[empty, {color: theme.textColor}]}>
                                 {translations.emptyList}
                             </Text>
@@ -222,6 +266,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onInitLists: () => dispatch(actions.initLists()),
         onInitList: (id, callback) => dispatch(actions.initList(id, callback)),
+        onSaveQuicklyTask: (task, list_id, callback) => dispatch(actions.saveQuicklyTask(task, list_id, callback)),
         onSaveList: (list, callback) => dispatch(actions.saveList(list, callback)),
         onRemoveQuicklyTask: (id, callback) => dispatch(actions.removeQuicklyTask(id, callback)),
         onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
