@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {TextField} from 'react-native-material-textfield';
 import {fullWidth} from '../../../shared/styles';
+import styles from './Input.styles';
 
 import {connect} from 'react-redux';
 
@@ -26,16 +27,6 @@ const input = (props) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        paddingLeft: 20,
-        paddingRight: 20,
-        display: 'flex',
-        alignItems: "center",
-        justifyContent: "center"
-    }
-});
 
 const mapStateToProps = state => {
     return {theme: state.theme.theme}

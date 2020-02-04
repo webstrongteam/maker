@@ -7,6 +7,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {iconStyle} from '../../shared/styles';
 import {generateDialogObject} from "../../shared/utility";
 import {BannerAd} from "../../../adsAPI";
+import styles from './Settings.styles';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
@@ -251,14 +252,6 @@ class Settings extends PureComponent {
     }
 }
 
-const styles = StyleSheet.create({
-    version: {
-        marginTop: 10,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        opacity: 0.35
-    }
-});
 
 const mapStateToProps = state => {
     return {

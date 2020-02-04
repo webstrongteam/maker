@@ -8,6 +8,7 @@ import SettingsList from 'react-native-settings-list';
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {generateDialogObject, valid} from "../../shared/utility";
 import {BannerAd} from "../../../adsAPI";
+import styles from './Theme.styles';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
@@ -308,18 +309,6 @@ class Theme extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    colorPreview: {
-        marginTop: 10,
-        marginRight: 10,
-        width: 50,
-        height: 50,
-        borderStyle: "dashed",
-        borderRadius: 30,
-        borderWidth: 0.75
-    }
-});
 
 const mapStateToProps = state => {
     return {

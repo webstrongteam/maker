@@ -9,6 +9,7 @@ import {Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import {flex, separator} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
+import styles from './Profile.styles';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
@@ -118,27 +119,6 @@ class Profile extends PureComponent {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    item: {
-        paddingLeft: 15,
-        paddingTop: 5,
-        paddingBottom: 10
-    },
-    name: {
-        alignSelf: 'center',
-        textAlign: 'center',
-        fontSize: 21
-    },
-    image: {
-        height: 125,
-        width: 125,
-        borderRadius: 65,
-        marginTop: 10,
-        marginBottom: -20,
-        alignSelf: 'center'
-    }
-});
 
 const mapStateToProps = state => {
     return {

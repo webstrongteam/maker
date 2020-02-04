@@ -5,6 +5,7 @@ import {generateDialogObject} from '../../shared/utility';
 import AnimatedView from '../AnimatedView/AnimatedView';
 import {empty, flex, fullWidth} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import styles from './QuicklyList.styles';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
@@ -183,24 +184,6 @@ class QuicklyList extends Component {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    shadow: {
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 3,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
-        elevation: 3
-    },
-    rightElements: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
-});
 
 const mapStateToProps = state => {
     return {
