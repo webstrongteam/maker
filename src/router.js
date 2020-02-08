@@ -3,7 +3,7 @@ import {createAppContainer, createStackNavigator} from 'react-navigation';
 // Components
 import ToDo from "./container/ToDo/ToDo";
 import ConfigTask from "./container/Tasks/ConfigTask/ConfigTask";
-import QuicklyTaskList from './container/QuicklyList/QuicklyTaskList';
+import QuicklyTaskList from './container/QuicklyList/QuicklyTaskList/QuicklyTaskList';
 import CategoriesList from './container/Categories/CategoriesList';
 import Drawer from './container/Drawer/Drawer';
 import Themes from './container/Themes/Themes';

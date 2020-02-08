@@ -1,17 +1,17 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View, Dimensions} from 'react-native';
+import {Text, TouchableOpacity, View, Dimensions} from 'react-native';
 import {IconToggle, Icon, Toolbar} from 'react-native-material-ui';
-import {container, empty} from '../../shared/styles';
-import {generateDialogObject} from '../../shared/utility';
-import ConfigQuicklyTask from './ConfigQuicklyTask/ConfigQuicklyTask';
-import Spinner from '../../components/UI/Spinner/Spinner';
-import Template from '../Template/Template';
+import {container, empty, shadow} from '../../../shared/styles';
+import {generateDialogObject} from '../../../shared/utility';
+import ConfigQuicklyTask from '../ConfigQuicklyTask/ConfigQuicklyTask';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import Template from '../../Template/Template';
 import SortableListView from 'react-native-sortable-listview'
 import {selectionAsync} from 'expo-haptics';
-import styles from './QuicklyList.styles';
+import styles from './QuicklyTaskList.styles';
 
 import {connect} from 'react-redux';
-import * as actions from "../../store/actions";
+import * as actions from "../../../store/actions";
 
 const width = Dimensions.get('window').width;
 
@@ -192,32 +192,15 @@ class QuicklyTaskList extends Component {
                                 renderRow={row => {
                                     return (
                                         <TouchableOpacity style={{
-                                            ...styles.shadow,
-                                            backgroundColor: "#fff",
-                                            marginTop: 10,
-                                            marginLeft: 10,
-                                            marginRight: 10,
-                                            height: 50,
+                                            ...shadow,
+                                            ...styles.taskRow,
                                             width: width - 20,
                                         }} onPress={() => this.toggleModalHandler(row.id)}>
                                             <View
-                                                style={{
-                                                    flex: 1,
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center'
-                                                }}
+                                                style={styles.taskContainer}
                                             >
-                                                <Text style={{
-                                                    marginLeft: 15,
-                                                    fontSize: 18,
-                                                    color: "#000"
-                                                }}>{row.name}</Text>
-                                                <View style={{
-                                                    flexDirection: 'row',
-                                                    alignItems: 'center',
-                                                    marginRight: 15
-                                                }}>
+                                                <Text style={styles.taskName}>{row.name}</Text>
+                                                <View style={styles.taskIconContainer}>
                                                     <IconToggle
                                                         color={theme.doneButtonColor}
                                                         onPress={() => this.removeTask(row)}

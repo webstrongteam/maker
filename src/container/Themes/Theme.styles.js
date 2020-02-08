@@ -1,6 +1,7 @@
-import React from 'react';
+import {StyleSheet} from "react-native";
 
-export default StyleSheet.create({    container: {    colorPreview: {
+export default StyleSheet.create({
+    colorPreview: {
         marginTop: 10,
         marginRight: 10,
         width: 50,
@@ -8,5 +9,8 @@ export default StyleSheet.create({    container: {    colorPreview: {
         borderStyle: "dashed",
         borderRadius: 30,
         borderWidth: 0.75
+    },
+    titleStyle: {
+        color: '#009688', fontWeight: 'bold'
     }
 });

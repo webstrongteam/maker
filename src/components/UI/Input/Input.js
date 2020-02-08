@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {View} from 'react-native';
 import {TextField} from 'react-native-material-textfield';
 import {fullWidth} from '../../../shared/styles';
 import styles from './Input.styles';

@@ -247,9 +247,7 @@ ${translations.showBackupAlertDescription2}`,
                                         dense
                                         key={name}
                                         onPress={() => this.showDialog('showBackupAlert', name)}
-                                        style={{
-                                            container: {height: 50}
-                                        }}
+                                        style={{container: {height: 50}}}
                                         rightElement={
                                             <View style={row}>
                                                 <IconToggle

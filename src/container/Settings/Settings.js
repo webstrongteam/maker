@@ -3,7 +3,7 @@ import {Icon, Toolbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import {StyleSheet, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 import {iconStyle} from '../../shared/styles';
 import {generateDialogObject} from "../../shared/utility";
 import {BannerAd} from "../../../adsAPI";

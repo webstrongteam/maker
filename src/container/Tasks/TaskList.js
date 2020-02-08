@@ -3,11 +3,11 @@ import {Animated, Easing, Platform, ScrollView, StyleSheet, Text, TouchableHighl
 import {ActionButton, BottomNavigation, Icon, IconToggle, ListItem, Subheader, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject, sortingByType} from '../../shared/utility';
 import AnimatedView from '../AnimatedView/AnimatedView';
-import {empty, flex, fullWidth} from '../../shared/styles';
+import {empty, flex, shadow, fullWidth} from '../../shared/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
 import ConfigCategory from "../Categories/ConfigCategory/ConfigCategory";
 import moment from 'moment';
-import styles from './About.styles';
+import styles from './TaskList.styles';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
@@ -432,7 +432,7 @@ class TaskList extends Component {
                                         onPress={() => task.finish ? true : navigation.navigate('ConfigTask', {task: task.id})}
                                         style={{
                                             container: [
-                                                styles.shadow,
+                                                shadow,
                                                 {backgroundColor: "#fff"}
                                             ],
                                             leftElementContainer: {

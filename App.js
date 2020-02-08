@@ -17,13 +17,6 @@ import settingsReducer from './src/store/reducers/settings';
 import configReducer from './src/store/reducers/config';
 import {setCustomText} from 'react-native-global-props';
 
-// Setting default styles for all Text components.
-const customTextProps = {
-    style: {fontFamily: 'Ubuntu'}
-};
-
-setCustomText(customTextProps);
-
 const UIManager = NativeModules.UIManager;
 
 const rootReducer = combineReducers({
@@ -66,7 +59,14 @@ class App extends Component {
 
     render() {
         const {uiTheme, ready} = this.state;
+        // Hide yellow boxes
         console.disableYellowBox = true;
+
+        // Setting default styles for all Text components.
+        const customTextProps = {
+            style: {fontFamily: 'Ubuntu'}
+        };
+        setCustomText(customTextProps);
 
         return (
             ready ?

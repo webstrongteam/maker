@@ -1,7 +1,7 @@
-import React from 'react';
+import {StyleSheet} from "react-native";
 
-export default StyleSheet.create({    container: {
-    Button: {
+export default StyleSheet.create({
+    button: {
         paddingTop: 30,
         paddingLeft: 100,
         paddingRight: 100

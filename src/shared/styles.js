@@ -31,6 +31,17 @@ export const iconStyle = {
     justifyContent: 'center'
 };
 
+export const shadow = {
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0,
+        height: 3,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 3
+};
+
 export const separator = {
     height: 1,
     marginLeft: 15,

@@ -252,7 +252,7 @@ class Theme extends Component {
                                         <SettingsList.Item
                                             hasNavArrow={false}
                                             title={translations.elements}
-                                            titleStyle={{color: '#009688', fontWeight: 'bold'}}
+                                            titleStyle={styles.titleStyle}
                                             itemWidth={70}
                                             borderHide={'Both'}
                                         />
@@ -263,7 +263,7 @@ class Theme extends Component {
                                         <SettingsList.Item
                                             hasNavArrow={false}
                                             title={translations.buttons}
-                                            titleStyle={{color: '#009688', fontWeight: 'bold'}}
+                                            titleStyle={styles.titleStyle}
                                             itemWidth={70}
                                             borderHide={'Both'}
                                         />
@@ -274,7 +274,7 @@ class Theme extends Component {
                                         <SettingsList.Item
                                             hasNavArrow={false}
                                             title={translations.priorities}
-                                            titleStyle={{color: '#009688', fontWeight: 'bold'}}
+                                            titleStyle={styles.titleStyle}
                                             itemWidth={70}
                                             borderHide={'Both'}
                                         />

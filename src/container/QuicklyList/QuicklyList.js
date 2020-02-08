@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 import {ActionButton, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
 import AnimatedView from '../AnimatedView/AnimatedView';
-import {empty, flex, fullWidth} from '../../shared/styles';
+import {empty, flex, shadow, fullWidth} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import styles from './QuicklyList.styles';
 
@@ -109,7 +109,7 @@ class QuicklyList extends Component {
                                 onPress={() => navigation.navigate('QuicklyTaskList', {list: list})}
                                 style={{
                                     container: [
-                                        styles.shadow,
+                                        shadow,
                                         {backgroundColor: "#fff"}
                                     ],
                                     primaryText: {
