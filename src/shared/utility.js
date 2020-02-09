@@ -115,39 +115,43 @@ export const convertRepeatNames = (repeat, translations) => {
     }
 };
 
-export const valid = (controls, value, name, translations, callback) => {
+export const valid = (control, value, translations, callback) => {
     let validStatus = true;
 
     // Validation system
-    if (controls[name].characterRestriction) {
-        if (value.length > controls[name].characterRestriction) {
-            controls[name].error = translations.tooLong;
+    if (control.characterRestriction) {
+        if (value.length > control.characterRestriction) {
+            control.error = translations.tooLong;
             validStatus = false;
         }
     }
-    if (controls[name].number) {
+    if (control.number) {
         if (+value !== parseInt(value, 10)) {
-            controls[name].error = translations.number;
+            control.error = translations.number;
             validStatus = false;
         } else {
-            if (controls[name].positiveNumber) {
+            if (control.positiveNumber) {
                 if (+value < 1) {
-                    controls[name].error = translations.greaterThanZero;
+                    control.error = translations.greaterThanZero;
                     validStatus = false;
                 }
             }
         }
     }
-    if (controls[name].required) {
+    if (control.required) {
         if (value.trim() === '') {
-            controls[name].error = translations.required;
+            control.error = translations.required;
             validStatus = false;
         }
     }
 
-    if (validStatus && controls[name].error) {
-        delete controls[name].error;
+    if (validStatus && control.error) {
+        delete control.error;
     }
 
-    callback(controls);
+    callback(control);
+};
+
+export const checkValid = (control, value) => {
+    return !!(!control.error && value && value.trim() !== '')
 };

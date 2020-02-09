@@ -53,8 +53,7 @@ This app working with Android and iOS.
 - Zapisywać id kategorii w zadaniu a nie jego nazwe | MICH
 - Color picker w theme nie dziala na iosie (trzeba będzie znaleźć inną biblioteke) | MICH
 ---
-- Uprościć system validacji inputów i dodać walidacje do zmiany nazwy listy | MATT
-- Dodać validacje do każdego inputa | MATT
+- Modal otherRepeat się nie pojawia | MATT
 - Uprościć tworzenie motywów | MATT
 - Zmienić animacje usuwania zadań | MATT / MICH
 - Dodać brakujące tłumaczenia | MATT

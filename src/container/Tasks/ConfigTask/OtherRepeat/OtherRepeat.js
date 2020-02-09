@@ -3,73 +3,66 @@ import {Platform, View} from 'react-native';
 import {ListItem} from "react-native-material-ui";
 import Dialog from '../../../../components/UI/Dialog/Dialog';
 import Input from '../../../../components/UI/Input/Input';
-import {generateDialogObject, valid} from "../../../../shared/utility";
+import {generateDialogObject} from "../../../../shared/utility";
 
 import {connect} from "react-redux";
 
 class OtherRepeat extends Component {
     state = {
-        controls: {
-            value: {
-                label: this.props.translations.valueLabel,
-                number: true,
-                positiveNumber: true,
-                required: true,
-                characterRestriction: 4,
-            }
+        control: {
+            label: this.props.translations.valueLabel,
+            number: true,
+            positiveNumber: true,
+            required: true,
+            characterRestriction: 4,
+            keyboardType: 'number-pad',
+            error: true
         },
         repeatTimes: ['days', 'week', 'month', 'year'],
-        dialog: null,
-        loading: true
+        dialog: null
     };
 
     componentDidMount() {
         this.showDialog();
     }
 
-    checkValid = (name, save = false, value = this.props.repeat) => {
-        const {translations} = this.props;
-        const controls = this.state.controls;
-        valid(controls, value, name, translations, (newControls) => {
-            this.props.onSetRepeat(value);
-            if (save && !newControls[name].error) {
-                this.props.save();
-            }
-            this.setState({controls: newControls});
-        })
-    };
-
     showDialog = () => {
+        const {translations} = this.props;
         const dialog = generateDialogObject(
-            this.props.translations.dialogTitle,
-            false,
+            translations.dialogTitle,
+            null,
             {
-                Save: () => {
-                    this.checkValid('value', true);
+                [translations.save]: () => {
+                    if (!this.state.control.error) {
+                        this.props.save()
+                    }
                 },
-                Cancel: () => this.props.cancel()
+                [translations.cancel]: () => this.props.cancel()
             }
         );
-        this.setState({loading: false, dialog});
+        this.setState({dialog});
     };
 
     render() {
-        const {loading, dialog, repeatTimes, controls} = this.state;
+        const {dialog, repeatTimes, control} = this.state;
         const {showModal, repeat, selectedTime, theme, translations} = this.props;
 
         return (
             <React.Fragment>
-                {!loading &&
+                {dialog &&
                 <Dialog
                     showModal={showModal}
                     title={dialog.title}
                     buttons={dialog.buttons}
                 >
                     <Input
-                        elementConfig={controls.value}
+                        elementConfig={control}
                         focus={true}
                         value={repeat}
-                        changed={value => this.checkValid('value', false, value)}
+                        changed={(val, control) => {
+                            this.setState({control});
+                            this.props.onSetRepeat(val);
+                        }}
                     />
 
                     <View style={{marginBottom: 10, color: theme.textColor}}>
@@ -83,7 +76,7 @@ class OtherRepeat extends Component {
                                         backgroundColor: Platform.OS === 'ios' ? '#fff' : 'transparent'
                                     },
                                     primaryText: {
-                                        color: index + '' === selectedTime ?
+                                        color: index + '' === selectedTime + '' ?
                                             theme.primaryColor : theme.textColor
                                     }
                                 }}
@@ -105,7 +98,7 @@ const mapStateToProps = state => {
         theme: state.theme.theme,
         translations: {
             ...state.settings.translations.OtherRepeat,
-            ...state.settings.translations.validation
+            ...state.settings.translations.common
         }
     }
 };

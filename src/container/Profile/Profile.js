@@ -16,13 +16,15 @@ import * as actions from "../../store/actions";
 
 class Profile extends PureComponent {
     state = {
+        name: '',
         loading: true
     };
 
     componentDidMount() {
         this.props.onInitSettings();
         this.props.onInitProfile(() => {
-            this.setState({loading: false});
+            const {profile} = this.props;
+            this.setState({loading: false, name: profile.name});
         });
     }
 
@@ -54,7 +56,7 @@ class Profile extends PureComponent {
     };
 
     render() {
-        const {loading} = this.state;
+        const {loading, name} = this.state;
         const {navigation, theme, tasks, finished, profile, categories, translations} = this.props;
         let list;
         const listData = [];
@@ -104,9 +106,12 @@ class Profile extends PureComponent {
                             <Input
                                 elementConfig={{label: ''}}
                                 style={styles.name}
-                                value={profile.name}
+                                value={name}
                                 color={theme.primaryColor}
-                                changed={value => this.props.onChangeName(value)}/>
+                                changed={value => {
+                                    this.setState({name: value});
+                                    this.props.onChangeName(value);
+                                }}/>
                         </View>
                         }
                         <ScrollView style={flex}>

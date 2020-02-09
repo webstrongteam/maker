@@ -13,7 +13,7 @@ class CategoriesList extends PureComponent {
     state = {
         showModal: false,
         taskPerCategory: {},
-        selectedCategory: {id: false, name: ''},
+        selectedCategory: false,
         ready: false
     };
 
@@ -63,13 +63,11 @@ class CategoriesList extends PureComponent {
                     centerElement={translations.title}
                 />
 
-                {showModal &&
                 <ConfigCategory
                     showModal={showModal}
                     category={selectedCategory}
                     toggleModal={this.toggleModalHandler}
                 />
-                }
 
                 {ready &&
                 <View style={container}>

@@ -13,7 +13,7 @@ import {
     convertPriorityNames,
     convertRepeatNames,
     generateDialogObject,
-    valid
+    checkValid
 } from '../../../shared/utility';
 import {configTask} from '../../../shared/configTask';
 import {fullWidth} from '../../../shared/styles';
@@ -41,7 +41,7 @@ class ConfigTask extends Component {
             name: {
                 label: this.props.translations.nameLabel,
                 required: true,
-                characterRestriction: 40,
+                characterRestriction: 40
             },
             description: {
                 label: this.props.translations.descriptionLabel,
@@ -127,7 +127,7 @@ class ConfigTask extends Component {
                         this.props.navigation.goBack();
                     },
                     [translations.save]: () => {
-                        this.checkValid('name', true);
+                        this.saveTask();
                         this.props.onUpdateModal(false);
                     },
                     [translations.cancel]: () => {
@@ -159,8 +159,8 @@ class ConfigTask extends Component {
                     name: convertRepeatNames(p, translations),
                     value: p,
                     onClick: (value) => {
-                        this.updateRepeat(value);
                         this.props.onUpdateModal(false);
+                        this.updateRepeat(value);
                     }
                 })
             });
@@ -168,9 +168,7 @@ class ConfigTask extends Component {
                 translations.repeat,
                 options,
                 {
-                    [translations.cancel]: () => {
-                        this.props.onUpdateModal(false);
-                    }
+                    [translations.cancel]: () => this.props.onUpdateModal(false)
                 }
             );
             dialog.select = true;
@@ -233,10 +231,11 @@ class ConfigTask extends Component {
         this.props.onUpdateModal(true, dialog);
     };
 
+
     toggleConfigCategory = (category) => {
         const {showConfigCategory, task} = this.state;
         if (category) task.category = category.name;
-        this.setState({showConfigCategory: !showConfigCategory});
+        this.setState({task, showConfigCategory: !showConfigCategory});
     };
 
     updateRepeat = (value) => {
@@ -256,18 +255,6 @@ class ConfigTask extends Component {
         this.setState({otherOption, showOtherRepeat: false});
     };
 
-    checkValid = (name, save = false, value = this.state.task.name) => {
-        const {translations} = this.props;
-        const controls = this.state.controls;
-        valid(controls, value, name, translations, (newControls) => {
-            this.updateTask(name, value);
-            if (save && !newControls[name].error) {
-                this.saveTask();
-            }
-            this.setState({controls: newControls});
-        })
-    };
-
     convertDate = (newDate) => {
         const {date} = this.state.task;
 
@@ -279,10 +266,10 @@ class ConfigTask extends Component {
     };
 
     checkChanges = () => {
-        const {task, taskCopy} = this.state;
+        const {task, taskCopy, controls} = this.state;
 
-        return task.name.trim() !== '' &&
-            JSON.stringify(task) !== JSON.stringify(taskCopy);
+        return checkValid(controls.name, task.name) &&
+            (JSON.stringify(task) !== JSON.stringify(taskCopy));
     };
 
     saveTask = () => {
@@ -290,7 +277,6 @@ class ConfigTask extends Component {
         const {navigation, theme} = this.props;
 
         if (task.date.length < 13) setNotification = false;
-
         configTask(task, theme.primaryColor, setEvent, setNotification)
             .then((task) => {
                 this.props.onSaveTask(task);
@@ -335,9 +321,11 @@ class ConfigTask extends Component {
                     }
                     rightElement={
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            {this.checkChanges() &&
                             <IconToggle name="save"
                                         color={theme.headerTextColor}
-                                        onPress={() => this.checkValid('name', true)}/>
+                                        onPress={this.saveTask}/>
+                            }
                             {editTask && <IconToggle name="delete"
                                                      color={theme.headerTextColor}
                                                      onPress={() => this.showDialog('delete')}/>
@@ -360,13 +348,11 @@ class ConfigTask extends Component {
                     cancel={() => this.setState({showOtherRepeat: false})}
                 />
 
-                {showConfigCategory &&
                 <ConfigCategory
                     showModal={showConfigCategory}
                     category={false}
                     toggleModal={this.toggleConfigCategory}
                 />
-                }
 
                 {!loading ?
                     <ScrollView>
@@ -374,8 +360,11 @@ class ConfigTask extends Component {
                             elementConfig={controls.name}
                             focus={!editTask}
                             value={task.name}
-                            changed={(value) => {
-                                this.checkValid('name', false, value)
+                            changed={(value, control) => {
+                                const {task, controls} = this.state;
+                                task.name = value;
+                                controls.name = control;
+                                this.setState({task, controls});
                             }}/>
                         <Input
                             elementConfig={controls.description}
@@ -500,6 +489,7 @@ const mapStateToProps = state => {
         settings: state.settings.settings,
         translations: {
             ...state.settings.translations.ConfigTask,
+            ...state.settings.translations.OtherRepeat,
             ...state.settings.translations.validation,
             ...state.settings.translations.common
         }

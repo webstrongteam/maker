@@ -5,8 +5,8 @@ import ColorPicker from '../../components/UI/ColorPicker/ColorPicker';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {generateDialogObject, valid} from "../../shared/utility";
+import {Text, TouchableOpacity, View} from "react-native";
+import {generateDialogObject, checkValid} from "../../shared/utility";
 import {BannerAd} from "../../../adsAPI";
 import styles from './Theme.styles';
 
@@ -16,6 +16,7 @@ import * as actions from "../../store/actions";
 class Theme extends Component {
     state = {
         customTheme: {id: false, name: ''},
+        newThemeName: '',
         defaultName: this.props.translations.defaultName,
         names: [
             'id', 'name', 'Primary color', 'Primary background color', 'Secondary background color', 'Text color', 'Header text color',
@@ -29,12 +30,11 @@ class Theme extends Component {
         selectedColor: '',
         actualColor: '',
 
-        controls: {
-            name: {
-                label: this.props.translations.themeNameLabel,
-                required: true,
-                characterRestriction: 30
-            }
+        control: {
+            label: this.props.translations.themeNameLabel,
+            required: true,
+            characterRestriction: 30,
+            error: true
         },
         loading: true
     };
@@ -47,13 +47,13 @@ class Theme extends Component {
     initTheme = (id) => {
         if (id !== false) {
             this.props.onInitCustomTheme(id, (customTheme) => {
-                this.setState({customTheme, loading: false});
+                this.setState({customTheme, newThemeName: customTheme.name, loading: false});
             });
         } else {
             this.props.onInitTheme(customTheme => {
                 customTheme.id = false;
                 customTheme.name = this.props.translations.defaultName;
-                this.setState({customTheme, loading: false});
+                this.setState({customTheme, newThemeName: customTheme.name, loading: false});
             });
         }
     };
@@ -93,25 +93,33 @@ class Theme extends Component {
                 }
             );
         } else if (action === 'changeName') {
-            const {customTheme, controls} = this.state;
-            let copyName = customTheme.name;
+            const {newThemeName, control} = this.state;
 
             dialog = generateDialogObject(
                 translations.changeNameTitle,
                 {
-                    elementConfig: controls.name,
+                    elementConfig: control,
                     focus: true,
-                    value: this.basicValid(customTheme.name) ? copyName : '',
-                    onChange: (value) => copyName = value
+                    value: newThemeName,
+                    onChange: (value, control) => {
+                        this.setState({newThemeName: value, control}, () => {
+                            this.showDialog(action);
+                        })
+                    }
                 },
                 {
                     [translations.save]: () => {
-                        this.checkValid('name', false, copyName);
-                        if (!controls.name.error && this.basicValid(copyName)) {
+                        if (!control.error) {
+                            const {customTheme, newThemeName} = this.state;
+                            customTheme.name = newThemeName;
+                            this.setState({customTheme});
                             this.props.onUpdateModal(false);
                         }
                     },
                     [translations.cancel]: () => {
+                        const {customTheme, control} = this.state;
+                        delete control.error;
+                        this.setState({newThemeName: customTheme.name, control});
                         this.props.onUpdateModal(false);
                     },
                 }
@@ -134,12 +142,6 @@ class Theme extends Component {
         this.setState({colorPickerTitle, selectedColor, showColorPicker: true});
     };
 
-    changeNameHandler = (name) => {
-        const customTheme = this.state.customTheme;
-        customTheme.name = name;
-        this.setState({customTheme});
-    };
-
     onSaveColor = () => {
         const {selectedColor, actualColor} = this.state;
         const customTheme = this.state.customTheme;
@@ -148,28 +150,16 @@ class Theme extends Component {
         this.setState({customTheme, showColorPicker: false});
     };
 
-    basicValid = (name = this.state.customTheme.name) => {
-        const {defaultName} = this.state;
-        return name.trim() !== '' && name !== defaultName;
+    checkValid = (name = this.state.customTheme.name) => {
+        const {defaultName, control} = this.state;
+        return checkValid(control, name) && name !== defaultName;
     };
 
-    checkValid = (name, save = false, value = this.state.customTheme.name) => {
-        const {translations} = this.props;
-        const controls = this.state.controls;
-
-        this.basicValid(value) &&
-        valid(controls, value, name, translations, (newControls) => {
-            if (!newControls[name].error) {
-                this.changeNameHandler(value);
-            }
-            if (save && !newControls[name].error) {
-                const {customTheme} = this.state;
-                const {navigation} = this.props;
-                this.props.onSaveTheme(customTheme);
-                navigation.goBack();
-            }
-            this.setState({controls: newControls});
-        })
+    saveTheme = () => {
+        const {customTheme} = this.state;
+        const {navigation} = this.props;
+        this.props.onSaveTheme(customTheme);
+        navigation.goBack();
     };
 
     render() {
@@ -185,12 +175,10 @@ class Theme extends Component {
                     leftElement="arrow-back"
                     rightElement={
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            {this.basicValid() &&
-                            <Button
-                                text={translations.save}
-                                style={{text: {color: theme.headerTextColor}}}
-                                onPress={() => this.checkValid('name', true)}
-                            />
+                            {this.checkValid() &&
+                            <IconToggle name="save"
+                                        color={theme.headerTextColor}
+                                        onPress={this.saveTheme}/>
                             }
                             {customTheme.id !== false &&
                             <IconToggle name="delete"
@@ -200,7 +188,7 @@ class Theme extends Component {
                         </View>
                     }
                     onLeftElementPress={() => {
-                        if (this.basicValid()) {
+                        if (this.checkValid()) {
                             this.showDialog('exit');
                         } else navigation.goBack();
                     }}

@@ -553,13 +553,11 @@ class TaskList extends Component {
                     }
                 />
 
-                {showConfigCategory &&
                 <ConfigCategory
                     category={false}
                     showModal={showConfigCategory}
                     toggleModal={this.toggleConfigCategory}
                 />
-                }
 
                 <ScrollView
                     keyboardShouldPersistTaps="always"

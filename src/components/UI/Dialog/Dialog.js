@@ -1,5 +1,5 @@
 import React from "react";
-import {Platform, View} from 'react-native';
+import {Platform, TouchableWithoutFeedback, View, Keyboard} from 'react-native';
 import Dialog from "react-native-dialog";
 import {ListItem} from "react-native-material-ui";
 import Input from "../Input/Input";
@@ -11,22 +11,22 @@ const dialog = (props) => {
         return selectDialog(props);
     } else if (props.input) {
         return inputDialog(props);
-    }
-    else {
+    } else {
         return defaultDialog(props);
     }
 };
 
 const defaultDialog = (props) => (
-    <Dialog.Container
-        contentStyle={{backgroundColor: props.theme.secondaryBackgroundColor}}
-        visible={props.showModal}>
-        {props.title &&
-        <Dialog.Title
-            style={{color: props.theme.textColor}}>
-            {props.title}
-        </Dialog.Title>
-        }
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <Dialog.Container
+            contentStyle={{backgroundColor: props.theme.secondaryBackgroundColor}}
+            visible={props.showModal}>
+            {props.title &&
+            <Dialog.Title
+                style={{color: props.theme.textColor}}>
+                {props.title}
+            </Dialog.Title>
+            }
 
         {props.body ?
             <Dialog.Description
@@ -38,16 +38,17 @@ const defaultDialog = (props) => (
             </View>
         }
 
-        {props.buttons &&
-        props.buttons.map(button => (
-            <Dialog.Button
-                key={button.label}
-                label={button.label}
-                onPress={button.onPress}
-            />
-        ))
-        }
-    </Dialog.Container>
+            {props.buttons &&
+            props.buttons.map(button => (
+                <Dialog.Button
+                    key={button.label}
+                    label={button.label}
+                    onPress={button.onPress}
+                />
+            ))
+            }
+        </Dialog.Container>
+    </TouchableWithoutFeedback>
 );
 
 const selectDialog = (props) => (
@@ -100,35 +101,37 @@ const selectDialog = (props) => (
 );
 
 const inputDialog = (props) => (
-    <Dialog.Container
-        contentStyle={{backgroundColor: props.theme.secondaryBackgroundColor}}
-        visible={props.showModal}>
-        {props.title &&
-        <Dialog.Title
-            style={{color: props.theme.textColor}}>
-            {props.title}
-        </Dialog.Title>
-        }
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <Dialog.Container
+            contentStyle={{backgroundColor: props.theme.secondaryBackgroundColor}}
+            visible={props.showModal}>
+            {props.title &&
+            <Dialog.Title
+                style={{color: props.theme.textColor}}>
+                {props.title}
+            </Dialog.Title>
+            }
 
-        {props.body &&
-        <Input
-            elementConfig={props.body.elementConfig ? props.body.elementConfig : null}
-            focus={props.body.focus}
-            value={props.body.value}
-            changed={props.body.onChange}
-        />
-        }
-
-        {props.buttons &&
-        props.buttons.map(button => (
-            <Dialog.Button
-                key={button.label}
-                label={button.label}
-                onPress={button.onPress}
+            {props.body &&
+            <Input
+                elementConfig={props.body.elementConfig ? props.body.elementConfig : null}
+                focus={props.body.focus}
+                value={props.body.value}
+                changed={props.body.onChange}
             />
-        ))
-        }
-    </Dialog.Container>
+            }
+
+            {props.buttons &&
+            props.buttons.map(button => (
+                <Dialog.Button
+                    key={button.label}
+                    label={button.label}
+                    onPress={button.onPress}
+                />
+            ))
+            }
+        </Dialog.Container>
+    </TouchableWithoutFeedback>
 );
 
 const mapStateToProps = state => {

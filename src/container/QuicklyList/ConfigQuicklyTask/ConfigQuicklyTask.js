@@ -8,12 +8,11 @@ import * as actions from '../../../store/actions';
 class ConfigQuicklyTask extends Component {
     state = {
         task: {id: false, name: '', order_nr: null, list_id: false},
-        controls: {
-            name: {
-                label: this.props.translations.quicklyTaskName,
-                required: true,
-                characterRestriction: 40
-            }
+        control: {
+            label: this.props.translations.quicklyTaskName,
+            required: true,
+            characterRestriction: 40,
+            error: true
         },
         editTask: null,
         dialog: false
@@ -36,44 +35,35 @@ class ConfigQuicklyTask extends Component {
         }
     };
 
-    updateTask = (name, value) => {
-        const {task} = this.state;
-        task[name] = value;
-        this.setState({task});
-    };
-
-    changeInputHandler = (name, save = false, value = this.state.task.name) => {
-        const {task, controls} = this.state;
-        const {list_id, toggleModal, translations, taskLength} = this.props;
-        valid(controls, value, name, translations, (newControls) => {
-            this.updateTask(name, value);
-            if (save && !newControls[name].error) {
-                if (list_id !== false) {
-                    if (task.order_nr === null) {
-                        task.order_nr = taskLength;
-                    }
-                    this.props.onSaveQuicklyTask(task, list_id, () => {
-                        delete newControls[name].error;
-                        toggleModal(task);
-                    });
-                }
-            }
-            this.setState({controls: newControls});
-        })
-    };
-
     showDialog = (title) => {
-        const {task, controls} = this.state;
+        const {task, control} = this.state;
         const dialog = generateDialogObject(
             title,
             {
-                elementConfig: controls.name,
+                elementConfig: control,
                 focus: true,
                 value: task.name,
-                onChange: (value) => this.changeInputHandler('name', false, value)
+                onChange: (value, control) => {
+                    const {task} = this.state;
+                    task.name = value;
+                    this.setState({task, control}, () => {
+                        this.showDialog(title);
+                    });
+                }
             },
             {
-                Save: () => this.changeInputHandler('name', true),
+                Save: () => {
+                    const {control} = this.state;
+                    const {list_id, taskLength} = this.props;
+                    if (!control.error) {
+                        if (task.order_nr === null) {
+                            task.order_nr = taskLength;
+                        }
+                        this.props.onSaveQuicklyTask(task, list_id, () => {
+                            this.props.toggleModal(task);
+                        });
+                    }
+                },
                 Cancel: () => this.props.toggleModal()
             }
         );

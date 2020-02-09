@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Text, TouchableOpacity, View, Dimensions} from 'react-native';
 import {IconToggle, Icon, Toolbar} from 'react-native-material-ui';
 import {container, empty, shadow} from '../../../shared/styles';
-import {generateDialogObject} from '../../../shared/utility';
+import {generateDialogObject, valid} from '../../../shared/utility';
 import ConfigQuicklyTask from '../ConfigQuicklyTask/ConfigQuicklyTask';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Template from '../../Template/Template';
@@ -24,9 +24,15 @@ class QuicklyTaskList extends Component {
             id: false,
             name: this.props.translations.listName
         },
+        newListName: this.props.translations.listName,
         order: [],
-        loading: true,
-        control: {label: this.props.translations.listName}
+        control: {
+            label: this.props.translations.listName,
+            required: true,
+            characterRestriction: 20,
+            error: true
+        },
+        loading: true
     };
 
     componentDidMount() {
@@ -44,8 +50,10 @@ class QuicklyTaskList extends Component {
         this.setState({loading: true});
         this.props.onInitList(list.id, (tasks) => {
             const order = [...tasks.map(t => t.order_nr)];
+            console.log(tasks)
             this.setState({
                 quicklyTasks: tasks,
+                newListName: list.name,
                 order, list, loading: false
             });
         });
@@ -68,24 +76,36 @@ class QuicklyTaskList extends Component {
     };
 
     showDialog = () => {
-        const {list, control} = this.state;
+        const {newListName, control} = this.state;
         const {translations} = this.props;
-        let copyName = list.name;
+
         const dialog = generateDialogObject(
             translations.dialogTitle,
             {
                 elementConfig: control,
                 focus: true,
-                value: copyName,
-                onChange: (value) => copyName = value
+                value: newListName,
+                onChange: (value, control) => {
+                    this.setState({newListName: value, control}, this.showDialog);
+                }
             },
             {
                 [translations.save]: () => {
-                    this.props.onUpdateModal(false);
-                    list.name = copyName;
-                    this.saveList(list);
+                    const {list, newListName, control} = this.state;
+                    if (!control.error) {
+                        this.props.onUpdateModal(false);
+                        this.saveList({
+                            id: list.id,
+                            name: newListName
+                        });
+                    }
                 },
-                [translations.cancel]: () => this.props.onUpdateModal(false)
+                [translations.cancel]: () => {
+                    const {list, control} = this.state;
+                    delete control.error;
+                    this.setState({newListName: list.name, control});
+                    this.props.onUpdateModal(false)
+                }
             }
         );
 
@@ -199,7 +219,9 @@ class QuicklyTaskList extends Component {
                                             <View
                                                 style={styles.taskContainer}
                                             >
-                                                <Text style={styles.taskName}>{row.name}</Text>
+                                                <View style={{width: '75%', marginTop: 5, marginBottom: 5}}>
+                                                    <Text numberOfLines={1} style={styles.taskName}>{row.name}</Text>
+                                                </View>
                                                 <View style={styles.taskIconContainer}>
                                                     <IconToggle
                                                         color={theme.doneButtonColor}
@@ -228,6 +250,7 @@ const mapStateToProps = state => {
         theme: state.theme.theme,
         translations: {
             ...state.settings.translations.QuicklyTaskList,
+            ...state.settings.translations.validation,
             ...state.settings.translations.common
         }
     }

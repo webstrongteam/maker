@@ -8,16 +8,12 @@ import * as actions from '../../../store/actions';
 
 class ConfigCategory extends Component {
     state = {
-        category: {
-            id: false,
-            name: ''
-        },
-        controls: {
-            name: {
-                label: this.props.translations.nameLabel,
-                required: true,
-                characterRestriction: 30
-            }
+        category: {id: false, name: ''},
+        control: {
+            label: this.props.translations.nameLabel,
+            required: true,
+            characterRestriction: 20,
+            error: true
         },
         editCategory: null,
         dialog: false
@@ -27,6 +23,12 @@ class ConfigCategory extends Component {
         this.initCategory(this.props.category);
     };
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.category !== this.props.category) {
+            this.initCategory(this.props.category);
+        }
+    }
+
     initCategory = (id) => {
         const {translations} = this.props;
         if (id !== false) {
@@ -35,32 +37,12 @@ class ConfigCategory extends Component {
                 this.showDialog(translations.editCategory);
             })
         } else {
-            this.setState({editCategory: false});
+            this.setState({
+                category: {id: false, name: ''},
+                editCategory: false
+            });
             this.showDialog(translations.newCategory);
         }
-    };
-
-    updateCategory = (name, value) => {
-        const category = this.state.category;
-        category[name] = value;
-        this.setState({category});
-    };
-
-    changeInputHandler = (name, save = false, value = this.state.category.name) => {
-        const {translations} = this.props;
-        const controls = this.state.controls;
-        valid(controls, value, name, translations, (newControls) => {
-            this.updateCategory('name', value);
-            if (save && !newControls[name].error) {
-                const {category} = this.state;
-                this.props.onSaveCategory(category, () => {
-                    delete newControls[name].error;
-                    console.log('test')
-                    this.props.toggleModal(category);
-                });
-            }
-            this.setState({controls: newControls});
-        })
     };
 
     showDialog = (title) => {
@@ -69,7 +51,14 @@ class ConfigCategory extends Component {
             title,
             false,
             {
-                [translations.save]: () => this.changeInputHandler('name', true),
+                [translations.save]: () => {
+                    const {category, control} = this.state;
+                    if (!control.error) {
+                        this.props.onSaveCategory(category, () => {
+                            this.props.toggleModal(category);
+                        });
+                    }
+                },
                 [translations.cancel]: () => this.props.toggleModal()
             }
         );
@@ -77,21 +66,25 @@ class ConfigCategory extends Component {
     };
 
     render() {
-        const {dialog, controls, category} = this.state;
+        const {dialog, control, category} = this.state;
         const {showModal} = this.props;
 
         return (
             <React.Fragment>
-                {dialog &&
+                {dialog && category &&
                 <Dialog
                     showModal={showModal}
                     title={dialog.title}
                     buttons={dialog.buttons}>
                     <Input
-                        elementConfig={controls.name}
+                        elementConfig={control}
                         focus={true}
                         value={category.name}
-                        changed={(value) => this.changeInputHandler('name', false, value)}
+                        changed={(value, control) => {
+                            const {category} = this.state;
+                            category.name = value;
+                            this.setState({category, control});
+                        }}
                     />
                 </Dialog>
                 }
