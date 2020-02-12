@@ -141,9 +141,12 @@ class ConfigTask extends Component {
                 translations.deleteDescription,
                 {
                     [translations.yes]: () => {
-                        this.props.onUpdateModal(false);
-                        this.props.onRemoveTask(task);
-                        this.props.navigation.goBack();
+                        const {onRefresh, onUpdateModal, onRemoveTask, navigation} = this.props;
+                        onUpdateModal(false);
+                        onRemoveTask(task, () => {
+                            onRefresh();
+                            navigation.goBack();
+                        });
                     },
                     [translations.cancel]: () => {
                         this.props.onUpdateModal(false);
@@ -152,7 +155,7 @@ class ConfigTask extends Component {
             );
         } else if (action === 'repeat') {
             const repeats = ['noRepeat', 'onceDay', 'onceDayMonFri', 'onceDaySatSun', 'onceWeek',
-                'onceMonth', 'onceYear', 'otherOption'];
+                'onceMonth', 'onceYear'];
             const options = [];
             repeats.map(p => {
                 options.push({
@@ -160,7 +163,7 @@ class ConfigTask extends Component {
                     value: p,
                     onClick: (value) => {
                         this.props.onUpdateModal(false);
-                        this.updateRepeat(value);
+                        this.updateTask('repeat', value);
                     }
                 })
             });
@@ -238,12 +241,8 @@ class ConfigTask extends Component {
         this.setState({task, showConfigCategory: !showConfigCategory});
     };
 
-    updateRepeat = (value) => {
-        if (value === 'otherOption') {
-            this.setState({showOtherRepeat: true});
-        } else {
-            this.updateTask('repeat', value);
-        }
+    toggleOtherRepeat = () => {
+        this.setState({showOtherRepeat: true});
     };
 
     saveOtherRepeat = () => {
@@ -274,17 +273,21 @@ class ConfigTask extends Component {
 
     saveTask = () => {
         let {task, setEvent, setNotification} = this.state;
-        const {navigation, theme} = this.props;
+        const {navigation, theme, onRefresh} = this.props;
 
         if (task.date.length < 13) setNotification = false;
         configTask(task, theme.primaryColor, setEvent, setNotification)
             .then((task) => {
-                this.props.onSaveTask(task);
-                navigation.goBack();
+                this.props.onSaveTask(task, () => {
+                    navigation.goBack();
+                    onRefresh();
+                });
             })
             .catch(() => {
-                this.props.onSaveTask(task);
-                navigation.goBack();
+                this.props.onSaveTask(task, () => {
+                    navigation.goBack();
+                    onRefresh();
+                });
             });
     };
 
@@ -454,16 +457,15 @@ class ConfigTask extends Component {
                                             }
                                         </Text>
                                     </TouchableOpacity>
+                                    <IconToggle onPress={() => this.toggleOtherRepeat()} name="playlist-add"/>
                                 </View>
                             </React.Fragment>
                             }
                             <Subheader text={translations.category}/>
-                            <View style={styles.selectCategory}>
-                                <View style={styles.category}>
-                                    <TouchableOpacity onPress={() => this.showDialog('category')}>
-                                        <Text style={styles.selectedOption}>{task.category}</Text>
-                                    </TouchableOpacity>
-                                </View>
+                            <View style={styles.select}>
+                                <TouchableOpacity onPress={() => this.showDialog('category')}>
+                                    <Text style={styles.selectedOption}>{task.category}</Text>
+                                </TouchableOpacity>
                                 <IconToggle onPress={() => this.toggleConfigCategory()} name="playlist-add"/>
                             </View>
                             <Subheader text={translations.priority}/>
@@ -498,9 +500,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onInitTask: (id, callback) => dispatch(actions.initTask(id, callback)),
-        onSaveTask: (task) => dispatch(actions.saveTask(task)),
-        onRemoveTask: (task) => dispatch(actions.removeTask(task, false)),
-        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
+        onSaveTask: (task, callback) => dispatch(actions.saveTask(task, callback)),
+        onRemoveTask: (task, callback) => dispatch(actions.removeTask(task, false, callback)),
+        onRefresh: () => dispatch(actions.refresh()),
+        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal)),
+        onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText))
     }
 };
 

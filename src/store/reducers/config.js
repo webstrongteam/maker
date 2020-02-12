@@ -4,8 +4,15 @@ import {updateObject} from '../../shared/utility';
 const initState = {
     showModal: false,
     modal: {},
+    refresh: false,
     showSnackbar: false,
     snackbarText: ''
+};
+
+const refresh = (state) => {
+    return updateObject(state, {
+        refresh: !state.refresh
+    });
 };
 
 const updateModal = (state, action) => {
@@ -24,6 +31,8 @@ const updateSnackbar = (state, action) => {
 
 const reducer = (state = initState, action) => {
     switch (action.type) {
+        case actionTypes.REFRESH:
+            return refresh(state);
         case actionTypes.UPDATE_MODAL:
             return updateModal(state, action);
         case actionTypes.UPDATE_SNACKBAR:

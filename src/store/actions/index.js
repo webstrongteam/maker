@@ -39,6 +39,7 @@ export {
 } from './settings';
 
 export {
+    refresh,
     updateModal,
     updateSnackbar
 } from './config';

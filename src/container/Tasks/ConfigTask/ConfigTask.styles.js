@@ -21,17 +21,13 @@ export default StyleSheet.create({
         flex: 1,
         borderWidth: 0
     },
-    selectCategory: {
-        height: 50,
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
     select: {
         width: '100%',
         height: 50,
-        borderWidth: 0
+        borderWidth: 0,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     selectedOption: {
         marginLeft: 10

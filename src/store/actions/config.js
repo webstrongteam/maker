@@ -1,5 +1,9 @@
 import * as actionTypes from './actionTypes';
 
+export const refresh = () => {
+    return {type: actionTypes.REFRESH}
+};
+
 export const updateModal = (showModal, modal) => {
     return {
         type: actionTypes.UPDATE_MODAL,

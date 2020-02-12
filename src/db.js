@@ -5,9 +5,12 @@ const db = SQLite.openDatabase('maker.db', VERSION);
 
 export const initDatabase = (callback) => {
     db.transaction(tx => {
-        tx.executeSql(
-            'DROP TABLE IF EXISTS quickly_tasks;'
-        );
+        // tx.executeSql(
+        //     'DROP TABLE IF EXISTS tasks;'
+        // );
+        // tx.executeSql(
+        //     'DROP TABLE IF EXISTS finished;'
+        // );
         tx.executeSql(
             'create table if not exists categories (id integer primary key not null, name text);'
         );

@@ -53,9 +53,9 @@ This app working with Android and iOS.
 - Zapisywać id kategorii w zadaniu a nie jego nazwe | MICH
 - Color picker w theme nie dziala na iosie (trzeba będzie znaleźć inną biblioteke) | MICH
 ---
-- Modal otherRepeat się nie pojawia | MATT
+- Dodać do otherRepeat powtarzanie co godziny | MATT
+- Labele w liscie zadan sie nie aktualizuja po zmianie ilosci zadan | MATT
 - Uprościć tworzenie motywów | MATT
-- Zmienić animacje usuwania zadań | MATT / MICH
 - Dodać brakujące tłumaczenia | MATT
 - Naprawić dodawanie backupa z plików telefonu na iosie | MATT
 - Przygotować bazę danych do aktualizacji | MATT
