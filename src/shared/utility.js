@@ -68,12 +68,16 @@ export const sortingByType = (array, sorting, sortingType) => {
 export const convertNumberToDate = (number) => {
     switch (number) {
         case 0:
-            return "days";
+            return "minutes";
         case 1:
-            return "week";
+            return "hours";
         case 2:
-            return "month";
+            return "days";
         case 3:
+            return "week";
+        case 4:
+            return "month";
+        case 5:
             return "year";
         default:
             return "days"
@@ -118,35 +122,40 @@ export const convertRepeatNames = (repeat, translations) => {
 export const valid = (control, value, translations, callback) => {
     let validStatus = true;
 
-    // Validation system
-    if (control.characterRestriction) {
-        if (value.length > control.characterRestriction) {
-            control.error = translations.tooLong;
-            validStatus = false;
+    if (value === null || value === undefined) {
+        // Set initial error
+        control.error = true;
+    } else {
+        // Validation system
+        if (control.characterRestriction) {
+            if (value.length > control.characterRestriction) {
+                control.error = translations.tooLong;
+                validStatus = false;
+            }
         }
-    }
-    if (control.number) {
-        if (+value !== parseInt(value, 10)) {
-            control.error = translations.number;
-            validStatus = false;
-        } else {
-            if (control.positiveNumber) {
-                if (+value < 1) {
-                    control.error = translations.greaterThanZero;
-                    validStatus = false;
+        if (control.number) {
+            if (+value !== parseInt(value, 10)) {
+                control.error = translations.number;
+                validStatus = false;
+            } else {
+                if (control.positiveNumber) {
+                    if (+value < 1) {
+                        control.error = translations.greaterThanZero;
+                        validStatus = false;
+                    }
                 }
             }
         }
-    }
-    if (control.required) {
-        if (value.trim() === '') {
-            control.error = translations.required;
-            validStatus = false;
+        if (control.required) {
+            if (value.trim() === '') {
+                control.error = translations.required;
+                validStatus = false;
+            }
         }
-    }
 
-    if (validStatus && control.error) {
-        delete control.error;
+        if (validStatus && control.error) {
+            delete control.error;
+        }
     }
 
     callback(control);

@@ -353,6 +353,7 @@ class TaskList extends Component {
                             <Task
                                 task={task} div={div}
                                 priorityColors={priorityColors}
+                                onRefresh={this.onRefresh}
                                 navigation={navigation}
                             />
                         </View>

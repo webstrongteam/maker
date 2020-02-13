@@ -16,16 +16,26 @@ class Input extends Component {
 
     componentDidMount() {
         const {elementConfig} = this.props;
-        this.setState({control: elementConfig, loading: false});
+        this.setState({control: elementConfig, loading: false}, () => {
+            this.checkValid(this.props.value, true);
+        });
     }
 
-    checkValid = (value = this.props.value) => {
-        const {translations} = this.props;
+    checkValid = (value = this.props.value, initial = false) => {
         const {control} = this.state;
-        valid(control, value, translations, (newControl) => {
-            this.props.changed(value, newControl);
-            this.setState({control: newControl});
-        })
+        if (initial && control.required &&
+            (value === '' || value === null || value === undefined)) {
+            // Initial valid without label
+            control.error = true;
+            this.props.changed('', control);
+            this.setState({control});
+        } else {
+            const {translations} = this.props;
+            valid(control, value, translations, (newControl) => {
+                this.props.changed(value, newControl);
+                this.setState({control: newControl});
+            })
+        }
     };
 
     render() {

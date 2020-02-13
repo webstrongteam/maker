@@ -15,10 +15,9 @@ class OtherRepeat extends Component {
             positiveNumber: true,
             required: true,
             characterRestriction: 4,
-            keyboardType: 'number-pad',
-            error: true
+            keyboardType: 'number-pad'
         },
-        repeatTimes: ['days', 'week', 'month', 'year'],
+        repeatTimes: ['minutes', 'hours', 'days', 'week', 'month', 'year'],
         dialog: null
     };
 
@@ -45,7 +44,7 @@ class OtherRepeat extends Component {
 
     render() {
         const {dialog, repeatTimes, control} = this.state;
-        const {showModal, repeat, selectedTime, theme, translations} = this.props;
+        const {showModal, usingTime, repeat, selectedTime, theme, translations} = this.props;
 
         return (
             <React.Fragment>
@@ -66,25 +65,28 @@ class OtherRepeat extends Component {
                     />
 
                     <View style={{marginBottom: 10, color: theme.textColor}}>
-                        {repeatTimes.map((time, index) => (
-                            <ListItem
-                                divider
-                                dense
-                                onPress={() => this.props.onSelectTime(index + '')}
-                                style={{
-                                    contentViewContainer: {
-                                        backgroundColor: Platform.OS === 'ios' ? '#fff' : 'transparent'
-                                    },
-                                    primaryText: {
-                                        color: index + '' === selectedTime + '' ?
-                                            theme.primaryColor : theme.textColor
-                                    }
-                                }}
-                                centerElement={{
-                                    primaryText: translations[time]
-                                }}
-                            />
-                        ))}
+                        {repeatTimes.map((time, index) => {
+                            if (!usingTime && (time === 'hours' || time === 'minutes')) return null;
+                            return (
+                                <ListItem
+                                    divider
+                                    dense
+                                    onPress={() => this.props.onSelectTime(index + '')}
+                                    style={{
+                                        contentViewContainer: {
+                                            backgroundColor: Platform.OS === 'ios' ? '#fff' : 'transparent'
+                                        },
+                                        primaryText: {
+                                            color: index + '' === selectedTime + '' ?
+                                                theme.primaryColor : theme.textColor
+                                        }
+                                    }}
+                                    centerElement={{
+                                        primaryText: translations[time]
+                                    }}
+                                />
+                            )
+                        })}
                     </View>
                 </Dialog>
                 }

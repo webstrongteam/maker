@@ -139,6 +139,8 @@
   "OtherRepeat": {
     "valueLabel": "Enter repeat value",
     "dialogTitle": "Config custom repeat",
+    "minutes": "Minutes",
+    "hours": "Hours",
     "days": "Days",
     "week": "Weeks",
     "month": "Months",

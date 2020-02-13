@@ -144,6 +144,8 @@
   "OtherRepeat": {
     "valueLabel": "Wprowadź wartość powtórzeń",
     "dialogTitle": "Ustawienia niestandardowych powtórzeń",
+    "minutes": "Minuty",
+    "hours": "Godzin",
     "days": "Dni",
     "week": "Tygodnie",
     "month": "Miesiące",

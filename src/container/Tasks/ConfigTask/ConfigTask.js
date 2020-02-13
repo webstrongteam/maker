@@ -345,6 +345,7 @@ class ConfigTask extends Component {
                     showModal={showOtherRepeat}
                     repeat={repeatValue}
                     selectedTime={selectedTime}
+                    usingTime={task.date.length > 13}
                     onSetRepeat={value => this.setState({repeatValue: value})}
                     onSelectTime={value => this.setState({selectedTime: value})}
                     save={this.saveOtherRepeat}

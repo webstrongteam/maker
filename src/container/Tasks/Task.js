@@ -58,6 +58,7 @@ class Task extends Component {
                         this.moveAnimate(() => {
                             this.props.onFinishTask(this.props.task, false, this.props.theme.primaryColor, () => {
                                 this.props.onAddEndedTask();
+                                this.props.onRefresh();
                             })
                         });
                     },
@@ -127,7 +128,6 @@ class Task extends Component {
         const {hideTask} = this.state;
         const {task, priorityColors, div, navigation, translations, theme} = this.props;
 
-        console.log(task)
         return (
             <Animated.View style={{
                 height: hideTask ? 0 : 'auto',
