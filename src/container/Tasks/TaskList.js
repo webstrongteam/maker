@@ -4,21 +4,17 @@ import {
     Easing,
     Platform,
     ScrollView,
-    FlatList,
-    RefreshControl,
     Text,
     TouchableHighlight,
     View
 } from 'react-native';
-import {ActionButton, BottomNavigation, Icon, Subheader, Toolbar} from 'react-native-material-ui';
+import {ActionButton, BottomNavigation, Icon, IconToggle, ListItem, Subheader, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject, sortingByType} from '../../shared/utility';
-import {empty, flex, fullWidth} from '../../shared/styles';
-import Spinner from '../../components/UI/Spinner/Spinner';
+import {empty, flex, fullWidth, shadow} from '../../shared/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
 import ConfigCategory from "../Categories/ConfigCategory/ConfigCategory";
 import moment from 'moment';
 import styles from './TaskList.styles';
-import Task from './Task';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
@@ -34,8 +30,8 @@ class TaskList extends Component {
             medium: {bgColor: this.props.theme.mediumColor},
             high: {bgColor: this.props.theme.highColor},
         },
+        selectedTask: null,
         showConfigCategory: false,
-        selectedTask: false,
         initDivision: false,
         division: {},
 
@@ -50,8 +46,7 @@ class TaskList extends Component {
         selectedIndex: 0,
         searchText: '',
         rotateAnimated: new Animated.Value(0),
-        rotateInterpolate: '0deg',
-        loading: true
+        rotateInterpolate: '0deg'
     };
 
     componentDidMount() {
@@ -120,30 +115,152 @@ class TaskList extends Component {
         })
     };
 
-    showDialog = () => {
+    showDialog = (action) => {
         const {translations} = this.props;
-        const dialog = generateDialogObject(
-            translations.defaultAllTitle,
-            translations.finishAllDescription,
-            {
-                [translations.yes]: () => {
-                    this.props.onUpdateModal(false);
-                    this.deleteAllTask();
-                },
-                [translations.no]: () => {
-                    this.props.onUpdateModal(false);
-                },
-            }
-        );
+        let dialog;
+        if (action === 'repeat') {
+            dialog = generateDialogObject(
+                translations.repeatTitle,
+                translations.repeatDescription,
+                {
+                    [translations.yes]: () => {
+                        this.props.onUpdateModal(false);
+                        this.moveAnimate(() => {
+                            const {selectedTask} = this.state;
+                            this.props.onFinishTask(selectedTask, false, this.props.theme.primaryColor, () => {
+                                this.props.onAddEndedTask();
+                                this.onRefresh();
+                                this.setState({
+                                    [`move${selectedTask.id}`]: new Animated.Value(0),
+                                    [`hide${selectedTask.id}`]: false
+                                });
+                            })
+                        });
+                    },
+                    [translations.no]: () => {
+                        this.props.onUpdateModal(false);
+                        this.moveAnimate(() => {
+                            this.props.onFinishTask(this.state.selectedTask, true, this.props.theme.primaryColor, () => {
+                                this.props.onAddEndedTask();
+                            })
+                        });
+                    },
+                    [translations.cancel]: () => this.props.onUpdateModal(false)
+                }
+            );
+        } else if (action === 'finish') {
+            dialog = generateDialogObject(
+                translations.defaultTitle,
+                translations.finishDescription,
+                {
+                    [translations.yes]: () => {
+                        this.props.onUpdateModal(false);
+                        this.moveAnimate(() => {
+                            this.props.onFinishTask(this.state.selectedTask, true, this.props.theme.primaryColor, () => {
+                                this.props.onAddEndedTask();
+                            });
+                        });
+                    },
+                    [translations.no]: () => this.props.onUpdateModal(false)
+                }
+            );
+        } else if (action === 'delete') {
+            dialog = generateDialogObject(
+                translations.defaultTitle,
+                translations.deleteDescription,
+                {
+                    [translations.yes]: () => {
+                        this.props.onUpdateModal(false);
+                        this.moveAnimate(() => {
+                            this.props.onRemoveTask(this.state.selectedTask);
+                        });
+                    },
+                    [translations.no]: () => this.props.onUpdateModal(false)
+                }
+            );
+        } else if (action === 'deleteAll') {
+            dialog = generateDialogObject(
+                translations.defaultAllTitle,
+                translations.finishAllDescription,
+                {
+                    [translations.yes]: () => {
+                        this.props.onUpdateModal(false);
+                        this.deleteAllTask();
+                    },
+                    [translations.no]: () => {
+                        this.props.onUpdateModal(false);
+                    },
+                }
+            );
+        }
 
         this.props.onUpdateModal(true, dialog);
     };
 
+    checkTaskRepeatHandler = (task) => {
+        if (task.repeat !== 'noRepeat') {
+            if (!!this.props.settings.confirmRepeatingTask) {
+                this.showDialog('repeat');
+            } else {
+                this.moveAnimate(() => {
+                    this.props.onFinishTask(task, false, this.props.theme.primaryColor, () => {
+                        this.props.onAddEndedTask();
+                        this.onRefresh();
+                        this.setState({
+                            [`move${task.id}`]: new Animated.Value(0),
+                            [`hide${task.id}`]: false
+                        });
+                    });
+                })
+            }
+        } else {
+            if (!!this.props.settings.confirmFinishingTask) {
+                this.showDialog('finish');
+            } else {
+                this.moveAnimate(() => {
+                    this.props.onFinishTask(task, false, this.props.theme.primaryColor);
+                })
+            }
+        }
+    };
+
     deleteAllTask = () => {
-        this.setState({loading: true}, () => {
-            const {finished} = this.props;
-            Promise.all(finished.map(task => this.props.onRemoveTask(task)));
-            this.onRefresh();
+        const {finished} = this.props;
+        Promise.all(finished.map(task => {
+            return this.props.onRemoveTask(task);
+        })).then(this.onRefresh);
+    };
+
+    checkDeleteHandler = () => {
+        if (!!this.props.settings.confirmDeletingTask) {
+            this.showDialog('delete');
+        } else {
+            this.moveAnimate(() => {
+                this.props.onRemoveTask(this.state.selectedTask);
+            })
+        }
+    };
+
+    undoTask = (task) => {
+        this.moveAnimate(() => {
+            this.props.onUndoTask(task);
+        })
+    };
+
+    moveAnimate = (callback = () => null) => {
+        this.setState({[`move${this.state.selectedTask.id}`]: new Animated.Value(0)}, () => {
+            Animated.timing(
+                this.state[`move${this.state.selectedTask.id}`],
+                {
+                    toValue: -400,
+                    duration: 500,
+                    easing: Easing.bezier(0.0, 0.0, 0.2, 1),
+                    useNativeDriver: Platform.OS === 'android'
+                }
+            ).start(() => {
+                this.setState({[`hide${this.state.selectedTask.id}`]: true});
+                callback()
+            });
         })
     };
 
@@ -175,7 +292,7 @@ class TaskList extends Component {
             [translations.finished]: []
         };
 
-        tasks && Promise.all(tasks.map(task => {
+        tasks && tasks.map(task => {
             let div;
             if (task.finish) {
                 div = translations.finished;
@@ -184,10 +301,10 @@ class TaskList extends Component {
                 div = this.getDateDivision(task.date);
                 division[div].push(task);
             }
-            return sortingByType(division[div], sorting, sortingType);
-        }));
+            sortingByType(division[div], sorting, sortingType);
+        });
 
-        this.setState({division, initDivision: true, loading: false});
+        this.setState({division, initDivision: true});
     };
 
     getDateDivision = (date) => {
@@ -322,44 +439,18 @@ class TaskList extends Component {
         );
     }
 
-    taskList = () => {
-        const {initDivision, division, priorityColors} = this.state;
-        const {navigation, translations, theme} = this.props;
-
-        return initDivision &&
-            Object.keys(division).map(div => (
-                division[div].map((task, index) => {
-                    // Searching system
-                    const searchText = this.state.searchText.toLowerCase();
-                    if (searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0) {
-                        if (task.description.toLowerCase().indexOf(searchText) < 0) {
-                            if (task.category.toLowerCase().indexOf(searchText) < 0) {
-                                return null;
-                            }
-                        }
-                    }
-
-                    return (
-                        <View key={index}>
-                            {!index &&
-                            <Subheader
-                                text={div}
-                                style={{
-                                    text: div === translations.overdue ?
-                                        {color: theme.overdueColor} : {color: theme.textColor}
-                                }}
-                            />
-                            }
-                            <Task
-                                task={task} div={div}
-                                priorityColors={priorityColors}
-                                onRefresh={this.onRefresh}
-                                navigation={navigation}
-                            />
-                        </View>
-                    )
-                })
-            ));
+    updateTask = (task, action = null) => {
+        this.setState({selectedTask: task}, () => {
+            if (action === 'delete') {
+                this.checkDeleteHandler();
+            } else {
+                if (task.finish) {
+                    this.undoTask(task);
+                } else {
+                    this.checkTaskRepeatHandler(task);
+                }
+            }
+        })
     };
 
     onRefresh = () => {
@@ -385,11 +476,116 @@ class TaskList extends Component {
 
     render() {
         const {
-            dropdownData, selectedIndex, rotateInterpolate,
-            bottomHidden, tasks, selectedCategory, showConfigCategory,
-            loading
+            division, priorityColors, showConfigCategory, dropdownData, selectedIndex,
+            rotateInterpolate, initDivision, bottomHidden, tasks, selectedCategory
         } = this.state;
         const {theme, navigation, sortingType, sorting, finished, translations} = this.props;
+
+        const taskList = initDivision &&
+            Object.keys(division).map(div => (
+                division[div].map((task, index) => {
+                    const moveValue = this.state[`move${task.id}`] ? this.state[`move${task.id}`] : 0;
+                    const hideTask = this.state[`hide${task.id}`] ? this.state[`hide${task.id}`] : 'auto';
+
+                    // Searching system
+                    const searchText = this.state.searchText.toLowerCase();
+                    if (searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0) {
+                        if (task.description.toLowerCase().indexOf(searchText) < 0) {
+                            if (task.category.toLowerCase().indexOf(searchText) < 0) {
+                                return null;
+                            }
+                        }
+                    }
+
+                    return (
+                        <View key={index}>
+                            {!index &&
+                            <Subheader
+                                text={div}
+                                style={{
+                                    text: div === translations.overdue ?
+                                        {color: theme.overdueColor} :
+                                        {color: theme.textColor}
+                                }}
+                            />
+                            }
+                            <Animated.View style={{height: hideTask, left: moveValue}}>
+                                <View style={{marginLeft: 15, marginRight: 15, marginBottom: 15}}>
+                                    <ListItem
+                                        divider
+                                        dense
+                                        onPress={() => task.finish ? true : navigation.navigate('ConfigTask', {task: task.id})}
+                                        style={{
+                                            container: [
+                                                shadow,
+                                                {backgroundColor: "#fff"}
+                                            ],
+                                            leftElementContainer: {
+                                                marginRight: -50
+                                            },
+                                            primaryText: {
+                                                fontSize: 18,
+                                                color: "#000"
+                                            },
+                                            secondaryText: {
+                                                fontWeight: '500',
+                                                color: task.finished ?
+                                                    theme.textColor :
+                                                    div === translations.overdue ?
+                                                        theme.overdueColor :
+                                                        theme.textColor
+                                            },
+                                            tertiaryText: {
+                                                color: theme.textColor
+                                            }
+                                        }}
+                                        leftElement={
+                                            <View style={{
+                                                marginLeft: -20,
+                                                width: 15,
+                                                height: '100%',
+                                                backgroundColor: priorityColors[task.priority].bgColor
+                                            }}/>
+                                        }
+                                        centerElement={{
+                                            primaryText: task.name,
+                                            secondaryText: task.date ?
+                                                task.date : task.description ?
+                                                    task.description : ' ',
+                                            tertiaryText: task.category ? task.category : ' '
+                                        }}
+                                        rightElement={
+                                            <View style={styles.rightElements}>
+                                                <IconToggle
+                                                    color={task.finish ?
+                                                        theme.undoButtonColor :
+                                                        theme.doneButtonColor
+                                                    }
+                                                    style={{
+                                                        container: {
+                                                            marginRight: task.finish ? -10 : 5
+                                                        }
+                                                    }}
+                                                    size={32}
+                                                    name={task.finish ? 'replay' : 'done'}
+                                                    onPress={() => this.updateTask(task)}
+                                                />
+                                                {task.finish &&
+                                                <IconToggle
+                                                    onPress={() => this.updateTask(task, 'delete')}
+                                                    name="delete"
+                                                    color={theme.actionButtonColor}
+                                                    size={28}
+                                                />}
+                                            </View>
+                                        }
+                                    />
+                                </View>
+                            </Animated.View>
+                        </View>
+                    )
+                })
+            ));
 
         return (
             <View style={flex}>
@@ -398,7 +594,7 @@ class TaskList extends Component {
                         autoFocus: true,
                         placeholder: translations.search,
                         onChangeText: value => this.setState({searchText: value}),
-                        onSearchClosed: () => this.setState({searchText: ''}),
+                        onSearchClosed: () => this.setState({searchText: ''})
                     }}
                     leftElement="menu"
                     onLeftElementPress={() => navigation.navigate('Drawer')}
@@ -451,7 +647,7 @@ class TaskList extends Component {
                     style={fullWidth}>
                     {tasks && tasks.length ?
                         <View style={{paddingBottom: 20}}>
-                            {loading ? <Spinner /> : this.taskList()}
+                            {taskList}
                         </View>
                         : <Text style={[empty, {color: theme.textColor}]}>
                             {translations.emptyList}
@@ -477,7 +673,7 @@ class TaskList extends Component {
                                     container: {backgroundColor: theme.actionButtonColor},
                                     icon: {color: theme.actionButtonIconColor}
                                 }}
-                                onPress={this.showDialog}
+                                onPress={() => this.showDialog('deleteAll')}
                                 icon="delete-sweep"
                             /> : null
                     }
@@ -537,8 +733,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onInitToDo: (callback) => dispatch(actions.initToDo(callback)),
+        onFinishTask: (task, endTask, primaryColor, callback) => dispatch(actions.finishTask(task, endTask, primaryColor, callback)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onUndoTask: (task) => dispatch(actions.undoTask(task)),
+        onAddEndedTask: () => dispatch(actions.addEndedTask()),
         onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),
         onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }

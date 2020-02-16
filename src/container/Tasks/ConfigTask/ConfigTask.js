@@ -110,7 +110,9 @@ class ConfigTask extends Component {
         const task = this.state.task;
         if (task[name] + '' === value + '') return null;
         task[name] = value;
-        this.setState({task});
+        this.setState({task}, () => {
+            if (name === 'date') this.checkCorrectRepeat();
+        });
     };
 
     showDialog = (action) => {
@@ -269,6 +271,15 @@ class ConfigTask extends Component {
 
         return checkValid(controls.name, task.name) &&
             (JSON.stringify(task) !== JSON.stringify(taskCopy));
+    };
+
+    checkCorrectRepeat = () => {
+        const {task} = this.state;
+        if ((task.repeat[0] === '0' || task.repeat[0] === '1') &&
+            task.date.length < 13) {
+            task.repeat = 'noRepeat';
+            this.setState({task})
+        }
     };
 
     saveTask = () => {

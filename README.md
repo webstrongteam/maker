@@ -53,7 +53,6 @@ This app working with Android and iOS.
 - Zapisywać id kategorii w zadaniu a nie jego nazwe | MICH
 - Color picker w theme nie dziala na iosie (trzeba będzie znaleźć inną biblioteke) | MICH
 ---
-- Labele w liscie zadan sie nie aktualizuja po zmianie ilosci zadan | MATT
 - Uprościć tworzenie motywów | MATT
 - Dodać brakujące tłumaczenia | MATT
 - Naprawić dodawanie backupa z plików telefonu na iosie | MATT

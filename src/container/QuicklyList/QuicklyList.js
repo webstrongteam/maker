@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {ActionButton, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
-import AnimatedView from '../AnimatedView/AnimatedView';
 import {empty, flex, shadow, fullWidth} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import styles from './QuicklyList.styles';
@@ -101,39 +100,37 @@ class QuicklyList extends Component {
 
             return (
                 <View key={index}>
-                    <AnimatedView value={1} duration={500}>
-                        <View style={{marginLeft: 10, marginRight: 10, marginBottom: 10}}>
-                            <ListItem
-                                divider
-                                dense
-                                onPress={() => navigation.navigate('QuicklyTaskList', {list: list})}
-                                style={{
-                                    container: [
-                                        shadow,
-                                        {backgroundColor: "#fff"}
-                                    ],
-                                    primaryText: {
-                                        fontSize: 18,
-                                        color: theme.textColor
-                                    }
-                                }}
-                                rightElement={
-                                    <View style={styles.rightElements}>
-                                        <IconToggle
-                                            onPress={() => this.showDialog(list.id, list.name)}
-                                            name="delete"
-                                            color={theme.actionButtonColor}
-                                            size={26}
-                                        />
-                                    </View>
+                    <View style={{marginLeft: 10, marginRight: 10, marginBottom: 10}}>
+                        <ListItem
+                            divider
+                            dense
+                            onPress={() => navigation.navigate('QuicklyTaskList', {list: list})}
+                            style={{
+                                container: [
+                                    shadow,
+                                    {backgroundColor: "#fff"}
+                                ],
+                                primaryText: {
+                                    fontSize: 18,
+                                    color: theme.textColor
                                 }
-                                centerElement={{
-                                    primaryText: list.name,
-                                    secondaryText: `${translations.totalTasks} ${amounts[list.id]}`
-                                }}
-                            />
-                        </View>
-                    </AnimatedView>
+                            }}
+                            rightElement={
+                                <View style={styles.rightElements}>
+                                    <IconToggle
+                                        onPress={() => this.showDialog(list.id, list.name)}
+                                        name="delete"
+                                        color={theme.actionButtonColor}
+                                        size={26}
+                                    />
+                                </View>
+                            }
+                            centerElement={{
+                                primaryText: list.name,
+                                secondaryText: `${translations.totalTasks} ${amounts[list.id]}`
+                            }}
+                        />
+                    </View>
                 </View>
             )
         });

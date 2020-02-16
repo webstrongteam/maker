@@ -15,13 +15,13 @@ const initToDo = (state, action) => {
 
 const initTasks = (state, action) => {
     return updateObject(state, {
-        tasks: action.tasks,
+        tasks: action.tasks
     });
 };
 
 const initFinished = (state, action) => {
     return updateObject(state, {
-        finished: action.tasks,
+        finished: action.tasks
     });
 };
 
