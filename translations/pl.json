@@ -78,8 +78,7 @@
   },
   "QuicklyList": {
     "dialogTitle": "Jesteś pewnien?",
-    "dialogDescription1": "Usunąć",
-    "dialogDescription2": "listę?",
+    "dialogDescription": "Usunąć wybraną listę?",
     "totalTasks": "Wszystkie zadania:",
     "quicklyLists": "Szybkie listy",
     "emptyList": "Szybkie listy są puste!"

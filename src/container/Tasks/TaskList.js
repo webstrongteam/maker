@@ -13,8 +13,9 @@ import {generateDialogObject, sortingByType} from '../../shared/utility';
 import {empty, flex, fullWidth, shadow} from '../../shared/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
 import ConfigCategory from "../Categories/ConfigCategory/ConfigCategory";
-import moment from 'moment';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import styles from './TaskList.styles';
+import moment from 'moment';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
@@ -46,7 +47,8 @@ class TaskList extends Component {
         selectedIndex: 0,
         searchText: '',
         rotateAnimated: new Animated.Value(0),
-        rotateInterpolate: '0deg'
+        rotateInterpolate: '0deg',
+        loading: true
     };
 
     componentDidMount() {
@@ -304,7 +306,7 @@ class TaskList extends Component {
             sortingByType(division[div], sorting, sortingType);
         });
 
-        this.setState({division, initDivision: true});
+        this.setState({division, initDivision: true, loading: false});
     };
 
     getDateDivision = (date) => {
@@ -454,30 +456,28 @@ class TaskList extends Component {
     };
 
     onRefresh = () => {
-        this.setState({loading: true}, () => {
-            this.props.onInitToDo((tasks, finished) => {
-                const {selectedCategory} = this.state;
-                const {translations} = this.props;
-                let filterTask = tasks;
+        this.props.onInitToDo((tasks, finished) => {
+            const {selectedCategory} = this.state;
+            const {translations} = this.props;
+            let filterTask = tasks;
 
-                if (selectedCategory === translations.finished) {
-                    filterTask = finished;
-                } else if (selectedCategory === translations.newCategory) {
-                    return this.toggleConfigCategory();
-                } else if (selectedCategory !== translations.all) {
-                    filterTask = tasks.filter(task => task.category === selectedCategory);
-                }
+            if (selectedCategory === translations.finished) {
+                filterTask = finished;
+            } else if (selectedCategory === translations.newCategory) {
+                return this.toggleConfigCategory();
+            } else if (selectedCategory !== translations.all) {
+                filterTask = tasks.filter(task => task.category === selectedCategory);
+            }
 
-                this.renderDropdownData();
-                this.setState({tasks: filterTask}, this.divisionTask);
-            })
-        });
+            this.renderDropdownData();
+            this.setState({tasks: filterTask}, this.divisionTask);
+        })
     };
 
     render() {
         const {
             division, priorityColors, showConfigCategory, dropdownData, selectedIndex,
-            rotateInterpolate, initDivision, bottomHidden, tasks, selectedCategory
+            rotateInterpolate, initDivision, bottomHidden, tasks, selectedCategory, loading
         } = this.state;
         const {theme, navigation, sortingType, sorting, finished, translations} = this.props;
 
@@ -640,20 +640,22 @@ class TaskList extends Component {
                     toggleModal={this.toggleConfigCategory}
                 />
 
-                <ScrollView
-                    keyboardShouldPersistTaps="always"
-                    keyboardDismissMode="interactive"
-                    onScroll={this.onScroll}
-                    style={fullWidth}>
-                    {tasks && tasks.length ?
-                        <View style={{paddingBottom: 20}}>
-                            {taskList}
-                        </View>
-                        : <Text style={[empty, {color: theme.textColor}]}>
-                            {translations.emptyList}
-                        </Text>
-                    }
-                </ScrollView>
+                {loading ? <Spinner/> :
+                    <ScrollView
+                        keyboardShouldPersistTaps="always"
+                        keyboardDismissMode="interactive"
+                        onScroll={this.onScroll}
+                        style={fullWidth}>
+                        {tasks && tasks.length ?
+                            <View style={{paddingBottom: 20}}>
+                                {taskList}
+                            </View>
+                            : <Text style={[empty, {color: theme.textColor}]}>
+                                {translations.emptyList}
+                            </Text>
+                        }
+                    </ScrollView>
+                }
 
                 <View>
                     {selectedCategory !== translations.finished ?
@@ -684,24 +686,28 @@ class TaskList extends Component {
                     active={sorting}>
                     <BottomNavigation.Action
                         key="byAZ"
+                        style={{label: {fontSize: 13}}}
                         icon="format-line-spacing"
                         label={sortingType === 'ASC' ? "A-Z" : "Z-A"}
                         onPress={() => this.setSortingType('byAZ')}
                     />
                     <BottomNavigation.Action
                         key="byDate"
+                        style={{label: {fontSize: 13}}}
                         icon="insert-invitation"
                         label={translations.date}
                         onPress={() => this.setSortingType('byDate')}
                     />
                     <BottomNavigation.Action
                         key="byCategory"
+                        style={{label: {fontSize: 13}}}
                         icon="bookmark-border"
                         label={translations.category}
                         onPress={() => this.setSortingType('byCategory')}
                     />
                     <BottomNavigation.Action
                         key="byPriority"
+                        style={{label: {fontSize: 13}}}
                         icon="priority-high"
                         label={translations.priority}
                         onPress={() => this.setSortingType('byPriority')}

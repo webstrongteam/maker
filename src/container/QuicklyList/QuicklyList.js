@@ -72,7 +72,7 @@ class QuicklyList extends Component {
 
         const dialog = generateDialogObject(
             translations.defaultTitle,
-            `${translations.dialogDescription1} ${list_name} ${translations.dialogDescription2}`,
+            `${translations.dialogDescription}`,
             {
                 [translations.yes]: () => {
                     this.props.onUpdateModal(false);

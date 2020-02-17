@@ -78,7 +78,7 @@ class ToDo extends PureComponent {
                             renderLazyPlaceholder={() => <Spinner/>}
                             lazy
                         />
-                    </Template> : <Spinner color="#0000ff"/>
+                    </Template> : <Spinner color="#f4511e"/>
                 }
             </React.Fragment>
         );
@@ -99,7 +99,7 @@ const mapDispatchToProps = dispatch => {
         onInitCategories: () => dispatch(actions.initCategories()),
         onInitTheme: () => dispatch(actions.initTheme()),
         onInitProfile: () => dispatch(actions.initProfile()),
-        onInitSettings: (callback) => dispatch(actions.initSettings(callback)),
+        onInitSettings: (callback) => dispatch(actions.initSettings(callback))
     }
 };
 

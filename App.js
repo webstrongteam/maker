@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
+import {ActivityIndicator, NativeModules, View, Platform} from 'react-native';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
-import {ActivityIndicator, NativeModules, View} from 'react-native';
 import {getTheme, ThemeContext} from 'react-native-material-ui';
 import {activity} from './src/shared/styles';
 import {initDatabase, initTheme} from './src/db';
@@ -76,7 +76,7 @@ class App extends Component {
                     </ThemeContext.Provider>
                 </Provider> :
                 <View style={activity}>
-                    <ActivityIndicator size="large" color="#0000ff"/>
+                    <ActivityIndicator size="large" color="#f4511e"/>
                 </View>
         );
     }

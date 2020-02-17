@@ -54,7 +54,6 @@ This app working with Android and iOS.
 - Color picker w theme nie dziala na iosie (trzeba będzie znaleźć inną biblioteke) | MICH
 ---
 - Uprościć tworzenie motywów | MATT
-- Dodać brakujące tłumaczenia | MATT
 - Naprawić dodawanie backupa z plików telefonu na iosie | MATT
 - Przygotować bazę danych do aktualizacji | MATT
 - Zmienić ekran ładowania | MATT

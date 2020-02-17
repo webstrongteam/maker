@@ -1,7 +1,21 @@
 import * as SQLite from 'expo-sqlite';
+import {NativeModules, Platform} from "react-native";
 
 export const VERSION = '2.0.0'; // APP VERSION
 const db = SQLite.openDatabase('maker.db', VERSION);
+
+const getLocale = () => {
+    const locale =
+        Platform.OS === 'ios'
+            ? NativeModules.SettingsManager.settings.AppleLocale
+            : NativeModules.I18nManager.localeIdentifier;
+
+    if (locale === 'en_PL') {
+        return 'pl';
+    } else {
+        return 'en';
+    }
+};
 
 export const initDatabase = (callback) => {
     db.transaction(tx => {
@@ -9,7 +23,7 @@ export const initDatabase = (callback) => {
         //     'DROP TABLE IF EXISTS tasks;'
         // );
         // tx.executeSql(
-        //     'DROP TABLE IF EXISTS finished;'
+        //     'DROP TABLE IF EXISTS settings;'
         // );
         tx.executeSql(
             'create table if not exists categories (id integer primary key not null, name text);'
@@ -61,6 +75,9 @@ const initApp = (callback) => {
             // CHECK CORRECTION APP VERSION AND UPDATE DB
             tx.executeSql("select version from settings", [], (_, {rows}) => {
                 const version = rows._array[0].version;
+                if (version.includes('_INIT')) {
+                    tx.executeSql('update settings set lang = ? where id = 0;', [getLocale()]);
+                }
                 if (version !== VERSION) {
                     tx.executeSql('DELETE FROM themes WHERE id = 0 AND id = 1;', [], () => {
                         tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {

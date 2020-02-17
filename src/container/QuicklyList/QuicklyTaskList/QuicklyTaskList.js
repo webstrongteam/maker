@@ -50,7 +50,6 @@ class QuicklyTaskList extends Component {
         this.setState({loading: true});
         this.props.onInitList(list.id, (tasks) => {
             const order = [...tasks.map(t => t.order_nr)];
-            console.log(tasks)
             this.setState({
                 quicklyTasks: tasks,
                 newListName: list.name,
@@ -171,7 +170,7 @@ class QuicklyTaskList extends Component {
                         navigation.goBack()
                     }}
                     centerElement={
-                        !loading ?
+                        list.name ?
                             <TouchableOpacity onPress={() => this.showDialog()}>
                                 <Text style={{
                                     color: theme.headerTextColor,

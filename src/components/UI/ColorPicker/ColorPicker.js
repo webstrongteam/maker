@@ -8,7 +8,7 @@ const colorPicker = (props) => (
         <ColorPicker
             defaultColor={props.defaultColor}
             onColorChange={color => props.changeColor(color)}
-        />
+            color={props.defaultColor} onColorSelected={color => props.changeColor(color)}/>
         <Dialog.Button
             label="Save"
             onPress={props.save}

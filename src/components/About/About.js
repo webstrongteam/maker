@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {separator} from '../../shared/styles';
 import * as WebBrowser from 'expo-web-browser';
 import Template from '../../container/Template/Template';

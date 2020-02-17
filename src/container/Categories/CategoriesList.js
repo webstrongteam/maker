@@ -116,7 +116,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onRemoveCategory: (id) => dispatch(actions.removeCategory(id)),
+        onRemoveCategory: (id) => dispatch(actions.removeCategory(id))
     }
 };
 

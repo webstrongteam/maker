@@ -106,7 +106,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onInitCategory: (id, callback) => dispatch(actions.initCategory(id, callback)),
-        onSaveCategory: (category, callback) => dispatch(actions.saveCategory(category, callback)),
+        onSaveCategory: (category, callback) => dispatch(actions.saveCategory(category, callback))
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigCategory);

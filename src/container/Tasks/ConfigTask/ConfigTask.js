@@ -515,8 +515,7 @@ const mapDispatchToProps = dispatch => {
         onSaveTask: (task, callback) => dispatch(actions.saveTask(task, callback)),
         onRemoveTask: (task, callback) => dispatch(actions.removeTask(task, false, callback)),
         onRefresh: () => dispatch(actions.refresh()),
-        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal)),
-        onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText))
+        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }
 };
 
