@@ -67,7 +67,7 @@ class Themes extends PureComponent {
                     leftElement="arrow-back"
                     rightElement={
                         <IconToggle name="add"
-                                    color={actualTheme.headerTextColor}
+                                    color={actualTheme.primaryTextColor}
                                     onPress={() => navigation.navigate('Theme')}/>
                     }
                     onLeftElementPress={() => navigation.goBack()}
@@ -88,7 +88,7 @@ class Themes extends PureComponent {
                             icon={
                                 <View style={iconStyle}>
                                     <Icon name="home"
-                                          color={actualTheme.textColor}
+                                          color={actualTheme.thirdTextColor}
                                           style={{alignSelf: 'center'}}/>
                                 </View>
                             }
@@ -97,14 +97,14 @@ class Themes extends PureComponent {
                             hasSwitch={true}
                             switchState={selectedTheme['0']}
                             switchOnValueChange={(value) => this.selectedThemeHandler(value, 0)}
-                            titleStyle={{color: actualTheme.textColor, fontSize: 16}}
+                            titleStyle={{color: actualTheme.thirdTextColor, fontSize: 16}}
                             title={translations.defaultTheme}
                         />
                         <SettingsList.Item
                             icon={
                                 <View style={iconStyle}>
                                     <Icon name="brightness-2"
-                                          color={actualTheme.textColor}
+                                          color={actualTheme.thirdTextColor}
                                           style={{alignSelf: 'center'}}/>
 
                                 </View>
@@ -114,7 +114,7 @@ class Themes extends PureComponent {
                             hasSwitch={true}
                             switchState={selectedTheme['1']}
                             switchOnValueChange={(value) => this.selectedThemeHandler(value, 1)}
-                            titleStyle={{color: actualTheme.textColor, fontSize: 16}}
+                            titleStyle={{color: actualTheme.thirdTextColor, fontSize: 16}}
                             title={translations.darkTheme}
                         />
                         <SettingsList.Header headerStyle={{marginTop: -5}}/>
@@ -136,7 +136,7 @@ class Themes extends PureComponent {
                                         hasSwitch={true}
                                         switchState={selectedTheme[themeEl.id]}
                                         switchOnValueChange={(value) => this.selectedThemeHandler(value, themeEl.id)}
-                                        titleStyle={{color: actualTheme.textColor, fontSize: 16}}
+                                        titleStyle={{color: actualTheme.thirdTextColor, fontSize: 16}}
                                         title={themeEl.name}
                                     />
                                 )
@@ -146,7 +146,7 @@ class Themes extends PureComponent {
                             title={translations.addTheme}
                             itemWidth={70}
                             onPress={() => navigation.navigate('Theme')}
-                            titleStyle={{color: actualTheme.textColor, fontSize: 16}}
+                            titleStyle={{color: actualTheme.thirdTextColor, fontSize: 16}}
                         />
                     </SettingsList> : <Spinner/>
                 }

@@ -64,7 +64,7 @@ class OtherRepeat extends Component {
                         }}
                     />
 
-                    <View style={{marginBottom: 10, color: theme.textColor}}>
+                    <View style={{marginBottom: 10, color: theme.primaryTextColor}}>
                         {repeatTimes.map((time, index) => {
                             if (!usingTime && (time === 'hours' || time === 'minutes')) return null;
                             return (
@@ -78,7 +78,7 @@ class OtherRepeat extends Component {
                                         },
                                         primaryText: {
                                             color: index + '' === selectedTime + '' ?
-                                                theme.primaryColor : theme.textColor
+                                                theme.primaryColor : theme.thirdTextColor
                                         }
                                     }}
                                     centerElement={{

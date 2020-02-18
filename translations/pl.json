@@ -141,7 +141,7 @@
     "priorityHigh": "Wysoki"
   },
   "OtherRepeat": {
-    "valueLabel": "Wprowadź wartość powtórzeń",
+    "valueLabel": "Powtarzaj co",
     "dialogTitle": "Ustawienia niestandardowych powtórzeń",
     "minutes": "Minuty",
     "hours": "Godzin",

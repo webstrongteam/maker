@@ -68,7 +68,7 @@ class ToDo extends PureComponent {
                                     onTabPress={({route}) => {
                                         props.jumpTo(route.key);
                                     }}
-                                    indicatorStyle={{backgroundColor: theme.headerTextColor}}
+                                    indicatorStyle={{backgroundColor: theme.primaryTextColor}}
                                     style={{
                                         backgroundColor: theme.primaryColor,
                                         height: !!hideTabView ? 0 : 50

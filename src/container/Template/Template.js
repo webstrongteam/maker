@@ -19,13 +19,13 @@ class Template extends Component {
         this.setState({
             uiTheme: {
                 primaryColor: theme.primaryColor,
-                accentColor: theme.actionButtonColor,
-                primaryTextColor: theme.textColor,
-                secondaryTextColor: theme.textColor,
+                accentColor: theme.warningColor,
+                primaryTextColor: theme.primaryTextColor,
+                secondaryTextColor: theme.secondaryTextColor,
                 canvasColor: theme.secondaryBackgroundColor,
-                alternateTextColor: theme.headerTextColor,
-                disabledColor: theme.textColor,
-                pickerHeaderColor: theme.textColor
+                alternateTextColor: theme.primaryTextColor,
+                disabledColor: theme.primaryTextColor,
+                pickerHeaderColor: theme.primaryTextColor
             },
             ready: true
         })

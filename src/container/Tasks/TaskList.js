@@ -26,7 +26,7 @@ const DOWN = -1;
 class TaskList extends Component {
     state = {
         priorityColors: {
-            none: {bgColor: this.props.theme.noneColor},
+            none: {bgColor: this.props.theme.secondaryBackgroundColor},
             low: {bgColor: this.props.theme.lowColor},
             medium: {bgColor: this.props.theme.mediumColor},
             high: {bgColor: this.props.theme.highColor},
@@ -109,7 +109,7 @@ class TaskList extends Component {
     refreshPriorityColors = () => {
         this.setState({
             priorityColors: {
-                none: {bgColor: this.props.theme.noneColor},
+                none: {bgColor: this.props.theme.secondaryBackgroundColor},
                 low: {bgColor: this.props.theme.lowColor},
                 medium: {bgColor: this.props.theme.mediumColor},
                 high: {bgColor: this.props.theme.highColor}
@@ -423,17 +423,17 @@ class TaskList extends Component {
                           style={styles.dropdownIcon}
                           color={selectedCategory === rowData.name ?
                               theme.primaryColor :
-                              theme.textColor}/>
+                              theme.thirdTextColor}/>
                     <Text style={[styles.dropdownRowText,
                         selectedCategory === rowData.name ?
                             {color: theme.primaryColor} :
-                            {color: theme.textColor}]}>
+                            {color: theme.thirdTextColor}]}>
                         {rowData.name}
                     </Text>
                     <Text style={[styles.dropdownRowText,
                         selectedCategory === rowData.name ?
                             {color: theme.primaryColor} :
-                            {color: theme.textColor}]}>
+                            {color: theme.thirdTextColor}]}>
                         {data.amount ? `(${data.amount})` : ''}
                     </Text>
                 </View>
@@ -504,8 +504,8 @@ class TaskList extends Component {
                                 text={div}
                                 style={{
                                     text: div === translations.overdue ?
-                                        {color: theme.overdueColor} :
-                                        {color: theme.textColor}
+                                        {color: theme.warningColor} :
+                                        {color: theme.thirdTextColor}
                                 }}
                             />
                             }
@@ -530,13 +530,13 @@ class TaskList extends Component {
                                             secondaryText: {
                                                 fontWeight: '500',
                                                 color: task.finished ?
-                                                    theme.textColor :
+                                                    theme.thirdTextColor :
                                                     div === translations.overdue ?
-                                                        theme.overdueColor :
-                                                        theme.textColor
+                                                        theme.warningColor :
+                                                        theme.thirdTextColor
                                             },
                                             tertiaryText: {
-                                                color: theme.textColor
+                                                color: theme.thirdTextColor
                                             }
                                         }}
                                         leftElement={
@@ -558,8 +558,8 @@ class TaskList extends Component {
                                             <View style={styles.rightElements}>
                                                 <IconToggle
                                                     color={task.finish ?
-                                                        theme.undoButtonColor :
-                                                        theme.doneButtonColor
+                                                        theme.undoIconColor :
+                                                        theme.doneIconColor
                                                     }
                                                     style={{
                                                         container: {
@@ -574,7 +574,7 @@ class TaskList extends Component {
                                                 <IconToggle
                                                     onPress={() => this.updateTask(task, 'delete')}
                                                     name="delete"
-                                                    color={theme.actionButtonColor}
+                                                    color={theme.warningColor}
                                                     size={28}
                                                 />}
                                             </View>
@@ -618,7 +618,7 @@ class TaskList extends Component {
                         >
                             <View style={styles.dropdownButton}>
                                 <Text style={[styles.dropdownText, {
-                                    color: theme.headerTextColor,
+                                    color: theme.primaryTextColor,
                                     fontWeight: '500'
                                 }]}>
                                     {selectedCategory}
@@ -626,7 +626,7 @@ class TaskList extends Component {
                                 <Animated.View style={{transform: [{rotate: rotateInterpolate}]}}>
                                     <Icon
                                         style={styles.dropdownButtonIcon}
-                                        color={theme.headerTextColor}
+                                        color={theme.primaryTextColor}
                                         name="expand-more"/>
                                 </Animated.View>
                             </View>
@@ -650,7 +650,7 @@ class TaskList extends Component {
                             <View style={{paddingBottom: 20}}>
                                 {taskList}
                             </View>
-                            : <Text style={[empty, {color: theme.textColor}]}>
+                            : <Text style={[empty, {color: theme.thirdTextColor}]}>
                                 {translations.emptyList}
                             </Text>
                         }
@@ -664,16 +664,16 @@ class TaskList extends Component {
                             onPress={() => navigation.navigate('ConfigTask', {category: selectedCategory})}
                             icon="add"
                             style={{
-                                container: {backgroundColor: theme.actionButtonColor},
-                                icon: {color: theme.actionButtonIconColor}
+                                container: {backgroundColor: theme.warningColor},
+                                icon: {color: theme.primaryBackgroundColor}
                             }}
                         /> :
                         finished.length ?
                             <ActionButton
                                 hidden={bottomHidden}
                                 style={{
-                                    container: {backgroundColor: theme.actionButtonColor},
-                                    icon: {color: theme.actionButtonIconColor}
+                                    container: {backgroundColor: theme.warningColor},
+                                    icon: {color: theme.primaryBackgroundColor}
                                 }}
                                 onPress={() => this.showDialog('deleteAll')}
                                 icon="delete-sweep"
@@ -681,7 +681,7 @@ class TaskList extends Component {
                     }
                 </View>
                 <BottomNavigation
-                    style={{container: {backgroundColor: theme.bottomNavigationColor}}}
+                    style={{container: {backgroundColor: theme.primaryBackgroundColor}}}
                     hidden={bottomHidden}
                     active={sorting}>
                     <BottomNavigation.Action

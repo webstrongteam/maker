@@ -1,4 +1,5 @@
 import moment from 'moment';
+import {Dimensions} from "react-native";
 
 export const updateObject = (oldObject, newProps) => {
     return {
@@ -10,6 +11,8 @@ export const updateObject = (oldObject, newProps) => {
 export const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+export const width = Dimensions.get('window').width;
 
 export const sortingData = (array, field, type) => {
     if (field === 'date') { // SORTING DATE

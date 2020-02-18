@@ -69,10 +69,10 @@ class Profile extends PureComponent {
             list = listData.map((item, index) => (
                 <View key={index}>
                     <View style={[styles.item, {backgroundColor: theme.primaryBackgroundColor}]}>
-                        <Text style={{color: theme.primaryColor, fontSize: 16}}>
+                        <Text style={{color: theme.thirdTextColor, fontSize: 16}}>
                             {item.label}
                         </Text>
-                        <Text style={{fontSize: 19, color: theme.textColor}}>
+                        <Text style={{fontSize: 19, color: theme.primaryColor}}>
                             {item.data}
                         </Text>
                     </View>

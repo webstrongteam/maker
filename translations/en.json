@@ -136,7 +136,7 @@
     "priorityHigh": "High"
   },
   "OtherRepeat": {
-    "valueLabel": "Enter repeat value",
+    "valueLabel": "Repeat every",
     "dialogTitle": "Config custom repeat",
     "minutes": "Minutes",
     "hours": "Hours",

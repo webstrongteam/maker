@@ -330,18 +330,18 @@ class ConfigTask extends Component {
                                 translations.editTask :
                                 translations.newTask :
                             <View style={{marginTop: 10}}>
-                                <Spinner color={theme.secondaryBackgroundColor} size='small'/>
+                                <Spinner color={theme.primaryBackgroundColor} size='small'/>
                             </View>
                     }
                     rightElement={
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             {this.checkChanges() &&
                             <IconToggle name="save"
-                                        color={theme.headerTextColor}
+                                        color={theme.primaryBackgroundColor}
                                         onPress={this.saveTask}/>
                             }
                             {editTask && <IconToggle name="delete"
-                                                     color={theme.headerTextColor}
+                                                     color={theme.primaryBackgroundColor}
                                                      onPress={() => this.showDialog('delete')}/>
                             }
                         </View>
@@ -405,7 +405,7 @@ class ConfigTask extends Component {
                                     dateInput: [styles.datePicker, {borderColor: theme.primaryColor}],
                                     datePickerCon: {backgroundColor: '#3b3b3b'},
                                     dateText: {
-                                        color: +date < +now ? theme.overdueColor : theme.textColor
+                                        color: +date < +now ? theme.warningColor : theme.thirdTextColor
                                     }
                                 }}
                                 onDateChange={(date) => this.updateTask('date', this.convertDate(date))}
@@ -435,7 +435,7 @@ class ConfigTask extends Component {
                                         dateInput: [styles.datePicker, {borderColor: theme.primaryColor}],
                                         datePickerCon: {backgroundColor: '#3b3b3b'},
                                         dateText: {
-                                            color: +date < +now ? theme.overdueColor : theme.textColor
+                                            color: +date < +now ? theme.warningColor : theme.thirdTextColor
                                         }
                                     }}
                                     onDateChange={(date) => {
@@ -443,7 +443,7 @@ class ConfigTask extends Component {
                                     }}
                                 />
                                 <Checkbox
-                                    style={{label: {color: theme.textColor}}}
+                                    style={{label: {color: theme.thirdTextColor}}}
                                     label={translations.setCalendarEvent}
                                     value='set'
                                     checked={setEvent}
@@ -451,7 +451,7 @@ class ConfigTask extends Component {
                                 />
                                 {task.date.length > 12 &&
                                 <Checkbox
-                                    style={{label: {color: theme.textColor}}}
+                                    style={{label: {color: theme.thirdTextColor}}}
                                     label={translations.setNotification}
                                     value='set'
                                     checked={setNotification}

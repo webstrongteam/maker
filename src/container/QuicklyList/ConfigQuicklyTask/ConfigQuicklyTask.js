@@ -91,7 +91,6 @@ class ConfigQuicklyTask extends Component {
 
 const mapStateToProps = state => {
     return {
-        theme: state.theme.theme,
         translations: {
             ...state.settings.translations.ConfigQuicklyTask,
             ...state.settings.translations.validation

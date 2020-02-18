@@ -23,14 +23,14 @@ const defaultDialog = (props) => (
             visible={props.showModal}>
             {props.title &&
             <Dialog.Title
-                style={{color: props.theme.textColor}}>
+                style={{color: props.theme.thirdTextColor}}>
                 {props.title}
             </Dialog.Title>
             }
 
         {props.body ?
             <Dialog.Description
-                style={{color: props.theme.textColor}}>
+                style={{color: props.theme.thirdTextColor}}>
                 {props.body}
             </Dialog.Description> :
             <View>
@@ -57,7 +57,7 @@ const selectDialog = (props) => (
         visible={props.showModal}>
         {props.title &&
         <Dialog.Title
-            style={{color: props.theme.textColor}}>
+            style={{color: props.theme.thirdTextColor}}>
             {props.title}
         </Dialog.Title>
         }
@@ -76,7 +76,7 @@ const selectDialog = (props) => (
                         },
                         primaryText: {
                             color: option.value === props.selectedValue ?
-                                props.theme.primaryColor : props.theme.textColor
+                                props.theme.primaryColor : props.theme.thirdTextColor
                         },
                         ...option.style
                     }}
@@ -107,7 +107,7 @@ const inputDialog = (props) => (
             visible={props.showModal}>
             {props.title &&
             <Dialog.Title
-                style={{color: props.theme.textColor}}>
+                style={{color: props.theme.thirdTextColor}}>
                 {props.title}
             </Dialog.Title>
             }

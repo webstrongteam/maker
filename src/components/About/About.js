@@ -30,22 +30,22 @@ const about = (props) => {
                         source={require('../../assets/icon.png')}
                     />
                     <Text style={separator}/>
-                    <Text style={[styles.primaryText, {color: props.theme.textColor}]}>
+                    <Text style={[styles.primaryText, {color: props.theme.secondaryTextColor}]}>
                         {props.translations.primaryText}
                     </Text>
-                    <Text style={[styles.secondaryText, {color: props.theme.textColor}]}>
+                    <Text style={[styles.secondaryText, {color: props.theme.secondaryTextColor}]}>
                         {props.translations.secondaryText}
                     </Text>
                     <TouchableOpacity onPress={openWebBrowser}>
                         <Image
-                            tintColor={props.theme.textColor}
+                            tintColor={props.theme.secondaryTextColor}
                             style={styles.github}
                             source={require('../../assets/github.png')}
                         />
                     </TouchableOpacity>
                 </ScrollView>
                 <View style={{opacity: 0.5}}>
-                    <Text style={[styles.copy, {color: props.theme.textColor}]}>
+                    <Text style={[styles.copy, {color: props.theme.thirdTextColor}]}>
                         &copy; by Mateusz Pijanowski (WebStrong team) v.{VERSION}
                     </Text>
                 </View>

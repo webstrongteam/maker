@@ -142,7 +142,7 @@ class Settings extends PureComponent {
                             <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
-                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="alarm"/>
+                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}} name="alarm"/>
                                     </View>
                                 }
                                 hasNavArrow={false}
@@ -150,13 +150,13 @@ class Settings extends PureComponent {
                                 hasSwitch={true}
                                 switchState={!!settings.timeFormat}
                                 switchOnValueChange={(value) => this.toggleSetting(value, 'TimeFormat')}
-                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
                                 title={translations.timeCycle}
                             />
                             <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
-                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="event"/>
+                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}} name="event"/>
                                     </View>
                                 }
                                 hasNavArrow={true}
@@ -164,13 +164,13 @@ class Settings extends PureComponent {
                                 hasSwitch={false}
                                 titleInfo={daysOfWeek.find(d => d.value === settings.firstDayOfWeek).name}
                                 onPress={() => this.showDialog('showFirstDayOfWeek')}
-                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
                                 title={translations.firstDayOfWeek}
                             />
                             <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
-                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="g-translate"/>
+                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}} name="g-translate"/>
                                     </View>
                                 }
                                 hasNavArrow={true}
@@ -178,13 +178,13 @@ class Settings extends PureComponent {
                                 hasSwitch={false}
                                 titleInfo={settings.lang}
                                 onPress={() => this.showDialog('showLanguages')}
-                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
                                 title={translations.language}
                             />
                             <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
-                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="done"/>
+                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}} name="done"/>
                                     </View>
                                 }
                                 hasNavArrow={false}
@@ -192,13 +192,13 @@ class Settings extends PureComponent {
                                 hasSwitch={true}
                                 switchState={!!settings.confirmFinishingTask}
                                 switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmFinishingTask')}
-                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
                                 title={translations.confirmFinishing}
                             />
                             <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
-                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="autorenew"/>
+                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}} name="autorenew"/>
                                     </View>
                                 }
                                 hasNavArrow={false}
@@ -206,13 +206,13 @@ class Settings extends PureComponent {
                                 hasSwitch={true}
                                 switchState={!!settings.confirmRepeatingTask}
                                 switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmRepeatingTask')}
-                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
                                 title={translations.confirmRepeating}
                             />
                             <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
-                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}} name="delete"/>
+                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}} name="delete"/>
                                     </View>
                                 }
                                 hasNavArrow={false}
@@ -220,13 +220,13 @@ class Settings extends PureComponent {
                                 hasSwitch={true}
                                 switchState={!!settings.confirmDeletingTask}
                                 switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmDeletingTask')}
-                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
                                 title={translations.confirmDeleting}
                             />
                             <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
-                                        <Icon color={theme.textColor} style={{alignSelf: 'center'}}
+                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}}
                                               name="view-compact"/>
                                     </View>
                                 }
@@ -235,12 +235,12 @@ class Settings extends PureComponent {
                                 hasSwitch={true}
                                 switchState={!!settings.hideTabView}
                                 switchOnValueChange={(value) => this.toggleSetting(value, 'HideTabView')}
-                                titleStyle={{color: theme.textColor, fontSize: 16}}
+                                titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
                                 title={translations.hideTabView}
                             />
                         </SettingsList>
                         <View style={styles.version}>
-                            <Text style={{color: theme.textColor}}>
+                            <Text style={{color: theme.thirdTextColor}}>
                                 {translations.version}: {settings.version} (Hotfix 1)
                             </Text>
                         </View>

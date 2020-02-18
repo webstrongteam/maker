@@ -95,7 +95,6 @@ class ConfigCategory extends Component {
 
 const mapStateToProps = state => {
     return {
-        theme: state.theme.theme,
         translations: {
             ...state.settings.translations.ConfigCategory,
             ...state.settings.translations.validation,

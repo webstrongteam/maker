@@ -112,7 +112,10 @@ class QuicklyList extends Component {
                                 ],
                                 primaryText: {
                                     fontSize: 18,
-                                    color: theme.textColor
+                                    color: theme.secondaryTextColor
+                                },
+                                secondaryText: {
+                                    color: theme.thirdTextColor
                                 }
                             }}
                             rightElement={
@@ -120,7 +123,7 @@ class QuicklyList extends Component {
                                     <IconToggle
                                         onPress={() => this.showDialog(list.id, list.name)}
                                         name="delete"
-                                        color={theme.actionButtonColor}
+                                        color={theme.warningColor}
                                         size={26}
                                     />
                                 </View>
@@ -159,7 +162,7 @@ class QuicklyList extends Component {
                             <View style={{paddingTop: 20}}>
                                 {quicklyList}
                             </View>
-                            : <Text style={[empty, {color: theme.textColor}]}>
+                            : <Text style={[empty, {color: theme.primaryTextColor}]}>
                                 {translations.emptyList}
                             </Text>
                         }
@@ -172,8 +175,8 @@ class QuicklyList extends Component {
                         onPress={() => navigation.navigate('QuicklyTaskList', {list: false})}
                         icon="add"
                         style={{
-                            container: {backgroundColor: theme.actionButtonColor},
-                            icon: {color: theme.actionButtonIconColor}
+                            container: {backgroundColor: theme.warningColor},
+                            icon: {color: theme.primaryBackgroundColor}
                         }}
                     />
                 </View>

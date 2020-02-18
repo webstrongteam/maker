@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
-import {generateDialogObject} from '../../shared/utility';
-import {container, empty, fullWidth, row} from '../../shared/styles';
+import {generateDialogObject, width} from '../../shared/utility';
+import {container, empty, listRow, row, shadow} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import * as FileSystem from "expo-file-system";
 import * as Sharing from 'expo-sharing';
@@ -222,12 +222,12 @@ ${translations.showBackupAlertDescription2}`,
         const {navigation, theme, translations} = this.props;
 
         return (
-            <Template>
+            <Template bgColor={theme.secondaryBackgroundColor}>
                 <Toolbar
                     leftElement="arrow-back"
                     rightElement={
                         <IconToggle
-                            color={theme.headerTextColor}
+                            color={theme.primaryTextColor}
                             onPress={() => this.showDialog('showSelectBackupSource')}
                             name="add"/>
                     }
@@ -239,7 +239,7 @@ ${translations.showBackupAlertDescription2}`,
 
                 {!loading ?
                     <View style={container}>
-                        <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
+                        <ScrollView>
                             {backups.length ?
                                 backups.map(name => (
                                     <ListItem
@@ -247,14 +247,22 @@ ${translations.showBackupAlertDescription2}`,
                                         dense
                                         key={name}
                                         onPress={() => this.showDialog('showBackupAlert', name)}
-                                        style={{container: {height: 50}}}
+                                        style={{
+                                            container: {
+                                                ...shadow, ...listRow,
+                                                width: width - 20,
+                                                backgroundColor: theme.primaryBackgroundColor
+                                            }
+                                        }}
                                         rightElement={
                                             <View style={row}>
                                                 <IconToggle
                                                     onPress={() => this.shareBackup(name)}
+                                                    color={theme.undoIconColor}
                                                     name="share"/>
                                                 <IconToggle
                                                     onPress={() => this.showDialog('showConfirmDelete', name)}
+                                                    color={theme.warningColor}
                                                     name="delete"/>
                                             </View>
                                         }
@@ -263,7 +271,7 @@ ${translations.showBackupAlertDescription2}`,
                                         }}
                                     />
                                 )) :
-                                <Text style={[empty, {color: theme.textColor}]}>
+                                <Text style={[empty, {color: theme.thirdTextColor}]}>
                                     {translations.emptyList}
                                 </Text>
                             }

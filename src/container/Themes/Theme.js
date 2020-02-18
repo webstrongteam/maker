@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import {Button, IconToggle, Toolbar} from 'react-native-material-ui';
-import {fromHsv} from 'react-native-color-picker'
-import ColorPicker from '../../components/UI/ColorPicker/ColorPicker';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
+import {ColorWheel} from 'react-native-color-wheel';
+import colorsys from 'colorsys';
 import {Text, TouchableOpacity, View} from "react-native";
-import {generateDialogObject, checkValid} from "../../shared/utility";
+import {generateDialogObject, checkValid, width} from "../../shared/utility";
 import {BannerAd} from "../../../adsAPI";
+import Modal from 'react-native-modalbox';
 import styles from './Theme.styles';
 
 import {connect} from 'react-redux';
@@ -19,10 +20,9 @@ class Theme extends Component {
         newThemeName: '',
         defaultName: this.props.translations.defaultName,
         names: [
-            'id', 'name', 'Primary color', 'Primary background color', 'Secondary background color', 'Text color', 'Header text color',
-            'Bottom navigation color', 'Action button color', 'Action button icon color', 'Overdue color',
-            'Done button color', 'Done text button color', 'Undo button color', 'Undo text button color',
-            'None color', 'None text color', 'Low color', 'Low text color', 'Medium color', 'Medium text color', 'High color', 'High text color'
+            'id', 'name', 'Primary color', 'Primary background color', 'Secondary background color',
+            'Primary text color', 'Secondary text color', 'Third text color', 'Warning color',
+            'Done icon color', 'Undo icon color', 'Low color', 'Medium color', 'High color'
         ],
 
         showColorPicker: false,
@@ -138,6 +138,11 @@ class Theme extends Component {
         this.props.onDeleteTheme(customTheme.id);
     };
 
+    checkValid = (name = this.state.customTheme.name) => {
+        const {defaultName, control} = this.state;
+        return checkValid(control, name) && name !== defaultName;
+    };
+
     configColorPicker = (colorPickerTitle, selectedColor) => {
         this.setState({colorPickerTitle, selectedColor, showColorPicker: true});
     };
@@ -145,14 +150,9 @@ class Theme extends Component {
     onSaveColor = () => {
         const {selectedColor, actualColor} = this.state;
         const customTheme = this.state.customTheme;
-        customTheme[selectedColor] = actualColor;
+        customTheme[selectedColor] = colorsys.hsvToHex(actualColor);
 
         this.setState({customTheme, showColorPicker: false});
-    };
-
-    checkValid = (name = this.state.customTheme.name) => {
-        const {defaultName, control} = this.state;
-        return checkValid(control, name) && name !== defaultName;
     };
 
     saveTheme = () => {
@@ -177,12 +177,12 @@ class Theme extends Component {
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             {this.checkValid() &&
                             <IconToggle name="save"
-                                        color={theme.headerTextColor}
+                                        color={theme.primaryTextColor}
                                         onPress={this.saveTheme}/>
                             }
                             {customTheme.id !== false &&
                             <IconToggle name="delete"
-                                        color={theme.headerTextColor}
+                                        color={theme.primaryTextColor}
                                         onPress={() => this.showDialog('delete')}/>
                             }
                         </View>
@@ -196,7 +196,7 @@ class Theme extends Component {
                         !loading ?
                             <TouchableOpacity onPress={() => this.showDialog('changeName')}>
                                 <Text style={{
-                                    color: theme.headerTextColor,
+                                    color: theme.primaryTextColor,
                                     fontWeight: 'bold',
                                     fontSize: 18
                                 }}>
@@ -209,88 +209,111 @@ class Theme extends Component {
                     }
                 />
 
-                <ColorPicker
-                    show={showColorPicker}
-                    title={colorPickerTitle}
-                    color={actualColor}
-                    defaultColor={customTheme[selectedColor]}
-                    changeColor={(color) => this.setState({actualColor: fromHsv(color)})}
-                    save={this.onSaveColor}
-                    cancel={() => this.setState({showColorPicker: false})}
-                />
+                <Modal
+                    isOpen={showColorPicker}
+                    swipeToClose={showColorPicker}
+                    onClosed={() => this.setState({showColorPicker: false})}>
+                    <View style={{flex: 1, padding: 45}}>
+                        <View style={{flex: 1}}>
+                            <Text style={{fontSize: 21, textAlign: 'center'}}>{colorPickerTitle}</Text>
+                        </View>
+                        <ColorWheel
+                            style={{flex: 5}}
+                            initialColor={customTheme[selectedColor]}
+                            onColorChangeComplete={(color) => this.setState({actualColor: color})}
+                        />
+                        <View style={{
+                            flex: 2,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between'
+                        }}>
+                            <Button raised icon="done" text={translations.save}
+                                    onPress={this.onSaveColor}
+                                    style={{
+                                        container: {backgroundColor: theme.doneIconColor},
+                                        text: {color: theme.primaryTextColor}
+                                    }}
+                            />
+                            <Button raised accent icon="clear" text={translations.cancel}
+                                    onPress={() => this.setState({showColorPicker: false})}
+                                    style={{
+                                        container: {backgroundColor: theme.warningColor},
+                                        text: {color: theme.primaryTextColor}
+                                    }}
+                            />
+                        </View>
+                    </View>
+                </Modal>
 
                 {!loading ?
-                    <React.Fragment>
-                        <SettingsList backgroundColor={theme.primaryBackgroundColor}
-                                      borderColor={theme.secondaryBackgroundColor}
-                                      defaultItemSize={50}>
-                            <SettingsList.Item
-                                hasNavArrow={false}
-                                title={translations.main}
-                                titleStyle={{color: '#009688', fontWeight: '500'}}
-                                itemWidth={50}
-                                borderHide={'Both'}
-                            />
-                            {Object.keys(customTheme).map((key, index) => {
-                                if (key === 'id' || key === 'name') return null;
-                                const themeList = [];
-                                if (key === 'bottomNavigationColor') {
-                                    themeList.push(<SettingsList.Header headerStyle={{marginTop: -5}}/>);
-                                    themeList.push(
-                                        <SettingsList.Item
-                                            hasNavArrow={false}
-                                            title={translations.elements}
-                                            titleStyle={styles.titleStyle}
-                                            itemWidth={70}
-                                            borderHide={'Both'}
-                                        />
-                                    );
-                                } else if (key === 'doneButtonColor') {
-                                    themeList.push(<SettingsList.Header headerStyle={{marginTop: -5}}/>);
-                                    themeList.push(
-                                        <SettingsList.Item
-                                            hasNavArrow={false}
-                                            title={translations.buttons}
-                                            titleStyle={styles.titleStyle}
-                                            itemWidth={70}
-                                            borderHide={'Both'}
-                                        />
-                                    );
-                                } else if (key === 'noneColor') {
-                                    themeList.push(<SettingsList.Header headerStyle={{marginTop: -5}}/>);
-                                    themeList.push(
-                                        <SettingsList.Item
-                                            hasNavArrow={false}
-                                            title={translations.priorities}
-                                            titleStyle={styles.titleStyle}
-                                            itemWidth={70}
-                                            borderHide={'Both'}
-                                        />
-                                    );
-                                }
+                    <SettingsList backgroundColor={theme.primaryBackgroundColor}
+                                  borderColor={theme.secondaryBackgroundColor}
+                                  defaultItemSize={50}>
+                        <SettingsList.Item
+                            hasNavArrow={false}
+                            title={translations.main}
+                            titleStyle={{color: '#009688', fontWeight: '500'}}
+                            itemWidth={50}
+                            borderHide={'Both'}
+                        />
+                        {Object.keys(customTheme).map((key, index) => {
+                            if (key === 'id' || key === 'name') return null;
+                            const themeList = [];
+                            if (key === 'bottomNavigationColor') {
+                                themeList.push(<SettingsList.Header headerStyle={{marginTop: -5}}/>);
                                 themeList.push(
                                     <SettingsList.Item
+                                        hasNavArrow={false}
+                                        title={translations.elements}
+                                        titleStyle={styles.titleStyle}
                                         itemWidth={70}
-                                        titleStyle={{color: theme.textColor, fontSize: 16}}
-                                        title={names[index]}
-                                        onPress={() => this.configColorPicker(
-                                            names[index], key
-                                        )}
-                                        arrowIcon={<View
-                                            style={[
-                                                styles.colorPreview,
-                                                {
-                                                    borderColor: theme.textColor,
-                                                    backgroundColor: customTheme[key]
-                                                }]
-                                            }
-                                        />}
+                                        borderHide={'Both'}
                                     />
                                 );
-                                return themeList;
-                            })}
-                        </SettingsList>
-                    </React.Fragment> : <Spinner/>
+                            } else if (key === 'doneButtonColor') {
+                                themeList.push(<SettingsList.Header headerStyle={{marginTop: -5}}/>);
+                                themeList.push(
+                                    <SettingsList.Item
+                                        hasNavArrow={false}
+                                        title={translations.buttons}
+                                        titleStyle={styles.titleStyle}
+                                        itemWidth={70}
+                                        borderHide={'Both'}
+                                    />
+                                );
+                            } else if (key === 'noneColor') {
+                                themeList.push(<SettingsList.Header headerStyle={{marginTop: -5}}/>);
+                                themeList.push(
+                                    <SettingsList.Item
+                                        hasNavArrow={false}
+                                        title={translations.priorities}
+                                        titleStyle={styles.titleStyle}
+                                        itemWidth={70}
+                                        borderHide={'Both'}
+                                    />
+                                );
+                            }
+                            themeList.push(
+                                <SettingsList.Item
+                                    itemWidth={70}
+                                    titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
+                                    title={names[index]}
+                                    onPress={() => this.configColorPicker(names[index], key)}
+                                    arrowIcon={<View
+                                        style={[
+                                            styles.colorPreview,
+                                            {
+                                                borderColor: theme.thirdTextColor,
+                                                backgroundColor: customTheme[key]
+                                            }]
+                                        }
+                                    />}
+                                />
+                            );
+                            return themeList;
+                        })}
+                    </SettingsList> : <Spinner/>
                 }
                 <BannerAd/>
             </Template>

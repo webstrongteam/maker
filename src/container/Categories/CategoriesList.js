@@ -1,7 +1,8 @@
 import React, {PureComponent} from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
-import {Icon, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
-import {container, fullWidth} from '../../shared/styles';
+import {ScrollView, View} from 'react-native';
+import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
+import {container, listRow, listContainer, shadow} from '../../shared/styles';
+import {width} from '../../shared/utility';
 import ConfigCategory from './ConfigCategory/ConfigCategory';
 import Template from '../Template/Template';
 import {BannerAd} from '../../../adsAPI';
@@ -49,17 +50,15 @@ class CategoriesList extends PureComponent {
         const {categories, navigation, theme, translations} = this.props;
 
         return (
-            <Template>
+            <Template bgColor={theme.secondaryBackgroundColor}>
                 <Toolbar
                     leftElement="arrow-back"
                     rightElement={
                         <IconToggle
-                            color={theme.headerTextColor}
+                            color={theme.primaryTextColor}
                             onPress={() => this.toggleModalHandler()} name="add"/>
                     }
-                    onLeftElementPress={() => {
-                        navigation.goBack();
-                    }}
+                    onLeftElementPress={() => navigation.goBack()}
                     centerElement={translations.title}
                 />
 
@@ -71,29 +70,30 @@ class CategoriesList extends PureComponent {
 
                 {ready &&
                 <View style={container}>
-                    <ScrollView style={[fullWidth, {backgroundColor: theme.primaryBackgroundColor}]}>
+                    <ScrollView>
                         {categories.map(cate => (
                             <ListItem
-                                divider
-                                dense
                                 key={cate.id}
-                                onPress={() => {
-                                    this.toggleModalHandler(cate.id);
+                                style={{
+                                    container: {
+                                        ...shadow, ...listRow,
+                                        width: width - 20,
+                                        backgroundColor: theme.primaryBackgroundColor
+                                    }
                                 }}
-                                leftElement={
-                                    <TouchableOpacity onPress={() => this.toggleModalHandler(cate.id)}>
-                                        <Icon name="edit"/>
-                                    </TouchableOpacity>
-                                }
                                 rightElement={
                                     cate.id !== 0 ?
-                                        <IconToggle onPress={() => this.props.onRemoveCategory(cate.id)}
-                                                    name="remove"/> : null
+                                        <IconToggle
+                                            onPress={() => this.props.onRemoveCategory(cate.id)}
+                                            name="delete"
+                                            color={theme.warningColor}
+                                        /> : null
                                 }
                                 centerElement={{
                                     primaryText:
                                         `${cate.name} (${taskPerCategory[cate.name] ? taskPerCategory[cate.name] : 0})`,
                                 }}
+                                onPress={() => this.toggleModalHandler(cate.id)}
                             />
                         ))}
                     </ScrollView>

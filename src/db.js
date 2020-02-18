@@ -22,9 +22,9 @@ export const initDatabase = (callback) => {
         // tx.executeSql(
         //     'DROP TABLE IF EXISTS tasks;'
         // );
-        // tx.executeSql(
-        //     'DROP TABLE IF EXISTS settings;'
-        // );
+        tx.executeSql(
+            'DROP TABLE IF EXISTS themes;'
+        );
         tx.executeSql(
             'create table if not exists categories (id integer primary key not null, name text);'
         );
@@ -41,7 +41,7 @@ export const initDatabase = (callback) => {
             'create table if not exists quickly_tasks (id integer primary key not null, name text, list_id integer not null, order_nr integer DEFAULT 0);'
         );
         tx.executeSql(
-            'create table if not exists themes (id integer primary key not null, name text, primaryColor text, primaryBackgroundColor text, secondaryBackgroundColor text, textColor text, headerTextColor text, bottomNavigationColor text, actionButtonColor text, actionButtonIconColor text, overdueColor text, doneButtonColor text, doneButtonTextColor text, undoButtonColor text, undoButtonTextColor text, noneColor text, lowColor text, mediumColor text, highColor text);'
+            'create table if not exists themes (id integer primary key not null, name text, primaryColor text, primaryBackgroundColor text, secondaryBackgroundColor text, primaryTextColor text, secondaryTextColor text, thirdTextColor text, warningColor text, doneIconColor text, undoIconColor text, lowColor text, mediumColor text, highColor text);'
         );
         tx.executeSql(
             'create table if not exists profile (id integer primary key not null, name text, avatar text, endedTask integer);'
@@ -53,10 +53,10 @@ export const initDatabase = (callback) => {
             "INSERT OR IGNORE INTO categories (id, name) values (0, 'Default');"
         );
         tx.executeSql(
-            "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, textColor, headerTextColor, bottomNavigationColor, actionButtonColor, actionButtonIconColor, overdueColor, doneButtonColor, doneButtonTextColor, undoButtonColor, undoButtonTextColor, noneColor, lowColor, mediumColor, highColor) values (0, 'Default', '#f4511e', '#ffffff', '#e5e5e5', '#666', '#ffffff', '#ffffff', '#f4133f', '#ffffff', '#b84242', '#26b596', '#ffffff', '#5bc0de', '#ffffff', '#ddd', '#26b596', '#cec825', '#f4511e');"
+            "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, primaryTextColor, secondaryTextColor, thirdTextColor, warningColor, doneIconColor, undoIconColor, lowColor, mediumColor, highColor) values (0, 'Default', '#f4511e', '#ffffff', '#e5e5e5', '#ffffff', '#000000', '#5e5e5e', '#d9534f', '#26b596', '#5bc0de', '#26b596', '#cec825', '#f4511e');"
         );
         tx.executeSql(
-            "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, textColor, headerTextColor, bottomNavigationColor, actionButtonColor, actionButtonIconColor, overdueColor, doneButtonColor, doneButtonTextColor, undoButtonColor, undoButtonTextColor, noneColor, lowColor, mediumColor, highColor) values (1, 'Dark', '#d6471a', '#3b3b3b', '#262626', '#d9d9d9', '#d9d9d9', '#262626', '#a60d2b', '#d9d9d9', '#fc5363', '#197863', '#d9d9d9', '#d6471a', '#d9d9d9', '#3b3b3b', '#146151', '#2454a3', '#871f29');"
+            "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, primaryTextColor, secondaryTextColor, thirdTextColor, warningColor, doneIconColor, undoIconColor, lowColor, mediumColor, highColor) values (0, 'Default', '#f4511e', '#ffffff', '#e5e5e5', '#ffffff', '#000000', '#5e5e5e', '#d9534f', '#26b596', '#5bc0de', '#26b596', '#cec825', '#f4511e');"
         );
         tx.executeSql(
             "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker user', '', 0);"
@@ -101,13 +101,13 @@ export const initTheme = (callback) => {
                             fontFamily: 'Ubuntu',
                             palette: {
                                 primaryColor: theme.primaryColor,
-                                accentColor: theme.actionButtonColor,
-                                primaryTextColor: theme.textColor,
-                                secondaryTextColor: theme.textColor,
+                                accentColor: theme.warningColor,
+                                primaryTextColor: theme.thirdTextColor,
+                                secondaryTextColor: theme.thirdTextColor,
                                 canvasColor: theme.secondaryBackgroundColor,
-                                alternateTextColor: theme.headerTextColor,
-                                disabledColor: theme.textColor,
-                                pickerHeaderColor: theme.textColor
+                                alternateTextColor: theme.primaryTextColor,
+                                disabledColor: theme.primaryTextColor,
+                                pickerHeaderColor: theme.primaryTextColor
                             }
                         },
                         ready: true

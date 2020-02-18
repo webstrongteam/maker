@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {Text, TouchableOpacity, View, Dimensions} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {IconToggle, Icon, Toolbar} from 'react-native-material-ui';
-import {container, empty, shadow} from '../../../shared/styles';
-import {generateDialogObject, valid} from '../../../shared/utility';
+import {container, empty, shadow, listContainer, listRow} from '../../../shared/styles';
+import {generateDialogObject, width} from '../../../shared/utility';
 import ConfigQuicklyTask from '../ConfigQuicklyTask/ConfigQuicklyTask';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Template from '../../Template/Template';
@@ -12,8 +12,6 @@ import styles from './QuicklyTaskList.styles';
 
 import {connect} from 'react-redux';
 import * as actions from "../../../store/actions";
-
-const width = Dimensions.get('window').width;
 
 class QuicklyTaskList extends Component {
     state = {
@@ -157,10 +155,10 @@ class QuicklyTaskList extends Component {
                     rightElement={
                         <React.Fragment>
                             <IconToggle
-                                color={theme.headerTextColor}
+                                color={theme.primaryTextColor}
                                 onPress={() => this.showDialog()} name="edit"/>
                             <IconToggle
-                                color={theme.headerTextColor}
+                                color={theme.primaryTextColor}
                                 name="add"
                                 onPress={() => this.toggleModalHandler()}/>
                         </React.Fragment>
@@ -173,7 +171,7 @@ class QuicklyTaskList extends Component {
                         list.name ?
                             <TouchableOpacity onPress={() => this.showDialog()}>
                                 <Text style={{
-                                    color: theme.headerTextColor,
+                                    color: theme.primaryTextColor,
                                     fontWeight: 'bold',
                                     fontSize: 20
                                 }}>
@@ -210,20 +208,20 @@ class QuicklyTaskList extends Component {
                                 }}
                                 renderRow={row => {
                                     return (
-                                        <TouchableOpacity style={{
-                                            ...shadow,
-                                            ...styles.taskRow,
-                                            width: width - 20,
-                                        }} onPress={() => this.toggleModalHandler(row.id)}>
-                                            <View
-                                                style={styles.taskContainer}
-                                            >
+                                        <TouchableOpacity
+                                            style={{...shadow, ...listRow, width: width - 20}}
+                                            onPress={() => this.toggleModalHandler(row.id)}>
+                                            <View style={listContainer}>
                                                 <View style={{width: '75%', marginTop: 5, marginBottom: 5}}>
-                                                    <Text numberOfLines={1} style={styles.taskName}>{row.name}</Text>
+                                                    <Text
+                                                        numberOfLines={1}
+                                                        style={{...styles.taskName, color: theme.secondaryTextColor}}>
+                                                        {row.name}
+                                                    </Text>
                                                 </View>
                                                 <View style={styles.taskIconContainer}>
                                                     <IconToggle
-                                                        color={theme.doneButtonColor}
+                                                        color={theme.doneIconColor}
                                                         onPress={() => this.removeTask(row)}
                                                         name="done"/>
                                                     <Icon name="dehaze"/>
@@ -233,7 +231,7 @@ class QuicklyTaskList extends Component {
                                     )
                                 }}
                             /> :
-                            <Text style={[empty, {color: theme.textColor}]}>
+                            <Text style={[empty, {color: theme.thirdTextColor}]}>
                                 {translations.emptyList}
                             </Text>
                         }
