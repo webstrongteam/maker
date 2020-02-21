@@ -74,7 +74,8 @@ class OtherRepeat extends Component {
                                     onPress={() => this.props.onSelectTime(index + '')}
                                     style={{
                                         contentViewContainer: {
-                                            backgroundColor: Platform.OS === 'ios' ? '#fff' : 'transparent'
+                                            backgroundColor: Platform.OS === 'ios' ?
+                                                theme.secondaryBackgroundColor : 'transparent'
                                         },
                                         primaryText: {
                                             color: index + '' === selectedTime + '' ?

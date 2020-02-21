@@ -2,7 +2,7 @@ import React from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {separator} from '../../shared/styles';
 import * as WebBrowser from 'expo-web-browser';
-import Template from '../../container/Template/Template';
+import Template from '../../containers/Template/Template';
 import {Toolbar} from 'react-native-material-ui';
 import {VERSION} from '../../db'
 import styles from './About.styles';
@@ -39,7 +39,7 @@ const about = (props) => {
                     <TouchableOpacity onPress={openWebBrowser}>
                         <Image
                             tintColor={props.theme.secondaryTextColor}
-                            style={styles.github}
+                            style={{...styles.github, borderColor: props.theme.secondaryTextColor}}
                             source={require('../../assets/github.png')}
                         />
                     </TouchableOpacity>

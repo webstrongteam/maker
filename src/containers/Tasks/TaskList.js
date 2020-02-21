@@ -514,18 +514,18 @@ class TaskList extends Component {
                                     <ListItem
                                         divider
                                         dense
-                                        onPress={() => task.finish ? true : navigation.navigate('ConfigTask', {task: task.id})}
+                                        onPress={() => task.finish ? null : navigation.navigate('ConfigTask', {task: task.id})}
                                         style={{
                                             container: [
                                                 shadow,
-                                                {backgroundColor: "#fff"}
+                                                {backgroundColor: theme.primaryBackgroundColor}
                                             ],
                                             leftElementContainer: {
                                                 marginRight: -50
                                             },
                                             primaryText: {
                                                 fontSize: 18,
-                                                color: "#000"
+                                                color: theme.secondaryTextColor
                                             },
                                             secondaryText: {
                                                 fontWeight: '500',
@@ -665,7 +665,7 @@ class TaskList extends Component {
                             icon="add"
                             style={{
                                 container: {backgroundColor: theme.warningColor},
-                                icon: {color: theme.primaryBackgroundColor}
+                                icon: {color: theme.primaryTextColor}
                             }}
                         /> :
                         finished.length ?
@@ -673,7 +673,7 @@ class TaskList extends Component {
                                 hidden={bottomHidden}
                                 style={{
                                     container: {backgroundColor: theme.warningColor},
-                                    icon: {color: theme.primaryBackgroundColor}
+                                    icon: {color: theme.primaryTextColor}
                                 }}
                                 onPress={() => this.showDialog('deleteAll')}
                                 icon="delete-sweep"

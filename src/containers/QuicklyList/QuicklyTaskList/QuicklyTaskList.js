@@ -209,7 +209,12 @@ class QuicklyTaskList extends Component {
                                 renderRow={row => {
                                     return (
                                         <TouchableOpacity
-                                            style={{...shadow, ...listRow, width: width - 20}}
+                                            style={{
+                                                ...shadow,
+                                                ...listRow,
+                                                backgroundColor: theme.primaryBackgroundColor,
+                                                width: width - 20
+                                            }}
                                             onPress={() => this.toggleModalHandler(row.id)}>
                                             <View style={listContainer}>
                                                 <View style={{width: '75%', marginTop: 5, marginBottom: 5}}>

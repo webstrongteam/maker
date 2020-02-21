@@ -3,6 +3,7 @@ import * as SQLite from 'expo-sqlite';
 import {convertNumberToDate} from '../../shared/utility';
 import {configTask, deleteCalendarEvent, deleteLocalNotification} from '../../shared/configTask';
 import moment from 'moment';
+import {call} from "react-native-reanimated";
 
 const db = SQLite.openDatabase('maker.db');
 

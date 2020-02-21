@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ActivityIndicator, NativeModules, View, Platform} from 'react-native';
+import {ActivityIndicator, NativeModules, View} from 'react-native';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 import {getTheme, ThemeContext} from 'react-native-material-ui';
 import {activity} from './src/shared/styles';

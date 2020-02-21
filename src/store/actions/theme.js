@@ -73,8 +73,8 @@ export const saveTheme = (theme) => {
         if (theme.id) {
             db.transaction(
                 tx => {
-                    tx.executeSql("UPDATE themes SET name = ?, primaryColor = ?, primaryBackgroundColor = ?, secondaryBackgroundColor = ?, textColor = ?, headerTextColor = ?, bottomNavigationColor = ?, actionButtonColor = ?, actionButtonIconColor = ?, overdueColor = ?, doneButtonColor = ?, doneButtonTextColor = ?, undoButtonColor = ?, undoButtonTextColor = ?, noneColor = ?, noneTextColor = ?, lowColor = ?, lowTextColor = ?, mediumColor = ?, mediumTextColor = ?, highColor = ?, highTextColor = ? WHERE id = ?;",
-                        [theme.name, theme.primaryColor, theme.primaryBackgroundColor, theme.secondaryBackgroundColor, theme.textColor, theme.headerTextColor, theme.bottomNavigationColor, theme.actionButtonColor, theme.actionButtonIconColor, theme.overdueColor, theme.doneButtonColor, theme.doneButtonTextColor, theme.undoButtonColor, theme.undoButtonTextColor, theme.noneColor, theme.noneTextColor, theme.lowColor, theme.lowTextColor, theme.mediumColor, theme.mediumTextColor, theme.highColor, theme.highTextColor, theme.id], () => {
+                    tx.executeSql("UPDATE themes SET name = ?, primaryColor = ?, primaryBackgroundColor = ?, secondaryBackgroundColor = ?, primaryTextColor = ?, secondaryTextColor = ?, thirdTextColor = ?, warningColor = ?, doneIconColor = ?, undoIconColor = ?, lowColor = ?, mediumColor = ?, highColor = ? WHERE id = ?;",
+                        [theme.name, theme.primaryColor, theme.primaryBackgroundColor, theme.secondaryBackgroundColor, theme.primaryTextColor, theme.secondaryTextColor, theme.thirdTextColor, theme.warningColor, theme.doneIconColor, theme.undoIconColor, theme.lowColor, theme.mediumColor, theme.highColor, theme.id], () => {
                             dispatch(initTheme());
                         });
                 }, (err) => console.log(err)
@@ -82,8 +82,8 @@ export const saveTheme = (theme) => {
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql("INSERT INTO themes (name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, textColor, headerTextColor, bottomNavigationColor, actionButtonColor, actionButtonIconColor, overdueColor, doneButtonColor, doneButtonTextColor, undoButtonColor, undoButtonTextColor, noneColor, noneTextColor, lowColor, lowTextColor, mediumColor, mediumTextColor, highColor, highTextColor) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
-                        [theme.name, theme.primaryColor, theme.primaryBackgroundColor, theme.secondaryBackgroundColor, theme.textColor, theme.headerTextColor, theme.bottomNavigationColor, theme.actionButtonColor, theme.actionButtonIconColor, theme.overdueColor, theme.doneButtonColor, theme.doneButtonTextColor, theme.undoButtonColor, theme.undoButtonTextColor, theme.noneColor, theme.noneTextColor, theme.lowColor, theme.lowTextColor, theme.mediumColor, theme.mediumTextColor, theme.highColor, theme.highTextColor], () => {
+                    tx.executeSql("INSERT INTO themes (name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, primaryTextColor, secondaryTextColor, thirdTextColor, warningColor, doneIconColor, undoIconColor, lowColor, mediumColor, highColor) values (?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                        [theme.name, theme.primaryColor, theme.primaryBackgroundColor, theme.secondaryBackgroundColor, theme.primaryTextColor, theme.secondaryTextColor, theme.thirdTextColor, theme.warningColor, theme.doneIconColor, theme.undoIconColor, theme.lowColor, theme.mediumColor, theme.highColor], () => {
                             dispatch(initThemes());
                         });
                 }, (err) => console.log(err)

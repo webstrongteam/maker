@@ -19,11 +19,6 @@ class Theme extends Component {
         customTheme: {id: false, name: ''},
         newThemeName: '',
         defaultName: this.props.translations.defaultName,
-        names: [
-            'id', 'name', 'Primary color', 'Primary background color', 'Secondary background color',
-            'Primary text color', 'Secondary text color', 'Third text color', 'Warning color',
-            'Done icon color', 'Undo icon color', 'Low color', 'Medium color', 'High color'
-        ],
 
         showColorPicker: false,
         colorPickerTitle: '',
@@ -93,14 +88,14 @@ class Theme extends Component {
                 }
             );
         } else if (action === 'changeName') {
-            const {newThemeName, control} = this.state;
+            const {newThemeName, defaultName, control} = this.state;
 
             dialog = generateDialogObject(
                 translations.changeNameTitle,
                 {
                     elementConfig: control,
                     focus: true,
-                    value: newThemeName,
+                    value: newThemeName === defaultName ? '' : newThemeName,
                     onChange: (value, control) => {
                         this.setState({newThemeName: value, control}, () => {
                             this.showDialog(action);
@@ -148,8 +143,7 @@ class Theme extends Component {
     };
 
     onSaveColor = () => {
-        const {selectedColor, actualColor} = this.state;
-        const customTheme = this.state.customTheme;
+        const {selectedColor, actualColor, customTheme} = this.state;
         customTheme[selectedColor] = colorsys.hsvToHex(actualColor);
 
         this.setState({customTheme, showColorPicker: false});
@@ -164,8 +158,8 @@ class Theme extends Component {
 
     render() {
         const {
-            customTheme, loading, names, showColorPicker, selectedColor,
-            colorPickerTitle, actualColor
+            customTheme, loading, showColorPicker, selectedColor,
+            colorPickerTitle
         } = this.state;
         const {navigation, theme, translations} = this.props;
 
@@ -210,12 +204,18 @@ class Theme extends Component {
                 />
 
                 <Modal
+                    style={{backgroundColor: theme.secondaryBackgroundColor}}
                     isOpen={showColorPicker}
                     swipeToClose={showColorPicker}
                     onClosed={() => this.setState({showColorPicker: false})}>
                     <View style={{flex: 1, padding: 45}}>
                         <View style={{flex: 1}}>
-                            <Text style={{fontSize: 21, textAlign: 'center'}}>{colorPickerTitle}</Text>
+                            <Text style={{
+                                color: theme.secondaryTextColor,
+                                fontSize: 21, textAlign: 'center'
+                            }}>
+                                {colorPickerTitle}
+                            </Text>
                         </View>
                         <ColorWheel
                             style={{flex: 5}}
@@ -260,29 +260,29 @@ class Theme extends Component {
                         {Object.keys(customTheme).map((key, index) => {
                             if (key === 'id' || key === 'name') return null;
                             const themeList = [];
-                            if (key === 'bottomNavigationColor') {
+                            if (key === 'primaryTextColor') {
                                 themeList.push(<SettingsList.Header headerStyle={{marginTop: -5}}/>);
                                 themeList.push(
                                     <SettingsList.Item
                                         hasNavArrow={false}
-                                        title={translations.elements}
+                                        title={translations.fonts}
                                         titleStyle={styles.titleStyle}
                                         itemWidth={70}
                                         borderHide={'Both'}
                                     />
                                 );
-                            } else if (key === 'doneButtonColor') {
+                            } else if (key === 'doneIconColor') {
                                 themeList.push(<SettingsList.Header headerStyle={{marginTop: -5}}/>);
                                 themeList.push(
                                     <SettingsList.Item
                                         hasNavArrow={false}
-                                        title={translations.buttons}
+                                        title={translations.icons}
                                         titleStyle={styles.titleStyle}
                                         itemWidth={70}
                                         borderHide={'Both'}
                                     />
                                 );
-                            } else if (key === 'noneColor') {
+                            } else if (key === 'lowColor') {
                                 themeList.push(<SettingsList.Header headerStyle={{marginTop: -5}}/>);
                                 themeList.push(
                                     <SettingsList.Item
@@ -298,8 +298,8 @@ class Theme extends Component {
                                 <SettingsList.Item
                                     itemWidth={70}
                                     titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
-                                    title={names[index]}
-                                    onPress={() => this.configColorPicker(names[index], key)}
+                                    title={translations[key]}
+                                    onPress={() => this.configColorPicker(translations[key], key)}
                                     arrowIcon={<View
                                         style={[
                                             styles.colorPreview,

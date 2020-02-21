@@ -75,7 +75,7 @@ class Themes extends PureComponent {
                 />
 
                 {!loading ?
-                    <SettingsList backgroundColor={actualTheme.primaryBackgroundColor}
+                    <SettingsList backgroundColor={actualTheme.secondaryBackgroundColor}
                                   borderColor='#d6d5d9' defaultItemSize={50}>
                         <SettingsList.Item
                             hasNavArrow={false}

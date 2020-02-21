@@ -42,6 +42,7 @@ export default StyleSheet.create({
         borderRadius: 65,
         marginTop: 10,
         marginBottom: 10,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        borderWidth: 2
     }
 });

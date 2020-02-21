@@ -321,7 +321,7 @@ class ConfigTask extends Component {
         }
 
         return (
-            <Template>
+            <Template bgColor={theme.secondaryBackgroundColor}>
                 <Toolbar
                     leftElement="arrow-back"
                     centerElement={
@@ -337,11 +337,11 @@ class ConfigTask extends Component {
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             {this.checkChanges() &&
                             <IconToggle name="save"
-                                        color={theme.primaryBackgroundColor}
+                                        color={theme.primaryTextColor}
                                         onPress={this.saveTask}/>
                             }
                             {editTask && <IconToggle name="delete"
-                                                     color={theme.primaryBackgroundColor}
+                                                     color={theme.primaryTextColor}
                                                      onPress={() => this.showDialog('delete')}/>
                             }
                         </View>
@@ -461,8 +461,9 @@ class ConfigTask extends Component {
                                 <Subheader text={translations.repeat}/>
                                 <View style={styles.select}>
                                     <TouchableOpacity onPress={() => this.showDialog('repeat')}>
-                                        <Text
-                                            style={styles.selectedOption}>
+                                        <Text style={
+                                            {...styles.selectedOption, color: theme.secondaryTextColor}
+                                        }>
                                             {+task.repeat ?
                                                 otherOption :
                                                 convertRepeatNames(task.repeat, translations)
@@ -476,15 +477,22 @@ class ConfigTask extends Component {
                             <Subheader text={translations.category}/>
                             <View style={styles.select}>
                                 <TouchableOpacity onPress={() => this.showDialog('category')}>
-                                    <Text style={styles.selectedOption}>{task.category}</Text>
+                                    <Text style={
+                                        {...styles.selectedOption, color: theme.secondaryTextColor}
+                                    }>
+                                        {task.category}
+                                    </Text>
                                 </TouchableOpacity>
                                 <IconToggle onPress={() => this.toggleConfigCategory()} name="playlist-add"/>
                             </View>
                             <Subheader text={translations.priority}/>
                             <View style={styles.select}>
                                 <TouchableOpacity onPress={() => this.showDialog('priority')}>
-                                    <Text
-                                        style={styles.selectedOption}>{convertPriorityNames(task.priority, translations)}</Text>
+                                    <Text style={
+                                        {...styles.selectedOption, color: theme.secondaryTextColor}
+                                    }>
+                                        {convertPriorityNames(task.priority, translations)}
+                                    </Text>
                                 </TouchableOpacity>
                             </View>
                         </View>

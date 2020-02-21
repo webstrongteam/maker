@@ -1,5 +1,6 @@
 import React from "react";
 import {Platform, TouchableWithoutFeedback, View, Keyboard} from 'react-native';
+import {BlurView} from 'expo-blur';
 import Dialog from "react-native-dialog";
 import {ListItem} from "react-native-material-ui";
 import Input from "../Input/Input";
@@ -16,9 +17,14 @@ const dialog = (props) => {
     }
 };
 
+const blur = () => (
+    <BlurView tint="light" intensity={50} style={{backgroundColor: props.theme.secondaryBackgroundColor}}/>
+);
+
 const defaultDialog = (props) => (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Dialog.Container
+            blurComponentIOS={blur}
             contentStyle={{backgroundColor: props.theme.secondaryBackgroundColor}}
             visible={props.showModal}>
             {props.title &&
@@ -28,15 +34,15 @@ const defaultDialog = (props) => (
             </Dialog.Title>
             }
 
-        {props.body ?
-            <Dialog.Description
-                style={{color: props.theme.thirdTextColor}}>
-                {props.body}
-            </Dialog.Description> :
-            <View>
-                {props.children ? props.children : null}
-            </View>
-        }
+            {props.body ?
+                <Dialog.Description
+                    style={{color: props.theme.thirdTextColor}}>
+                    {props.body}
+                </Dialog.Description> :
+                <View>
+                    {props.children ? props.children : null}
+                </View>
+            }
 
             {props.buttons &&
             props.buttons.map(button => (
@@ -53,6 +59,7 @@ const defaultDialog = (props) => (
 
 const selectDialog = (props) => (
     <Dialog.Container
+        blurComponentIOS={blur}
         contentStyle={{backgroundColor: props.theme.secondaryBackgroundColor}}
         visible={props.showModal}>
         {props.title &&
@@ -72,7 +79,8 @@ const selectDialog = (props) => (
                     onPress={() => option.onClick(option.value)}
                     style={{
                         contentViewContainer: {
-                            backgroundColor: Platform.OS === 'ios' ? '#fff' : 'transparent'
+                            backgroundColor: Platform.OS === 'ios' ?
+                                props.theme.secondaryBackgroundColor : 'transparent'
                         },
                         primaryText: {
                             color: option.value === props.selectedValue ?
@@ -103,6 +111,7 @@ const selectDialog = (props) => (
 const inputDialog = (props) => (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Dialog.Container
+            blurComponentIOS={blur}
             contentStyle={{backgroundColor: props.theme.secondaryBackgroundColor}}
             visible={props.showModal}>
             {props.title &&

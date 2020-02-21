@@ -67,7 +67,7 @@ class QuicklyList extends Component {
         }
     };
 
-    showDialog = (list_id, list_name) => {
+    showDialog = (list_id) => {
         const {translations} = this.props;
 
         const dialog = generateDialogObject(
@@ -108,7 +108,7 @@ class QuicklyList extends Component {
                             style={{
                                 container: [
                                     shadow,
-                                    {backgroundColor: "#fff"}
+                                    {backgroundColor: theme.primaryBackgroundColor}
                                 ],
                                 primaryText: {
                                     fontSize: 18,
