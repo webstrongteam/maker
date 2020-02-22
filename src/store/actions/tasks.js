@@ -1,9 +1,8 @@
 import * as actionTypes from './actionTypes';
 import * as SQLite from 'expo-sqlite';
-import {convertNumberToDate} from '../../shared/utility';
+import {convertNumberToDate, setCategories} from '../../shared/utility';
 import {configTask, deleteCalendarEvent, deleteLocalNotification} from '../../shared/configTask';
 import moment from 'moment';
-import {call} from "react-native-reanimated";
 
 const db = SQLite.openDatabase('maker.db');
 
@@ -29,35 +28,6 @@ export const onInitFinished = (tasks) => {
     }
 };
 
-export const initToDo = (callback = () => null) => {
-    let tasks;
-    return dispatch => {
-        db.transaction(
-            tx => {
-                tx.executeSql('select * from tasks', [], (_, {rows}) => {
-                    tasks = rows._array;
-                });
-                tx.executeSql('select * from finished', [], (_, {rows}) => {
-                    callback(tasks, rows._array);
-                    dispatch(onInitToDo(tasks, rows._array));
-                });
-            }, (err) => console.log(err)
-        );
-    };
-};
-
-export const initTasks = () => {
-    return dispatch => {
-        db.transaction(
-            tx => {
-                tx.executeSql('select * from tasks', [], (_, {rows}) => {
-                    dispatch(onInitTasks(rows._array));
-                });
-            }, (err) => console.log(err)
-        );
-    };
-};
-
 export const initTask = (id, callback = () => null) => {
     return () => {
         db.transaction(
@@ -70,12 +40,58 @@ export const initTask = (id, callback = () => null) => {
     };
 };
 
-export const initFinished = () => {
+export const initToDo = (callback = () => null) => {
+    let tasks;
+    let categories;
     return dispatch => {
         db.transaction(
             tx => {
-                tx.executeSql('select * from finished', [], (_, {rows}) => {
-                    dispatch(onInitFinished(rows._array));
+                tx.executeSql('select * from categories', [], (_, {rows}) => {
+                    categories = rows._array;
+                });
+                tx.executeSql('select * from tasks', [], (_, {rows}) => {
+                    tasks = rows._array;
+                });
+                tx.executeSql('select * from finished', [], async (_, {rows}) => {
+                    tasks = await setCategories(tasks, categories);
+                    const finished = await setCategories(rows._array, categories);
+
+                    callback(tasks, finished);
+                    dispatch(onInitToDo(tasks, finished));
+                });
+            }, (err) => console.log(err)
+        );
+    };
+};
+
+export const initTasks = () => {
+    let categories;
+    return dispatch => {
+        db.transaction(
+            tx => {
+                tx.executeSql('select * from categories', [], (_, {rows}) => {
+                    categories = rows._array;
+                });
+                tx.executeSql('select * from tasks', [], async (_, {rows}) => {
+                    const tasks = await setCategories(rows._array, categories);
+                    dispatch(onInitTasks(tasks));
+                });
+            }, (err) => console.log(err)
+        );
+    };
+};
+
+export const initFinished = () => {
+    let categories;
+    return dispatch => {
+        db.transaction(
+            tx => {
+                tx.executeSql('select * from categories', [], (_, {rows}) => {
+                    categories = rows._array;
+                });
+                tx.executeSql('select * from finished', [], async (_, {rows}) => {
+                    const tasks = await setCategories(rows._array, categories);
+                    dispatch(onInitFinished(tasks));
                 });
             }, (err) => console.log(err)
         );
@@ -96,7 +112,7 @@ export const saveTask = (task, callback = () => null) => {
                                        repeat          = ?,
                                        event_id        = ?,
                                        notification_id = ?
-                                   where id = ?;`, [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.notification_id, task.id], () => {
+                                   where id = ?;`, [task.name, task.description, task.date, task.category.id, task.priority, task.repeat, task.event_id, task.notification_id, task.id], () => {
                         callback();
                         dispatch(initTasks());
                     });
@@ -105,7 +121,7 @@ export const saveTask = (task, callback = () => null) => {
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat, event_id, notification_id) values (?,?,?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat, task.event_id, task.notification_id], () => {
+                    tx.executeSql('insert into tasks (name, description, date, category, priority, repeat, event_id, notification_id) values (?,?,?,?,?,?,?,?)', [task.name, task.description, task.date, task.category.id, task.priority, task.repeat, task.event_id, task.notification_id], () => {
                         callback();
                         dispatch(initTasks(callback));
                     });
@@ -149,7 +165,7 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
             db.transaction(
                 tx => {
                     tx.executeSql('delete from tasks where id = ?', [task.id]);
-                    tx.executeSql('insert into finished (name, description, date, category, priority, repeat, finish) values (?,?,?,?,?,?,1)', [task.name, task.description, task.date, task.category, task.priority, task.repeat], () => {
+                    tx.executeSql('insert into finished (name, description, date, category, priority, repeat, finish) values (?,?,?,?,?,?,1)', [task.name, task.description, task.date, task.category.id, task.priority, task.repeat], () => {
                         if (task.event_id !== false) {
                             deleteCalendarEvent(task.event_id);
                         }
@@ -180,7 +196,7 @@ export const undoTask = (task) => {
         db.transaction(
             tx => {
                 tx.executeSql('delete from finished where id = ?', [task.id]);
-                tx.executeSql('insert into tasks (name, description, date, category, priority, repeat) values (?,?,?,?,?,?)', [task.name, task.description, task.date, task.category, task.priority, task.repeat], () => {
+                tx.executeSql('insert into tasks (name, description, date, category, priority, repeat) values (?,?,?,?,?,?)', [task.name, task.description, task.date, task.category.id, task.priority, task.repeat], () => {
                     dispatch(initToDo());
                 });
             }, (err) => console.log(err)
@@ -209,7 +225,7 @@ export const removeTask = (task, finished = true, callback = () => null) => {
                         if (task.notification_id !== null) {
                             deleteLocalNotification(task.notification_id);
                         }
-                        callback()
+                        callback();
                         dispatch(initTasks());
                     });
                 }, (err) => console.log(err)

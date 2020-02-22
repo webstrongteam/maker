@@ -32,7 +32,7 @@ class ConfigTask extends Component {
             description: '',
             date: '',
             repeat: 'noRepeat',
-            category: '',
+            category: this.props.categories[0],
             priority: 'none',
             event_id: null,
             notification_id: null
@@ -65,15 +65,12 @@ class ConfigTask extends Component {
         const category = this.props.navigation.getParam('category', false);
         if (task !== false) this.initTask(task);
         else {
-            if (category && category !== this.props.translations.all) {
-                this.updateTask('category', category);
-            }
-            const checkExistCategory = this.props.categories.filter(cate => cate.name === this.state.task.category);
-            if (!checkExistCategory.length) {
-                this.updateTask('category', this.props.categories[0].name);
+            const {task} = this.state;
+            if (category && category.name !== this.props.translations.all) {
+                task.category = category;
             }
             this.setState({
-                copyTask: JSON.parse(JSON.stringify(this.state.task)),
+                copyTask: JSON.parse(JSON.stringify(task)),
                 editTask: false, loading: false
             });
         }
@@ -82,6 +79,13 @@ class ConfigTask extends Component {
     initTask = (id) => {
         const {categories, translations} = this.props;
         this.props.onInitTask(id, (task) => {
+            const findCate = categories.find((c => c.id === task.category));
+            if (findCate) {
+                task.category = findCate;
+            } else {
+                task.category = this.props.categories[0];
+            }
+
             let selectedTime = 0;
             let repeatValue = '1';
             let otherOption = `${translations.other}...`;
@@ -91,9 +95,6 @@ class ConfigTask extends Component {
                 repeatValue = task.repeat.substring(1);
                 otherOption = `${translations.other} (${+repeatValue} ${convertNumberToDate(+selectedTime)})`;
             }
-
-            const checkExistCategory = categories.filter(cate => cate.name === task.category);
-            if (!checkExistCategory.length) task.category = categories[0].name;
 
             this.setState({
                 taskCopy: JSON.parse(JSON.stringify(task)),
@@ -185,9 +186,10 @@ class ConfigTask extends Component {
             categories.map(c => {
                 options.push({
                     name: c.name,
-                    value: c.name,
+                    value: c,
                     onClick: (value) => {
-                        this.updateTask('category', value);
+                        task.category = value;
+                        this.setState({task});
                         this.props.onUpdateModal(false);
                     }
                 })
@@ -239,7 +241,7 @@ class ConfigTask extends Component {
 
     toggleConfigCategory = (category) => {
         const {showConfigCategory, task} = this.state;
-        if (category) task.category = category.name;
+        if (category) task.category = category;
         this.setState({task, showConfigCategory: !showConfigCategory});
     };
 
@@ -460,7 +462,7 @@ class ConfigTask extends Component {
                                 }
                                 <Subheader text={translations.repeat}/>
                                 <View style={styles.select}>
-                                    <TouchableOpacity onPress={() => this.showDialog('repeat')}>
+                                    <TouchableOpacity style={{flex: 1}} onPress={() => this.showDialog('repeat')}>
                                         <Text style={
                                             {...styles.selectedOption, color: theme.secondaryTextColor}
                                         }>
@@ -476,18 +478,18 @@ class ConfigTask extends Component {
                             }
                             <Subheader text={translations.category}/>
                             <View style={styles.select}>
-                                <TouchableOpacity onPress={() => this.showDialog('category')}>
+                                <TouchableOpacity style={{flex: 1}} onPress={() => this.showDialog('category')}>
                                     <Text style={
                                         {...styles.selectedOption, color: theme.secondaryTextColor}
                                     }>
-                                        {task.category}
+                                        {task.category.name}
                                     </Text>
                                 </TouchableOpacity>
                                 <IconToggle onPress={() => this.toggleConfigCategory()} name="playlist-add"/>
                             </View>
                             <Subheader text={translations.priority}/>
                             <View style={styles.select}>
-                                <TouchableOpacity onPress={() => this.showDialog('priority')}>
+                                <TouchableOpacity style={{flex: 1}} onPress={() => this.showDialog('priority')}>
                                     <Text style={
                                         {...styles.selectedOption, color: theme.secondaryTextColor}
                                     }>

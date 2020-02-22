@@ -50,12 +50,11 @@ This app working with Android and iOS.
 - Axios <i>0.19.0</i>
 
 ### Update 2.0:
-- Zapisywać id kategorii w zadaniu a nie jego nazwe
-- Naprawić dodawanie backupa z plików telefonu na iosie
 - Przygotować bazę danych do aktualizacji
 - Zmienić ekran ładowania
 - Zaktualizowac README
 - Przetestować wszystko
+- Naprawić dodawanie backupa z plików telefonu na iosie
 
 ### WebStrong &copy;  
   

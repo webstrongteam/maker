@@ -43,7 +43,7 @@ export const saveCategory = (category, callback) => {
                     tx.executeSql(`update categories
                                    set name = ?
                                    where id = ?;`, [category.name, category.id], () => {
-                        dispatch(initCategories(), callback());
+                        callback();
                     });
                 }, (err) => console.log(err)
             );
@@ -51,7 +51,7 @@ export const saveCategory = (category, callback) => {
             db.transaction(
                 tx => {
                     tx.executeSql('insert into categories (name) values (?)', [category.name], () => {
-                        dispatch(initCategories(), callback());
+                        callback();
                     });
                 }, (err) => console.log(err)
             );

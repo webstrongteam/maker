@@ -1,5 +1,5 @@
 import React from "react";
-import {Platform, TouchableWithoutFeedback, View, Keyboard} from 'react-native';
+import {Platform, TouchableOpacity, TouchableWithoutFeedback, View, Keyboard} from 'react-native';
 import {BlurView} from 'expo-blur';
 import Dialog from "react-native-dialog";
 import {ListItem} from "react-native-material-ui";
@@ -72,26 +72,27 @@ const selectDialog = (props) => (
         {props.body &&
         <View style={{marginBottom: 10}}>
             {props.body.map((option, index) => (
-                <ListItem
-                    divider
-                    dense
-                    key={index}
-                    onPress={() => option.onClick(option.value)}
-                    style={{
-                        contentViewContainer: {
-                            backgroundColor: Platform.OS === 'ios' ?
-                                props.theme.secondaryBackgroundColor : 'transparent'
-                        },
-                        primaryText: {
-                            color: option.value === props.selectedValue ?
-                                props.theme.primaryColor : props.theme.thirdTextColor
-                        },
-                        ...option.style
-                    }}
-                    centerElement={{
-                        primaryText: option.name
-                    }}
-                />
+                <TouchableOpacity onPress={() => option.onClick(option.value)}>
+                    <ListItem
+                        divider
+                        dense
+                        key={index}
+                        style={{
+                            contentViewContainer: {
+                                backgroundColor: Platform.OS === 'ios' ?
+                                    props.theme.secondaryBackgroundColor : 'transparent'
+                            },
+                            primaryText: {
+                                color: option.value === props.selectedValue ?
+                                    props.theme.primaryColor : props.theme.thirdTextColor
+                            },
+                            ...option.style
+                        }}
+                        centerElement={{
+                            primaryText: option.name
+                        }}
+                    />
+                </TouchableOpacity>
             ))}
         </View>
         }

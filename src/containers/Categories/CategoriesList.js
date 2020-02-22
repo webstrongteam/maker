@@ -23,8 +23,8 @@ class CategoriesList extends PureComponent {
         const taskPerCategory = this.state.taskPerCategory;
 
         tasks.map(task => {
-            if (!taskPerCategory[task.category]) taskPerCategory[task.category] = 1;
-            else taskPerCategory[task.category]++;
+            if (!taskPerCategory[task.category.id]) taskPerCategory[task.category.id] = 1;
+            else taskPerCategory[task.category.id]++;
         });
 
         this.setState({taskPerCategory, ready: true});
@@ -91,7 +91,7 @@ class CategoriesList extends PureComponent {
                                 }
                                 centerElement={{
                                     primaryText:
-                                        `${cate.name} (${taskPerCategory[cate.name] ? taskPerCategory[cate.name] : 0})`,
+                                        `${cate.name} (${taskPerCategory[cate.id] ? taskPerCategory[cate.id] : 0})`,
                                 }}
                                 onPress={() => this.toggleModalHandler(cate.id)}
                             />

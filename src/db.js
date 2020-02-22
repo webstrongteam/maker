@@ -26,10 +26,10 @@ export const initDatabase = (callback) => {
             'create table if not exists categories (id integer primary key not null, name text);'
         );
         tx.executeSql(
-            'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, event_id text default null, notification_id text default null);'
+            'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category integer, priority text, repeat text, event_id text default null, notification_id text default null);'
         );
         tx.executeSql(
-            'create table if not exists finished (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, finish integer);'
+            'create table if not exists finished (id integer primary key not null, name text, description text, date text, category integer, priority text, repeat text, finish integer);'
         );
         tx.executeSql(
             'create table if not exists lists (id integer primary key not null, name text);'
@@ -53,7 +53,7 @@ export const initDatabase = (callback) => {
             "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, primaryTextColor, secondaryTextColor, thirdTextColor, warningColor, doneIconColor, undoIconColor, lowColor, mediumColor, highColor) values (0, 'Default', '#f4511e', '#ffffff', '#e5e5e5', '#ffffff', '#000000', '#5e5e5e', '#d9534f', '#26b596', '#5bc0de', '#26b596', '#cec825', '#f4511e');"
         );
         tx.executeSql(
-            "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, primaryTextColor, secondaryTextColor, thirdTextColor, warningColor, doneIconColor, undoIconColor, lowColor, mediumColor, highColor) values (1, 'Dark', '#bf3e17', '#1a1a1a', '#333333', '#f2f2f2', '#d9d9d9', '#d9d9d9', '#d9534f', '#26b596', '#5bc0de', '#26b596', '#cec825', '#f4511e');"
+            "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, primaryTextColor, secondaryTextColor, thirdTextColor, warningColor, doneIconColor, undoIconColor, lowColor, mediumColor, highColor) values (1, 'Dark', '#bf3e17', '#1a1a1a', '#333333', '#f2f2f2', '#d9d9d9', '#d9d9d9', '#cc2e29', '#26b596', '#5bc0de', '#26b596', '#cec825', '#f4511e');"
         );
         tx.executeSql(
             "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker user', '', 0);"

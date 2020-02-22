@@ -14,6 +14,19 @@ export const capitalize = (string) => {
 
 export const width = Dimensions.get('window').width;
 
+export const setCategories = (tasks, categories) => {
+    return Promise.all(tasks.map(task => {
+        const findCate = categories.find((c => +c.id === +task.category));
+        if (findCate) {
+            task.category = findCate;
+        } else {
+            task.category = categories[0];
+        }
+    })).then(() => {
+        return tasks;
+    });
+};
+
 export const sortingData = (array, field, type) => {
     if (field === 'date') { // SORTING DATE
         array.sort((a, b) => {
@@ -47,6 +60,9 @@ export const sortingData = (array, field, type) => {
             if (type === 'ASC') return A < B;
             if (type === 'DESC') return A > B;
         });
+    } else if (field === 'category') { // SORTING CATEGORY
+        if (type === 'ASC') array.sort((a, b) => ('' + a[field].name).localeCompare(b[field].name));
+        if (type === 'DESC') array.sort((a, b) => ('' + b[field].name).localeCompare(a[field].name));
     } else { // DEFAULT SORTING
         if (type === 'ASC') array.sort((a, b) => ('' + a[field]).localeCompare(b[field]));
         if (type === 'DESC') array.sort((a, b) => ('' + b[field]).localeCompare(a[field]));
