@@ -53,24 +53,17 @@ class TaskList extends Component {
     };
 
     componentDidMount() {
-        this.onRefresh();
+        this.selectedCategoryHandler();
+        this.renderDropdownData();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.theme !== this.props.theme) {
             this.refreshPriorityColors();
         }
-        if (prevProps.refresh !== this.props.refresh) {
-            this.onRefresh();
-        }
-        if (prevProps.tasks.length > this.props.tasks.length) {
+        if (prevProps.tasks !== this.props.tasks ||
+            prevProps.finished !== this.props.finished) {
             this.selectedCategoryHandler();
-        }
-        if (prevProps.finished.length > this.props.finished.length) {
-            this.selectedCategoryHandler();
-        }
-        if (prevProps.categories !== this.props.categories) {
-            this.renderDropdownData();
         }
         if (prevProps.sorting !== this.props.sorting ||
             prevProps.sortingType !== this.props.sortingType) {
@@ -288,7 +281,8 @@ class TaskList extends Component {
         }
     };
 
-    divisionTask = (tasks = this.state.tasks) => {
+    divisionTask = () => {
+        const {tasks} = this.state;
         const {sorting, sortingType, translations} = this.props;
         const division = {
             [translations.overdue]: [],
@@ -580,25 +574,6 @@ class TaskList extends Component {
         })
     };
 
-    onRefresh = () => {
-        this.props.onInitToDo((tasks, finished) => {
-            const {selectedCategory} = this.state;
-            const {translations} = this.props;
-
-            let filterTask = tasks;
-            if (selectedCategory.name === translations.finished) {
-                filterTask = finished;
-            } else if (selectedCategory.name === translations.newCategory) {
-                return this.toggleConfigCategory();
-            } else if (selectedCategory.name !== translations.all) {
-                filterTask = tasks.filter(task => task.category.id === selectedCategory.id);
-            }
-
-            this.renderDropdownData();
-            this.setState({tasks: filterTask}, this.divisionTask);
-        })
-    };
-
     render() {
         const {
             showConfigCategory, dropdownData, selectedIndex,
@@ -749,8 +724,7 @@ const mapStateToProps = state => {
         tasks: state.tasks.tasks,
         finished: state.tasks.finished,
         categories: state.categories.categories,
-        showModal: state.config.showModal,
-        refresh: state.config.refresh
+        showModal: state.config.showModal
     }
 };
 

@@ -144,12 +144,9 @@ class ConfigTask extends Component {
                 translations.deleteDescription,
                 {
                     [translations.yes]: () => {
-                        const {onRefresh, onUpdateModal, onRemoveTask, navigation} = this.props;
+                        const {onUpdateModal, onRemoveTask, navigation} = this.props;
                         onUpdateModal(false);
-                        onRemoveTask(task, () => {
-                            onRefresh();
-                            navigation.goBack();
-                        });
+                        onRemoveTask(task, () => navigation.goBack());
                     },
                     [translations.cancel]: () => {
                         this.props.onUpdateModal(false);
@@ -286,21 +283,15 @@ class ConfigTask extends Component {
 
     saveTask = () => {
         let {task, setEvent, setNotification} = this.state;
-        const {navigation, theme, onRefresh} = this.props;
+        const {navigation, theme} = this.props;
 
         if (task.date.length < 13) setNotification = false;
         configTask(task, theme.primaryColor, setEvent, setNotification)
             .then((task) => {
-                this.props.onSaveTask(task, () => {
-                    navigation.goBack();
-                    onRefresh();
-                });
+                this.props.onSaveTask(task, navigation.goBack);
             })
             .catch(() => {
-                this.props.onSaveTask(task, () => {
-                    navigation.goBack();
-                    onRefresh();
-                });
+                this.props.onSaveTask(task, navigation.goBack);
             });
     };
 
@@ -524,7 +515,6 @@ const mapDispatchToProps = dispatch => {
         onInitTask: (id, callback) => dispatch(actions.initTask(id, callback)),
         onSaveTask: (task, callback) => dispatch(actions.saveTask(task, callback)),
         onRemoveTask: (task, callback) => dispatch(actions.removeTask(task, false, callback)),
-        onRefresh: () => dispatch(actions.refresh()),
         onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }
 };
