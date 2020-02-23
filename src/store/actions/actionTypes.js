@@ -1,4 +1,5 @@
 // Tasks
+export const REFRESH = 'REFRESH';
 export const INIT_TODO = 'INIT_TODO';
 export const INIT_TASKS = 'INIT_TASKS';
 export const INIT_FINISHED = 'INIT_FINISHED';

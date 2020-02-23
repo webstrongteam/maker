@@ -162,7 +162,7 @@ class QuicklyList extends Component {
                             <View style={{paddingTop: 20}}>
                                 {quicklyList}
                             </View>
-                            : <Text style={[empty, {color: theme.primaryTextColor}]}>
+                            : <Text style={[empty, {color: theme.secondaryTextColor}]}>
                                 {translations.emptyList}
                             </Text>
                         }
@@ -176,7 +176,7 @@ class QuicklyList extends Component {
                         icon="add"
                         style={{
                             container: {backgroundColor: theme.warningColor},
-                            icon: {color: theme.primaryBackgroundColor}
+                            icon: {color: theme.primaryTextColor}
                         }}
                     />
                 </View>

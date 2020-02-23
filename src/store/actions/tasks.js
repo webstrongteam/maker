@@ -6,6 +6,12 @@ import moment from 'moment';
 
 const db = SQLite.openDatabase('maker.db');
 
+export const onRefresh = () => {
+    return {
+        type: actionTypes.REFRESH
+    }
+};
+
 export const onInitToDo = (tasks, finished) => {
     return {
         type: actionTypes.INIT_TODO,

@@ -56,7 +56,7 @@ class ConfigCategory extends Component {
                     if (!control.error) {
                         this.props.onSaveCategory(category, () => {
                             this.props.onInitCategories(() => {
-                                this.props.onRefresh();
+                                this.state.editCategory && this.props.onRefreshTask();
                                 this.props.toggleModal(category);
                             });
                         });
@@ -110,7 +110,7 @@ const mapDispatchToProps = dispatch => {
         onInitCategories: (callback) => dispatch(actions.initCategories(callback)),
         onInitCategory: (id, callback) => dispatch(actions.initCategory(id, callback)),
         onSaveCategory: (category, callback) => dispatch(actions.saveCategory(category, callback)),
-        onRefresh: () => dispatch(actions.refresh())
+        onRefreshTask: () => dispatch(actions.onRefresh())
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigCategory);

@@ -61,6 +61,12 @@ class TaskList extends Component {
         if (prevProps.theme !== this.props.theme) {
             this.refreshPriorityColors();
         }
+        if (prevProps.refresh !== this.props.refresh) {
+            this.refreshComponent();
+        }
+        if (prevProps.categories !== this.props.categories) {
+            this.renderDropdownData();
+        }
         if (prevProps.tasks !== this.props.tasks ||
             prevProps.finished !== this.props.finished) {
             this.selectedCategoryHandler();
@@ -574,6 +580,27 @@ class TaskList extends Component {
         })
     };
 
+    refreshComponent = () => {
+        this.setState({loading: true}, () => {
+            this.props.onInitToDo((tasks, finished) => {
+                const {selectedCategory} = this.state;
+                const {translations} = this.props;
+                let filterTask = tasks;
+
+                if (selectedCategory === translations.finished) {
+                    filterTask = finished;
+                } else if (selectedCategory === translations.newCategory) {
+                    return this.toggleConfigCategory();
+                } else if (selectedCategory !== translations.all) {
+                    filterTask = tasks.filter(task => task.category === selectedCategory);
+                }
+
+                this.renderDropdownData();
+                this.setState({tasks: filterTask}, this.divisionTask);
+            })
+        })
+    };
+
     render() {
         const {
             showConfigCategory, dropdownData, selectedIndex,
@@ -724,7 +751,8 @@ const mapStateToProps = state => {
         tasks: state.tasks.tasks,
         finished: state.tasks.finished,
         categories: state.categories.categories,
-        showModal: state.config.showModal
+        showModal: state.config.showModal,
+        refresh: state.tasks.refresh
     }
 };
 

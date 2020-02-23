@@ -74,21 +74,24 @@ const initApp = (callback) => {
                 const version = rows._array[0].version;
                 if (version !== VERSION) {
                     if (version.includes('_INIT')) {
-                        tx.executeSql('update settings set lang = ? where id = 0;', [getLocale()]);
+                        tx.executeSql('UPDATE settings SET lang = ? WHERE id = 0;', [getLocale()]);
+                        tx.executeSql('UPDATE settings SET version = ? WHERE id = 0;', [VERSION]);
                     }
 
                     const prepareToUpdate = (update) => {
                         if (update === '2.0.0') {
                             tx.executeSql('DROP TABLE IF EXISTS themes;', [], () => {
                                 tx.executeSql('ALTER TABLE quickly_tasks ADD COLUMN order_nr integer DEFAULT 0;', [], () => {
-                                    tx.executeSql('SELECT id FROM quickly_tasks;', [], (_, {rows}) => {
-                                        Promise.all((resolve) => {
-                                            rows._array.map((id, index) => {
-                                                tx.executeSql('update quickly_tasks set order_nr = ? where id = ?;', [index, id], () => {
-                                                    resolve();
-                                                });
-                                            })
-                                        }).then(() => initDatabase(callback))
+                                    tx.executeSql('UPDATE settings SET version = ? WHERE id = 0;', [VERSION], () => {
+                                        tx.executeSql('SELECT id FROM quickly_tasks;', [], (_, {rows}) => {
+                                            Promise.all((resolve) => {
+                                                rows._array.map((id, index) => {
+                                                    tx.executeSql('update quickly_tasks set order_nr = ? where id = ?;', [index, id], () => {
+                                                        resolve();
+                                                    });
+                                                })
+                                            }).then(() => initDatabase(callback))
+                                        });
                                     });
                                 });
                             });
@@ -98,9 +101,7 @@ const initApp = (callback) => {
                                     tx.executeSql('ALTER TABLE tasks ADD COLUMN event_id text default null;', [], () => {
                                         tx.executeSql('ALTER TABLE tasks ADD COLUMN notification_id text default null;', [], () => {
                                             tx.executeSql('ALTER TABLE settings ADD COLUMN hideTabView integer DEFAULT 0;', [], () => {
-                                                tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {
-                                                    prepareToUpdate('2.0.0');
-                                                });
+                                                prepareToUpdate('2.0.0');
                                             });
                                         });
                                     });
@@ -114,7 +115,7 @@ const initApp = (callback) => {
                         prepareToUpdate('2.0.0')
                     } else if (!version.includes('1.1.0') && !version.includes('2.0.0')) {
                         prepareToUpdate('1.1.0')
-                    }
+                    } else callback();
                 } else callback();
             });
         }, (err) => console.log(err)

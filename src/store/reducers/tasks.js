@@ -3,7 +3,14 @@ import {updateObject} from '../../shared/utility';
 
 const initState = {
     tasks: false,
-    finished: false
+    finished: false,
+    refresh: false
+};
+
+const refresh = (state) => {
+    return updateObject(state, {
+        refresh: !state.refresh
+    });
 };
 
 const initToDo = (state, action) => {
@@ -27,6 +34,8 @@ const initFinished = (state, action) => {
 
 const reducer = (state = initState, action) => {
     switch (action.type) {
+        case actionTypes.REFRESH:
+            return refresh(state);
         case actionTypes.INIT_TODO:
             return initToDo(state, action);
         case actionTypes.INIT_TASKS:

@@ -170,7 +170,8 @@ class Settings extends PureComponent {
                             <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
-                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}} name="g-translate"/>
+                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}}
+                                              name="g-translate"/>
                                     </View>
                                 }
                                 hasNavArrow={true}
@@ -198,7 +199,8 @@ class Settings extends PureComponent {
                             <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
-                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}} name="autorenew"/>
+                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}}
+                                              name="autorenew"/>
                                     </View>
                                 }
                                 hasNavArrow={false}
@@ -241,7 +243,7 @@ class Settings extends PureComponent {
                         </SettingsList>
                         <View style={styles.version}>
                             <Text style={{color: theme.thirdTextColor}}>
-                                {translations.version}: {settings.version} (Hotfix 1)
+                                {translations.version}: {settings.version}
                             </Text>
                         </View>
                     </React.Fragment> : <Spinner/>
