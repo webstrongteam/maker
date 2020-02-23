@@ -26,10 +26,10 @@ export const initDatabase = (callback) => {
             'create table if not exists categories (id integer primary key not null, name text);'
         );
         tx.executeSql(
-            'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category integer, priority text, repeat text, event_id text default null, notification_id text default null);'
+            'create table if not exists tasks (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, event_id text default null, notification_id text default null);'
         );
         tx.executeSql(
-            'create table if not exists finished (id integer primary key not null, name text, description text, date text, category integer, priority text, repeat text, finish integer);'
+            'create table if not exists finished (id integer primary key not null, name text, description text, date text, category text, priority text, repeat text, finish integer);'
         );
         tx.executeSql(
             'create table if not exists lists (id integer primary key not null, name text);'
@@ -72,15 +72,49 @@ const initApp = (callback) => {
             // CHECK CORRECTION APP VERSION AND UPDATE DB
             tx.executeSql("select version from settings", [], (_, {rows}) => {
                 const version = rows._array[0].version;
-                if (version.includes('_INIT')) {
-                    tx.executeSql('update settings set lang = ? where id = 0;', [getLocale()]);
-                }
                 if (version !== VERSION) {
-                    tx.executeSql('DELETE FROM themes WHERE id = 0 AND id = 1;', [], () => {
-                        tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {
-                            initDatabase(callback);
-                        });
-                    });
+                    if (version.includes('_INIT')) {
+                        tx.executeSql('update settings set lang = ? where id = 0;', [getLocale()]);
+                    }
+
+                    const prepareToUpdate = (update) => {
+                        if (update === '2.0.0') {
+                            tx.executeSql('DROP TABLE IF EXISTS themes;', [], () => {
+                                tx.executeSql('ALTER TABLE quickly_tasks ADD COLUMN order_nr integer DEFAULT 0;', [], () => {
+                                    tx.executeSql('SELECT id FROM quickly_tasks;', [], (_, {rows}) => {
+                                        Promise.all((resolve) => {
+                                            rows._array.map((id, index) => {
+                                                tx.executeSql('update quickly_tasks set order_nr = ? where id = ?;', [index, id], () => {
+                                                    resolve();
+                                                });
+                                            })
+                                        }).then(() => initDatabase(callback))
+                                    });
+                                });
+                            });
+                        } else if (update === '1.1.0') {
+                            tx.executeSql('DELETE FROM themes WHERE id = 0;', [], () => {
+                                tx.executeSql('DELETE FROM themes WHERE id = 1;', [], () => {
+                                    tx.executeSql('ALTER TABLE tasks ADD COLUMN event_id text default null;', [], () => {
+                                        tx.executeSql('ALTER TABLE tasks ADD COLUMN notification_id text default null;', [], () => {
+                                            tx.executeSql('ALTER TABLE settings ADD COLUMN hideTabView integer DEFAULT 0;', [], () => {
+                                                tx.executeSql('update settings set version = ? where id = 0;', [VERSION], () => {
+                                                    prepareToUpdate('2.0.0');
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        }
+                    };
+
+                    // Init prepare DB for newest version
+                    if (version.includes('1.1.0')) {
+                        prepareToUpdate('2.0.0')
+                    } else if (!version.includes('1.1.0') && !version.includes('2.0.0')) {
+                        prepareToUpdate('1.1.0')
+                    }
                 } else callback();
             });
         }, (err) => console.log(err)

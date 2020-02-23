@@ -16,15 +16,16 @@ export const width = Dimensions.get('window').width;
 
 export const setCategories = (tasks, categories) => {
     return Promise.all(tasks.map(task => {
-        const findCate = categories.find((c => +c.id === +task.category));
-        if (findCate) {
-            task.category = findCate;
+        let findCate;
+        if (+task.category) {
+            findCate = categories.find((c => +c.id === +task.category));
         } else {
-            task.category = categories[0];
+            findCate = categories.find((c => c.name === task.category));
         }
-    })).then(() => {
-        return tasks;
-    });
+
+        if (findCate) task.category = findCate;
+        else task.category = categories[0];
+    })).then(() => tasks);
 };
 
 export const sortingData = (array, field, type) => {
