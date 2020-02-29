@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import Dialog from "../../../components/UI/Dialog/Dialog";
-import {generateDialogObject, valid} from '../../../shared/utility';
+import {generateDialogObject} from '../../../shared/utility';
 
 import {connect} from 'react-redux';
 import * as actions from '../../../store/actions';
@@ -30,7 +30,7 @@ class ConfigQuicklyTask extends Component {
                 this.showDialog(translations.editTask);
             })
         } else {
-            this.setState({editTask: false});
+            this.setState({editTask: false, task: {id: false, name: '', order_nr: null, list_id: false}});
             this.showDialog(translations.newTask);
         }
     };
@@ -54,13 +54,13 @@ class ConfigQuicklyTask extends Component {
             {
                 Save: () => {
                     const {control} = this.state;
-                    const {list_id, taskLength} = this.props;
+                    const {list, taskLength} = this.props;
                     if (!control.error) {
                         if (task.order_nr === null) {
                             task.order_nr = taskLength;
                         }
-                        this.props.onSaveQuicklyTask(task, list_id, () => {
-                            this.props.toggleModal(task);
+                        this.props.onSaveQuicklyTask(task, list, (list) => {
+                            this.props.toggleModal(task, list);
                         });
                     }
                 },
@@ -100,7 +100,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onInitQuicklyTask: (id, callback) => dispatch(actions.initQuicklyTask(id, callback)),
-        onSaveQuicklyTask: (task, list_id, callback) => dispatch(actions.saveQuicklyTask(task, list_id, callback)),
+        onSaveQuicklyTask: (task, list, callback) => dispatch(actions.saveQuicklyTask(task, list, callback)),
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigQuicklyTask);

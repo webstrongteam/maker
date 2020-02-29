@@ -71,24 +71,38 @@ export const saveList = (list, callback) => {
     };
 };
 
-export const saveQuicklyTask = (quicklyTask, list_id, callback = () => null) => {
+export const saveQuicklyTask = (quicklyTask, list, callback = () => null) => {
     return () => {
-        if (quicklyTask.id !== false) {
-            db.transaction(
-                tx => {
-                    tx.executeSql(`update quickly_tasks
-                                   set name = ?,
-                                       order_nr = ?
-                                   where id = ?;`, [quicklyTask.name, quicklyTask.order_nr, quicklyTask.id], () => {
-                        callback();
-                    });
-                }, (err) => console.log(err)
-            );
+        const addQuicklyTask = (list_id = list.id) => {
+            if (quicklyTask.id !== false) {
+                db.transaction(
+                    tx => {
+                        tx.executeSql(`update quickly_tasks
+                                       set name     = ?,
+                                           order_nr = ?
+                                       where id = ?;`, [quicklyTask.name, quicklyTask.order_nr, quicklyTask.id], () => {
+                            callback({id: list_id, name: list.name});
+                        });
+                    }, (err) => console.log(err)
+                );
+            } else {
+                db.transaction(
+                    tx => {
+                        tx.executeSql('insert into quickly_tasks (name, order_nr, list_id) values (?,?,?)', [quicklyTask.name, quicklyTask.order_nr, list_id], () => {
+                            callback({id: list_id, name: list.name});
+                        });
+                    }, (err) => console.log(err)
+                );
+            }
+        };
+
+        if (list.id !== false) {
+            addQuicklyTask();
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into quickly_tasks (name, order_nr, list_id) values (?,?,?)', [quicklyTask.name, quicklyTask.order_nr, list_id], () => {
-                        callback();
+                    tx.executeSql('insert into lists (name) values (?)', [list.name], (_, {insertId}) => {
+                        addQuicklyTask(insertId);
                     });
                 }, (err) => console.log(err)
             );

@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {ScrollView, View} from 'react-native';
 import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
-import {container, listRow, listContainer, shadow} from '../../shared/styles';
+import {container, listRow, shadow} from '../../shared/styles';
 import {width} from '../../shared/utility';
 import ConfigCategory from './ConfigCategory/ConfigCategory';
 import Template from '../Template/Template';
@@ -29,6 +29,17 @@ class CategoriesList extends PureComponent {
 
         this.setState({taskPerCategory, ready: true});
     }
+
+    deleteCategory = (id) => {
+        const {taskPerCategory} = this.state;
+        if (taskPerCategory[id]) {
+            this.props.onRemoveCategory(id, () => {
+                this.props.onRefreshTask();
+            })
+        } else {
+            this.props.onRemoveCategory(id);
+        }
+    };
 
     toggleModalHandler = (selected = false) => {
         const {showModal} = this.state;
@@ -62,15 +73,17 @@ class CategoriesList extends PureComponent {
                     centerElement={translations.title}
                 />
 
+                {showModal &&
                 <ConfigCategory
                     showModal={showModal}
                     category={selectedCategory}
                     toggleModal={this.toggleModalHandler}
                 />
+                }
 
                 {ready &&
                 <View style={container}>
-                    <ScrollView>
+                    <ScrollView style={{paddingTop: 5}}>
                         {categories.map(cate => (
                             <ListItem
                                 key={cate.id}
@@ -84,7 +97,7 @@ class CategoriesList extends PureComponent {
                                 rightElement={
                                     cate.id !== 0 ?
                                         <IconToggle
-                                            onPress={() => this.props.onRemoveCategory(cate.id)}
+                                            onPress={() => this.deleteCategory(cate.id)}
                                             name="delete"
                                             color={theme.warningColor}
                                         /> : null
@@ -116,7 +129,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onRemoveCategory: (id) => dispatch(actions.removeCategory(id))
+        onRemoveCategory: (id, callback) => dispatch(actions.removeCategory(id, callback)),
+        onRefreshTask: () => dispatch(actions.onRefresh())
     }
 };
 

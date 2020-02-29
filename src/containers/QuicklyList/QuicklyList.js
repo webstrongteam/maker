@@ -162,7 +162,7 @@ class QuicklyList extends Component {
                             <View style={{paddingTop: 20}}>
                                 {quicklyList}
                             </View>
-                            : <Text style={[empty, {color: theme.secondaryTextColor}]}>
+                            : <Text style={[empty, {color: theme.thirdTextColor}]}>
                                 {translations.emptyList}
                             </Text>
                         }

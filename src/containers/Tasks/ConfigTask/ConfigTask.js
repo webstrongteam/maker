@@ -79,7 +79,7 @@ class ConfigTask extends Component {
     initTask = (id) => {
         const {categories, translations} = this.props;
         this.props.onInitTask(id, (task) => {
-            const findCate = categories.find((c => c.id === task.category));
+            const findCate = categories.find((c => +c.id === +task.category));
             if (findCate) {
                 task.category = findCate;
             } else {
@@ -266,10 +266,12 @@ class ConfigTask extends Component {
     };
 
     checkChanges = () => {
-        const {task, taskCopy, controls} = this.state;
+        const {task, taskCopy, setEvent, setNotification, controls} = this.state;
 
         return checkValid(controls.name, task.name) &&
-            (JSON.stringify(task) !== JSON.stringify(taskCopy));
+            (JSON.stringify(task) !== JSON.stringify(taskCopy) ||
+                setEvent !== (task.event_id !== null) ||
+                setNotification !== (task.notification_id !== null));
     };
 
     checkCorrectRepeat = () => {

@@ -52,7 +52,7 @@ class Input extends Component {
                         textColor={theme.secondaryTextColor}
                         baseColor={theme.thirdTextColor}
                         tintColor={theme.primaryColor}
-                        errorColor={theme.warningColor}
+                        errorColor={control.error === true ? theme.secondaryTextColor : theme.warningColor}
                         autoFocus={focus ? focus : false}
                         onChangeText={(val) => this.checkValid(val)}
                         value={value}

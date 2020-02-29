@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import Input from '../../components/UI/Input/Input';
 import Template from '../Template/Template';
 import * as Permissions from 'expo-permissions';

@@ -117,8 +117,8 @@ class TaskList extends PureComponent {
     removeBackup = (path) => {
         const {translations} = this.props;
         FileSystem.deleteAsync(FileSystem.documentDirectory + path)
-            .then(() => {
-                this.loadBackupFiles();
+            .then(async () => {
+                await this.loadBackupFiles();
                 this.toggleSnackbar(translations.backupRemoved);
             })
             .catch(() => {
@@ -239,7 +239,7 @@ ${translations.showBackupAlertDescription2}`,
 
                 {!loading ?
                     <View style={container}>
-                        <ScrollView>
+                        <ScrollView style={{paddingTop: 5}}>
                             {backups.length ?
                                 backups.map(name => (
                                     <ListItem

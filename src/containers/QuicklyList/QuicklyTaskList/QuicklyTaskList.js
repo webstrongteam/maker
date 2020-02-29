@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableOpacity, ScrollView, View, KeyboardAvoidingView} from 'react-native';
 import {IconToggle, Icon, Toolbar} from 'react-native-material-ui';
-import {container, empty, shadow, listContainer, listRow} from '../../../shared/styles';
+import {empty, shadow, listContainer, listRow} from '../../../shared/styles';
+import Input from '../../../components/UI/Input/Input';
 import {generateDialogObject, width} from '../../../shared/utility';
 import ConfigQuicklyTask from '../ConfigQuicklyTask/ConfigQuicklyTask';
 import Spinner from '../../../components/UI/Spinner/Spinner';
@@ -30,6 +31,15 @@ class QuicklyTaskList extends Component {
             characterRestriction: 20,
             error: true
         },
+        input: {
+            control: {
+                label: this.props.translations.quicklyAdding,
+                required: true,
+                characterRestriction: 40,
+                error: true
+            },
+            value: ''
+        },
         loading: true
     };
 
@@ -38,8 +48,6 @@ class QuicklyTaskList extends Component {
         if (list && list.id !== false) {
             this.reloadTasks(list);
         } else {
-            const {list} = this.state;
-            this.saveList(list);
             this.setState({loading: false});
         }
     };
@@ -56,10 +64,12 @@ class QuicklyTaskList extends Component {
         });
     };
 
-    toggleModalHandler = (selected = false) => {
+    toggleModalHandler = (selected = false, list = false) => {
         const {showModal} = this.state;
         if (selected !== false) {
-            this.reloadTasks();
+            if (list) this.reloadTasks(list);
+            else this.reloadTasks();
+
             this.setState({
                 showModal: !showModal,
                 selectedTask: selected
@@ -110,6 +120,22 @@ class QuicklyTaskList extends Component {
         this.props.onUpdateModal(true, dialog);
     };
 
+    addTask = () => {
+        const {input, list, quicklyTasks} = this.state;
+        if (!input.control.error) {
+            const newTask = {
+                id: false,
+                name: input.value,
+                order_nr: quicklyTasks.length
+            };
+            this.props.onSaveQuicklyTask(newTask, list, (list) => {
+                input.value = '';
+                this.setState({input});
+                this.reloadTasks(list);
+            });
+        }
+    };
+
     removeTask = (row) => {
         this.props.onRemoveQuicklyTask(row.id, () => {
             const {quicklyTasks, list} = this.state;
@@ -118,7 +144,7 @@ class QuicklyTaskList extends Component {
                     return new Promise((resolve) => {
                         if (task.order_nr > row.order_nr) {
                             task.order_nr -= 1;
-                            this.props.onSaveQuicklyTask(task, list.id, () => {
+                            this.props.onSaveQuicklyTask(task, list, () => {
                                 resolve();
                             });
                         } else resolve();
@@ -134,7 +160,7 @@ class QuicklyTaskList extends Component {
         const {quicklyTasks, list} = this.state;
         order.map((o, i) => {
             quicklyTasks[i].order_nr = +o;
-            this.props.onSaveQuicklyTask(quicklyTasks[i], list.id);
+            this.props.onSaveQuicklyTask(quicklyTasks[i], list);
         });
     };
 
@@ -145,7 +171,7 @@ class QuicklyTaskList extends Component {
     };
 
     render() {
-        const {showModal, selectedTask, list, quicklyTasks, order, loading} = this.state;
+        const {showModal, selectedTask, input, list, quicklyTasks, order, loading} = this.state;
         const {navigation, theme, translations} = this.props;
 
         return (
@@ -188,26 +214,27 @@ class QuicklyTaskList extends Component {
                 <ConfigQuicklyTask
                     showModal={showModal}
                     task_id={selectedTask}
-                    list_id={list.id}
+                    list={list}
                     taskLength={quicklyTasks.length}
-                    toggleModal={this.toggleModalHandler}
+                    toggleModal={(selected, list) => this.toggleModalHandler(selected, list)}
                 />
                 }
 
-                {!loading ?
-                    <View style={container}>
-                        {quicklyTasks.length ?
-                            <SortableListView
-                                activeOpacity={0.4}
-                                data={{...quicklyTasks}}
-                                order={order}
-                                onRowActive={selectionAsync}
-                                onRowMoved={e => {
-                                    order.splice(e.to, 0, order.splice(e.from, 1)[0]);
-                                    this.updateOrder(order);
-                                }}
-                                renderRow={row => {
-                                    return (
+                <KeyboardAvoidingView behavior={'padding'} style={{flex: 1}}>
+                    {!loading ?
+                        <View style={{flex: 1, justifyContent: 'space-between'}}>
+                            {quicklyTasks.length ?
+                                <SortableListView
+                                    activeOpacity={0.4}
+                                    data={{...quicklyTasks}}
+                                    order={order}
+                                    style={{paddingTop: 5}}
+                                    onRowActive={selectionAsync}
+                                    onRowMoved={e => {
+                                        order.splice(e.to, 0, order.splice(e.from, 1)[0]);
+                                        this.updateOrder(order);
+                                    }}
+                                    renderRow={row => (
                                         <TouchableOpacity
                                             style={{
                                                 ...shadow,
@@ -220,7 +247,10 @@ class QuicklyTaskList extends Component {
                                                 <View style={{width: '75%', marginTop: 5, marginBottom: 5}}>
                                                     <Text
                                                         numberOfLines={1}
-                                                        style={{...styles.taskName, color: theme.secondaryTextColor}}>
+                                                        style={{
+                                                            ...styles.taskName,
+                                                            color: theme.secondaryTextColor
+                                                        }}>
                                                         {row.name}
                                                     </Text>
                                                 </View>
@@ -233,15 +263,38 @@ class QuicklyTaskList extends Component {
                                                 </View>
                                             </View>
                                         </TouchableOpacity>
-                                    )
-                                }}
-                            /> :
-                            <Text style={[empty, {color: theme.thirdTextColor}]}>
-                                {translations.emptyList}
-                            </Text>
-                        }
-                    </View> : <Spinner/>
-                }
+                                    )}
+                                /> :
+                                <ScrollView>
+                                    <Text style={[empty, {color: theme.thirdTextColor}]}>
+                                        {translations.emptyList}
+                                    </Text>
+                                </ScrollView>
+                            }
+                            <View style={{
+                                marginRight: 30,
+                                marginBottom: 10,
+                                bottom: 10,
+                                flexDirection: 'row',
+                                alignItems: 'center'
+                            }}>
+                                <Input
+                                    elementConfig={input.control}
+                                    focus={false}
+                                    value={input.value}
+                                    changed={(value) => {
+                                        const {input} = this.state;
+                                        input.value = value;
+                                        this.setState({input})
+                                    }}
+                                />
+                                <View style={{marginLeft: -20}}>
+                                    <IconToggle onPress={this.addTask} name="add"/>
+                                </View>
+                            </View>
+                        </View> : <Spinner/>
+                    }
+                </KeyboardAvoidingView>
             </Template>
         )
     }
@@ -262,7 +315,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onInitLists: () => dispatch(actions.initLists()),
         onInitList: (id, callback) => dispatch(actions.initList(id, callback)),
-        onSaveQuicklyTask: (task, list_id, callback) => dispatch(actions.saveQuicklyTask(task, list_id, callback)),
+        onSaveQuicklyTask: (task, list, callback) => dispatch(actions.saveQuicklyTask(task, list, callback)),
         onSaveList: (list, callback) => dispatch(actions.saveList(list, callback)),
         onRemoveQuicklyTask: (id, callback) => dispatch(actions.removeQuicklyTask(id, callback)),
         onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))

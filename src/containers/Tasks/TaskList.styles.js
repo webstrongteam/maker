@@ -41,7 +41,8 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
     dropdownIcon: {
-        marginLeft: 4,
+        marginTop: Platform.OS === 'ios' ? 6 : 2,
+        marginLeft: 5,
         width: 30,
         height: 30,
         textAlignVertical: 'center'

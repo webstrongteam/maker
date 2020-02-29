@@ -15,7 +15,7 @@ class ToDo extends PureComponent {
             index: 0,
             routes: [
                 {key: 'tasks', title: 'Tasks'},
-                {key: 'lists', title: 'Quickly lists'},
+                {key: 'lists', title: 'Quickly lists'}
             ]
         }
     };

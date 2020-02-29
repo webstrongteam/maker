@@ -50,8 +50,8 @@ export const saveCategory = (category, callback) => {
         } else {
             db.transaction(
                 tx => {
-                    tx.executeSql('insert into categories (name) values (?)', [category.name], () => {
-                        callback();
+                    tx.executeSql('insert into categories (name) values (?)', [category.name], (_, {insertId}) => {
+                        callback({id: insertId, name: category.name});
                     });
                 }, (err) => console.log(err)
             );
@@ -59,11 +59,12 @@ export const saveCategory = (category, callback) => {
     };
 };
 
-export const removeCategory = (id) => {
+export const removeCategory = (id, callback = () => null) => {
     return dispatch => {
         db.transaction(
             tx => {
                 tx.executeSql('delete from categories where id = ?', [id], () => {
+                    callback();
                     dispatch(initCategories());
                 });
             }, (err) => console.log(err)

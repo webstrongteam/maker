@@ -96,6 +96,7 @@
   "QuicklyTaskList": {
     "listName": "List name",
     "dialogTitle": "Edit list name",
+    "quicklyAdding": "Quickly adding",
     "emptyList": "Quickly list is empty!"
   },
   "ConfigQuicklyTask": {
@@ -187,7 +188,7 @@
   },
   "About": {
     "title": "About",
-    "primaryText": "Maker is an advanced ToDo mobile application created with React Native and Expo framework.\n This app works with Android and iOS.",
+    "primaryText": "Maker is an advanced ToDo mobile application created with React Native and Expo framework.\n This app is available in Android and iOS.",
     "secondaryText": "Maker source code is available on github:"
   },
   "validation": {

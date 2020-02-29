@@ -100,6 +100,7 @@
   "QuicklyTaskList": {
     "listName": "Nazwa listy",
     "dialogTitle": "Edycja nazwy listy",
+    "quicklyAdding": "Szybkie dodawanie",
     "emptyList": "Szybka lista jest pusta!"
   },
   "ConfigQuicklyTask": {
@@ -192,7 +193,7 @@
   },
   "About": {
     "title": "Informacje",
-    "primaryText": "Maker to zaawansowana aplikacja moblna przeznaczona do zarządzania zadaniami.\n Aplikacja ta została stworzona z wykorzystaniem technologii React Native i Expo framework. Aplikacja działan na platformie Android i iOS.",
+    "primaryText": "Maker to zaawansowana aplikacja mobilna przeznaczona do zarządzania zadaniami.\n Aplikacja ta została stworzona z wykorzystaniem technologii React Native i Expo framework. Maker jest dostępny na platformie Android i iOS.",
     "secondaryText": "Kod źródłowy aplikacji znajduje się w repozytorium GitHub'a:"
   },
   "validation": {

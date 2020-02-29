@@ -38,19 +38,12 @@ export const configTask = async (task, color, setEvent, setNotification) => {
 };
 
 export const setLocalNotification = async (task, color) => {
-    let notificationStatus;
-
-    const {status: existingStatus} = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-    notificationStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-        const {status} = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-        notificationStatus = status;
-    }
-
-    if (notificationStatus === 'granted') {
+    const {status} = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    if (status === 'granted') {
         // Convert date
         const date = new Date(moment(task.date, 'DD-MM-YYYY HH:mm').format());
 
+        // Remove old notification
         if (task.notification_id !== null) await deleteLocalNotification(task.notification_id);
 
         return await setScheduleLocalNotification(task, date, color);
@@ -62,9 +55,10 @@ const setScheduleLocalNotification = async (task, date, color) => {
     return await Notifications.scheduleLocalNotificationAsync(
         {
             title: task.name,
-            body: task.description,
+            body: task.description ? task.description : " ",
             data: date,
             android: {
+                sticky: true,
                 color: color,
                 icon: 'http://webstrong.pl/Maker/app_images/logo.png'
             },
@@ -79,56 +73,62 @@ const setScheduleLocalNotification = async (task, date, color) => {
 
 export const setCalendarEvent = async (task, color, calendarId = null) => {
     // Set calendar event
-    const {status} = await Permissions.askAsync('calendar');
+    const {status} = await Permissions.askAsync(Permissions.CALENDAR, Permissions.REMINDERS);
     const calendars = await Calendar.getCalendarsAsync();
-    if (status === 'granted' && Platform.OS !== 'ios') {
-        // For android
-        for (let i = 0; i < calendars.length; i++) {
-            if (calendars[i].ownerAccount === 'Maker' && calendars[i].allowsModifications) {
-                calendarId = calendars[i].id
-            }
-        }
-        if (!calendarId) {
-            // Create new calendar
-            const details = {
-                title: 'Maker - ToDo list',
-                color: color,
-                source: {
-                    isLocalAccount: true,
-                    name: 'Maker'
-                },
-                name: 'Maker - ToDo list',
-                ownerAccount: 'Maker',
-                timeZone: Localization.timezone,
-                allowsModifications: true,
-                allowedAvailabilities: [Calendar.Availability.BUSY, Calendar.Availability.FREE, Calendar.Availability.TENTATIVE],
-                allowedReminders: [Calendar.AlarmMethod.ALARM, Calendar.AlarmMethod.ALERT, Calendar.AlarmMethod.EMAIL, Calendar.AlarmMethod.SMS, Calendar.AlarmMethod.DEFAULT],
-                allowedAttendeeTypes: [Calendar.AttendeeType.REQUIRED, Calendar.AttendeeType.NONE],
-                type: Calendar.EntityTypes.REMINDER,
-                isVisible: true,
-                isSynced: true,
-                accessLevel: Calendar.CalendarAccessLevel.ROOT
-            };
-            await Calendar.createCalendarAsync(details)
-                .then((id) => calendarId = id)
-                .catch(() => calendarId = null)
-        }
-    } else if (Platform.OS === 'ios') {
-        // For iOS # To Fix #
-        const {statusIos} = await Permissions.askAsync('reminders');
-        if (statusIos === 'granted') {
-            for (let i = 0; i < calendars.length; i++) {
-                if (calendars[i].ownerAccount === 'Maker' && calendars[i].allowsModifications) {
-                    calendarId = calendars[i].id
-                }
-            }
+    if (status === 'granted') {
+        if (Platform.OS === 'android') {
+            // For android
+            const calendar = calendars.find(c => c.name === 'Maker');
+            if (calendar) calendarId = calendar.id;
+
             if (!calendarId) {
                 // Create new calendar
                 const details = {
                     title: 'Maker - ToDo list',
                     color: color,
-                    entityType: Calendar.EntityTypes.REMINDER,
-                    sourceId: 'Maker',
+                    source: {
+                        isLocalAccount: true,
+                        name: 'Maker'
+                    },
+                    name: 'Maker',
+                    ownerAccount: 'Maker',
+                    timeZone: Localization.timezone,
+                    allowsModifications: true,
+                    allowedAvailabilities: [Calendar.Availability.BUSY, Calendar.Availability.FREE, Calendar.Availability.TENTATIVE],
+                    allowedReminders: [Calendar.AlarmMethod.ALARM, Calendar.AlarmMethod.ALERT, Calendar.AlarmMethod.EMAIL, Calendar.AlarmMethod.SMS, Calendar.AlarmMethod.DEFAULT],
+                    allowedAttendeeTypes: [Calendar.AttendeeType.REQUIRED, Calendar.AttendeeType.NONE],
+                    type: Calendar.EntityTypes.REMINDER,
+                    isVisible: true,
+                    isSynced: true,
+                    accessLevel: Calendar.CalendarAccessLevel.ROOT
+                };
+                await Calendar.createCalendarAsync(details)
+                    .then((id) => calendarId = id)
+                    .catch(() => calendarId = null)
+            }
+        } else if (Platform.OS === 'ios') {
+            // For iOS
+            const calendar = calendars.find(c => c.name === 'Maker');
+            if (calendar) calendarId = calendar.id;
+
+            if (!calendarId) {
+                // Create new calendar
+                const getDefaultCalendarSource = async () => {
+                    const calendars = await Calendar.getCalendarsAsync();
+                    const defaultCalendars = calendars.filter(each => each.allowedAvailabilities.length);
+                    return defaultCalendars[0].source;
+                };
+                const defaultCalendarSource = await getDefaultCalendarSource();
+
+                const details = {
+                    title: 'Maker - ToDo list',
+                    name: 'Maker',
+                    ownerAccount: 'personal',
+                    color: color,
+                    entityType: Calendar.EntityTypes.EVENT,
+                    sourceId: defaultCalendarSource.id,
+                    source: defaultCalendarSource,
+                    accessLevel: Calendar.CalendarAccessLevel.OWNER,
                 };
                 await Calendar.createCalendarAsync(details)
                     .then((id) => calendarId = id)
@@ -174,5 +174,7 @@ export const deleteCalendarEvent = async (event_id) => {
 };
 
 export const deleteLocalNotification = async (notification_id) => {
-    await Notifications.cancelScheduledNotificationAsync(+notification_id);
+    if (Platform.OS === 'android') {
+        await Notifications.cancelScheduledNotificationAsync(+notification_id);
+    }
 };

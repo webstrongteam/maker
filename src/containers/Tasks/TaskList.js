@@ -64,7 +64,7 @@ class TaskList extends Component {
         if (prevProps.refresh !== this.props.refresh) {
             this.refreshComponent();
         }
-        if (prevProps.categories !== this.props.categories) {
+        if (prevProps.categories.length !== this.props.categories.length) {
             this.renderDropdownData();
         }
         if (prevProps.tasks !== this.props.tasks ||
@@ -265,7 +265,7 @@ class TaskList extends Component {
                     toValue: -400,
                     duration: 500,
                     easing: Easing.bezier(0.0, 0.0, 0.2, 1),
-                    useNativeDriver: Platform.OS === 'android'
+                    useNativeDriver: false
                 }
             ).start(() => {
                 animations[`hide${this.state.selectedTask.id}`] = true;
@@ -385,7 +385,7 @@ class TaskList extends Component {
                     const moveValue = this.state.animations[`move${task.id}`] ?
                         this.state.animations[`move${task.id}`] : 0;
                     const hideTask = this.state.animations[`hide${task.id}`] ?
-                        this.state.animations[`hide${task.id}`] : 'auto';
+                        0 : 'auto';
 
                     // Searching system
                     const searchText = this.state.searchText.toLowerCase();
