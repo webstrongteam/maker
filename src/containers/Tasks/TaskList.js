@@ -396,7 +396,6 @@ class TaskList extends Component {
                             }
                         }
                     }
-                    console.log(task);
 
                     return (
                         <View key={index}>
@@ -437,7 +436,7 @@ class TaskList extends Component {
                                         }
                                         centerElement={
                                             <View>
-                                                <Text style={{
+                                                <Text numberOfLines={1} style={{
                                                     margin: 2,
                                                     fontSize: 18,
                                                     color: theme.secondaryTextColor
@@ -445,7 +444,7 @@ class TaskList extends Component {
                                                     {task.name}
                                                 </Text>
                                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                                    <Text style={{
+                                                    <Text numberOfLines={1} style={{
                                                         margin: 2,
                                                         fontWeight: '500',
                                                         color: task.finished ?
@@ -463,7 +462,7 @@ class TaskList extends Component {
                                                         name="autorenew"/>
                                                     }
                                                 </View>
-                                                <Text style={{
+                                                <Text numberOfLines={1} style={{
                                                     margin: 2,
                                                     color: theme.thirdTextColor
                                                 }}>
