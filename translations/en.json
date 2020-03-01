@@ -151,14 +151,34 @@
     "priorityHigh": "High"
   },
   "OtherRepeat": {
+    "repeatTime": "Repeat time",
+    "repeatDay": "Repeat weekdays",
+    "repeatDays": "each: ",
     "valueLabel": "Repeat every",
     "dialogTitle": "Config custom repeat",
     "minutes": "Minutes",
     "hours": "Hours",
     "days": "Days",
-    "week": "Weeks",
-    "month": "Months",
-    "year": "Years"
+    "weeks": "Weeks",
+    "months": "Months",
+    "years": "Years",
+    "day0": "Mon.",
+    "day1": "Tues.",
+    "day2": "Wed.",
+    "day3": "Thurs.",
+    "day4": "Fri.",
+    "day5": "Sat.",
+    "day6": "Sun."
+  },
+  "OtherDays": {
+    "repeatDaysTitle": "Repeat in each:",
+    "monday": "Mon",
+    "tuesday": "Tues",
+    "wednesday": "Wed",
+    "thursday": "Thurs",
+    "friday": "Fri",
+    "saturday": "Sat",
+    "sunday": "Sun"
   },
   "ConfigCategory": {
     "nameLabel": "Enter category name",

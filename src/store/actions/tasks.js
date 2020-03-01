@@ -142,7 +142,21 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
     const dateFormat = task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
 
     if (+task.repeat === parseInt(task.repeat, 10)) { // Other repeat
-        nextDate = moment(nextDate, dateFormat).add(+task.repeat.substring(1), convertNumberToDate(+task.repeat[0]));
+        if (+task.repeat[0] === 6) {
+            [...Array(5).keys()].map((i) => {
+                task.repeat.split('').map((weekday, index) => {
+                    if (index && nextDate === task.date) {
+                        const actualDate = moment(task.date, 'DD-MM-YYYY').add(i, 'days').format('DD-MM-YYYY');
+                        const compareDate = moment(task.date, 'DD-MM-YYYY').day(weekday).add(1, 'days').format('DD-MM-YYYY');
+                        if (actualDate === compareDate) {
+                            nextDate = compareDate;
+                        }
+                    }
+                })
+            })
+        } else {
+            nextDate = moment(nextDate, dateFormat).add(+task.repeat.substring(1), convertNumberToDate(+task.repeat[0]));
+        }
     } else if (task.repeat === 'onceDay') nextDate = moment(nextDate, dateFormat).add(1, 'days');
     else if (task.repeat === 'onceDayMonFri') {
         if (moment(task.date, dateFormat).day() === 5) { // Friday

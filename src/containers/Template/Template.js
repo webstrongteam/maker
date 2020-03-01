@@ -76,6 +76,7 @@ class Template extends Component {
                     />
 
                     <Snackbar visible={showSnackbar} message={snackbarText}
+                              style={{container: {backgroundColor: '#1a1a1a'}}}
                               onPress={() => this.props.onUpdateSnackbar(false)}
                               onRequestClose={() => this.props.onUpdateSnackbar(false)}/>
 

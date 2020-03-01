@@ -1,97 +1,80 @@
 import React, {Component} from "react";
-import {Platform, TouchableOpacity, View} from 'react-native';
-import {ListItem} from "react-native-material-ui";
-import Dialog from '../../../../components/UI/Dialog/Dialog';
-import Input from '../../../../components/UI/Input/Input';
-import {generateDialogObject} from "../../../../shared/utility";
+import RepeatTime from "./RepeatTime";
+import RepeatDays from "./RepeatDays";
+import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
+import Spinner from "../../../../components/UI/Spinner/Spinner";
+import Modal from "react-native-modalbox";
 
 import {connect} from "react-redux";
 
 class OtherRepeat extends Component {
     state = {
-        control: {
-            label: this.props.translations.valueLabel,
-            number: true,
-            positiveNumber: true,
-            required: true,
-            characterRestriction: 4,
-            keyboardType: 'number-pad'
-        },
-        repeatTimes: ['minutes', 'hours', 'days', 'week', 'month', 'year'],
-        dialog: null
+        tabs: {
+            index: 0,
+            routes: [
+                {key: 'time', title: this.props.translations.repeatTime},
+                {key: 'days', title: this.props.translations.repeatDay}
+            ]
+        }
     };
 
-    componentDidMount() {
-        this.showDialog();
-    }
-
-    showDialog = () => {
-        const {translations} = this.props;
-        const dialog = generateDialogObject(
-            translations.dialogTitle,
-            null,
-            {
-                [translations.save]: () => {
-                    if (!this.state.control.error) {
-                        this.props.save()
-                    }
-                },
-                [translations.cancel]: () => this.props.cancel()
-            }
-        );
-        this.setState({dialog});
+    saveHandler = (repeat, selectedTime) => {
+        this.props.save(repeat, selectedTime);
     };
 
     render() {
-        const {dialog, repeatTimes, control} = this.state;
-        const {showModal, usingTime, repeat, selectedTime, theme, translations} = this.props;
+        const {tabs} = this.state;
+        const {showModal, usingTime, repeat, selectedTime, theme} = this.props;
 
         return (
             <React.Fragment>
-                {dialog &&
-                <Dialog
-                    showModal={showModal}
-                    title={dialog.title}
-                    buttons={dialog.buttons}
-                >
-                    <Input
-                        elementConfig={control}
-                        focus={true}
-                        value={repeat}
-                        changed={(val, control) => {
-                            this.setState({control});
-                            this.props.onSetRepeat(val);
-                        }}
-                    />
+                <Modal
+                    style={{backgroundColor: theme.secondaryBackgroundColor}}
+                    isOpen={showModal}
+                    swipeToClose={showModal}
+                    onClosed={() => this.props.cancel()}>
 
-                    <View style={{marginBottom: 10, color: theme.primaryTextColor}}>
-                        {repeatTimes.map((time, index) => {
-                            if (!usingTime && (time === 'hours' || time === 'minutes')) return null;
-                            return (
-                                <TouchableOpacity key={index} onPress={() => this.props.onSelectTime(index + '')}>
-                                    <ListItem
-                                        divider
-                                        dense
-                                        style={{
-                                            contentViewContainer: {
-                                                backgroundColor: Platform.OS === 'ios' ?
-                                                    theme.secondaryBackgroundColor : 'transparent'
-                                            },
-                                            primaryText: {
-                                                color: index + '' === selectedTime + '' ?
-                                                    theme.primaryColor : theme.thirdTextColor
-                                            }
-                                        }}
-                                        centerElement={{
-                                            primaryText: translations[time]
-                                        }}
-                                    />
-                                </TouchableOpacity>
+                    <TabView
+                        navigationState={tabs}
+                        tabStyle={{backgroundColor: theme.primaryColor}}
+                        onIndexChange={index => {
+                            tabs.index = index;
+                            this.setState({tabs});
+                        }}
+                        renderScene={SceneMap({
+                            time: () => (
+                                <>
+                                    <RepeatTime
+                                        save={this.saveHandler}
+                                        close={this.props.cancel}
+                                        usingTime={usingTime} repeat={repeat}
+                                        selectedTime={selectedTime}/>
+                                </>
+                            ),
+                            days: () => (
+                                <>
+                                    <RepeatDays
+                                        save={this.saveHandler}
+                                        close={this.props.cancel}
+                                        repeat={repeat}
+                                        selectedTime={selectedTime}/>
+                                </>
                             )
                         })}
-                    </View>
-                </Dialog>
-                }
+                        renderTabBar={(props) =>
+                            <TabBar
+                                {...props}
+                                onTabPress={({route}) => {
+                                    props.jumpTo(route.key);
+                                }}
+                                indicatorStyle={{backgroundColor: theme.primaryTextColor}}
+                                style={{backgroundColor: theme.primaryColor}}
+                            />
+                        }
+                        renderLazyPlaceholder={() => <Spinner/>}
+                        lazy
+                    />
+                </Modal>
             </React.Fragment>
         );
     }
@@ -101,8 +84,7 @@ const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
         translations: {
-            ...state.settings.translations.OtherRepeat,
-            ...state.settings.translations.common
+            ...state.settings.translations.OtherRepeat
         }
     }
 };

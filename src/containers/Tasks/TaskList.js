@@ -396,6 +396,7 @@ class TaskList extends Component {
                             }
                         }
                     }
+                    console.log(task);
 
                     return (
                         <View key={index}>
@@ -417,27 +418,13 @@ class TaskList extends Component {
                                         onPress={() => task.finish ?
                                             null : navigation.navigate('ConfigTask', {task: task.id})}
                                         style={{
-                                            container: [
-                                                shadow,
-                                                {backgroundColor: theme.primaryBackgroundColor}
-                                            ],
+                                            container: {
+                                                ...shadow,
+                                                height: 80,
+                                                backgroundColor: theme.primaryBackgroundColor
+                                            },
                                             leftElementContainer: {
                                                 marginRight: -50
-                                            },
-                                            primaryText: {
-                                                fontSize: 18,
-                                                color: theme.secondaryTextColor
-                                            },
-                                            secondaryText: {
-                                                fontWeight: '500',
-                                                color: task.finished ?
-                                                    theme.thirdTextColor :
-                                                    div === translations.overdue ?
-                                                        theme.warningColor :
-                                                        theme.thirdTextColor
-                                            },
-                                            tertiaryText: {
-                                                color: theme.thirdTextColor
                                             }
                                         }}
                                         leftElement={
@@ -448,13 +435,42 @@ class TaskList extends Component {
                                                 backgroundColor: priorityColors[task.priority].bgColor
                                             }}/>
                                         }
-                                        centerElement={{
-                                            primaryText: task.name,
-                                            secondaryText: task.date ?
-                                                task.date : task.description ?
-                                                    task.description : ' ',
-                                            tertiaryText: task.category ? task.category.name : ' '
-                                        }}
+                                        centerElement={
+                                            <View>
+                                                <Text style={{
+                                                    margin: 2,
+                                                    fontSize: 18,
+                                                    color: theme.secondaryTextColor
+                                                }}>
+                                                    {task.name}
+                                                </Text>
+                                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                    <Text style={{
+                                                        margin: 2,
+                                                        fontWeight: '500',
+                                                        color: task.finished ?
+                                                            theme.thirdTextColor :
+                                                            div === translations.overdue ?
+                                                                theme.warningColor :
+                                                                theme.thirdTextColor
+                                                    }}>
+                                                        {task.date ? task.date : task.description ? task.description : ' '}
+                                                    </Text>
+                                                    {task.repeat !== 'noRepeat' &&
+                                                    <Icon
+                                                        size={16} color={theme.thirdTextColor}
+                                                        style={{alignSelf: 'center'}}
+                                                        name="autorenew"/>
+                                                    }
+                                                </View>
+                                                <Text style={{
+                                                    margin: 2,
+                                                    color: theme.thirdTextColor
+                                                }}>
+                                                    {task.category ? task.category.name : ' '}
+                                                </Text>
+                                            </View>
+                                        }
                                         rightElement={
                                             <View style={styles.rightElements}>
                                                 <IconToggle

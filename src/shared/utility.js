@@ -85,23 +85,31 @@ export const sortingByType = (array, sorting, sortingType) => {
     }
 };
 
-export const convertNumberToDate = (number) => {
+export const convertNumberToDate = (number, translations) => {
     switch (number) {
         case 0:
-            return "minutes";
+            return translations.minutes;
         case 1:
-            return "hours";
+            return translations.hours;
         case 2:
-            return "days";
+            return translations.days;
         case 3:
-            return "week";
+            return translations.weeks;
         case 4:
-            return "month";
+            return translations.months;
         case 5:
-            return "year";
+            return translations.years;
+        case 6:
+            return translations.years;
         default:
-            return "days"
+            return translations.days;
     }
+};
+
+export const convertDaysIndex = (daysIndex, translations) => {
+    return daysIndex.split('').sort((a,b) => a > b).map(index => {
+        return translations[`day${index}`];
+    }).join(', ')
 };
 
 export const generateDialogObject = (title, body, buttons) => {

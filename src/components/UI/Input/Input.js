@@ -49,10 +49,10 @@ class Input extends Component {
                     <TextField
                         {...control}
                         style={style ? style : fullWidth}
-                        textColor={theme.secondaryTextColor}
+                        textColor={theme.thirdTextColor}
                         baseColor={theme.thirdTextColor}
                         tintColor={theme.primaryColor}
-                        errorColor={control.error === true ? theme.secondaryTextColor : theme.warningColor}
+                        errorColor={control.error === true ? theme.thirdTextColor : theme.warningColor}
                         autoFocus={focus ? focus : false}
                         onChangeText={(val) => this.checkValid(val)}
                         value={value}

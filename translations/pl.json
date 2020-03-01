@@ -156,14 +156,34 @@
     "priorityHigh": "Wysoki"
   },
   "OtherRepeat": {
+    "repeatTime": "Powtarzanie czasowe",
+    "repeatDay": "Powtarzanie tygodniowe",
+    "repeatDays": "w każdy: ",
     "valueLabel": "Powtarzaj co",
     "dialogTitle": "Ustawienia niestandardowych powtórzeń",
     "minutes": "Minuty",
-    "hours": "Godzin",
+    "hours": "Godziny",
     "days": "Dni",
-    "week": "Tygodnie",
-    "month": "Miesiące",
-    "year": "Lata"
+    "weeks": "Tygodnie",
+    "months": "Miesiące",
+    "years": "Lata",
+    "day0": "Pon.",
+    "day1": "Wt.",
+    "day2": "Śr.",
+    "day3": "Czw.",
+    "day4": "Pt.",
+    "day5": "Sob.",
+    "day6": "Niedz."
+  },
+  "OtherDays": {
+    "repeatDaysTitle": "Powtarzaj cyklicznie w każdy:",
+    "monday": "Pon",
+    "tuesday": "Wt",
+    "wednesday": "Śr",
+    "thursday": "Czw",
+    "friday": "Pt",
+    "saturday": "Sob",
+    "sunday": "Niedz"
   },
   "ConfigCategory": {
     "nameLabel": "Wprowadź nazwę kategorii",

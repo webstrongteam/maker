@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
+import {Text, TouchableOpacity, View} from "react-native";
 import {Button, IconToggle, Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import {ColorWheel} from 'react-native-color-wheel';
 import colorsys from 'colorsys';
-import {Text, TouchableOpacity, View} from "react-native";
 import {generateDialogObject, checkValid} from "../../shared/utility";
 import {BannerAd} from "../../../adsAPI";
 import Modal from 'react-native-modalbox';

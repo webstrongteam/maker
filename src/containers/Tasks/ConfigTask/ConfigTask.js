@@ -13,6 +13,7 @@ import {
     convertPriorityNames,
     convertRepeatNames,
     generateDialogObject,
+    convertDaysIndex,
     checkValid
 } from '../../../shared/utility';
 import {configTask} from '../../../shared/configTask';
@@ -93,7 +94,11 @@ class ConfigTask extends Component {
             if (+task.repeat === parseInt(task.repeat, 10)) {
                 selectedTime = task.repeat[0];
                 repeatValue = task.repeat.substring(1);
-                otherOption = `${translations.other} (${+repeatValue} ${convertNumberToDate(+selectedTime)})`;
+                if (+selectedTime !== 6) {
+                    otherOption = `${translations.other} (${+repeatValue} ${convertNumberToDate(+selectedTime, translations)})`;
+                } else {
+                    otherOption = `${translations.other} (${translations.repeatDays} ${convertDaysIndex(repeatValue, translations)})`;
+                }
             }
 
             this.setState({
@@ -246,13 +251,17 @@ class ConfigTask extends Component {
         this.setState({showOtherRepeat: true});
     };
 
-    saveOtherRepeat = () => {
-        const {selectedTime, repeatValue} = this.state;
+    saveOtherRepeat = (repeatValue, selectedTime) => {
         const {translations} = this.props;
         const repeat = selectedTime + repeatValue;
-        const otherOption = `${translations.other} (${repeatValue} ${convertNumberToDate(+selectedTime)})`;
+        let otherOption;
+        if (+selectedTime !== 6) {
+            otherOption = `${translations.other} (${+repeatValue} ${convertNumberToDate(+selectedTime, translations)})`;
+        } else {
+            otherOption = `${translations.other} (${translations.repeatDays} ${convertDaysIndex(repeatValue, translations)})`;
+        }
         this.updateTask('repeat', repeat);
-        this.setState({otherOption, showOtherRepeat: false});
+        this.setState({otherOption, repeatValue, selectedTime, showOtherRepeat: false});
     };
 
     convertDate = (newDate) => {
@@ -352,9 +361,7 @@ class ConfigTask extends Component {
                     repeat={repeatValue}
                     selectedTime={selectedTime}
                     usingTime={task.date.length > 13}
-                    onSetRepeat={value => this.setState({repeatValue: value})}
-                    onSelectTime={value => this.setState({selectedTime: value})}
-                    save={this.saveOtherRepeat}
+                    save={(repeat, selectedTime) => this.saveOtherRepeat(repeat, selectedTime)}
                     cancel={() => this.setState({showOtherRepeat: false})}
                 />
 
@@ -389,7 +396,10 @@ class ConfigTask extends Component {
                                 mode="date"
                                 iconComponent={
                                     task.date ?
-                                        <IconToggle onPress={() => this.updateTask('date', '')} name='clear'/> :
+                                        <IconToggle onPress={() => {
+                                            this.updateTask('date', '');
+                                            this.updateTask('repeat', 'noRepeat');
+                                        }} name='clear'/> :
                                         <IconToggle onPress={() => this.datepickerDate.onPressDate()} name='event'/>
                                 }
                                 placeholder={translations.selectDueDate}

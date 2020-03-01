@@ -17,6 +17,14 @@ const dialog = (props) => {
     }
 };
 
+const checkSelectedOption = (value, selectedValue) => {
+    if (value.id && selectedValue.id) {
+        return +value.id === +selectedValue.id;
+    } else {
+        return value === selectedValue;
+    }
+};
+
 const blur = () => (
     <BlurView tint="light" intensity={50} style={{backgroundColor: props.theme.secondaryBackgroundColor}}/>
 );
@@ -83,7 +91,7 @@ const selectDialog = (props) => (
                                     props.theme.secondaryBackgroundColor : 'transparent'
                             },
                             primaryText: {
-                                color: option.value === props.selectedValue ?
+                                color: checkSelectedOption(option.value, props.selectedValue) ?
                                     props.theme.primaryColor : props.theme.thirdTextColor
                             },
                             ...option.style
