@@ -23,8 +23,8 @@ const about = (props) => {
                 }}
                 centerElement={props.translations.title}
             />
+            <ScrollView>
             <View style={styles.container}>
-                <ScrollView>
                     <Image
                         style={styles.logo}
                         source={require('../../assets/icon.png')}
@@ -43,13 +43,14 @@ const about = (props) => {
                             source={require('../../assets/github.png')}
                         />
                     </TouchableOpacity>
-                </ScrollView>
+
                 <View style={{opacity: 0.5}}>
                     <Text style={[styles.copy, {color: props.theme.thirdTextColor}]}>
                         &copy; by Mateusz Pijanowski (WebStrong team) v.{VERSION}
                     </Text>
                 </View>
             </View>
+            </ScrollView>
         </Template>
     )
 };

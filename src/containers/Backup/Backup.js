@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
-import {generateDialogObject, width} from '../../shared/utility';
-import {container, empty, listRow, row, shadow} from '../../shared/styles';
+import {generateDialogObject} from '../../shared/utility';
+import {empty, listRow, row, shadow} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import * as FileSystem from "expo-file-system";
 import * as Sharing from 'expo-sharing';
@@ -238,7 +238,7 @@ ${translations.showBackupAlertDescription2}`,
                 />
 
                 {!loading ?
-                    <View style={container}>
+                    <View style={{flex: 1}}>
                         <ScrollView style={{paddingTop: 5}}>
                             {backups.length ?
                                 backups.map(name => (
@@ -250,7 +250,6 @@ ${translations.showBackupAlertDescription2}`,
                                         style={{
                                             container: {
                                                 ...shadow, ...listRow,
-                                                width: width - 20,
                                                 backgroundColor: theme.primaryBackgroundColor
                                             }
                                         }}

@@ -59,6 +59,7 @@ export const shadow = {
 };
 
 export const separator = {
+    width: '100%',
     height: 1,
     marginLeft: 15,
     marginRight: 15,

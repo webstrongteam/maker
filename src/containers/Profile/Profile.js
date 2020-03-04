@@ -57,13 +57,14 @@ class Profile extends PureComponent {
 
     render() {
         const {loading, name} = this.state;
-        const {navigation, theme, tasks, finished, profile, categories, translations} = this.props;
+        const {navigation, theme, tasks, lists, finished, profile, categories, translations} = this.props;
         let list;
         const listData = [];
         listData.push({label: translations.allTask, data: tasks.length + finished.length});
         listData.push({label: translations.finishedTask, data: finished.length});
         listData.push({label: translations.endedTask, data: profile.endedTask});
         listData.push({label: translations.allCategories, data: categories.length});
+        listData.push({label: translations.allQuicklyLists, data: lists.length});
 
         if (profile.id === 0) {
             list = listData.map((item, index) => (
@@ -90,7 +91,7 @@ class Profile extends PureComponent {
                 />
 
                 {!loading ?
-                    <React.Fragment>
+                    <ScrollView>
                         {profile.id === 0 &&
                         <View style={{
                             backgroundColor: theme.secondaryBackgroundColor,
@@ -117,7 +118,7 @@ class Profile extends PureComponent {
                         <ScrollView style={flex}>
                             {list}
                         </ScrollView>
-                    </React.Fragment> : <Spinner/>
+                    </ScrollView> : <Spinner/>
                 }
                 <BannerAd/>
             </Template>
@@ -133,6 +134,7 @@ const mapStateToProps = state => {
         finished: state.tasks.finished,
         profile: state.profile,
         categories: state.categories.categories,
+        lists: state.lists.lists,
         translations: state.settings.translations.Profile
     }
 };

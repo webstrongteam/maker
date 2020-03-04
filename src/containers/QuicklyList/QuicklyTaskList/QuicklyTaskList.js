@@ -3,7 +3,7 @@ import {Text, TouchableOpacity, ScrollView, View, KeyboardAvoidingView} from 're
 import {IconToggle, Icon, Toolbar} from 'react-native-material-ui';
 import {empty, shadow, listContainer, listRow} from '../../../shared/styles';
 import Input from '../../../components/UI/Input/Input';
-import {generateDialogObject, width} from '../../../shared/utility';
+import {generateDialogObject} from '../../../shared/utility';
 import ConfigQuicklyTask from '../ConfigQuicklyTask/ConfigQuicklyTask';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Template from '../../Template/Template';
@@ -239,8 +239,7 @@ class QuicklyTaskList extends Component {
                                             style={{
                                                 ...shadow,
                                                 ...listRow,
-                                                backgroundColor: theme.primaryBackgroundColor,
-                                                width: width - 20
+                                                backgroundColor: theme.primaryBackgroundColor
                                             }}
                                             onPress={() => this.toggleModalHandler(row.id)}>
                                             <View style={listContainer}>

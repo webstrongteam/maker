@@ -1,8 +1,7 @@
 import React, {PureComponent} from 'react';
 import {ScrollView, View} from 'react-native';
 import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
-import {container, listRow, shadow} from '../../shared/styles';
-import {width} from '../../shared/utility';
+import {listRow, shadow} from '../../shared/styles';
 import ConfigCategory from './ConfigCategory/ConfigCategory';
 import Template from '../Template/Template';
 import {BannerAd} from '../../../adsAPI';
@@ -82,7 +81,7 @@ class CategoriesList extends PureComponent {
                 }
 
                 {ready &&
-                <View style={container}>
+                <View style={{flex: 1}}>
                     <ScrollView style={{paddingTop: 5}}>
                         {categories.map(cate => (
                             <ListItem
@@ -90,7 +89,6 @@ class CategoriesList extends PureComponent {
                                 style={{
                                     container: {
                                         ...shadow, ...listRow,
-                                        width: width - 20,
                                         backgroundColor: theme.primaryBackgroundColor
                                     }
                                 }}

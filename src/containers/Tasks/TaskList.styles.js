@@ -1,5 +1,7 @@
-import {StyleSheet} from "react-native";
+import {StyleSheet, Dimensions} from "react-native";
 import {Platform} from 'react-native';
+
+const width = Dimensions.get('window').width;
 
 export default StyleSheet.create({
     dropdown: {
@@ -29,7 +31,7 @@ export default StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 5 : -20,
         justifyContent: 'flex-start',
         width: 230,
-        height: 'auto',
+        height: width - 90,
         maxHeight: 425,
         borderWidth: 2,
         borderRadius: 3
