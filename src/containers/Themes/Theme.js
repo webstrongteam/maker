@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, TouchableOpacity, View} from "react-native";
+import {Text, TouchableOpacity, Platform, View} from "react-native";
 import {Button, IconToggle, Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
@@ -144,9 +144,11 @@ class Theme extends Component {
 
     onSaveColor = () => {
         const {selectedColor, actualColor, customTheme} = this.state;
-        customTheme[selectedColor] = colorsys.hsvToHex(actualColor);
+        if (actualColor && actualColor.constructor.name === 'Object') {
+            customTheme[selectedColor] = colorsys.hsvToHex(actualColor);
+        }
 
-        this.setState({customTheme, showColorPicker: false});
+        this.setState({customTheme, actualColor: '', showColorPicker: false});
     };
 
     saveTheme = () => {
@@ -204,7 +206,10 @@ class Theme extends Component {
                 />
 
                 <Modal
-                    style={{backgroundColor: theme.secondaryBackgroundColor}}
+                    style={{
+                        marginTop: Platform.OS === 'android' ? 40 : 0,
+                        backgroundColor: theme.secondaryBackgroundColor
+                    }}
                     isOpen={showColorPicker}
                     swipeToClose={showColorPicker}
                     onClosed={() => this.setState({showColorPicker: false})}>

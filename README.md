@@ -51,10 +51,8 @@ This app working with Android and iOS.
 - Moment.JS <i>2.24.0</i>
 - Colorsys <i>1.0.22</i>
 
-### Update 2.0:
-- Przetestować wszystko
-- Naprawić dodawanie backupa z plików telefonu na iosie
-- Zmienić ekran ładowania i grafiki promocyjne
+### ToDo:
+- Add backup ability for iOS devices
 
 ### WebStrong &copy;  
   

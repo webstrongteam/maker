@@ -115,9 +115,9 @@ class Profile extends PureComponent {
                                 }}/>
                         </View>
                         }
-                        <ScrollView style={flex}>
+                        <View>
                             {list}
-                        </ScrollView>
+                        </View>
                     </ScrollView> : <Spinner/>
                 }
                 <BannerAd/>

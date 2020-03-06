@@ -205,7 +205,9 @@
     "showConfirmDeleteDescription": "Delete this backup?",
     "yourApp": "Your app",
     "yourStorage": "Your storage",
-    "emptyList": "Backup list is empty!"
+    "emptyList": "Backup list is empty!",
+    "unavailableTitle": "Backups is unavailable!",
+    "unavailableDescription": "Sorry, but backups ability is unavailable in devices with iOS system. When this option has been available for you, we will inform."
   },
   "About": {
     "title": "About",

@@ -13,6 +13,7 @@
     "colorsys": "^1.0.22",
     "expo": "^36.0.0",
     "expo-ads-admob": "~8.0.0",
+    "expo-blur": "~8.0.0",
     "expo-calendar": "~8.0.0",
     "expo-constants": "~8.0.0",
     "expo-document-picker": "~8.0.0",
@@ -44,8 +45,7 @@
     "react-navigation": "^3.11.1",
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0",
-    "expo-blur": "~8.0.0"
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.0.0"

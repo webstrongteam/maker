@@ -31,8 +31,8 @@ export default StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 5 : -20,
         justifyContent: 'flex-start',
         width: 230,
-        height: width - 90,
-        maxHeight: 425,
+        height: 'auto',
+        maxHeight: width - 90,
         borderWidth: 2,
         borderRadius: 3
     },

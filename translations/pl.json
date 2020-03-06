@@ -210,7 +210,9 @@
     "showConfirmDeleteDescription": "Usunąć kopie bazy danych?",
     "yourApp": "Twojej aplikacji",
     "yourStorage": "Twojego telefonu",
-    "emptyList": "Lista kopii zapasowych jest pusta!"
+    "emptyList": "Lista kopii zapasowych jest pusta!",
+    "unavailableTitle": "Kopie zapasowe nie są dostępne!",
+    "unavailableDescription": "Przykro nam, ale funkcja kopii zapasowych nie jest jeszcze dostępna na urządzeniach z systemem iOS. Poinformujemy cię jak tylko opcja ta stanie się dla ciebie dostępna."
   },
   "About": {
     "title": "Informacje",

@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {ScrollView, Platform, Text, View} from 'react-native';
 import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
 import {empty, listRow, row, shadow} from '../../shared/styles';
@@ -29,7 +29,11 @@ class TaskList extends PureComponent {
     };
 
     componentDidMount() {
-        this.loadBackupFiles();
+        if (Platform.OS === 'ios') {
+            this.showDialog('unavailable');
+        } else {
+            this.loadBackupFiles();
+        }
     }
 
     loadBackupFiles = async () => {
@@ -212,6 +216,17 @@ ${translations.showBackupAlertDescription2}`,
                 }
             );
             dialog.select = true;
+        } else if (action === 'unavailable') {
+            dialog = generateDialogObject(
+                translations.unavailableTitle,
+                translations.unavailableDescription,
+                {
+                    [translations.cancel]: () => {
+                        this.props.onUpdateModal(false);
+                        this.props.navigation.goBack();
+                    }
+                }
+            );
         }
 
         this.props.onUpdateModal(true, dialog);
