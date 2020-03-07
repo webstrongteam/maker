@@ -29,6 +29,7 @@ class OtherRepeat extends Component {
         return (
             <React.Fragment>
                 <Modal
+                    coverScreen={true}
                     style={{backgroundColor: theme.secondaryBackgroundColor}}
                     isOpen={showModal}
                     swipeToClose={showModal}

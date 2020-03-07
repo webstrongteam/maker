@@ -107,7 +107,7 @@ export const convertNumberToDate = (number, translations) => {
 };
 
 export const convertDaysIndex = (daysIndex, translations) => {
-    return daysIndex.split('').sort((a,b) => a > b).map(index => {
+    return daysIndex.split('').sort((a, b) => a > b).map(index => {
         return translations[`day${index}`];
     }).join(', ')
 };

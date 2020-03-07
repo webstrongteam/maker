@@ -1,5 +1,5 @@
 import React from "react";
-import {Platform, TouchableOpacity, TouchableWithoutFeedback, View, Keyboard} from 'react-native';
+import {Keyboard, Platform, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import {BlurView} from 'expo-blur';
 import Dialog from "react-native-dialog";
 import {ListItem} from "react-native-material-ui";
@@ -37,7 +37,7 @@ const defaultDialog = (props) => (
             visible={props.showModal}>
             {props.title &&
             <Dialog.Title
-                style={{color: props.theme.thirdTextColor}}>
+                style={{textAlign: 'center', color: props.theme.thirdTextColor}}>
                 {props.title}
             </Dialog.Title>
             }
@@ -125,7 +125,7 @@ const inputDialog = (props) => (
             visible={props.showModal}>
             {props.title &&
             <Dialog.Title
-                style={{color: props.theme.thirdTextColor}}>
+                style={{textAlign: 'center', color: props.theme.thirdTextColor}}>
                 {props.title}
             </Dialog.Title>
             }

@@ -1,13 +1,5 @@
 import React, {Component} from 'react';
-import {
-    Animated,
-    Easing,
-    Platform,
-    ScrollView,
-    Text,
-    TouchableHighlight,
-    View
-} from 'react-native';
+import {Animated, AsyncStorage, Easing, Platform, ScrollView, Text, TouchableHighlight, View} from 'react-native';
 import {ActionButton, BottomNavigation, Icon, IconToggle, ListItem, Subheader, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject, sortingByType} from '../../shared/utility';
 import {empty, flex, fullWidth, shadow} from '../../shared/styles';
@@ -53,6 +45,7 @@ class TaskList extends Component {
     };
 
     componentDidMount() {
+        this.checkUpdate();
         this.selectedCategoryHandler();
         this.renderDropdownData();
     }
@@ -76,6 +69,14 @@ class TaskList extends Component {
             this.divisionTask();
         }
     }
+
+    checkUpdate = async () => {
+        const updated = await AsyncStorage.getItem('updated');
+        if (updated !== null) {
+            this.showDialog('updated');
+            AsyncStorage.removeItem('updated');
+        }
+    };
 
     onScroll = (e) => {
         const currentOffset = e.nativeEvent.contentOffset.y;
@@ -196,6 +197,16 @@ class TaskList extends Component {
                         this.deleteAllTask();
                     },
                     [translations.no]: () => {
+                        this.props.onUpdateModal(false);
+                    },
+                }
+            );
+        } else if (action === 'updated') {
+            dialog = generateDialogObject(
+                translations.updatedTitle,
+                `${translations.updatedDescription1}\n${translations.updatedDescription2}`,
+                {
+                    [translations.cancel]: () => {
                         this.props.onUpdateModal(false);
                     },
                 }
@@ -680,6 +691,7 @@ class TaskList extends Component {
                         keyboardShouldPersistTaps="always"
                         keyboardDismissMode="interactive"
                         onScroll={this.onScroll}
+                        scrollEventThrottle={16}
                         style={fullWidth}>
                         {(tasks && tasks.length) ?
                             <View style={{paddingBottom: 20}}>
@@ -759,15 +771,15 @@ const mapStateToProps = state => {
         sortingType: state.settings.settings.sortingType,
         theme: state.theme.theme,
         settings: state.settings.settings,
-        translations: {
-            ...state.settings.translations.TaskList,
-            ...state.settings.translations.common
-        },
         tasks: state.tasks.tasks,
         finished: state.tasks.finished,
         categories: state.categories.categories,
         showModal: state.config.showModal,
-        refresh: state.tasks.refresh
+        refresh: state.tasks.refresh,
+        translations: {
+            ...state.settings.translations.TaskList,
+            ...state.settings.translations.common
+        }
     }
 };
 

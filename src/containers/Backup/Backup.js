@@ -1,7 +1,8 @@
 import React, {PureComponent} from 'react';
-import {ScrollView, Platform, Text, View} from 'react-native';
+import {Platform, ScrollView, Text, View} from 'react-native';
 import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
+import {initApp} from '../../db';
 import {empty, listRow, row, shadow} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import * as FileSystem from "expo-file-system";
@@ -15,7 +16,7 @@ import moment from 'moment';
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
 
-class TaskList extends PureComponent {
+class Backup extends PureComponent {
     state = {
         showSelectBackupSource: false,
         showDialog: false,
@@ -56,14 +57,16 @@ class TaskList extends PureComponent {
         })
             .then(() => {
                 this.setState({loading: true});
-                this.props.onInitTheme();
-                this.props.onInitCategories();
-                this.props.onInitProfile();
-                this.props.onInitToDo();
-                this.props.onInitSettings(() => {
-                    this.setState({loading: false});
-                    this.toggleSnackbar(translations.dbReplaced);
-                });
+                initApp(() => {
+                    this.props.onInitTheme();
+                    this.props.onInitCategories();
+                    this.props.onInitProfile();
+                    this.props.onInitToDo();
+                    this.props.onInitSettings(() => {
+                        this.setState({loading: false});
+                        this.toggleSnackbar(translations.dbReplaced);
+                    });
+                })
             })
             .catch(() => {
                 this.toggleSnackbar(translations.dbReplacedError);
@@ -159,9 +162,7 @@ class TaskList extends PureComponent {
         if (action === 'showBackupAlert') {
             dialog = generateDialogObject(
                 translations.defaultTitle,
-                `${translations.showBackupAlertDescription1} '${name}' backup? 
-
-${translations.showBackupAlertDescription2}`,
+                `${translations.showBackupAlertDescription1} '${name}' backup?\n\n${translations.showBackupAlertDescription2}`,
                 {
                     [translations.yes]: () => {
                         this.props.onUpdateModal(false);
@@ -321,4 +322,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
+export default connect(mapStateToProps, mapDispatchToProps)(Backup);

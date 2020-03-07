@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import {Text, TouchableOpacity, Platform, View} from "react-native";
+import {Text, TouchableOpacity, View} from "react-native";
 import {Button, IconToggle, Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import {ColorWheel} from 'react-native-color-wheel';
 import colorsys from 'colorsys';
-import {generateDialogObject, checkValid} from "../../shared/utility";
+import {checkValid, generateDialogObject} from "../../shared/utility";
 import {BannerAd} from "../../../adsAPI";
 import Modal from 'react-native-modalbox';
 import styles from './Theme.styles';
@@ -206,10 +206,8 @@ class Theme extends Component {
                 />
 
                 <Modal
-                    style={{
-                        marginTop: Platform.OS === 'android' ? 40 : 0,
-                        backgroundColor: theme.secondaryBackgroundColor
-                    }}
+                    coverScreen={true}
+                    style={{backgroundColor: theme.secondaryBackgroundColor}}
                     isOpen={showColorPicker}
                     swipeToClose={showColorPicker}
                     onClosed={() => this.setState({showColorPicker: false})}>

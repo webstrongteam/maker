@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Text, TouchableOpacity, ScrollView, View} from "react-native";
-import {Button, Avatar} from "react-native-material-ui";
+import {ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {Avatar, Button} from "react-native-material-ui";
 import {connect} from "react-redux";
 
 class RepeatDays extends Component {
@@ -32,14 +32,14 @@ class RepeatDays extends Component {
 
         return (
             <View style={{flex: 1}}>
-                <Text style={{
-                    margin: 40,
-                    color: theme.thirdTextColor,
-                    fontSize: 21, textAlign: 'center'
-                }}>
-                    {translations.repeatDaysTitle}
-                </Text>
                 <ScrollView>
+                    <Text style={{
+                        margin: 40,
+                        color: theme.thirdTextColor,
+                        fontSize: 21, textAlign: 'center'
+                    }}>
+                        {translations.repeatDaysTitle}
+                    </Text>
                     <View style={{
                         flex: 1,
                         marginTop: 20,
@@ -65,34 +65,34 @@ class RepeatDays extends Component {
                             )
                         })}
                     </View>
+                    <View style={{
+                        flex: 2,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        margin: 50
+                    }}>
+                        <Button raised icon="done" text={translations.save}
+                                onPress={() => {
+                                    const {repeat, selectedTime} = this.state;
+                                    if (repeat.length) {
+                                        this.props.save(repeat, selectedTime);
+                                    }
+                                }}
+                                style={{
+                                    container: {backgroundColor: theme.doneIconColor},
+                                    text: {color: theme.primaryTextColor}
+                                }}
+                        />
+                        <Button raised icon="clear" text={translations.cancel}
+                                onPress={this.props.close}
+                                style={{
+                                    container: {backgroundColor: theme.warningColor},
+                                    text: {color: theme.primaryTextColor}
+                                }}
+                        />
+                    </View>
                 </ScrollView>
-                <View style={{
-                    flex: 2,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    margin: 50
-                }}>
-                    <Button raised icon="done" text={translations.save}
-                            onPress={() => {
-                                const {repeat, selectedTime} = this.state;
-                                if (repeat.length) {
-                                    this.props.save(repeat, selectedTime);
-                                }
-                            }}
-                            style={{
-                                container: {backgroundColor: theme.doneIconColor},
-                                text: {color: theme.primaryTextColor}
-                            }}
-                    />
-                    <Button raised icon="clear" text={translations.cancel}
-                            onPress={this.props.close}
-                            style={{
-                                container: {backgroundColor: theme.warningColor},
-                                text: {color: theme.primaryTextColor}
-                            }}
-                    />
-                </View>
             </View>
         )
     }

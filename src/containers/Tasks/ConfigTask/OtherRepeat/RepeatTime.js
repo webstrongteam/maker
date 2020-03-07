@@ -38,16 +38,16 @@ class RepeatTime extends Component {
 
         return (
             <View style={{flex: 1}}>
-                <Input
-                    elementConfig={control}
-                    focus={false}
-                    value={repeat}
-                    changed={(val, control) => {
-                        this.setState({control, repeat: val});
-                    }}
-                />
-
                 <ScrollView>
+                    <Input
+                        elementConfig={control}
+                        focus={false}
+                        value={repeat}
+                        changed={(val, control) => {
+                            this.setState({control, repeat: val});
+                        }}
+                    />
+
                     <View style={{marginTop: 10, color: theme.primaryTextColor}}>
                         {repeatTimes.map((time, index) => {
                             if (!usingTime && (time === 'hours' || time === 'minutes')) return null;
@@ -75,34 +75,34 @@ class RepeatTime extends Component {
                             )
                         })}
                     </View>
+                    <View style={{
+                        flex: 2,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        margin: 50
+                    }}>
+                        <Button raised icon="done" text={translations.save}
+                                onPress={() => {
+                                    const {control, repeat, selectedTime} = this.state;
+                                    if (!control.error) {
+                                        this.props.save(repeat, selectedTime);
+                                    }
+                                }}
+                                style={{
+                                    container: {backgroundColor: theme.doneIconColor},
+                                    text: {color: theme.primaryTextColor}
+                                }}
+                        />
+                        <Button raised icon="clear" text={translations.cancel}
+                                onPress={this.props.close}
+                                style={{
+                                    container: {backgroundColor: theme.warningColor},
+                                    text: {color: theme.primaryTextColor}
+                                }}
+                        />
+                    </View>
                 </ScrollView>
-                <View style={{
-                    flex: 2,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    margin: 50
-                }}>
-                    <Button raised icon="done" text={translations.save}
-                            onPress={() => {
-                                const {control, repeat, selectedTime} = this.state;
-                                if (!control.error) {
-                                    this.props.save(repeat, selectedTime);
-                                }
-                            }}
-                            style={{
-                                container: {backgroundColor: theme.doneIconColor},
-                                text: {color: theme.primaryTextColor}
-                            }}
-                    />
-                    <Button raised icon="clear" text={translations.cancel}
-                            onPress={this.props.close}
-                            style={{
-                                container: {backgroundColor: theme.warningColor},
-                                text: {color: theme.primaryTextColor}
-                            }}
-                    />
-                </View>
             </View>
         )
     }

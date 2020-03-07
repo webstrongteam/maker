@@ -3,7 +3,7 @@ import {ActivityIndicator, NativeModules, View} from 'react-native';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 import {getTheme, ThemeContext} from 'react-native-material-ui';
 import {activity} from './src/shared/styles';
-import {initDatabase, initTheme} from './src/db';
+import {initApp, initTheme} from './src/db';
 import * as Font from "expo-font";
 import Router from './src/router';
 import {Provider} from 'react-redux';
@@ -44,14 +44,14 @@ class App extends Component {
             'Ubuntu': require('./src/assets/fonts/Ubuntu.ttf')
         });
 
-        initDatabase(() => {
+        initApp(() => {
             initTheme(state => {
                 this.setState(state);
             })
         })
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (UIManager.setLayoutAnimationEnabledExperimental) {
             UIManager.setLayoutAnimationEnabledExperimental(true);
         }

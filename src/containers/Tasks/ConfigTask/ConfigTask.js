@@ -9,12 +9,12 @@ import Input from '../../../components/UI/Input/Input';
 import ConfigCategory from '../../Categories/ConfigCategory/ConfigCategory';
 import OtherRepeat from './OtherRepeat/OtherRepeat';
 import {
+    checkValid,
+    convertDaysIndex,
     convertNumberToDate,
     convertPriorityNames,
     convertRepeatNames,
-    generateDialogObject,
-    convertDaysIndex,
-    checkValid
+    generateDialogObject
 } from '../../../shared/utility';
 import {configTask} from '../../../shared/configTask';
 import {fullWidth} from '../../../shared/styles';

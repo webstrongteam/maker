@@ -32,7 +32,10 @@
     "finishDescription": "Zakończyć to zadanie?",
     "deleteTitle": "Jesteś pewnien?",
     "deleteDescription": "Usunąć to zadanie?",
-    "finishAllDescription": "Czy na pewno chcesz usunąć ukończone zadania?"
+    "finishAllDescription": "Czy na pewno chcesz usunąć ukończone zadania?",
+    "updatedTitle": "Witaj w wersji 2.0.0!",
+    "updatedDescription1": "Gratulacje! Udało nam się pomyślnie zaktualizować wersje twojej aplikacji!",
+    "updatedDescription2": "Na koniec zalecamy restart aplikacji."
   },
   "Themes": {
     "snackbar": "Motyw został zaktualizowany",
@@ -205,7 +208,7 @@
     "backupRemovedError": "Błąd usuwania kopii zapasowej!",
     "incorrectFile": "Ten plik jest niepoprawny!",
     "showBackupAlertDescription1": "Nadpisać aktualną bazę danych przez",
-    "showBackupAlertDescription2": "To spowoduje usunięcie aktualnej bazy danych!",
+    "showBackupAlertDescription2": "To spowoduje nadpisanie aktualnej bazy danych!",
     "showSelectBackupSourceTitle": "Stwórz kopię zapasową z...",
     "showConfirmDeleteDescription": "Usunąć kopie bazy danych?",
     "yourApp": "Twojej aplikacji",

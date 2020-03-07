@@ -130,8 +130,10 @@ class Settings extends PureComponent {
 
                 {!loading ?
                     <React.Fragment>
-                        <SettingsList backgroundColor={theme.secondaryBackgroundColor}
-                                      borderColor='#d6d5d9' defaultItemSize={50}>
+                        <SettingsList
+                            backgroundColor={theme.secondaryBackgroundColor}
+                            borderColor={theme.secondaryBackgroundColor}
+                            defaultItemSize={50}>
                             <SettingsList.Item
                                 hasNavArrow={false}
                                 title={translations.general}

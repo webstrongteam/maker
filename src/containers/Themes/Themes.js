@@ -45,15 +45,17 @@ class Themes extends PureComponent {
 
     selectedThemeHandler = (value, id) => {
         if (value) {
-            this.props.onSetSelectedTheme(id);
-            const selectedTheme = this.state.selectedTheme;
+            this.setState({loading: true}, () => {
+                this.props.onSetSelectedTheme(id);
+                const selectedTheme = this.state.selectedTheme;
 
-            Object.keys(selectedTheme).map(theme => {
-                selectedTheme[theme] = +theme === +id;
-            });
+                Object.keys(selectedTheme).map(theme => {
+                    selectedTheme[theme] = +theme === +id;
+                });
 
-            this.setState({selectedTheme});
-            this.toggleSnackbar(this.props.translations.snackbar);
+                this.setState({selectedTheme, loading: false});
+                this.toggleSnackbar(this.props.translations.snackbar);
+            })
         }
     };
 
@@ -75,8 +77,10 @@ class Themes extends PureComponent {
                 />
 
                 {!loading ?
-                    <SettingsList backgroundColor={actualTheme.secondaryBackgroundColor}
-                                  borderColor='#d6d5d9' defaultItemSize={50}>
+                    <SettingsList
+                        backgroundColor={actualTheme.secondaryBackgroundColor}
+                        borderColor={actualTheme.secondaryBackgroundColor}
+                        defaultItemSize={50}>
                         <SettingsList.Item
                             hasNavArrow={false}
                             title={translations.themesList}

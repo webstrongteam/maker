@@ -50,12 +50,12 @@ export const iconStyle = {
 export const shadow = {
     shadowColor: "#000",
     shadowOffset: {
-        width: 0,
+        width: 3,
         height: 3,
     },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
     shadowRadius: 5,
-    elevation: 3
+    elevation: 7
 };
 
 export const separator = {

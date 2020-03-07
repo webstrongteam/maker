@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Text, TouchableOpacity, ScrollView, View, KeyboardAvoidingView} from 'react-native';
-import {IconToggle, Icon, Toolbar} from 'react-native-material-ui';
-import {empty, shadow, listContainer, listRow} from '../../../shared/styles';
+import {KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Icon, IconToggle, Toolbar} from 'react-native-material-ui';
+import {empty, listContainer, listRow, shadow} from '../../../shared/styles';
 import Input from '../../../components/UI/Input/Input';
 import {generateDialogObject} from '../../../shared/utility';
 import ConfigQuicklyTask from '../ConfigQuicklyTask/ConfigQuicklyTask';

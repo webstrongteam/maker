@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {ActionButton, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
-import {empty, flex, shadow, fullWidth} from '../../shared/styles';
+import {empty, flex, fullWidth, shadow} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import styles from './QuicklyList.styles';
 

@@ -7,7 +7,7 @@ import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import {Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import {flex, separator} from '../../shared/styles';
+import {separator} from '../../shared/styles';
 import {BannerAd} from "../../../adsAPI";
 import styles from './Profile.styles';
 

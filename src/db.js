@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import {NativeModules, Platform} from "react-native";
+import {AsyncStorage, NativeModules, Platform} from "react-native";
 
 export const VERSION = '2.0.0'; // APP VERSION
 const db = SQLite.openDatabase('maker.db', VERSION);
@@ -59,14 +59,14 @@ export const initDatabase = (callback) => {
             "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker user', '', 0);"
         );
         tx.executeSql(
-            "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, hideTabView, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 0, 'en');", [VERSION + "_INIT"], () => {
+            "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, hideTabView, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 0, ?);", [VERSION + "_INIT", getLocale()], () => {
                 initApp(callback);
             }
         );
     }, (err) => console.log(err));
 };
 
-const initApp = (callback) => {
+export const initApp = (callback) => {
     db.transaction(
         tx => {
             // CHECK CORRECTION APP VERSION AND UPDATE DB
@@ -74,8 +74,7 @@ const initApp = (callback) => {
                 const version = rows._array[0].version;
                 if (version !== VERSION) {
                     if (version.includes('_INIT')) {
-                        tx.executeSql('UPDATE settings SET lang = ? WHERE id = 0;', [getLocale()]);
-                        tx.executeSql('UPDATE settings SET version = ? WHERE id = 0;', [VERSION]);
+                        tx.executeSql('UPDATE settings SET lang = ?, version = ? WHERE id = 0;', [getLocale(), VERSION]);
                     }
 
                     const prepareToUpdate = (update) => {
@@ -90,7 +89,10 @@ const initApp = (callback) => {
                                                         resolve();
                                                     });
                                                 })
-                                            }).then(() => initDatabase(callback))
+                                            }).then(() => {
+                                                AsyncStorage.setItem('updated', 'true');
+                                                initDatabase(callback);
+                                            })
                                         });
                                     });
                                 });
@@ -117,7 +119,7 @@ const initApp = (callback) => {
                         prepareToUpdate('1.1.0')
                     } else callback();
                 } else callback();
-            });
+            }, () => initDatabase(callback));
         }, (err) => console.log(err)
     );
 };

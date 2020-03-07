@@ -31,7 +31,10 @@
     "repeatDescription": "Do you want to repeat this task?",
     "finishDescription": "Finish this task?",
     "deleteDescription": "Delete this task?",
-    "finishAllDescription": "Do you want to delete all finished task?"
+    "finishAllDescription": "Do you want to delete all finished task?",
+    "updatedTitle": "Welcome in version 2.0.0!",
+    "updatedDescription1": "Congratulations! Version of your app has been correction updated! In the end, please restart your app.",
+    "updatedDescription2": "In the end, please restart your app."
   },
   "Themes": {
     "snackbar": "Theme has been updated",
@@ -206,8 +209,8 @@
     "yourApp": "Your app",
     "yourStorage": "Your storage",
     "emptyList": "Backup list is empty!",
-    "unavailableTitle": "Backups is unavailable!",
-    "unavailableDescription": "Sorry, but backups ability is unavailable in devices with iOS system. When this option has been available for you, we will inform."
+    "unavailableTitle": "Backups are unavailable!",
+    "unavailableDescription": "Sorry, but backups ability are unavailable in devices with iOS system. When this option has been available for you, we will inform."
   },
   "About": {
     "title": "About",
