@@ -93,13 +93,13 @@ class Report extends Component {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.form}>
                         <KeyboardAvoidingView behavior={'padding'} style={{flex: 1}}>
-                            <View style={styles.headerContainer}>
+                            <View>
                                 <Text style={{...styles.headerText, color: theme.thirdTextColor}}>
                                     {translations.headerText}
                                 </Text>
                             </View>
-                            <View style={styles.inputsContainer}>
-                                <ScrollView>
+                            <ScrollView>
+                                <View style={{flex: 1, paddingBottom: 50}}>
                                     <Input
                                         elementConfig={controls.title}
                                         focus={false}
@@ -116,13 +116,13 @@ class Report extends Component {
                                             this.changeDescription(value, control)
                                         }}
                                     />
-                                </ScrollView>
-                            </View>
+                                </View>
+                            </ScrollView>
                             {sending ? <Spinner/> :
                                 <Button raised icon="send" text={translations.sendButton}
                                         onPress={this.sendReport}
                                         style={{
-                                            container: {flex: 1, backgroundColor: theme.doneIconColor},
+                                            container: {backgroundColor: theme.doneIconColor},
                                             text: {color: theme.primaryTextColor}
                                         }}
                                 />

@@ -266,6 +266,16 @@ class TaskList extends Component {
         })
     };
 
+    adjustText = (textLength) => {
+        if (textLength > 35) return 12;
+        else if (textLength > 32) return 12.5;
+        else if (textLength > 32) return 14;
+        else if (textLength > 30) return 15;
+        else if (textLength > 25) return 16;
+        else if (textLength > 20) return 17;
+        else return 18;
+    };
+
     moveAnimate = (callback = () => null) => {
         const {animations} = this.state;
         animations[`move${this.state.selectedTask.id}`] = new Animated.Value(0);
@@ -389,7 +399,7 @@ class TaskList extends Component {
 
     renderTaskList = () => {
         const {division, initDivision, priorityColors} = this.state;
-        const {translations, theme, navigation} = this.props;
+        const {translations, theme, settings, navigation} = this.props;
         if (initDivision) {
             return Object.keys(division).map(div => (
                 division[div].map((task, index) => {
@@ -449,7 +459,8 @@ class TaskList extends Component {
                                             <View>
                                                 <Text numberOfLines={1} style={{
                                                     margin: 2,
-                                                    fontSize: 17,
+                                                    fontSize: settings.adjustTaskName ?
+                                                        this.adjustText(task.name.length) : 18,
                                                     color: theme.secondaryTextColor
                                                 }}>
                                                     {task.name}

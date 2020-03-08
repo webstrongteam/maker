@@ -46,7 +46,7 @@ const about = (props) => {
 
                     <View style={{opacity: 0.5}}>
                         <Text style={[styles.copy, {color: props.theme.thirdTextColor}]}>
-                            &copy; by Mateusz Pijanowski (WebStrong team) v.{VERSION}
+                            &copy; by Mateusz Pijanowski (WebStrong team) v.{VERSION} (test build v1)
                         </Text>
                     </View>
                 </View>

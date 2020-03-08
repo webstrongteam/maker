@@ -33,6 +33,7 @@ export {
     changeConfirmDeletingTask,
     changeConfirmFinishingTask,
     changeConfirmRepeatingTask,
+    changeAdjustTaskName,
     changeHideTabView,
     changeFirstDayOfWeek,
     changeTimeFormat,

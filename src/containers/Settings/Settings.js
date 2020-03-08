@@ -231,6 +231,21 @@ class Settings extends PureComponent {
                                 icon={
                                     <View style={iconStyle}>
                                         <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}}
+                                              name="text-fields"/>
+                                    </View>
+                                }
+                                hasNavArrow={false}
+                                itemWidth={70}
+                                hasSwitch={true}
+                                switchState={!!settings.adjustTaskName}
+                                switchOnValueChange={(value) => this.toggleSetting(value, 'AdjustTaskName')}
+                                titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
+                                title={translations.adjustTaskName}
+                            />
+                            <SettingsList.Item
+                                icon={
+                                    <View style={iconStyle}>
+                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}}
                                               name="view-compact"/>
                                     </View>
                                 }
@@ -245,7 +260,7 @@ class Settings extends PureComponent {
                         </SettingsList>
                         <View style={styles.version}>
                             <Text style={{color: theme.thirdTextColor}}>
-                                {translations.version}: {settings.version}
+                                {translations.version}: {settings.version} (test build v1)
                             </Text>
                         </View>
                     </React.Fragment> : <Spinner/>
@@ -276,6 +291,7 @@ const mapDispatchToProps = dispatch => {
         onChangeConfirmRepeatingTask: (value) => dispatch(actions.changeConfirmRepeatingTask(value)),
         onChangeConfirmFinishingTask: (value) => dispatch(actions.changeConfirmFinishingTask(value)),
         onChangeConfirmDeletingTask: (value) => dispatch(actions.changeConfirmDeletingTask(value)),
+        onChangeAdjustTaskName: (value) => dispatch(actions.changeAdjustTaskName(value)),
         onChangeHideTabView: (value) => dispatch(actions.changeHideTabView(value)),
         onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
         onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
