@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
-import {Platform, ScrollView, Text, View} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
-import {initApp} from '../../db';
+import Dialog from "../../components/UI/Dialog/Dialog";
 import {empty, listRow, row, shadow} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import * as FileSystem from "expo-file-system";
@@ -10,7 +10,8 @@ import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
 import * as SQLite from 'expo-sqlite';
 import Template from '../Template/Template';
-import {BannerAd} from "../../../adsAPI";
+import {BannerAd} from "../../API/adsAPI";
+import {initApp} from '../../db';
 import moment from 'moment';
 
 import {connect} from 'react-redux';
@@ -18,11 +19,17 @@ import * as actions from "../../store/actions";
 
 class Backup extends PureComponent {
     state = {
-        showSelectBackupSource: false,
         showDialog: false,
         dialog: null,
         backups: [],
         loading: true,
+        selectedBackup: {},
+        control: {
+            label: this.props.translations.newName,
+            required: true,
+            characterRestriction: 40,
+            error: true
+        },
         snackbar: {
             visible: false,
             message: ''
@@ -196,7 +203,6 @@ class Backup extends PureComponent {
                         value: translations.yourApp,
                         onClick: () => {
                             this.props.onUpdateModal(false);
-                            this.setState({showSelectBackupSource: false});
                             this.createBackup();
                         }
                     },
@@ -205,7 +211,6 @@ class Backup extends PureComponent {
                         value: translations.yourStorage,
                         onClick: () => {
                             this.props.onUpdateModal(false);
-                            this.setState({showSelectBackupSource: false});
                             this.addBackupFromStorage();
                         }
                     }
@@ -217,6 +222,36 @@ class Backup extends PureComponent {
                 }
             );
             dialog.select = true;
+        } else if (action === 'rename') {
+            dialog = generateDialogObject(
+                translations.newName,
+                {
+                    elementConfig: this.state.control,
+                    focus: true,
+                    value: this.state.selectedBackup.name,
+                    onChange: (value, control) => {
+                        const {selectedBackup} = this.state;
+                        selectedBackup.name = value;
+                        this.setState({selectedBackup, control}, () => this.showDialog(action));
+                    }
+                },
+                {
+                    Save: () => {
+                        const {selectedBackup, control} = this.state;
+                        if (!control.error) {
+                            FileSystem.moveAsync({
+                                from: selectedBackup.uri,
+                                to: `${FileSystem.documentDirectory}Backup/${selectedBackup.name}`
+                            })
+                                .then(() => this.loadBackupFiles())
+                                .catch(() => this.toggleSnackbar(translations.backupRenameError));
+                        }
+                        this.setState({showModal: false});
+                    },
+                    Cancel: () => this.setState({showModal: false})
+                }
+            );
+            return this.setState({dialog, showModal: true});
         } else if (action === 'unavailable') {
             dialog = generateDialogObject(
                 translations.unavailableTitle,
@@ -234,7 +269,7 @@ class Backup extends PureComponent {
     };
 
     render() {
-        const {loading, backups} = this.state;
+        const {loading, dialog, showModal, backups} = this.state;
         const {navigation, theme, translations} = this.props;
 
         return (
@@ -252,6 +287,16 @@ class Backup extends PureComponent {
                     }}
                     centerElement={translations.title}
                 />
+
+                {dialog &&
+                <Dialog
+                    showModal={showModal}
+                    input={true}
+                    title={dialog.title}
+                    body={dialog.body}
+                    buttons={dialog.buttons}
+                />
+                }
 
                 {!loading ?
                     <View style={{flex: 1}}>
@@ -271,6 +316,14 @@ class Backup extends PureComponent {
                                         }}
                                         rightElement={
                                             <View style={row}>
+                                                <IconToggle
+                                                    onPress={() => this.setState({
+                                                        selectedBackup: {
+                                                            name, uri: FileSystem.documentDirectory + 'Backup/' + name,
+                                                        }
+                                                    }, () => this.showDialog('rename'))}
+                                                    color={theme.undoIconColor}
+                                                    name="edit"/>
                                                 <IconToggle
                                                     onPress={() => this.shareBackup(name)}
                                                     color={theme.undoIconColor}

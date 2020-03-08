@@ -2,6 +2,7 @@ node_modules/**/*
 .expo*
 /.idea/*
 npm-debug.*
+/src/API/*
 *.jks
 *.p12
 *.key

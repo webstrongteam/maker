@@ -449,7 +449,7 @@ class TaskList extends Component {
                                             <View>
                                                 <Text numberOfLines={1} style={{
                                                     margin: 2,
-                                                    fontSize: 18,
+                                                    fontSize: 17,
                                                     color: theme.secondaryTextColor
                                                 }}>
                                                     {task.name}

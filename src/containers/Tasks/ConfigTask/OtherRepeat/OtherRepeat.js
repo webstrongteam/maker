@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {Platform} from 'react-native';
 import RepeatTime from "./RepeatTime";
 import RepeatDays from "./RepeatDays";
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
@@ -30,7 +31,10 @@ class OtherRepeat extends Component {
             <React.Fragment>
                 <Modal
                     coverScreen={true}
-                    style={{backgroundColor: theme.secondaryBackgroundColor}}
+                    style={{
+                        marginTop: Platform.OS === 'ios' ? 20 : 0,
+                        backgroundColor: theme.secondaryBackgroundColor
+                    }}
                     isOpen={showModal}
                     swipeToClose={showModal}
                     onClosed={() => this.props.cancel()}>

@@ -33,7 +33,7 @@
     "deleteDescription": "Delete this task?",
     "finishAllDescription": "Do you want to delete all finished task?",
     "updatedTitle": "Welcome in version 2.0.0!",
-    "updatedDescription1": "Congratulations! Version of your app has been correction updated! In the end, please restart your app.",
+    "updatedDescription1": "Congratulations! Version of your app has been correction updated!",
     "updatedDescription2": "In the end, please restart your app."
   },
   "Themes": {
@@ -117,13 +117,25 @@
     "title": "Your profile"
   },
   "Drawer": {
+    "general": "General",
+    "app": "App",
     "back": "Back",
     "categories": "Categories",
     "profile": "Profile",
+    "report": "Report",
     "themes": "Themes",
     "settings": "Settings",
     "backups": "Backups",
     "about": "About Maker"
+  },
+  "Report": {
+    "title": "Send report",
+    "titleLabel": "Title",
+    "descriptionLabel": "Description",
+    "correctSend": "Message has been send. Thanks!",
+    "errorSend": "An error occurred while sending the message. Please try again later.",
+    "headerText": "Report a bug, correction, idea for a new feature or anything else you would like to tell us.",
+    "sendButton": "Send"
   },
   "ConfigTask": {
     "nameLabel": "Enter task name",
@@ -202,10 +214,12 @@
     "backupRemoved": "Backup has been removed",
     "backupRemovedError": "Removing backup error!",
     "incorrectFile": "This file is incorrect!",
+    "backupRenameError": "Error occurred while renaming!",
     "showBackupAlertDescription1": "Replace current database by",
-    "showBackupAlertDescription2": "This will delete your current database!",
+    "showBackupAlertDescription2": "This will replace your current data!",
     "showSelectBackupSourceTitle": "Add database from...",
     "showConfirmDeleteDescription": "Delete this backup?",
+    "newName": "New name",
     "yourApp": "Your app",
     "yourStorage": "Your storage",
     "emptyList": "Backup list is empty!",

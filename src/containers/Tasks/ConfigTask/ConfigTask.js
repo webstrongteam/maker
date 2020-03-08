@@ -18,7 +18,7 @@ import {
 } from '../../../shared/utility';
 import {configTask} from '../../../shared/configTask';
 import {fullWidth} from '../../../shared/styles';
-import {BannerAd} from "../../../../adsAPI";
+import {BannerAd} from "../../../API/adsAPI";
 import styles from './ConfigTask.styles';
 import moment from 'moment';
 

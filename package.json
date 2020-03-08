@@ -10,6 +10,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "colorsys": "^1.0.22",
     "expo": "^36.0.0",
     "expo-ads-admob": "~8.0.0",

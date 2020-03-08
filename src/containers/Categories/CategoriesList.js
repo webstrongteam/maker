@@ -4,7 +4,7 @@ import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {listRow, shadow} from '../../shared/styles';
 import ConfigCategory from './ConfigCategory/ConfigCategory';
 import Template from '../Template/Template';
-import {BannerAd} from '../../../adsAPI';
+import {BannerAd} from '../../API/adsAPI';
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";

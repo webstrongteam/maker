@@ -11,6 +11,7 @@ import Theme from './containers/Themes/Theme';
 import Profile from './containers/Profile/Profile';
 import Settings from './containers/Settings/Settings';
 import Backups from './containers/Backup/Backup';
+import Report from './containers/Report/Report';
 import About from './components/About/About';
 
 const MainNavigator = createStackNavigator(
@@ -25,6 +26,7 @@ const MainNavigator = createStackNavigator(
         Theme: {screen: Theme},
         Settings: {screen: Settings},
         Backups: {screen: Backups},
+        Report: {screen: Report},
         About: {screen: About}
     },
     {

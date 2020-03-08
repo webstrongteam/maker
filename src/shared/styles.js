@@ -50,10 +50,10 @@ export const iconStyle = {
 export const shadow = {
     shadowColor: "#000",
     shadowOffset: {
-        width: 3,
-        height: 3,
+        width: 2,
+        height: 2,
     },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 7
 };

@@ -5,7 +5,7 @@ import SettingsList from 'react-native-settings-list';
 import {View} from 'react-native';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import {iconStyle} from '../../shared/styles';
-import {BannerAd} from "../../../adsAPI";
+import {BannerAd} from "../../API/adsAPI";
 
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";

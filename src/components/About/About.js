@@ -23,7 +23,7 @@ const about = (props) => {
                 }}
                 centerElement={props.translations.title}
             />
-            <ScrollView>
+            <ScrollView style={{backgroundColor: props.theme.secondaryBackgroundColor, height: '100%'}}>
                 <View style={styles.container}>
                     <Image
                         style={styles.logo}

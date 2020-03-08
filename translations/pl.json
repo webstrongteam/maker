@@ -121,13 +121,25 @@
     "title": "Twój profil"
   },
   "Drawer": {
+    "general": "Ogólne",
+    "app": "Aplikacja",
     "back": "Powrót",
     "categories": "Kategorie",
     "profile": "Profil",
+    "report": "Zgłoś poprawkę",
     "themes": "Motywy",
     "settings": "Ustawienia",
     "backups": "Kopie zapasowe",
     "about": "Informacje o aplikacji"
+  },
+  "Report": {
+    "title": "Wyślij zgłoszenie",
+    "titleLabel": "Tytuł",
+    "descriptionLabel": "Opis",
+    "correctSend": "Wiadomość została przesłana. Dziękujemy!",
+    "errorSend": "Wystapił błąd podczas przesyłania wiadomości. Spróbuj ponownie później.",
+    "headerText": "Zgłoś błąd, poprawkę, pomysł na nową funkcję lub cokolwiek innego co chiciałbyś nam przekazać.",
+    "sendButton": "Wyślij"
   },
   "ConfigTask": {
     "nameLabel": "Wprowadź nazwę zadania",
@@ -207,10 +219,12 @@
     "backupRemoved": "Kopia zapasowa została usunięta",
     "backupRemovedError": "Błąd usuwania kopii zapasowej!",
     "incorrectFile": "Ten plik jest niepoprawny!",
+    "backupRenameError": "Podczas zmiany nazwy wystapił błąd!",
     "showBackupAlertDescription1": "Nadpisać aktualną bazę danych przez",
-    "showBackupAlertDescription2": "To spowoduje nadpisanie aktualnej bazy danych!",
+    "showBackupAlertDescription2": "To spowoduje nadpisanie aktualnych danych!",
     "showSelectBackupSourceTitle": "Stwórz kopię zapasową z...",
     "showConfirmDeleteDescription": "Usunąć kopie bazy danych?",
+    "newName": "Nowa nazwa",
     "yourApp": "Twojej aplikacji",
     "yourStorage": "Twojego telefonu",
     "emptyList": "Lista kopii zapasowych jest pusta!",

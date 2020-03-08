@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Drawer, Toolbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
-import {BannerAd} from "../../../adsAPI";
+import {BannerAd} from "../../API/adsAPI";
 
 import {connect} from 'react-redux';
 
@@ -19,6 +19,7 @@ class DrawerContainer extends Component {
                 <Drawer style={{container: {backgroundColor: theme.secondaryBackgroundColor}}}>
                     <Drawer.Section
                         divider
+                        title={translations.app}
                         style={{container: {backgroundColor: theme.secondaryBackgroundColor}}}
                         items={[
                             {
@@ -31,10 +32,11 @@ class DrawerContainer extends Component {
                                 value: translations.profile,
                                 onPress: () => navigation.navigate('Profile')
                             },
+                            {icon: 'report', value: translations.report, onPress: () => navigation.navigate('Report')}
                         ]}
                     />
                     <Drawer.Section
-                        title="App"
+                        title={translations.general}
                         style={{container: {backgroundColor: theme.secondaryBackgroundColor}}}
                         items={[
                             {

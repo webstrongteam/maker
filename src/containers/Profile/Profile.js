@@ -8,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import {Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import {separator} from '../../shared/styles';
-import {BannerAd} from "../../../adsAPI";
+import {BannerAd} from "../../API/adsAPI";
 import styles from './Profile.styles';
 
 import {connect} from 'react-redux';
