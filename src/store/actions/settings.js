@@ -107,18 +107,6 @@ export const changeConfirmDeletingTask = (value) => {
     };
 };
 
-export const changeAdjustTaskName = (value) => {
-    return dispatch => {
-        db.transaction(
-            tx => {
-                tx.executeSql('update settings set adjustTaskName = ? where id = 0;', [value], () => {
-                    dispatch(initSettings())
-                });
-            }, (err) => console.log(err)
-        );
-    };
-};
-
 export const changeHideTabView = (value) => {
     return dispatch => {
         db.transaction(

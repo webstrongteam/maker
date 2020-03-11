@@ -12,8 +12,7 @@ class ConfigCategory extends Component {
         control: {
             label: this.props.translations.nameLabel,
             required: true,
-            characterRestriction: 20,
-            error: true
+            characterRestriction: 20
         },
         editCategory: null,
         dialog: false

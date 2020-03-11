@@ -7,6 +7,7 @@ import {generateDialogObject} from '../../../shared/utility';
 import ConfigQuicklyTask from '../ConfigQuicklyTask/ConfigQuicklyTask';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Template from '../../Template/Template';
+import Dialog from "../../../components/UI/Dialog/Dialog";
 import SortableListView from 'react-native-sortable-listview'
 import {selectionAsync} from 'expo-haptics';
 import styles from './QuicklyTaskList.styles';
@@ -18,6 +19,7 @@ class QuicklyTaskList extends Component {
     state = {
         quicklyTasks: [],
         showModal: false,
+        showInputModal: false,
         selectedTask: false,
         list: {
             id: false,
@@ -28,15 +30,13 @@ class QuicklyTaskList extends Component {
         control: {
             label: this.props.translations.listName,
             required: true,
-            characterRestriction: 20,
-            error: true
+            characterRestriction: 20
         },
         input: {
             control: {
                 label: this.props.translations.quicklyAdding,
                 required: true,
-                characterRestriction: 40,
-                error: true
+                characterRestriction: 40
             },
             value: ''
         },
@@ -100,24 +100,27 @@ class QuicklyTaskList extends Component {
                 [translations.save]: () => {
                     const {list, newListName, control} = this.state;
                     if (!control.error) {
-                        this.props.onUpdateModal(false);
                         this.saveList({
                             id: list.id,
                             name: newListName
                         });
+                        this.setState({showInputModal: false});
                     }
                 },
                 [translations.cancel]: () => {
                     const {list, control} = this.state;
                     delete control.error;
-                    this.setState({newListName: list.name, control});
-                    this.props.onUpdateModal(false)
+                    this.setState({
+                        showInputModal: false,
+                        newListName: list.name,
+                        control
+                    });
                 }
             }
         );
 
         dialog.input = true;
-        this.props.onUpdateModal(true, dialog);
+        this.setState({showInputModal: true, dialog});
     };
 
     addTask = () => {
@@ -171,7 +174,7 @@ class QuicklyTaskList extends Component {
     };
 
     render() {
-        const {showModal, selectedTask, input, list, quicklyTasks, order, loading} = this.state;
+        const {showModal, showInputModal, dialog, selectedTask, input, list, quicklyTasks, order, loading} = this.state;
         const {navigation, theme, translations} = this.props;
 
         return (
@@ -217,6 +220,16 @@ class QuicklyTaskList extends Component {
                     list={list}
                     taskLength={quicklyTasks.length}
                     toggleModal={(selected, list) => this.toggleModalHandler(selected, list)}
+                />
+                }
+
+                {dialog &&
+                <Dialog
+                    showModal={showInputModal}
+                    input={true}
+                    title={dialog.title}
+                    body={dialog.body}
+                    buttons={dialog.buttons}
                 />
                 }
 
@@ -316,8 +329,7 @@ const mapDispatchToProps = dispatch => {
         onInitList: (id, callback) => dispatch(actions.initList(id, callback)),
         onSaveQuicklyTask: (task, list, callback) => dispatch(actions.saveQuicklyTask(task, list, callback)),
         onSaveList: (list, callback) => dispatch(actions.saveList(list, callback)),
-        onRemoveQuicklyTask: (id, callback) => dispatch(actions.removeQuicklyTask(id, callback)),
-        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
+        onRemoveQuicklyTask: (id, callback) => dispatch(actions.removeQuicklyTask(id, callback))
     }
 };
 

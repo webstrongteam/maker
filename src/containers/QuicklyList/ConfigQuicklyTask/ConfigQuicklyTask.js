@@ -11,8 +11,7 @@ class ConfigQuicklyTask extends Component {
         control: {
             label: this.props.translations.quicklyTaskName,
             required: true,
-            characterRestriction: 40,
-            error: true
+            characterRestriction: 40
         },
         editTask: null,
         dialog: false

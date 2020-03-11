@@ -44,7 +44,7 @@ export const initDatabase = (callback) => {
             'create table if not exists profile (id integer primary key not null, name text, avatar text, endedTask integer);'
         );
         tx.executeSql(
-            'create table if not exists settings (id integer primary key not null, sorting text, sortingType text, timeFormat integer, firstDayOfWeek text, confirmFinishingTask integer, confirmRepeatingTask integer, confirmDeletingTask integer, adjustTaskName integer, version text, hideTabView integer DEFAULT 0, theme integer DEFAULT 0 REFERENCES themes(id) ON DELETE SET DEFAULT, lang text);'
+            'create table if not exists settings (id integer primary key not null, sorting text, sortingType text, timeFormat integer, firstDayOfWeek text, confirmFinishingTask integer, confirmRepeatingTask integer, confirmDeletingTask integer, version text, hideTabView integer DEFAULT 0, theme integer DEFAULT 0 REFERENCES themes(id) ON DELETE SET DEFAULT, lang text);'
         );
         tx.executeSql(
             "INSERT OR IGNORE INTO categories (id, name) values (0, 'Default');"
@@ -59,7 +59,7 @@ export const initDatabase = (callback) => {
             "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker user', '', 0);"
         );
         tx.executeSql(
-            "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, adjustTaskName, version, hideTabView, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, 0, ?, 0, 0, ?);", [VERSION + "_INIT", getLocale()], () => {
+            "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, hideTabView, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 0, ?);", [VERSION + "_INIT", getLocale()], () => {
                 initApp(callback);
             }
         );
@@ -81,20 +81,18 @@ export const initApp = (callback) => {
                         if (update === '2.0.0') {
                             tx.executeSql('DROP TABLE IF EXISTS themes;', [], () => {
                                 tx.executeSql('ALTER TABLE quickly_tasks ADD COLUMN order_nr integer DEFAULT 0;', [], () => {
-                                    tx.executeSql('ALTER TABLE settings ADD COLUMN adjustTaskName integer DEFAULT 0;', [], () => {
-                                        tx.executeSql('UPDATE settings SET version = ? WHERE id = 0;', [VERSION], () => {
-                                            tx.executeSql('SELECT id FROM quickly_tasks;', [], (_, {rows}) => {
-                                                Promise.all((resolve) => {
-                                                    rows._array.map((id, index) => {
-                                                        tx.executeSql('update quickly_tasks set order_nr = ? where id = ?;', [index, id], () => {
-                                                            resolve();
-                                                        });
-                                                    })
-                                                }).then(() => {
-                                                    AsyncStorage.setItem('updated', 'true');
-                                                    initDatabase(callback);
+                                    tx.executeSql('UPDATE settings SET version = ? WHERE id = 0;', [VERSION], () => {
+                                        tx.executeSql('SELECT id FROM quickly_tasks;', [], (_, {rows}) => {
+                                            Promise.all((resolve) => {
+                                                rows._array.map((id, index) => {
+                                                    tx.executeSql('update quickly_tasks set order_nr = ? where id = ?;', [index, id], () => {
+                                                        resolve();
+                                                    });
                                                 })
-                                            });
+                                            }).then(() => {
+                                                AsyncStorage.setItem('updated', 'true');
+                                                initDatabase(callback);
+                                            })
                                         });
                                     });
                                 });

@@ -6,6 +6,7 @@ import Template from '../Template/Template';
 import SettingsList from 'react-native-settings-list';
 import {ColorWheel} from 'react-native-color-wheel';
 import colorsys from 'colorsys';
+import Dialog from "../../components/UI/Dialog/Dialog";
 import {checkValid, generateDialogObject} from "../../shared/utility";
 import {BannerAd} from "../../API/adsAPI";
 import Modal from 'react-native-modalbox';
@@ -17,6 +18,7 @@ import * as actions from "../../store/actions";
 class Theme extends Component {
     state = {
         customTheme: {id: false, name: ''},
+        customThemeCopy: {id: false, name: ''},
         newThemeName: '',
         defaultName: this.props.translations.defaultName,
 
@@ -25,11 +27,13 @@ class Theme extends Component {
         selectedColor: '',
         actualColor: '',
 
+        dialog: {},
+        showModal: false,
+
         control: {
             label: this.props.translations.themeNameLabel,
             required: true,
-            characterRestriction: 30,
-            error: true
+            characterRestriction: 30
         },
         loading: true
     };
@@ -42,13 +46,23 @@ class Theme extends Component {
     initTheme = (id) => {
         if (id !== false) {
             this.props.onInitCustomTheme(id, (customTheme) => {
-                this.setState({customTheme, newThemeName: customTheme.name, loading: false});
+                this.setState({
+                    customTheme,
+                    customThemeCopy: JSON.parse(JSON.stringify(customTheme)),
+                    newThemeName: customTheme.name,
+                    loading: false
+                });
             });
         } else {
             this.props.onInitTheme(customTheme => {
                 customTheme.id = false;
                 customTheme.name = this.props.translations.defaultName;
-                this.setState({customTheme, newThemeName: customTheme.name, loading: false});
+                this.setState({
+                    customTheme,
+                    customThemeCopy: JSON.parse(JSON.stringify(customTheme)),
+                    newThemeName: customTheme.name,
+                    loading: false
+                });
             });
         }
     };
@@ -107,19 +121,24 @@ class Theme extends Component {
                         if (!control.error) {
                             const {customTheme, newThemeName} = this.state;
                             customTheme.name = newThemeName;
-                            this.setState({customTheme});
-                            this.props.onUpdateModal(false);
+                            this.setState({showModal: false, customTheme});
                         }
                     },
                     [translations.cancel]: () => {
                         const {customTheme, control} = this.state;
                         delete control.error;
-                        this.setState({newThemeName: customTheme.name, control});
-                        this.props.onUpdateModal(false);
+                        this.setState({
+                            showModal: false,
+                            newThemeName:
+                            customTheme.name,
+                            control
+                        });
                     },
                 }
             );
+
             dialog.input = true;
+            return this.setState({dialog, showModal: true});
         }
 
         this.props.onUpdateModal(true, dialog);
@@ -133,9 +152,12 @@ class Theme extends Component {
         this.props.onDeleteTheme(customTheme.id);
     };
 
-    checkValid = (name = this.state.customTheme.name) => {
-        const {defaultName, control} = this.state;
-        return checkValid(control, name) && name !== defaultName;
+    checkChanges = (name = this.state.customTheme.name) => {
+        const {customTheme, customThemeCopy, defaultName, control} = this.state;
+
+        return checkValid(control, name) &&
+            (JSON.stringify(customTheme) !== JSON.stringify(customThemeCopy) &&
+                (name !== defaultName));
     };
 
     configColorPicker = (colorPickerTitle, selectedColor) => {
@@ -161,7 +183,7 @@ class Theme extends Component {
     render() {
         const {
             customTheme, loading, showColorPicker, selectedColor,
-            colorPickerTitle
+            colorPickerTitle, dialog, showModal
         } = this.state;
         const {navigation, theme, translations} = this.props;
 
@@ -171,7 +193,7 @@ class Theme extends Component {
                     leftElement="arrow-back"
                     rightElement={
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            {this.checkValid() &&
+                            {this.checkChanges() &&
                             <IconToggle name="save"
                                         color={theme.primaryTextColor}
                                         onPress={this.saveTheme}/>
@@ -184,7 +206,7 @@ class Theme extends Component {
                         </View>
                     }
                     onLeftElementPress={() => {
-                        if (this.checkValid()) {
+                        if (this.checkChanges()) {
                             this.showDialog('exit');
                         } else navigation.goBack();
                     }}
@@ -204,6 +226,16 @@ class Theme extends Component {
                             </View>
                     }
                 />
+
+                {dialog &&
+                <Dialog
+                    showModal={showModal}
+                    input={true}
+                    title={dialog.title}
+                    body={dialog.body}
+                    buttons={dialog.buttons}
+                />
+                }
 
                 <Modal
                     coverScreen={true}

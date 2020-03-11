@@ -50,7 +50,7 @@ class RepeatDays extends Component {
                     }}>
                         {repeatTimes.map((day, index) => {
                             return (
-                                <TouchableOpacity onPress={() => this.checkDay(index)}>
+                                <TouchableOpacity key={index} onPress={() => this.checkDay(index)}>
                                     <Avatar
                                         size={82}
                                         style={{

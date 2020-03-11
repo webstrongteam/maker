@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {sendReportAPI} from '../../API/reportAPI';
+import Spinner from "../../components/UI/Spinner/Spinner";
 import {Button, Toolbar} from "react-native-material-ui";
 import Input from '../../components/UI/Input/Input';
 import Template from "../Template/Template";
@@ -9,7 +10,6 @@ import axios from 'axios';
 
 import * as actions from "../../store/actions";
 import {connect} from "react-redux";
-import Spinner from "../../components/UI/Spinner/Spinner";
 
 class Report extends Component {
     state = {
@@ -21,14 +21,12 @@ class Report extends Component {
             title: {
                 label: this.props.translations.titleLabel,
                 required: true,
-                characterRestriction: 50,
-                error: true
+                characterRestriction: 50
             },
             description: {
                 label: this.props.translations.descriptionLabel,
                 required: true,
-                multiline: true,
-                error: true
+                multiline: true
             }
         },
     };

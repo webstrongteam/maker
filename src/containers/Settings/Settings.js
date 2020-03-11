@@ -136,7 +136,7 @@ class Settings extends PureComponent {
                             defaultItemSize={50}>
                             <SettingsList.Item
                                 hasNavArrow={false}
-                                title={translations.general}
+                                title={translations.app}
                                 titleStyle={{color: '#009688', fontWeight: '500'}}
                                 itemWidth={50}
                                 borderHide={'Both'}
@@ -168,21 +168,6 @@ class Settings extends PureComponent {
                                 onPress={() => this.showDialog('showFirstDayOfWeek')}
                                 titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
                                 title={translations.firstDayOfWeek}
-                            />
-                            <SettingsList.Item
-                                icon={
-                                    <View style={iconStyle}>
-                                        <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}}
-                                              name="g-translate"/>
-                                    </View>
-                                }
-                                hasNavArrow={true}
-                                itemWidth={70}
-                                hasSwitch={false}
-                                titleInfo={settings.lang}
-                                onPress={() => this.showDialog('showLanguages')}
-                                titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
-                                title={translations.language}
                             />
                             <SettingsList.Item
                                 icon={
@@ -228,19 +213,26 @@ class Settings extends PureComponent {
                                 title={translations.confirmDeleting}
                             />
                             <SettingsList.Item
+                                hasNavArrow={false}
+                                title={translations.general}
+                                titleStyle={{color: '#009688', fontWeight: '500'}}
+                                itemWidth={50}
+                                borderHide={'Both'}
+                            />
+                            <SettingsList.Item
                                 icon={
                                     <View style={iconStyle}>
                                         <Icon color={theme.thirdTextColor} style={{alignSelf: 'center'}}
-                                              name="text-fields"/>
+                                              name="g-translate"/>
                                     </View>
                                 }
-                                hasNavArrow={false}
+                                hasNavArrow={true}
                                 itemWidth={70}
-                                hasSwitch={true}
-                                switchState={!!settings.adjustTaskName}
-                                switchOnValueChange={(value) => this.toggleSetting(value, 'AdjustTaskName')}
+                                hasSwitch={false}
+                                titleInfo={settings.lang}
+                                onPress={() => this.showDialog('showLanguages')}
                                 titleStyle={{color: theme.thirdTextColor, fontSize: 16}}
-                                title={translations.adjustTaskName}
+                                title={translations.language}
                             />
                             <SettingsList.Item
                                 icon={
@@ -260,7 +252,7 @@ class Settings extends PureComponent {
                         </SettingsList>
                         <View style={styles.version}>
                             <Text style={{color: theme.thirdTextColor}}>
-                                {translations.version}: {settings.version} (test build v1)
+                                {translations.version}: {settings.version}
                             </Text>
                         </View>
                     </React.Fragment> : <Spinner/>
@@ -291,7 +283,6 @@ const mapDispatchToProps = dispatch => {
         onChangeConfirmRepeatingTask: (value) => dispatch(actions.changeConfirmRepeatingTask(value)),
         onChangeConfirmFinishingTask: (value) => dispatch(actions.changeConfirmFinishingTask(value)),
         onChangeConfirmDeletingTask: (value) => dispatch(actions.changeConfirmDeletingTask(value)),
-        onChangeAdjustTaskName: (value) => dispatch(actions.changeAdjustTaskName(value)),
         onChangeHideTabView: (value) => dispatch(actions.changeHideTabView(value)),
         onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
         onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))

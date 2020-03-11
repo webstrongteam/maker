@@ -27,8 +27,7 @@ class Backup extends PureComponent {
         control: {
             label: this.props.translations.newName,
             required: true,
-            characterRestriction: 40,
-            error: true
+            characterRestriction: 40
         },
         snackbar: {
             visible: false,
@@ -37,11 +36,12 @@ class Backup extends PureComponent {
     };
 
     componentDidMount() {
-        if (Platform.OS === 'ios') {
-            this.showDialog('unavailable');
-        } else {
-            this.loadBackupFiles();
-        }
+        // if (Platform.OS === 'ios') {
+        //     this.showDialog('unavailable');
+        // } else {
+        //     this.loadBackupFiles();
+        // }
+        this.loadBackupFiles();
     }
 
     loadBackupFiles = async () => {
@@ -317,6 +317,7 @@ class Backup extends PureComponent {
                                         rightElement={
                                             <View style={row}>
                                                 <IconToggle
+                                                    style={{container: {marginRight: -10}}}
                                                     onPress={() => this.setState({
                                                         selectedBackup: {
                                                             name, uri: FileSystem.documentDirectory + 'Backup/' + name,
@@ -325,6 +326,7 @@ class Backup extends PureComponent {
                                                     color={theme.undoIconColor}
                                                     name="edit"/>
                                                 <IconToggle
+                                                    style={{container: {marginRight: -7}}}
                                                     onPress={() => this.shareBackup(name)}
                                                     color={theme.undoIconColor}
                                                     name="share"/>
