@@ -140,8 +140,8 @@
   },
   "Report": {
     "title": "Wyślij zgłoszenie",
-    "titleLabel": "Tytuł",
-    "descriptionLabel": "Opis",
+    "titleLabel": "Tytuł zgłoszenia",
+    "descriptionLabel": "Opis zgłoszenia",
     "correctSend": "Wiadomość została przesłana. Dziękujemy!",
     "errorSend": "Wystapił błąd podczas przesyłania wiadomości. Spróbuj ponownie później.",
     "headerText": "Zgłoś błąd, poprawkę, pomysł na nową funkcję lub cokolwiek innego, co chciałbyś nam przekazać.",

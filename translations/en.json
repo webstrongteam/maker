@@ -136,8 +136,8 @@
   },
   "Report": {
     "title": "Send report",
-    "titleLabel": "Title",
-    "descriptionLabel": "Description",
+    "titleLabel": "Report title",
+    "descriptionLabel": "Report description",
     "correctSend": "Message has been send. Thanks!",
     "errorSend": "An error occurred while sending the message. Please try again later.",
     "headerText": "Report a bug, correction, idea for a new feature or anything else you would like to tell us.",

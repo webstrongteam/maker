@@ -68,6 +68,7 @@ class Settings extends PureComponent {
                     onClick: (value) => {
                         this.props.onUpdateModal(false);
                         this.props.onChangeFirstDayOfWeek(value);
+                        this.props.onRefreshTask();
                         this.toggleSnackbar(translations.firstDaySnackbar);
                     }
                 })
@@ -285,7 +286,8 @@ const mapDispatchToProps = dispatch => {
         onChangeConfirmDeletingTask: (value) => dispatch(actions.changeConfirmDeletingTask(value)),
         onChangeHideTabView: (value) => dispatch(actions.changeHideTabView(value)),
         onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
-        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
+        onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal)),
+        onRefreshTask: () => dispatch(actions.onRefresh())
     }
 };
 
