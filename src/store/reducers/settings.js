@@ -3,9 +3,7 @@ import {updateObject} from '../../shared/utility';
 import en from "../../../translations/en.json";
 import pl from "../../../translations/pl.json";
 
-const messages = {
-    en, pl
-};
+const messages = {en, pl};
 
 const initState = {
     settings: {},
@@ -13,6 +11,9 @@ const initState = {
 };
 
 const updateSettings = (state, action) => {
+    if (action.settings.lang.constructor.name !== 'String') {
+        action.settings.lang = 'en'
+    }
     return updateObject(state, {
         settings: action.settings,
         translations: messages[action.settings.lang]

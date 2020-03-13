@@ -8,6 +8,10 @@
     "search": "Search",
     "defaultTitle": "Are you sure?"
   },
+  "ToDo": {
+    "tasks": "Tasks",
+    "quicklyLists": "Quickly Lists"
+  },
   "TaskList": {
     "done": "Done",
     "undo": "Undo",
@@ -31,7 +35,10 @@
     "repeatDescription": "Do you want to repeat this task?",
     "finishDescription": "Finish this task?",
     "deleteDescription": "Delete this task?",
-    "finishAllDescription": "Do you want to delete all finished task?"
+    "finishAllDescription": "Do you want to delete all finished task?",
+    "updatedTitle": "Welcome in version 2.0.0!",
+    "updatedDescription1": "Congratulations! Version of your app has been correction updated!",
+    "updatedDescription2": "In the end, please restart your app."
   },
   "Themes": {
     "snackbar": "Theme has been updated",
@@ -46,9 +53,23 @@
     "defaultName": "Tap to change name",
     "themeNameLabel": "Enter theme name",
     "main": "Main",
-    "elements": "Elements",
-    "buttons": "Buttons",
+    "fonts": "Fonts",
+    "icons": "Icons",
     "priorities": "Priorities",
+
+    "primaryColor": "Primary color",
+    "primaryBackgroundColor": "Primary background color",
+    "secondaryBackgroundColor": "Secondary background color",
+    "primaryTextColor": "Primary text color",
+    "secondaryTextColor": "Secondary text color",
+    "thirdTextColor": "Third text color",
+    "warningColor": "Warning color",
+    "doneIconColor": "Done icon color",
+    "undoIconColor": "Undo icon color",
+    "lowColor": "Low color",
+    "mediumColor": "Medium color",
+    "highColor": "High color",
+
     "exitDescription": "Quit without saving?",
     "deleteDescription": "Delete this theme?",
     "changeNameTitle": "Edit theme name"
@@ -64,18 +85,19 @@
     "langSnackbar": "Language has been changed",
     "settings": "Settings",
     "general": "General",
+    "app": "App",
     "timeCycle": "24H time cycle",
     "firstDayOfWeek": "First day of week",
     "language": "Language",
     "confirmFinishing": "Confirm finishing task",
     "confirmRepeating": "Confirm repeating task",
     "confirmDeleting": "Confirm deleting task",
+    "adjustTaskName": "Adjust task name",
     "hideTabView": "Hide tab view",
     "version": "Version"
   },
   "QuicklyList": {
-    "dialogDescription1": "Delete",
-    "dialogDescription2": "list?",
+    "dialogDescription": "Delete this list?",
     "totalTasks": "Total tasks:",
     "quicklyLists": "Quickly lists",
     "emptyList": "Quickly lists is empty!"
@@ -83,6 +105,7 @@
   "QuicklyTaskList": {
     "listName": "List name",
     "dialogTitle": "Edit list name",
+    "quicklyAdding": "Quickly adding",
     "emptyList": "Quickly list is empty!"
   },
   "ConfigQuicklyTask": {
@@ -96,24 +119,37 @@
     "finishedTask": "Finished task",
     "endedTask": "Ended task",
     "allCategories": "All categories",
+    "allQuicklyLists": "All quickly lists",
     "title": "Your profile"
   },
   "Drawer": {
+    "general": "General",
+    "app": "App",
     "back": "Back",
     "categories": "Categories",
     "profile": "Profile",
+    "report": "Report",
     "themes": "Themes",
     "settings": "Settings",
     "backups": "Backups",
     "about": "About Maker"
+  },
+  "Report": {
+    "title": "Send report",
+    "titleLabel": "Title",
+    "descriptionLabel": "Description",
+    "correctSend": "Message has been send. Thanks!",
+    "errorSend": "An error occurred while sending the message. Please try again later.",
+    "headerText": "Report a bug, correction, idea for a new feature or anything else you would like to tell us.",
+    "sendButton": "Send"
   },
   "ConfigTask": {
     "nameLabel": "Enter task name",
     "descriptionLabel": "Enter task description",
     "noRepeat": "No repeat",
     "onceDay": "Once a Day",
-    "onceWeekMonFri": "Once a Week (Mon-Fri)",
-    "onceWeekSatSun": "Once a Week (Sat-Sun)",
+    "onceDayMonFri": "Once a Week (Mon-Fri)",
+    "onceDaySatSun": "Once a Week (Sat-Sun)",
     "onceWeek": "Once a Week",
     "onceMonth": "Once a Month",
     "onceYear": "Once a Year",
@@ -137,12 +173,34 @@
     "priorityHigh": "High"
   },
   "OtherRepeat": {
-    "valueLabel": "Enter repeat value",
+    "repeatTime": "Repeat time",
+    "repeatDay": "Repeat weekdays",
+    "repeatDays": "each: ",
+    "valueLabel": "Repeat every",
     "dialogTitle": "Config custom repeat",
+    "minutes": "Minutes",
+    "hours": "Hours",
     "days": "Days",
-    "week": "Weeks",
-    "month": "Months",
-    "year": "Years"
+    "weeks": "Weeks",
+    "months": "Months",
+    "years": "Years",
+    "day0": "Mon.",
+    "day1": "Tues.",
+    "day2": "Wed.",
+    "day3": "Thurs.",
+    "day4": "Fri.",
+    "day5": "Sat.",
+    "day6": "Sun."
+  },
+  "OtherDays": {
+    "repeatDaysTitle": "Repeat in each:",
+    "monday": "Mon",
+    "tuesday": "Tues",
+    "wednesday": "Wed",
+    "thursday": "Thurs",
+    "friday": "Fri",
+    "saturday": "Sat",
+    "sunday": "Sun"
   },
   "ConfigCategory": {
     "nameLabel": "Enter category name",
@@ -162,17 +220,21 @@
     "backupRemoved": "Backup has been removed",
     "backupRemovedError": "Removing backup error!",
     "incorrectFile": "This file is incorrect!",
+    "backupRenameError": "Error occurred while renaming!",
     "showBackupAlertDescription1": "Replace current database by",
-    "showBackupAlertDescription2": "This will delete your current database!",
+    "showBackupAlertDescription2": "This will replace your current data!",
     "showSelectBackupSourceTitle": "Add database from...",
     "showConfirmDeleteDescription": "Delete this backup?",
+    "newName": "New name",
     "yourApp": "Your app",
     "yourStorage": "Your storage",
-    "emptyList": "Backup list is empty!"
+    "emptyList": "Backup list is empty!",
+    "unavailableTitle": "Backups are unavailable!",
+    "unavailableDescription": "Sorry, but backups ability are unavailable in devices with iOS system. When this option has been available for you, we will inform."
   },
   "About": {
     "title": "About",
-    "primaryText": "Maker is an advanced ToDo mobile application created with React Native and Expo framework.\n This app works with Android and iOS.",
+    "primaryText": "Maker is an advanced ToDo mobile application created with React Native and Expo framework.\n This app is available in Android and iOS.",
     "secondaryText": "Maker source code is available on github:"
   },
   "validation": {

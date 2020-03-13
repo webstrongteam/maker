@@ -1,4 +1,5 @@
-// Todo
+// Tasks
+export const REFRESH = 'REFRESH';
 export const INIT_TODO = 'INIT_TODO';
 export const INIT_TASKS = 'INIT_TASKS';
 export const INIT_FINISHED = 'INIT_FINISHED';
@@ -18,3 +19,7 @@ export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 
 // Settings
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
+
+// CONFIG
+export const UPDATE_MODAL = 'UPDATE_MODAL';
+export const UPDATE_SNACKBAR = 'UPDATE_SNACKBAR';

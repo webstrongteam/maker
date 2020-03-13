@@ -1,4 +1,5 @@
 export {
+    onRefresh,
     initToDo,
     initTasks,
     initTask,
@@ -37,6 +38,11 @@ export {
     changeTimeFormat,
     changeLang
 } from './settings';
+
+export {
+    updateModal,
+    updateSnackbar
+} from './config';
 
 export {
     initProfile,

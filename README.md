@@ -1,6 +1,6 @@
 # Maker - ToDo app 
-<a href="https://play.google.com/store/apps/details?id=com.webStrong.maker" target="_blank"><img src="http://webstrong.pl/templates/google_play_en.png" width="150"/></a>
-<a href="https://expo.io/@mateuszpijanowski/maker" target="_blank"><img src="http://webstrong.pl/templates/expo_logo.png" width="160"/></a>
+<a href="https://play.google.com/store/apps/details?id=com.webStrong.maker" target="_blank"><img src="http://webstrong.pl/templates/google_play_pl.png" width="150"/></a>
+<a href="#" target="_blank"><img src="http://webstrong.pl/templates/apple_store_pl.png" width="150"/></a>
 
 **Maker** is an advanced ToDo mobile application created with React Native and Expo framework. 
 This app working with Android and iOS. 
@@ -14,7 +14,7 @@ This app working with Android and iOS.
 - Create, Edit and Remove task
 - Task categories
 - Task priority
-- Repeating task system
+- Flexible repeat task system
 - Finished task list
 - Integrate with calendar
 - Notification system
@@ -24,14 +24,15 @@ This app working with Android and iOS.
 - App settings
 - Profile tab with statistics
 - Save data in local database
-- Support languages: English, Polish
 - Database backup system
+- Support languages: English, Polish
 
 ## Technologies  
-**Maker** was created together with:  
-  
-- React <i>16.8.3</i>
-- React Native <i>33.0.0</i>
+**Maker** was created together with:
+
+- Expo <i>36.0.0</i>
+- React <i>16.9.0</i>
+- React Native SDK <i>36.0.1</i>
 - React Redux <i>7.1.0</i>  
 - Redux <i>4.0.4</i>  
 - Redux Thunk <i>2.3.0</i>  
@@ -41,41 +42,21 @@ This app working with Android and iOS.
 - React Native Dialog <i>5.6.0</i>  
 - React Native Modal Dropdown <i>0.6.2</i>  
 - React Native Material TextField <i>0.12.0</i>  
-- React Native Color Picker <i>0.4.1</i>  
+- React Native Color Wheel <i>0.1.7</i>  
 - React Native Settings List <i>1.8.0</i>  
+- React Native Modalbox <i>2.0.0</i>  
+- React Native Sortable Listview <i>0.2.9</i>  
 - React Native Reanimated <i>1.0.1</i>  
 - React Native Tab View <i>2.10.0</i>  
 - Moment.JS <i>2.24.0</i>
-- Expo <i>33.0.0</i>
-- Axios <i>0.19.0</i>
+- Colorsys <i>1.0.22</i>
 
-### Change logs:
-##### v1.1:
-* Quickly list
-* Integration with system calendar
-* Add notification system
-* Add polish language
-* Update database
-* Fix re-render task list
-* Change theme editing nam
-* Fix updating theme
-* Update themes
-* Clear and optimization code
-
-### ToDo list
-##### v1.2:
-* Support more languages :x:
-* Change calendar :x:
-* Support and publish iOS :x:
-* Update dark theme :x:
-
-#### Legend:
-:heavy_check_mark: - Done \
-:heavy_minus_sign: - I'm working on it now \
-:x: - I don't start work on this
+### ToDo:
+- Add backup ability for iOS devices
 
 ### WebStrong &copy;  
   
-This web was created by **Mateusz Pijanowski** (<i>WebStrong team</i>) <br />
+This application was created by **WebStrong Team** <br />
 > **Google Play:** https://play.google.com/store/apps/details?id=com.webStrong.maker <br />
+> **Apple Store:** xxx <br />
 > **Expo:** https://expo.io/@mateuszpijanowski/maker

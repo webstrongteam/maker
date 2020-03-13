@@ -1,8 +1,9 @@
 import React from 'react';
-import {Button, StyleSheet, View} from 'react-native';
+import {Button, View} from 'react-native';
+import styles from './Button.styles';
 
 const button = (props) => (
-    <View style={styles.Button}>
+    <View style={styles.button}>
         <Button
             color={props.color}
             disabled={props.disabled}
@@ -10,13 +11,5 @@ const button = (props) => (
             onPress={props.clicked}/>
     </View>
 );
-
-const styles = StyleSheet.create({
-    Button: {
-        paddingTop: 30,
-        paddingLeft: 100,
-        paddingRight: 100
-    }
-});
 
 export default button;

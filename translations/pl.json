@@ -8,6 +8,10 @@
     "no": "Nie",
     "defaultTitle": "Jesteś pewien?"
   },
+  "ToDo": {
+    "tasks": "Zadania",
+    "quicklyLists": "Szybkie listy"
+  },
   "TaskList": {
     "done": "Gotowe",
     "undo": "Confij",
@@ -32,7 +36,10 @@
     "finishDescription": "Zakończyć to zadanie?",
     "deleteTitle": "Jesteś pewnien?",
     "deleteDescription": "Usunąć to zadanie?",
-    "finishAllDescription": "Czy na pewno chcesz usunąć ukończone zadania?"
+    "finishAllDescription": "Czy na pewno chcesz usunąć ukończone zadania?",
+    "updatedTitle": "Witaj w wersji 2.0.0!",
+    "updatedDescription1": "Gratulacje! Udało nam się pomyślnie zaktualizować wersje twojej aplikacji!",
+    "updatedDescription2": "Na koniec zalecamy restart aplikacji."
   },
   "Themes": {
     "snackbar": "Motyw został zaktualizowany",
@@ -47,9 +54,23 @@
     "defaultName": "Kliknij by zmienić nazwę",
     "themeNameLabel": "Wprowadź nazwę motywu",
     "main": "Główne",
-    "elements": "Elementy",
-    "buttons": "Przyciski",
+    "fonts": "Czcionki",
+    "icons": "Ikony",
     "priorities": "Piorytety",
+
+    "primaryColor": "Główny kolor",
+    "primaryBackgroundColor": "Główny kolor tła",
+    "secondaryBackgroundColor": "Drugi kolor tła",
+    "primaryTextColor": "Główny kolor czcionki",
+    "secondaryTextColor": "Drugi kolor czcionki",
+    "thirdTextColor": "Trzeci kolor czcionki",
+    "warningColor": "Kolor ostrzeżenia",
+    "doneIconColor": "Kolor ikony ukończenia",
+    "undoIconColor": "Kolor ikony cofnięcia",
+    "lowColor": "Kolor niskiego piorytetu",
+    "mediumColor": "Kolor średniego piorytetu",
+    "highColor": "Kolor wysokiego piorytetu",
+
     "exitTitle": "Jesteś pewnien?",
     "exitDescription": "Wyjść bez zapisywania?",
     "deleteTitle": "Jesteś pewnien?",
@@ -66,20 +87,21 @@
     "firstDaySnackbar": "Pierwszy dzień tygodnia został zaktualizowany",
     "langSnackbar": "Język został zaktualizowany",
     "settings": "Ustawienia",
-    "general": "Generalne",
+    "general": "Ogólne",
+    "app": "Działanie aplikacji",
     "timeCycle": "24-godzinny cykl",
     "firstDayOfWeek": "Pierwszy dzień tygodnia",
     "language": "Język",
     "confirmFinishing": "Potwierdź ukończenie zadania",
     "confirmRepeating": "Potwierdź powtórzenie zadania",
     "confirmDeleting": "Potwierdź usuwanie zadania",
+    "adjustTaskName": "Dopasuj wielkość nazwy zadania",
     "hideTabView": "Ukryj widok zakładek",
     "version": "Wersja"
   },
   "QuicklyList": {
     "dialogTitle": "Jesteś pewnien?",
-    "dialogDescription1": "Usunąć",
-    "dialogDescription2": "listę?",
+    "dialogDescription": "Usunąć wybraną listę?",
     "totalTasks": "Wszystkie zadania:",
     "quicklyLists": "Szybkie listy",
     "emptyList": "Szybkie listy są puste!"
@@ -87,6 +109,7 @@
   "QuicklyTaskList": {
     "listName": "Nazwa listy",
     "dialogTitle": "Edycja nazwy listy",
+    "quicklyAdding": "Szybkie dodawanie",
     "emptyList": "Szybka lista jest pusta!"
   },
   "ConfigQuicklyTask": {
@@ -100,24 +123,37 @@
     "finishedTask": "Ukończone zadania",
     "endedTask": "Usunięte zadania",
     "allCategories": "Wszystkie kategorie",
+    "allQuicklyLists": "Wszystkie szybkie listy",
     "title": "Twój profil"
   },
   "Drawer": {
+    "general": "Ogólne",
+    "app": "Aplikacja",
     "back": "Powrót",
     "categories": "Kategorie",
     "profile": "Profil",
+    "report": "Zgłoś poprawkę",
     "themes": "Motywy",
     "settings": "Ustawienia",
     "backups": "Kopie zapasowe",
     "about": "Informacje o aplikacji"
+  },
+  "Report": {
+    "title": "Wyślij zgłoszenie",
+    "titleLabel": "Tytuł",
+    "descriptionLabel": "Opis",
+    "correctSend": "Wiadomość została przesłana. Dziękujemy!",
+    "errorSend": "Wystapił błąd podczas przesyłania wiadomości. Spróbuj ponownie później.",
+    "headerText": "Zgłoś błąd, poprawkę, pomysł na nową funkcję lub cokolwiek innego, co chciałbyś nam przekazać.",
+    "sendButton": "Wyślij"
   },
   "ConfigTask": {
     "nameLabel": "Wprowadź nazwę zadania",
     "descriptionLabel": "Wprowadź opis zadania",
     "noRepeat": "Nie powtarzaj",
     "onceDay": "Raz dziennie",
-    "onceWeekMonFri": "Raz w tygodniu (Pon-Pt)",
-    "onceWeekSatSun": "Raz w tygodniu (Sob-Niedz)",
+    "onceDayMonFri": "Raz w tygodniu (Pon-Pt)",
+    "onceDaySatSun": "Raz w tygodniu (Sob-Niedz)",
     "onceWeek": "Raz w tygodniu",
     "onceMonth": "Raz w miesiącu",
     "onceYear": "Raz w roku",
@@ -142,12 +178,34 @@
     "priorityHigh": "Wysoki"
   },
   "OtherRepeat": {
-    "valueLabel": "Wprowadź wartość powtórzeń",
+    "repeatTime": "Powtarzanie czasowe",
+    "repeatDay": "Powtarzanie tygodniowe",
+    "repeatDays": "w każdy: ",
+    "valueLabel": "Powtarzaj co",
     "dialogTitle": "Ustawienia niestandardowych powtórzeń",
+    "minutes": "Minuty",
+    "hours": "Godziny",
     "days": "Dni",
-    "week": "Tygodnie",
-    "month": "Miesiące",
-    "year": "Lata"
+    "weeks": "Tygodnie",
+    "months": "Miesiące",
+    "years": "Lata",
+    "day0": "Pon.",
+    "day1": "Wt.",
+    "day2": "Śr.",
+    "day3": "Czw.",
+    "day4": "Pt.",
+    "day5": "Sob.",
+    "day6": "Niedz."
+  },
+  "OtherDays": {
+    "repeatDaysTitle": "Powtarzaj cyklicznie w każdy:",
+    "monday": "Pon",
+    "tuesday": "Wt",
+    "wednesday": "Śr",
+    "thursday": "Czw",
+    "friday": "Pt",
+    "saturday": "Sob",
+    "sunday": "Niedz"
   },
   "ConfigCategory": {
     "nameLabel": "Wprowadź nazwę kategorii",
@@ -167,17 +225,21 @@
     "backupRemoved": "Kopia zapasowa została usunięta",
     "backupRemovedError": "Błąd usuwania kopii zapasowej!",
     "incorrectFile": "Ten plik jest niepoprawny!",
+    "backupRenameError": "Podczas zmiany nazwy wystapił błąd!",
     "showBackupAlertDescription1": "Nadpisać aktualną bazę danych przez",
-    "showBackupAlertDescription2": "To spowoduje usunięcie aktualnej bazy danych!",
+    "showBackupAlertDescription2": "To spowoduje nadpisanie aktualnych danych!",
     "showSelectBackupSourceTitle": "Stwórz kopię zapasową z...",
     "showConfirmDeleteDescription": "Usunąć kopie bazy danych?",
+    "newName": "Nowa nazwa",
     "yourApp": "Twojej aplikacji",
     "yourStorage": "Twojego telefonu",
-    "emptyList": "Lista kopii zapasowych jest pusta!"
+    "emptyList": "Lista kopii zapasowych jest pusta!",
+    "unavailableTitle": "Kopie zapasowe nie są dostępne!",
+    "unavailableDescription": "Przykro nam, ale funkcja kopii zapasowych nie jest jeszcze dostępna na urządzeniach z systemem iOS. Poinformujemy cię jak tylko opcja ta stanie się dla ciebie dostępna."
   },
   "About": {
     "title": "Informacje",
-    "primaryText": "Maker to zaawansowana aplikacja moblna przeznaczona do zarządzania zadaniami.\n Aplikacja ta została stworzona z wykorzystaniem technologii React Native i Expo framework. Aplikacja działan na platformie Android i iOS.",
+    "primaryText": "Maker to zaawansowana aplikacja mobilna przeznaczona do zarządzania zadaniami.\n Aplikacja ta została stworzona z wykorzystaniem technologii React Native i Expo framework. Maker jest dostępny na platformie Android i iOS.",
     "secondaryText": "Kod źródłowy aplikacji znajduje się w repozytorium GitHub'a:"
   },
   "validation": {

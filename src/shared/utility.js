@@ -1,4 +1,5 @@
 import moment from 'moment';
+import {Dimensions} from "react-native";
 
 export const updateObject = (oldObject, newProps) => {
     return {
@@ -9,6 +10,22 @@ export const updateObject = (oldObject, newProps) => {
 
 export const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const width = Dimensions.get('window').width;
+
+export const setCategories = (tasks, categories) => {
+    return Promise.all(tasks.map(task => {
+        let findCate;
+        if (+task.category) {
+            findCate = categories.find((c => +c.id === +task.category));
+        } else {
+            findCate = categories.find((c => c.name === task.category));
+        }
+
+        if (findCate) task.category = findCate;
+        else task.category = categories[0];
+    })).then(() => tasks);
 };
 
 export const sortingData = (array, field, type) => {
@@ -44,6 +61,9 @@ export const sortingData = (array, field, type) => {
             if (type === 'ASC') return A < B;
             if (type === 'DESC') return A > B;
         });
+    } else if (field === 'category') { // SORTING CATEGORY
+        if (type === 'ASC') array.sort((a, b) => ('' + a[field].name).localeCompare(b[field].name));
+        if (type === 'DESC') array.sort((a, b) => ('' + b[field].name).localeCompare(a[field].name));
     } else { // DEFAULT SORTING
         if (type === 'ASC') array.sort((a, b) => ('' + a[field]).localeCompare(b[field]));
         if (type === 'DESC') array.sort((a, b) => ('' + b[field]).localeCompare(a[field]));
@@ -65,25 +85,37 @@ export const sortingByType = (array, sorting, sortingType) => {
     }
 };
 
-export const convertNumberToDate = (number) => {
+export const convertNumberToDate = (number, translations) => {
     switch (number) {
         case 0:
-            return "days";
+            return translations.minutes;
         case 1:
-            return "week";
+            return translations.hours;
         case 2:
-            return "month";
+            return translations.days;
         case 3:
-            return "year";
+            return translations.weeks;
+        case 4:
+            return translations.months;
+        case 5:
+            return translations.years;
+        case 6:
+            return translations.years;
         default:
-            return "days"
+            return translations.days;
     }
 };
 
-export const generateDialogObject = (title, description, buttons) => {
+export const convertDaysIndex = (daysIndex, translations) => {
+    return daysIndex.split('').sort((a, b) => a > b).map(index => {
+        return translations[`day${index}`];
+    }).join(', ')
+};
+
+export const generateDialogObject = (title, body, buttons) => {
     let object = {
         title,
-        description,
+        body,
         buttons: []
     };
     Object.keys(buttons).map(key => {
@@ -95,56 +127,68 @@ export const generateDialogObject = (title, description, buttons) => {
     return object;
 };
 
-export const generateInputDialogObject = (title, focus, value, onChange, buttons) => {
-    let object = {
-        title,
-        focus,
-        value,
-        onChange,
-        buttons: []
-    };
-    Object.keys(buttons).map(key => {
-        object.buttons.push({
-            label: key,
-            onPress: buttons[key]
-        })
-    });
-    return object;
+export const convertPriorityNames = (priority, translations) => {
+    if (priority === 'none') {
+        return translations.priorityNone
+    } else if (priority === 'low') {
+        return translations.priorityLow
+    } else if (priority === 'medium') {
+        return translations.priorityMedium
+    } else if (priority === 'high') {
+        return translations.priorityHigh
+    }
 };
 
-export const valid = (controls, value, name, translations, callback) => {
+export const convertRepeatNames = (repeat, translations) => {
+    if (repeat !== 'otherOption') {
+        return translations[repeat]
+    } else {
+        return `${translations.other}...`
+    }
+};
+
+export const valid = (control, value, translations, callback) => {
     let validStatus = true;
 
-    // Validation system
-    if (controls[name].characterRestriction) {
-        if (value.length > controls[name].characterRestriction) {
-            controls[name].error = translations.tooLong;
-            validStatus = false;
+    if (value === null || value === undefined) {
+        // Set initial error
+        control.error = true;
+    } else {
+        // Validation system
+        if (control.characterRestriction) {
+            if (value.length > control.characterRestriction) {
+                control.error = translations.tooLong;
+                validStatus = false;
+            }
         }
-    }
-    if (controls[name].number) {
-        if (+value !== parseInt(value, 10)) {
-            controls[name].error = translations.number;
-            validStatus = false;
-        } else {
-            if (controls[name].positiveNumber) {
-                if (+value < 1) {
-                    controls[name].error = translations.greaterThanZero;
-                    validStatus = false;
+        if (control.number) {
+            if (+value !== parseInt(value, 10)) {
+                control.error = translations.number;
+                validStatus = false;
+            } else {
+                if (control.positiveNumber) {
+                    if (+value < 1) {
+                        control.error = translations.greaterThanZero;
+                        validStatus = false;
+                    }
                 }
             }
         }
-    }
-    if (controls[name].required) {
-        if (value.trim() === '') {
-            controls[name].error = translations.required;
-            validStatus = false;
+        if (control.required) {
+            if (value.trim() === '') {
+                control.error = translations.required;
+                validStatus = false;
+            }
+        }
+
+        if (validStatus && control.error) {
+            delete control.error;
         }
     }
 
-    if (validStatus && controls[name].error) {
-        delete controls[name].error;
-    }
+    callback(control);
+};
 
-    callback(controls);
+export const checkValid = (control, value) => {
+    return !!(!control.error && value && value.trim() !== '')
 };
