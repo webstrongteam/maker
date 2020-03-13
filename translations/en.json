@@ -8,6 +8,10 @@
     "search": "Search",
     "defaultTitle": "Are you sure?"
   },
+  "ToDo": {
+    "tasks": "Tasks",
+    "quicklyLists": "Quickly Lists"
+  },
   "TaskList": {
     "done": "Done",
     "undo": "Undo",

@@ -80,7 +80,7 @@ const selectDialog = (props) => (
         {props.body &&
         <View style={{marginBottom: 10}}>
             {props.body.map((option, index) => (
-                <TouchableOpacity onPress={() => option.onClick(option.value)}>
+                <TouchableOpacity key={index} onPress={() => option.onClick(option.value)}>
                     <ListItem
                         divider
                         dense

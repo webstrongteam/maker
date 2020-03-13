@@ -52,7 +52,6 @@ This app working with Android and iOS.
 - Colorsys <i>1.0.22</i>
 
 ### ToDo:
-- Fill infoPlist
 - Add backup ability for iOS devices
 
 ### WebStrong &copy;  

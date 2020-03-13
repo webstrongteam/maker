@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import TaskList from '../Tasks/TaskList';
@@ -8,14 +8,14 @@ import QuicklyList from '../QuicklyList/QuicklyList';
 import {connect} from 'react-redux';
 import * as actions from "../../store/actions";
 
-class ToDo extends PureComponent {
+class ToDo extends Component {
     state = {
         loading: true,
         tabs: {
             index: 0,
             routes: [
-                {key: 'tasks', title: 'Tasks'},
-                {key: 'lists', title: 'Quickly lists'}
+                {key: 'tasks', title: this.props.translations.tasks},
+                {key: 'lists', title: this.props.translations.quicklyLists}
             ]
         }
     };
@@ -26,17 +26,18 @@ class ToDo extends PureComponent {
         this.props.onInitProfile();
         this.props.onInitToDo();
         this.props.onInitLists();
-        this.props.onInitSettings((lang) => {
-            const {tabs} = this.state;
-            if (lang === 'en') {
-                tabs.routes[0].title = 'Tasks';
-                tabs.routes[1].title = 'Quickly lists';
-            } else if (lang === 'pl') {
-                tabs.routes[0].title = 'Zadania';
-                tabs.routes[1].title = 'Szybkie listy';
-            }
-            this.setState({tabs, loading: false});
+        this.props.onInitSettings(() => {
+            this.setState({loading: false});
         });
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.translations !== this.props.translations) {
+            const {tabs} = this.state;
+            tabs.routes[0].title = this.props.translations.tasks;
+            tabs.routes[1].title = this.props.translations.quicklyLists;
+            this.setState({tabs});
+        }
     }
 
     render() {
@@ -89,7 +90,8 @@ const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
         lang: state.settings.settings.lang,
-        hideTabView: state.settings.settings.hideTabView
+        hideTabView: state.settings.settings.hideTabView,
+        translations: state.settings.translations.ToDo
     }
 };
 const mapDispatchToProps = dispatch => {

@@ -36,12 +36,11 @@ class Backup extends PureComponent {
     };
 
     componentDidMount() {
-        // if (Platform.OS === 'ios') {
-        //     this.showDialog('unavailable');
-        // } else {
-        //     this.loadBackupFiles();
-        // }
-        this.loadBackupFiles();
+        if (Platform.OS === 'ios') {
+            this.showDialog('unavailable');
+        } else {
+            this.loadBackupFiles();
+        }
     }
 
     loadBackupFiles = async () => {
