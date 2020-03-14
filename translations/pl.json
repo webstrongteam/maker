@@ -51,7 +51,7 @@
     "addTheme": "Dodaj własny motyw"
   },
   "Theme": {
-    "defaultName": "Kliknij by zmienić nazwę",
+    "defaultName": "Domyślna nazwa",
     "themeNameLabel": "Wprowadź nazwę motywu",
     "main": "Główne",
     "fonts": "Czcionki",
@@ -234,8 +234,8 @@
     "yourApp": "Twojej aplikacji",
     "yourStorage": "Twojego telefonu",
     "emptyList": "Lista kopii zapasowych jest pusta!",
-    "unavailableTitle": "Kopie zapasowe nie są dostępne!",
-    "unavailableDescription": "Przykro nam, ale funkcja kopii zapasowych nie jest jeszcze dostępna na urządzeniach z systemem iOS. Poinformujemy cię jak tylko opcja ta stanie się dla ciebie dostępna."
+    "restartTitle": "Zrestartuj aplikację",
+    "restartDescription": "Twoja kopia zapasowa została przywrócona. Proszę uruchomić ponownie aplikację."
   },
   "About": {
     "title": "Informacje",

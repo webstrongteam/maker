@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 import {AsyncStorage, NativeModules, Platform} from "react-native";
 
-export const VERSION = '2.0.0'; // APP VERSION
+export const VERSION = '2.0.1'; // APP VERSION
 const db = SQLite.openDatabase('maker.db', VERSION);
 
 const getLocale = () => {
@@ -112,12 +112,17 @@ export const initApp = (callback) => {
                         }
                     };
 
+                    const versionID = +version.split('.').join("");
                     // Init prepare DB for newest version
-                    if (version.includes('1.1.0')) {
+                    if (versionID === 110) {
                         prepareToUpdate('2.0.0')
-                    } else if (!version.includes('1.1.0') && !version.includes('2.0.0')) {
+                    } else if (versionID < 110) {
                         prepareToUpdate('1.1.0')
-                    } else callback();
+                    } else {
+                        tx.executeSql('UPDATE settings SET version = ? WHERE id = 0;', [VERSION], () => {
+                            callback();
+                        });
+                    }
                 } else callback();
             }, () => initDatabase(callback));
         }, (err) => console.log(err)

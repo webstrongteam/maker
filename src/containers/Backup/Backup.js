@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {Platform, ScrollView, Text, View} from 'react-native';
 import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
 import Dialog from "../../components/UI/Dialog/Dialog";
@@ -36,11 +36,7 @@ class Backup extends PureComponent {
     };
 
     componentDidMount() {
-        if (Platform.OS === 'ios') {
-            this.showDialog('unavailable');
-        } else {
-            this.loadBackupFiles();
-        }
+        this.loadBackupFiles();
     }
 
     loadBackupFiles = async () => {
@@ -77,6 +73,12 @@ class Backup extends PureComponent {
             .catch(() => {
                 this.toggleSnackbar(translations.dbReplacedError);
             });
+
+        if (Platform.OS === 'ios') {
+            setTimeout(() => {
+                this.showDialog('restart');
+            }, 1000)
+        }
     };
 
     createBackup = (ownUri = false) => {
@@ -168,7 +170,7 @@ class Backup extends PureComponent {
         if (action === 'showBackupAlert') {
             dialog = generateDialogObject(
                 translations.defaultTitle,
-                `${translations.showBackupAlertDescription1} '${name}' backup?\n\n${translations.showBackupAlertDescription2}`,
+                `${translations.showBackupAlertDescription1} "${name}"?\n\n${translations.showBackupAlertDescription2}`,
                 {
                     [translations.yes]: () => {
                         this.props.onUpdateModal(false);
@@ -251,16 +253,10 @@ class Backup extends PureComponent {
                 }
             );
             return this.setState({dialog, showModal: true});
-        } else if (action === 'unavailable') {
+        } else if (action === 'restart') {
             dialog = generateDialogObject(
-                translations.unavailableTitle,
-                translations.unavailableDescription,
-                {
-                    [translations.cancel]: () => {
-                        this.props.onUpdateModal(false);
-                        this.props.navigation.goBack();
-                    }
-                }
+                translations.restartTitle,
+                translations.restartDescription
             );
         }
 

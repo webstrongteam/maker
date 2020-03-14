@@ -153,11 +153,10 @@ class Theme extends Component {
     };
 
     checkChanges = (name = this.state.customTheme.name) => {
-        const {customTheme, customThemeCopy, defaultName, control} = this.state;
+        const {customTheme, customThemeCopy, control} = this.state;
 
         return checkValid(control, name) &&
-            (JSON.stringify(customTheme) !== JSON.stringify(customThemeCopy) &&
-                (name !== defaultName));
+            (JSON.stringify(customTheme) !== JSON.stringify(customThemeCopy));
     };
 
     configColorPicker = (colorPickerTitle, selectedColor) => {

@@ -285,7 +285,7 @@ class QuicklyTaskList extends Component {
                             }
                             <View style={{
                                 marginRight: 30,
-                                marginBottom: 10,
+                                marginBottom: 15,
                                 bottom: 10,
                                 flexDirection: 'row',
                                 alignItems: 'center'

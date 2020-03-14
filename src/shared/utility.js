@@ -112,7 +112,7 @@ export const convertDaysIndex = (daysIndex, translations) => {
     }).join(', ')
 };
 
-export const generateDialogObject = (title, body, buttons) => {
+export const generateDialogObject = (title, body, buttons = {}) => {
     let object = {
         title,
         body,

@@ -50,7 +50,7 @@
     "addTheme": "Add your own theme"
   },
   "Theme": {
-    "defaultName": "Tap to change name",
+    "defaultName": "Default name",
     "themeNameLabel": "Enter theme name",
     "main": "Main",
     "fonts": "Fonts",
@@ -229,8 +229,8 @@
     "yourApp": "Your app",
     "yourStorage": "Your storage",
     "emptyList": "Backup list is empty!",
-    "unavailableTitle": "Backups are unavailable!",
-    "unavailableDescription": "Sorry, but backups ability are unavailable in devices with iOS system. When this option has been available for you, we will inform."
+    "restartTitle": "Restart app",
+    "restartDescription": "Your backup has been recovery. Please, restart app."
   },
   "About": {
     "title": "About",

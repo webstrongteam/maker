@@ -52,10 +52,10 @@ This app working with Android and iOS.
 - Colorsys <i>1.0.22</i>
 
 ### ToDo:
-- Add backup ability for iOS devices
+- Everything is fine :)
 
 ### WebStrong &copy;  
-  
+
 This application was created by **WebStrong Team** <br />
 > **Google Play:** https://play.google.com/store/apps/details?id=com.webStrong.maker <br />
 > **Apple Store:** xxx <br />
