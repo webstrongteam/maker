@@ -85,24 +85,22 @@ export const sortingByType = (array, sorting, sortingType) => {
     }
 };
 
-export const convertNumberToDate = (number, translations) => {
+export const convertNumberToDate = (number) => {
     switch (number) {
         case 0:
-            return translations.minutes;
+            return 'minutes';
         case 1:
-            return translations.hours;
+            return 'hours';
         case 2:
-            return translations.days;
+            return 'days';
         case 3:
-            return translations.weeks;
+            return 'weeks';
         case 4:
-            return translations.months;
+            return 'months';
         case 5:
-            return translations.years;
-        case 6:
-            return translations.years;
+            return 'years';
         default:
-            return translations.days;
+            return 'days';
     }
 };
 

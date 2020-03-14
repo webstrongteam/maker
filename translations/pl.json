@@ -6,7 +6,8 @@
     "search": "Wyszukaj",
     "save": "Zapisz",
     "no": "Nie",
-    "defaultTitle": "Jesteś pewien?"
+    "defaultTitle": "Jesteś pewien?",
+    "permissionError": "Wystąpił problem z uprawnieniami"
   },
   "ToDo": {
     "tasks": "Zadania",

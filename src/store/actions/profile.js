@@ -1,7 +1,7 @@
 import * as actionTypes from './actionTypes';
-import * as SQLite from 'expo-sqlite';
+import {openDatabase} from 'expo-sqlite';
 
-const db = SQLite.openDatabase('maker.db');
+const db = openDatabase('maker.db');
 
 export const onUpdateProfile = (profile) => {
     return {

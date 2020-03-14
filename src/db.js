@@ -1,8 +1,8 @@
-import * as SQLite from 'expo-sqlite';
+import {openDatabase} from 'expo-sqlite';
 import {AsyncStorage, NativeModules, Platform} from "react-native";
 
-export const VERSION = '2.0.1'; // APP VERSION
-const db = SQLite.openDatabase('maker.db', VERSION);
+export const VERSION = '2.0.2'; // APP VERSION
+const db = openDatabase('maker.db', VERSION);
 
 const getLocale = () => {
     const locale =
@@ -56,7 +56,7 @@ export const initDatabase = (callback) => {
             "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, primaryTextColor, secondaryTextColor, thirdTextColor, warningColor, doneIconColor, undoIconColor, lowColor, mediumColor, highColor) values (1, 'Dark', '#bf3e17', '#1a1a1a', '#333333', '#f2f2f2', '#d9d9d9', '#d9d9d9', '#cc2e29', '#26b596', '#5bc0de', '#26b596', '#cec825', '#f4511e');"
         );
         tx.executeSql(
-            "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker user', '', 0);"
+            "INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker', '', 0);"
         );
         tx.executeSql(
             "INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, hideTabView, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 0, ?);", [VERSION + "_INIT", getLocale()], () => {

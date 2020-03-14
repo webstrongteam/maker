@@ -8,7 +8,7 @@ import {ColorWheel} from 'react-native-color-wheel';
 import colorsys from 'colorsys';
 import Dialog from "../../components/UI/Dialog/Dialog";
 import {checkValid, generateDialogObject} from "../../shared/utility";
-import {BannerAd} from "../../API/adsAPI";
+import {BannerAd} from "../../shared/bannerAd";
 import Modal from 'react-native-modalbox';
 import styles from './Theme.styles';
 

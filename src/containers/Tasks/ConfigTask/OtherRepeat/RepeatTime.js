@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import Input from "../../../../components/UI/Input/Input";
 import {Platform, ScrollView, TouchableOpacity, View} from "react-native";
+import Input from "../../../../components/UI/Input/Input";
 import {Button, ListItem} from "react-native-material-ui";
+
 import {connect} from "react-redux";
 
 class RepeatTime extends Component {
@@ -26,6 +27,8 @@ class RepeatTime extends Component {
             } else {
                 this.setState({selectedTime: '2'});
             }
+        } else {
+            this.setState({selectedTime: this.props.selectedTime});
         }
         if (+this.props.selectedTime !== 6) {
             this.setState({repeat: this.props.repeat});
@@ -52,8 +55,9 @@ class RepeatTime extends Component {
                         {repeatTimes.map((time, index) => {
                             if (!usingTime && (time === 'hours' || time === 'minutes')) return null;
                             return (
-                                <TouchableOpacity key={index}
-                                                  onPress={() => this.setState({selectedTime: index + ''})}>
+                                <TouchableOpacity
+                                    key={index}
+                                    onPress={() => this.setState({selectedTime: index + ''})}>
                                     <ListItem
                                         divider
                                         dense

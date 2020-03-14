@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, TouchableOpacity, View} from "react-native";
 import {Avatar, Button} from "react-native-material-ui";
+
 import {connect} from "react-redux";
 
 class RepeatDays extends Component {

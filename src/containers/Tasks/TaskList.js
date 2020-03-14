@@ -781,7 +781,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onInitToDo: (callback) => dispatch(actions.initToDo(callback)),
-        onFinishTask: (task, endTask, primaryColor, callback) => dispatch(actions.finishTask(task, endTask, primaryColor, callback)),
+        onFinishTask: (task, endTask, primaryColor, translations, callback) => dispatch(actions.finishTask(task, endTask, primaryColor, translations, callback)),
         onRemoveTask: (task) => dispatch(actions.removeTask(task)),
         onUndoTask: (task) => dispatch(actions.undoTask(task)),
         onAddEndedTask: () => dispatch(actions.addEndedTask()),

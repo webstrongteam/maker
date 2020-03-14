@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import {Checkbox, IconToggle, Toolbar} from 'react-native-material-ui';
+import {askAsync, CALENDAR, NOTIFICATIONS, REMINDERS} from 'expo-permissions';
 import Subheader from '../../../components/UI/Subheader/Subheader';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Template from '../../Template/Template';
@@ -18,7 +19,7 @@ import {
 } from '../../../shared/utility';
 import {configTask} from '../../../shared/configTask';
 import {fullWidth} from '../../../shared/styles';
-import {BannerAd} from "../../../API/adsAPI";
+import {BannerAd} from "../../../shared/bannerAd";
 import styles from './ConfigTask.styles';
 import moment from 'moment';
 
@@ -274,6 +275,10 @@ class ConfigTask extends Component {
         return newDate;
     };
 
+    toggleSnackbar = (message, visible = true) => {
+        this.props.onUpdateSnackbar(visible, message);
+    };
+
     checkChanges = () => {
         const {task, taskCopy, setEvent, setNotification, controls} = this.state;
 
@@ -289,6 +294,32 @@ class ConfigTask extends Component {
             task.date.length < 13) {
             task.repeat = 'noRepeat';
             this.setState({task})
+        }
+    };
+
+    setEvent = async (value) => {
+        if (value) {
+            const {status} = await askAsync(CALENDAR, REMINDERS);
+            if (status === 'granted') {
+                this.setState({setEvent: value});
+            } else {
+                this.toggleSnackbar(this.props.translations.permissionError);
+            }
+        } else {
+            this.setState({setEvent: value});
+        }
+    };
+
+    setNotification = async (value) => {
+        if (value) {
+            const {status} = await askAsync(NOTIFICATIONS);
+            if (status === 'granted') {
+                this.setState({setNotification: value});
+            } else {
+                this.toggleSnackbar(this.props.translations.permissionError);
+            }
+        } else {
+            this.setState({setNotification: value});
         }
     };
 
@@ -452,7 +483,7 @@ class ConfigTask extends Component {
                                     label={translations.setCalendarEvent}
                                     value='set'
                                     checked={setEvent}
-                                    onCheck={(value) => this.setState({setEvent: value})}
+                                    onCheck={(value) => this.setEvent(value)}
                                 />
                                 {task.date.length > 12 &&
                                 <Checkbox
@@ -460,7 +491,7 @@ class ConfigTask extends Component {
                                     label={translations.setNotification}
                                     value='set'
                                     checked={setNotification}
-                                    onCheck={(value) => this.setState({setNotification: value})}
+                                    onCheck={(value) => this.setNotification(value)}
                                 />
                                 }
                                 <Subheader text={translations.repeat}/>
@@ -527,6 +558,7 @@ const mapDispatchToProps = dispatch => {
         onInitTask: (id, callback) => dispatch(actions.initTask(id, callback)),
         onSaveTask: (task, callback) => dispatch(actions.saveTask(task, callback)),
         onRemoveTask: (task, callback) => dispatch(actions.removeTask(task, false, callback)),
+        onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
         onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal))
     }
 };

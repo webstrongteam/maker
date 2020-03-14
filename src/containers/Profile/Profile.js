@@ -2,13 +2,13 @@ import React, {PureComponent} from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import Input from '../../components/UI/Input/Input';
 import Template from '../Template/Template';
-import * as Permissions from 'expo-permissions';
+import {askAsync, CAMERA_ROLL} from 'expo-permissions';
 import Constants from 'expo-constants';
-import * as ImagePicker from 'expo-image-picker';
+import {launchImageLibraryAsync, MediaTypeOptions} from 'expo-image-picker';
 import {Toolbar} from 'react-native-material-ui';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import {separator} from '../../shared/styles';
-import {BannerAd} from "../../API/adsAPI";
+import {BannerAd} from "../../shared/bannerAd";
 import styles from './Profile.styles';
 
 import {connect} from 'react-redux';
@@ -28,24 +28,25 @@ class Profile extends PureComponent {
         });
     }
 
+    toggleSnackbar = (message, visible = true) => {
+        this.props.onUpdateSnackbar(visible, message);
+    };
+
     getPermissionAsync = async () => {
         const {translations} = this.props;
         if (Constants.platform.ios) {
-            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-            if (status !== 'granted') {
-                alert(translations.permission);
-                return false;
+            const {status} = await askAsync(CAMERA_ROLL);
+            if (status === 'granted') {
+                this.pickImage();
             } else {
-                return this.pickImage();
+                this.toggleSnackbar(translations.permission);
             }
-        } else {
-            return this.pickImage();
-        }
+        } else this.pickImage();
     };
 
     pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+        let result = await launchImageLibraryAsync({
+            mediaTypes: MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
         });
@@ -97,7 +98,7 @@ class Profile extends PureComponent {
                             backgroundColor: theme.secondaryBackgroundColor,
                             paddingBottom: 10
                         }}>
-                            <TouchableOpacity onPress={() => this.getPermissionAsync()}>
+                            <TouchableOpacity onPress={this.getPermissionAsync}>
                                 <Image style={styles.image} source={
                                     profile.avatar ?
                                         {uri: profile.avatar} :
@@ -144,6 +145,7 @@ const mapDispatchToProps = dispatch => {
         onInitProfile: (callback) => dispatch(actions.initProfile(callback)),
         onChangeName: (name) => dispatch(actions.changeName(name)),
         onChangeAvatar: (avatar) => dispatch(actions.changeAvatar(avatar)),
+        onUpdateSnackbar: (showSnackbar, snackbarText) => dispatch(actions.updateSnackbar(showSnackbar, snackbarText))
     }
 };
 

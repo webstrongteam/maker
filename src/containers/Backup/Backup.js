@@ -1,17 +1,24 @@
 import React, {PureComponent} from 'react';
 import {Platform, ScrollView, Text, View} from 'react-native';
 import {IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
-import {generateDialogObject} from '../../shared/utility';
 import Dialog from "../../components/UI/Dialog/Dialog";
-import {empty, listRow, row, shadow} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import * as FileSystem from "expo-file-system";
-import * as Sharing from 'expo-sharing';
-import * as DocumentPicker from 'expo-document-picker';
-import * as SQLite from 'expo-sqlite';
 import Template from '../Template/Template';
-import {BannerAd} from "../../API/adsAPI";
+import {empty, listRow, row, shadow} from '../../shared/styles';
+import {
+    copyAsync,
+    deleteAsync,
+    documentDirectory,
+    makeDirectoryAsync,
+    moveAsync,
+    readDirectoryAsync
+} from "expo-file-system";
+import {shareAsync} from 'expo-sharing';
+import {getDocumentAsync} from 'expo-document-picker';
+import {openDatabase} from 'expo-sqlite';
+import {BannerAd} from "../../shared/bannerAd";
 import {initApp} from '../../db';
+import {generateDialogObject} from '../../shared/utility';
 import moment from 'moment';
 
 import {connect} from 'react-redux';
@@ -40,8 +47,8 @@ class Backup extends PureComponent {
     }
 
     loadBackupFiles = async () => {
-        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'Backup', {intermediates: true});
-        await FileSystem.readDirectoryAsync(FileSystem.documentDirectory + 'Backup')
+        await makeDirectoryAsync(documentDirectory + 'Backup', {intermediates: true});
+        await readDirectoryAsync(documentDirectory + 'Backup')
             .then((backups) => {
                 this.setState({backups, loading: false});
             })
@@ -53,9 +60,9 @@ class Backup extends PureComponent {
 
     useBackupDB = (name) => {
         const {translations} = this.props;
-        FileSystem.copyAsync({
-            from: FileSystem.documentDirectory + 'Backup/' + name,
-            to: FileSystem.documentDirectory + 'SQLite/maker.db'
+        copyAsync({
+            from: documentDirectory + 'Backup/' + name,
+            to: documentDirectory + 'SQLite/maker.db'
         })
             .then(() => {
                 this.setState({loading: true});
@@ -85,15 +92,15 @@ class Backup extends PureComponent {
         const {translations} = this.props;
 
         let date;
-        let uri = FileSystem.documentDirectory + 'SQLite/maker.db';
+        let uri = documentDirectory + 'SQLite/maker.db';
         if (ownUri) uri = ownUri;
 
         if (this.props.timeFormat) date = moment(new Date()).format("_DD_MM_YYYY_HH_mm_ss");
         else date = moment(new Date()).format("_DD_MM_YYYY_hh_mm_ss");
 
-        FileSystem.copyAsync({
+        copyAsync({
             from: uri,
-            to: `${FileSystem.documentDirectory}Backup/maker${date}`
+            to: `${documentDirectory}Backup/maker${date}`
         })
             .then(() => {
                 this.loadBackupFiles();
@@ -105,14 +112,13 @@ class Backup extends PureComponent {
     };
 
     addBackupFromStorage = async () => {
-        const backupPicker = await DocumentPicker.getDocumentAsync({
-            type: 'application/sql',
-            copyToCacheDirectory: false
+        const backupPicker = await getDocumentAsync({
+            type: 'application/sql'
         });
         if (backupPicker.type === 'success') {
-            FileSystem.copyAsync({
+            copyAsync({
                 from: backupPicker.uri,
-                to: `${FileSystem.documentDirectory}SQLite/maker_test.db`
+                to: `${documentDirectory}SQLite/maker_test.db`
             })
                 .then(() => {
                     this.checkDatabase();
@@ -124,14 +130,14 @@ class Backup extends PureComponent {
     };
 
     shareBackup = (name) => {
-        Sharing.shareAsync(
-            FileSystem.documentDirectory + 'Backup/' + name,
+        shareAsync(
+            documentDirectory + 'Backup/' + name,
             {dialogTitle: 'Share backup', mimeType: 'application/sql', UTI: 'public.database'});
     };
 
     removeBackup = (path) => {
         const {translations} = this.props;
-        FileSystem.deleteAsync(FileSystem.documentDirectory + path)
+        deleteAsync(documentDirectory + path)
             .then(async () => {
                 await this.loadBackupFiles();
                 this.toggleSnackbar(translations.backupRemoved);
@@ -143,12 +149,12 @@ class Backup extends PureComponent {
 
     checkDatabase = () => {
         const {translations} = this.props;
-        const db = SQLite.openDatabase('maker_test.db');
+        const db = openDatabase('maker_test.db');
         db.transaction(
             tx => {
                 tx.executeSql("select version from settings", [],
                     () => {
-                        this.createBackup(FileSystem.documentDirectory + 'SQLite/maker_test.db');
+                        this.createBackup(documentDirectory + 'SQLite/maker_test.db');
                     },
                     () => {
                         this.toggleSnackbar(translations.incorrectFile);
@@ -240,9 +246,9 @@ class Backup extends PureComponent {
                     Save: () => {
                         const {selectedBackup, control} = this.state;
                         if (!control.error) {
-                            FileSystem.moveAsync({
+                            moveAsync({
                                 from: selectedBackup.uri,
-                                to: `${FileSystem.documentDirectory}Backup/${selectedBackup.name}`
+                                to: `${documentDirectory}Backup/${selectedBackup.name}`
                             })
                                 .then(() => this.loadBackupFiles())
                                 .catch(() => this.toggleSnackbar(translations.backupRenameError));
@@ -315,7 +321,7 @@ class Backup extends PureComponent {
                                                     style={{container: {marginRight: -10}}}
                                                     onPress={() => this.setState({
                                                         selectedBackup: {
-                                                            name, uri: FileSystem.documentDirectory + 'Backup/' + name,
+                                                            name, uri: documentDirectory + 'Backup/' + name,
                                                         }
                                                     }, () => this.showDialog('rename'))}
                                                     color={theme.undoIconColor}

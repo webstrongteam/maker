@@ -6,7 +6,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import {Text, View} from 'react-native';
 import {iconStyle} from '../../shared/styles';
 import {generateDialogObject} from "../../shared/utility";
-import {BannerAd} from "../../API/adsAPI";
+import {BannerAd} from "../../shared/bannerAd";
 import styles from './Settings.styles';
 
 import {connect} from 'react-redux';

@@ -1,10 +1,10 @@
 import * as actionTypes from './actionTypes';
-import * as SQLite from 'expo-sqlite';
+import {openDatabase} from 'expo-sqlite';
 import {convertNumberToDate, setCategories} from '../../shared/utility';
 import {configTask, deleteCalendarEvent, deleteLocalNotification} from '../../shared/configTask';
 import moment from 'moment';
 
-const db = SQLite.openDatabase('maker.db');
+const db = openDatabase('maker.db');
 
 export const onRefresh = () => {
     return {
@@ -146,8 +146,8 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
             [...Array(5).keys()].map((i) => {
                 task.repeat.split('').map((weekday, index) => {
                     if (index && nextDate === task.date) {
-                        const actualDate = moment(task.date, 'DD-MM-YYYY').add(i, 'days').format('DD-MM-YYYY');
-                        const compareDate = moment(task.date, 'DD-MM-YYYY').day(weekday).add(1, 'days').format('DD-MM-YYYY');
+                        const actualDate = moment(task.date, dateFormat).add(i, 'days').format(dateFormat);
+                        const compareDate = moment(task.date, dateFormat).day(weekday).add(1, 'days').format(dateFormat);
                         if (actualDate === compareDate) {
                             nextDate = compareDate;
                         }
@@ -155,7 +155,8 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
                 })
             })
         } else {
-            nextDate = moment(nextDate, dateFormat).add(+task.repeat.substring(1), convertNumberToDate(+task.repeat[0]));
+            nextDate = moment(nextDate, dateFormat).add(
+                +task.repeat.substring(1), convertNumberToDate(+task.repeat[0]));
         }
     } else if (task.repeat === 'onceDay') nextDate = moment(nextDate, dateFormat).add(1, 'days');
     else if (task.repeat === 'onceDayMonFri') {

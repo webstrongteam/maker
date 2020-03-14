@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Drawer, Toolbar} from 'react-native-material-ui';
 import Template from '../Template/Template';
-import {BannerAd} from "../../API/adsAPI";
+import {BannerAd} from "../../shared/bannerAd";
 
 import {connect} from 'react-redux';
 

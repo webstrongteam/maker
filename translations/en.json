@@ -6,7 +6,8 @@
     "no": "No",
     "confirm": "Confirm",
     "search": "Search",
-    "defaultTitle": "Are you sure?"
+    "defaultTitle": "Are you sure?",
+    "permissionError": "Error with permissions"
   },
   "ToDo": {
     "tasks": "Tasks",

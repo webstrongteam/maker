@@ -1,8 +1,8 @@
 import React from "react";
 import {Keyboard, Platform, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {ListItem} from "react-native-material-ui";
 import {BlurView} from 'expo-blur';
 import Dialog from "react-native-dialog";
-import {ListItem} from "react-native-material-ui";
 import Input from "../Input/Input";
 
 import {connect} from 'react-redux';
