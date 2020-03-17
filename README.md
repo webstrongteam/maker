@@ -1,6 +1,6 @@
 # Maker - ToDo app 
 <a href="https://play.google.com/store/apps/details?id=com.webStrong.maker" target="_blank"><img src="http://webstrong.pl/templates/google_play_pl.png" width="150"/></a>
-<a href="#" target="_blank"><img src="http://webstrong.pl/templates/apple_store_pl.png" width="150"/></a>
+<a href="https://apps.apple.com/us/app/maker-todo-list/id1502811101" target="_blank"><img src="http://webstrong.pl/templates/apple_store_pl.png" width="150"/></a>
 
 **Maker** is an advanced ToDo mobile application created with React Native and Expo framework. 
 This app working with Android and iOS. 
@@ -58,5 +58,5 @@ This app working with Android and iOS.
 
 This application was created by **WebStrong Team** <br />
 > **Google Play:** https://play.google.com/store/apps/details?id=com.webStrong.maker <br />
-> **Apple Store:** xxx <br />
+> **Apple Store:** https://apps.apple.com/us/app/maker-todo-list/id1502811101 <br />
 > **Expo:** https://expo.io/@mateuszpijanowski/maker
