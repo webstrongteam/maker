@@ -370,14 +370,14 @@ class ConfigTask extends Component {
                     }
                     rightElement={
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            {editTask && <IconToggle name="delete"
+                                                     color={theme.primaryTextColor}
+                                                     onPress={() => this.showDialog('delete')}/>
+                            }
                             {this.checkChanges() &&
                             <IconToggle name="save"
                                         color={theme.primaryTextColor}
                                         onPress={this.saveTask}/>
-                            }
-                            {editTask && <IconToggle name="delete"
-                                                     color={theme.primaryTextColor}
-                                                     onPress={() => this.showDialog('delete')}/>
                             }
                         </View>
                     }
@@ -464,7 +464,7 @@ class ConfigTask extends Component {
                                                         name='access-time'/>
                                     }
                                     placeholder={translations.selectDueTime}
-                                    format="HH:mm"
+                                    format={!!settings.timeFormat ? 'HH:mm' : 'hh:mm A'}
                                     confirmBtnText={translations.confirm}
                                     cancelBtnText={translations.cancel}
                                     customStyles={{

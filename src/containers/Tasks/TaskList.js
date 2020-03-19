@@ -87,9 +87,8 @@ class TaskList extends Component {
         const currentDirection = sub > 0 ? UP : DOWN;
 
         if (this.state.scrollDirection !== currentDirection) {
-            this.state.scrollDirection = currentDirection;
-
             this.setState({
+                scrollDirection: currentDirection,
                 bottomHidden: currentDirection === DOWN
             });
         }
@@ -137,7 +136,6 @@ class TaskList extends Component {
                             const {selectedTask} = this.state;
                             this.props.onFinishTask(selectedTask, false, this.props.theme.primaryColor, () => {
                                 this.props.onAddEndedTask();
-
                                 const {animations} = this.state;
                                 animations[`move${selectedTask.id}`] = new Animated.Value(0);
                                 animations[`hide${selectedTask.id}`] = false;
@@ -223,11 +221,6 @@ class TaskList extends Component {
                 this.moveAnimate(() => {
                     this.props.onFinishTask(task, false, this.props.theme.primaryColor, () => {
                         this.props.onAddEndedTask();
-
-                        const {animations} = this.state;
-                        animations[`move${task.id}`] = new Animated.Value(0);
-                        animations[`hide${task.id}`] = false;
-                        this.setState({animations});
                     });
                 })
             }
@@ -279,8 +272,7 @@ class TaskList extends Component {
                 }
             ).start(() => {
                 animations[`hide${this.state.selectedTask.id}`] = true;
-                this.setState({animations});
-                callback()
+                this.setState({animations}, callback());
             });
         })
     };
@@ -363,6 +355,19 @@ class TaskList extends Component {
     toggleConfigCategory = () => {
         const {showConfigCategory} = this.state;
         this.setState({showConfigCategory: !showConfigCategory});
+    };
+
+    convertTimeCycle = (date) => {
+        const allDay = date.length < 13;
+
+        if (allDay) return date;
+        else {
+            if (!!this.props.settings.timeFormat) {
+                return date;
+            } else {
+                return moment(date, 'DD-MM-YYYY - HH:mm').format('DD-MM-YYYY - hh:mm A');
+            }
+        }
     };
 
     selectedCategoryHandler = (
@@ -462,7 +467,7 @@ class TaskList extends Component {
                                                             theme.warningColor :
                                                             theme.thirdTextColor
                                                 }}>
-                                                    {task.date ? task.date : task.description ? task.description : ' '}
+                                                    {task.date ? this.convertTimeCycle(task.date) : task.description ? task.description : ' '}
                                                 </Text>
                                                 {task.repeat !== 'noRepeat' &&
                                                 <Icon
@@ -624,8 +629,8 @@ class TaskList extends Component {
 
     render() {
         const {
-            showConfigCategory, dropdownData, selectedIndex, sortedTasks,
-            rotateInterpolate, bottomHidden, tasks, selectedCategory, loading
+            showConfigCategory, dropdownData, selectedIndex, tasks,
+            rotateInterpolate, bottomHidden, selectedCategory, loading
         } = this.state;
         const {theme, navigation, sortingType, sorting, finished, translations} = this.props;
 

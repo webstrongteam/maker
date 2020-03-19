@@ -52,7 +52,8 @@ This app working with Android and iOS.
 - Colorsys <i>1.0.22</i>
 
 ### ToDo:
-- Everything is fine :)
+**iOS:**
+- Adding backup file from file system not working
 
 ### WebStrong &copy;  
 

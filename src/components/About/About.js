@@ -4,8 +4,8 @@ import {separator} from '../../shared/styles';
 import * as WebBrowser from 'expo-web-browser';
 import Template from '../../containers/Template/Template';
 import {Toolbar} from 'react-native-material-ui';
-import {VERSION} from '../../db'
 import styles from './About.styles';
+import {VERSION} from '../../db'
 
 import {connect} from "react-redux";
 

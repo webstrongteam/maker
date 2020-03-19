@@ -72,7 +72,7 @@ export const setCalendarEvent = async (task, color, calendarId = null) => {
     const calendars = await Calendar.getCalendarsAsync();
     if (Platform.OS === 'android') {
         // For android
-        const calendar = calendars.find(c => c.name === 'Maker');
+        const calendar = calendars.find(c => c.title === 'Maker - ToDo list');
         if (calendar) calendarId = calendar.id;
 
         if (!calendarId) {
@@ -102,13 +102,12 @@ export const setCalendarEvent = async (task, color, calendarId = null) => {
         }
     } else if (Platform.OS === 'ios') {
         // For iOS
-        const calendar = calendars.find(c => c.name === 'Maker');
+        const calendar = calendars.find(c => c.title === 'Maker - ToDo list');
         if (calendar) calendarId = calendar.id;
 
         if (!calendarId) {
             // Create new calendar
             const getDefaultCalendarSource = async () => {
-                const calendars = await Calendar.getCalendarsAsync();
                 const defaultCalendars = calendars.filter(each => each.allowedAvailabilities.length);
                 return defaultCalendars[0].source;
             };
@@ -134,10 +133,14 @@ export const setCalendarEvent = async (task, color, calendarId = null) => {
     if (calendarId !== null) {
         const allDay = task.date.length < 13;
 
-        let date;
         // Convert date
+        let date;
         if (allDay) {
-            date = new Date(moment(task.date, 'DD-MM-YYYY').add(1, 'days').format());
+            if (Platform.OS === 'android') {
+                date = new Date(moment(task.date, 'DD-MM-YYYY').add(1, 'days').format());
+            } else {
+                date = new Date(moment(task.date, 'DD-MM-YYYY').format());
+            }
         } else {
             date = new Date(moment(task.date, 'DD-MM-YYYY HH:mm').format());
         }
