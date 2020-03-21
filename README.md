@@ -5,7 +5,7 @@
 **Maker** is an advanced ToDo mobile application created with React Native and Expo framework. 
 This app working with Android and iOS. 
 
-<p align="center"><img src="http://webstrong.pl/Maker/promo_images/maker_todo_list_promo.png" width="500px" /></p>
+<p align="center"><img src="http://webstrong.pl/Maker/promo_images/maker_promo.png" width="500px" /></p>
 
 ## Basic features  
   
