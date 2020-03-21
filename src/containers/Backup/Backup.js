@@ -68,7 +68,7 @@ class Backup extends PureComponent {
                         this.setState({loading: false});
                         this.toggleSnackbar(translations.dbReplaced);
                     });
-                })
+                }, true)
             })
             .catch(() => {
                 this.toggleSnackbar(translations.dbReplacedError);

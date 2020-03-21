@@ -29,6 +29,14 @@ export const setCategories = (tasks, categories) => {
 };
 
 export const sortingData = (array, field, type) => {
+    const nestedSort = (a, b) => {
+        if (a.name === b.name) {
+            return a.id > b.id;
+        } else {
+            return ('' + a.name).localeCompare(b.name);
+        }
+    };
+
     if (field === 'date') { // SORTING DATE
         array.sort((a, b) => {
             let dateA = a[field];
@@ -37,8 +45,11 @@ export const sortingData = (array, field, type) => {
             const dateBFormat = dateB.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
             if (a[field] !== '') dateA = moment(a[field], dateAFormat);
             if (b[field] !== '') dateB = moment(b[field], dateBFormat);
-            if (type === 'ASC') return dateA < dateB;
-            if (type === 'DESC') return dateA > dateB;
+            if (dateA + '' === dateB + '') return nestedSort(a, b);
+            else {
+                if (type === 'ASC') return dateA > dateB;
+                if (type === 'DESC') return dateA < dateB;
+            }
         });
     } else if (field === 'priority') { // SORTING PRIORITY
         array.sort((a, b) => {
@@ -55,18 +66,27 @@ export const sortingData = (array, field, type) => {
                 }
             };
 
-            let A = convertPriority(a[field]);
-            let B = convertPriority(b[field]);
+            const A = convertPriority(a[field]);
+            const B = convertPriority(b[field]);
 
-            if (type === 'ASC') return A < B;
-            if (type === 'DESC') return A > B;
+            if (A === B) return nestedSort(a, b);
+            else {
+                if (type === 'ASC') return A < B;
+                if (type === 'DESC') return A > B;
+            }
         });
     } else if (field === 'category') { // SORTING CATEGORY
         if (type === 'ASC') array.sort((a, b) => ('' + a[field].name).localeCompare(b[field].name));
         if (type === 'DESC') array.sort((a, b) => ('' + b[field].name).localeCompare(a[field].name));
     } else { // DEFAULT SORTING
-        if (type === 'ASC') array.sort((a, b) => ('' + a[field]).localeCompare(b[field]));
-        if (type === 'DESC') array.sort((a, b) => ('' + b[field]).localeCompare(a[field]));
+        if (type === 'ASC') array.sort((a, b) => {
+            if (a[field] === b[field]) return nestedSort(a, b);
+            else return ('' + a[field]).localeCompare(b[field])
+        });
+        if (type === 'DESC') array.sort((a, b) => {
+            if (a[field] === b[field]) return nestedSort(a, b);
+            else return ('' + b[field]).localeCompare(a[field])
+        });
     }
 };
 

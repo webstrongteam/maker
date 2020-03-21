@@ -66,7 +66,7 @@ export const initDatabase = (callback) => {
     }, (err) => console.log(err));
 };
 
-export const initApp = (callback) => {
+export const initApp = (callback, backup = false) => {
     db.transaction(
         tx => {
             // CHECK CORRECTION APP VERSION AND UPDATE DB
@@ -90,7 +90,7 @@ export const initApp = (callback) => {
                                                     });
                                                 })
                                             }).then(() => {
-                                                AsyncStorage.setItem('updated', 'true');
+                                                if (!backup) AsyncStorage.setItem('updated', 'true');
                                                 initDatabase(callback);
                                             })
                                         });
