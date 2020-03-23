@@ -192,6 +192,9 @@ class Theme extends Component {
                     leftElement="arrow-back"
                     rightElement={
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <IconToggle
+                                color={theme.primaryTextColor}
+                                onPress={() => this.showDialog('changeName')} name="edit"/>
                             {this.checkChanges() &&
                             <IconToggle name="save"
                                         color={theme.primaryTextColor}

@@ -1,7 +1,7 @@
 import {openDatabase} from 'expo-sqlite';
 import {AsyncStorage, NativeModules, Platform} from "react-native";
 
-export const VERSION = '2.0.5'; // APP VERSION
+export const VERSION = '2.0.6'; // APP VERSION
 const db = openDatabase('maker.db', VERSION);
 
 const getLocale = () => {
@@ -9,8 +9,7 @@ const getLocale = () => {
         Platform.OS === 'ios'
             ? NativeModules.SettingsManager.settings.AppleLocale
             : NativeModules.I18nManager.localeIdentifier;
-
-    if (locale === 'en_PL') {
+    if (locale === 'pl_PL') {
         return 'pl';
     } else {
         return 'en';
@@ -47,7 +46,7 @@ export const initDatabase = (callback) => {
             'create table if not exists settings (id integer primary key not null, sorting text, sortingType text, timeFormat integer, firstDayOfWeek text, confirmFinishingTask integer, confirmRepeatingTask integer, confirmDeletingTask integer, version text, hideTabView integer DEFAULT 0, theme integer DEFAULT 0 REFERENCES themes(id) ON DELETE SET DEFAULT, lang text);'
         );
         tx.executeSql(
-            "INSERT OR IGNORE INTO categories (id, name) values (0, 'Default');"
+            "INSERT OR IGNORE INTO categories (id, name) values (0, ?);", [getLocale() === 'pl' ? 'Domyślna' : 'Default']
         );
         tx.executeSql(
             "INSERT OR IGNORE INTO themes (id, name, primaryColor, primaryBackgroundColor, secondaryBackgroundColor, primaryTextColor, secondaryTextColor, thirdTextColor, warningColor, doneIconColor, undoIconColor, lowColor, mediumColor, highColor) values (0, 'Default', '#f4511e', '#ffffff', '#e5e5e5', '#ffffff', '#000000', '#5e5e5e', '#d9534f', '#26b596', '#5bc0de', '#26b596', '#cec825', '#f4511e');"

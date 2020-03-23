@@ -419,7 +419,7 @@ class ConfigTask extends Component {
                             value={task.description}
                             changed={value => this.updateTask('description', value)}/>
                         <View style={styles.container}>
-                            <Subheader text="Due date"/>
+                            <Subheader text={translations.dueDate}/>
                             <DatePicker
                                 ref={(e) => this.datepickerDate = e}
                                 style={fullWidth}
