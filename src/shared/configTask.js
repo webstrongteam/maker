@@ -171,6 +171,6 @@ export const deleteCalendarEvent = async (event_id) => {
 
 export const deleteLocalNotification = async (notification_id) => {
     if (Platform.OS === 'android') {
-        await Notifications.cancelScheduledNotificationAsync(+notification_id);
+        await Notifications.cancelScheduledNotificationAsync(+notification_id); // Dismiss notification not working on iOS
     }
 };

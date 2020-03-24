@@ -190,6 +190,9 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
                         if (task.event_id !== false) {
                             deleteCalendarEvent(task.event_id);
                         }
+                        if (task.notification_id !== null) {
+                            deleteLocalNotification(task.notification_id);
+                        }
                         callback();
                         dispatch(initToDo());
                     });
@@ -202,7 +205,7 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
                                    set date = ?
                                    where id = ?;`, [nextDate, task.id], () => {
                             task.date = nextDate;
-                            configTask(task, primaryColor, task.event_id, false);
+                            configTask(task, primaryColor, task.event_id, task.notification_id !== null);
                             callback();
                             dispatch(initTasks());
                         }, (err) => console.log(err)
