@@ -76,7 +76,7 @@ class ToDo extends Component {
                                     }}
                                 />
                             }
-                            renderLazyPlaceholder={() => <Spinner/>}
+                            renderLazyPlaceholder={() => <Spinner color="#f4511e"/>}
                             lazy
                         />
                     </Template> : <Spinner color="#f4511e"/>

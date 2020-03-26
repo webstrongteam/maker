@@ -38,7 +38,7 @@ export const sortingData = (array, field, type) => {
     };
 
     if (field === 'date') { // SORTING DATE
-        array.sort((a, b) => {
+        return array.sort((a, b) => {
             let dateA = a[field];
             let dateB = b[field];
             const dateAFormat = dateA.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY';
@@ -52,7 +52,7 @@ export const sortingData = (array, field, type) => {
             }
         });
     } else if (field === 'priority') { // SORTING PRIORITY
-        array.sort((a, b) => {
+        return array.sort((a, b) => {
             const convertPriority = (priority) => {
                 switch (priority) {
                     case "low":
@@ -76,14 +76,14 @@ export const sortingData = (array, field, type) => {
             }
         });
     } else if (field === 'category') { // SORTING CATEGORY
-        if (type === 'ASC') array.sort((a, b) => ('' + a[field].name).localeCompare(b[field].name));
-        if (type === 'DESC') array.sort((a, b) => ('' + b[field].name).localeCompare(a[field].name));
+        if (type === 'ASC') return array.sort((a, b) => ('' + a[field].name).localeCompare(b[field].name));
+        if (type === 'DESC') return array.sort((a, b) => ('' + b[field].name).localeCompare(a[field].name));
     } else { // DEFAULT SORTING
-        if (type === 'ASC') array.sort((a, b) => {
+        if (type === 'ASC') return array.sort((a, b) => {
             if (a[field] === b[field]) return nestedSort(a, b);
             else return ('' + a[field]).localeCompare(b[field])
         });
-        if (type === 'DESC') array.sort((a, b) => {
+        if (type === 'DESC') return array.sort((a, b) => {
             if (a[field] === b[field]) return nestedSort(a, b);
             else return ('' + b[field]).localeCompare(a[field])
         });

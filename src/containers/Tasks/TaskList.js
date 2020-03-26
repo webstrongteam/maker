@@ -1,8 +1,18 @@
 import React, {Component} from 'react';
-import {Animated, AsyncStorage, Easing, Platform, ScrollView, Text, TouchableHighlight, View} from 'react-native';
+import {
+    Animated,
+    AsyncStorage,
+    Easing,
+    FlatList,
+    Platform,
+    RefreshControl,
+    Text,
+    TouchableHighlight,
+    View
+} from 'react-native';
 import {ActionButton, BottomNavigation, Icon, IconToggle, ListItem, Subheader, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject, sortingByType} from '../../shared/utility';
-import {empty, flex, fullWidth, shadow} from '../../shared/styles';
+import {empty, flex, shadow} from '../../shared/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
 import ConfigCategory from "../Categories/ConfigCategory/ConfigCategory";
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -25,7 +35,6 @@ class TaskList extends Component {
         },
         selectedTask: null,
         showConfigCategory: false,
-        division: {},
 
         scroll: 0,
         offset: 0,
@@ -33,6 +42,8 @@ class TaskList extends Component {
         bottomHidden: false,
 
         tasks: [],
+        data: [],
+        visibleData: 8,
         dropdownData: null,
         selectedCategory: {id: -1, name: this.props.translations.all},
         selectedIndex: 0,
@@ -309,14 +320,22 @@ class TaskList extends Component {
             let div;
             if (task.finish) {
                 div = translations.finished;
-                division[div].push(task);
+                return division[div].push(task);
             } else {
                 div = this.getDateDivision(task.date);
-                division[div].push(task);
+                return division[div].push(task);
             }
-            return sortingByType(division[div], sorting, sortingType);
         })).then(() => {
-            this.setState({division, animations: {}, loading: false});
+            const data = [];
+            Object.keys(division)
+                .map(div => {
+                    return sortingByType(division[div], sorting, sortingType)
+                        .map((task, index) => {
+                            data.push({task, div, showDiv: index === 0});
+                        })
+                });
+
+            this.setState({data, animations: {}, loading: false});
         });
     };
 
@@ -350,6 +369,11 @@ class TaskList extends Component {
         else text = translations.later;
 
         return text;
+    };
+
+    loadNextData = () => {
+        const {visibleData} = this.state;
+        this.setState({visibleData: visibleData + 8});
     };
 
     toggleConfigCategory = () => {
@@ -387,135 +411,9 @@ class TaskList extends Component {
         this.setState({
             selectedCategory: category,
             selectedIndex: +index,
-            tasks: filterTask
+            tasks: filterTask,
+            visibleData: 8
         }, this.divisionTask);
-    };
-
-    renderTaskList = () => {
-        const {division, priorityColors} = this.state;
-        const {translations, theme, navigation} = this.props;
-
-        return Object.keys(division).map(div => (
-            division[div].map((task, index) => {
-                const moveValue = this.state.animations[`move${task.id}`] ?
-                    this.state.animations[`move${task.id}`] : 0;
-                const hideTask = this.state.animations[`hide${task.id}`] ?
-                    0 : 'auto';
-
-                // Searching system
-                const searchText = this.state.searchText.toLowerCase();
-                if (searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0) {
-                    if (task.description.toLowerCase().indexOf(searchText) < 0) {
-                        if (task.category.name.toLowerCase().indexOf(searchText) < 0) {
-                            return null;
-                        }
-                    }
-                }
-
-                return (
-                    <View key={index}>
-                        {!index &&
-                        <Subheader
-                            text={div}
-                            style={{
-                                text: div === translations.overdue ?
-                                    {color: theme.warningColor} :
-                                    {color: theme.thirdTextColor}
-                            }}
-                        />
-                        }
-                        <Animated.View style={{height: hideTask, left: moveValue}}>
-                            <View style={{marginLeft: 15, marginRight: 15, marginBottom: 15}}>
-                                <ListItem
-                                    divider
-                                    dense
-                                    onPress={() => task.finish ?
-                                        null : navigation.navigate('ConfigTask', {task: task.id})}
-                                    style={{
-                                        container: {
-                                            ...shadow,
-                                            height: 80,
-                                            backgroundColor: theme.primaryBackgroundColor
-                                        },
-                                        leftElementContainer: {
-                                            marginRight: -50
-                                        }
-                                    }}
-                                    leftElement={
-                                        <View style={{
-                                            marginLeft: -20,
-                                            width: 15,
-                                            height: '100%',
-                                            backgroundColor: priorityColors[task.priority].bgColor
-                                        }}/>
-                                    }
-                                    centerElement={
-                                        <View>
-                                            <Text numberOfLines={1} style={{
-                                                margin: 2, fontSize: 17,
-                                                color: theme.secondaryTextColor
-                                            }}>
-                                                {task.name}
-                                            </Text>
-                                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                                <Text numberOfLines={1} style={{
-                                                    margin: 2,
-                                                    fontWeight: '500',
-                                                    color: task.finished ?
-                                                        theme.thirdTextColor :
-                                                        div === translations.overdue ?
-                                                            theme.warningColor :
-                                                            theme.thirdTextColor
-                                                }}>
-                                                    {task.date ? this.convertTimeCycle(task.date) : task.description ? task.description : ' '}
-                                                </Text>
-                                                {task.repeat !== 'noRepeat' &&
-                                                <Icon
-                                                    size={16} color={theme.thirdTextColor}
-                                                    style={{alignSelf: 'center'}}
-                                                    name="autorenew"/>
-                                                }
-                                            </View>
-                                            <Text numberOfLines={1} style={{
-                                                margin: 2,
-                                                color: theme.thirdTextColor
-                                            }}>
-                                                {task.category ? task.category.name : ' '}
-                                            </Text>
-                                        </View>
-                                    }
-                                    rightElement={
-                                        <View style={styles.rightElements}>
-                                            <IconToggle
-                                                color={task.finish ?
-                                                    theme.undoIconColor :
-                                                    theme.doneIconColor
-                                                }
-                                                style={{
-                                                    container: {
-                                                        marginRight: task.finish ? -10 : 5
-                                                    }
-                                                }}
-                                                size={32}
-                                                name={task.finish ? 'replay' : 'done'}
-                                                onPress={() => this.updateTask(task)}
-                                            />
-                                            {task.finish &&
-                                            <IconToggle
-                                                onPress={() => this.updateTask(task, 'delete')}
-                                                name="delete"
-                                                color={theme.warningColor}
-                                                size={28}
-                                            />}
-                                        </View>
-                                    }
-                                />
-                            </View>
-                        </Animated.View>
-                    </View>
-                )
-            })
-        ));
     };
 
     renderDropdownData = () => {
@@ -623,13 +521,136 @@ class TaskList extends Component {
             }
 
             this.renderDropdownData();
-            this.setState({tasks: filterTask}, this.divisionTask);
+            this.setState({tasks: filterTask, visibleData: 8}, this.divisionTask);
         })
+    };
+
+    renderTaskList = ({task, div, showDiv}) => {
+        const {priorityColors} = this.state;
+        const {translations, theme, navigation} = this.props;
+
+        const moveValue = this.state.animations[`move${task.id}`] ?
+            this.state.animations[`move${task.id}`] : 0;
+        const hideTask = this.state.animations[`hide${task.id}`] ?
+            0 : 'auto';
+
+        // Searching system
+        const searchText = this.state.searchText.toLowerCase();
+        if (searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0) {
+            if (task.description.toLowerCase().indexOf(searchText) < 0) {
+                if (task.category.name.toLowerCase().indexOf(searchText) < 0) {
+                    return null;
+                }
+            }
+        }
+
+        return (
+            <View>
+                {showDiv &&
+                <Subheader
+                    text={div}
+                    style={{
+                        text: div === translations.overdue ?
+                            {color: theme.warningColor} :
+                            {color: theme.thirdTextColor}
+                    }}
+                />
+                }
+                <Animated.View style={{height: hideTask, left: moveValue}}>
+                    <View style={{marginLeft: 15, marginRight: 15, marginBottom: 15}}>
+                        <ListItem
+                            divider
+                            dense
+                            onPress={() => task.finish ?
+                                null : navigation.navigate('ConfigTask', {task: task.id})}
+                            style={{
+                                container: {
+                                    ...shadow,
+                                    height: 80,
+                                    backgroundColor: theme.primaryBackgroundColor
+                                },
+                                leftElementContainer: {
+                                    marginRight: -50
+                                }
+                            }}
+                            leftElement={
+                                <View style={{
+                                    marginLeft: -20,
+                                    width: 15,
+                                    height: '100%',
+                                    backgroundColor: priorityColors[task.priority].bgColor
+                                }}/>
+                            }
+                            centerElement={
+                                <View>
+                                    <Text numberOfLines={1} style={{
+                                        margin: 2, fontSize: 17,
+                                        color: theme.secondaryTextColor
+                                    }}>
+                                        {task.name}
+                                    </Text>
+                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <Text numberOfLines={1} style={{
+                                            margin: 2,
+                                            fontWeight: '500',
+                                            color: task.finished ?
+                                                theme.thirdTextColor :
+                                                div === translations.overdue ?
+                                                    theme.warningColor :
+                                                    theme.thirdTextColor
+                                        }}>
+                                            {task.date ? this.convertTimeCycle(task.date) : task.description ? task.description : ' '}
+                                        </Text>
+                                        {task.repeat !== 'noRepeat' &&
+                                        <Icon
+                                            size={16} color={theme.thirdTextColor}
+                                            style={{alignSelf: 'center'}}
+                                            name="autorenew"/>
+                                        }
+                                    </View>
+                                    <Text numberOfLines={1} style={{
+                                        margin: 2,
+                                        color: theme.thirdTextColor
+                                    }}>
+                                        {task.category ? task.category.name : ' '}
+                                    </Text>
+                                </View>
+                            }
+                            rightElement={
+                                <View style={styles.rightElements}>
+                                    <IconToggle
+                                        color={task.finish ?
+                                            theme.undoIconColor :
+                                            theme.doneIconColor
+                                        }
+                                        style={{
+                                            container: {
+                                                marginRight: task.finish ? -10 : 5
+                                            }
+                                        }}
+                                        size={32}
+                                        name={task.finish ? 'replay' : 'done'}
+                                        onPress={() => this.updateTask(task)}
+                                    />
+                                    {task.finish &&
+                                    <IconToggle
+                                        onPress={() => this.updateTask(task, 'delete')}
+                                        name="delete"
+                                        color={theme.warningColor}
+                                        size={28}
+                                    />}
+                                </View>
+                            }
+                        />
+                    </View>
+                </Animated.View>
+            </View>
+        )
     };
 
     render() {
         const {
-            showConfigCategory, dropdownData, selectedIndex, tasks,
+            showConfigCategory, dropdownData, selectedIndex, data, visibleData,
             rotateInterpolate, bottomHidden, selectedCategory, loading
         } = this.state;
         const {theme, navigation, sortingType, sorting, finished, translations} = this.props;
@@ -686,23 +707,33 @@ class TaskList extends Component {
                     toggleModal={this.toggleConfigCategory}
                 />
 
-                {loading ? <Spinner/> :
-                    <ScrollView
-                        keyboardShouldPersistTaps="always"
-                        keyboardDismissMode="interactive"
-                        onScroll={this.onScroll}
-                        scrollEventThrottle={16}
-                        style={fullWidth}>
-                        {(tasks && tasks.length) ?
-                            <View style={{paddingBottom: 20}}>
-                                {this.renderTaskList()}
-                            </View>
-                            : <Text style={[empty, {color: theme.thirdTextColor}]}>
-                                {translations.emptyList}
-                            </Text>
-                        }
-                    </ScrollView>
-                }
+                <FlatList
+                    keyboardShouldPersistTaps="always"
+                    keyboardDismissMode="interactive"
+                    onScroll={this.onScroll}
+                    scrollEventThrottle={16}
+                    initialNumToRender={8}
+
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={loading}
+                            tintColor={theme.primaryColor}
+                            onRefresh={this.refreshComponent}/>
+                    }
+                    ListEmptyComponent={
+                        <Text style={[empty, {color: theme.thirdTextColor}]}>
+                            {translations.emptyList}
+                        </Text>
+                    }
+                    data={data.filter((d, i) => i <= visibleData)}
+                    onEndReachedThreshold={0.2}
+                    onEndReached={this.loadNextData}
+                    renderItem={({item}) => this.renderTaskList(item)}
+                    keyExtractor={item => item.id}
+                    onRefresh={this.refreshComponent}
+                    refreshing={loading}
+                    ListFooterComponent={data.length > visibleData && <Spinner/>}
+                />
 
                 <View>
                     {selectedCategory.name !== translations.finished ?
