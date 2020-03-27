@@ -1,7 +1,7 @@
 import {openDatabase} from 'expo-sqlite';
 import {AsyncStorage, NativeModules, Platform} from "react-native";
 
-export const VERSION = '2.0.7'; // APP VERSION
+export const VERSION = '2.1.0'; // APP VERSION
 const db = openDatabase('maker.db', VERSION);
 
 const getLocale = () => {

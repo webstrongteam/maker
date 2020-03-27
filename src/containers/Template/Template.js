@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Platform, StatusBar, View} from 'react-native';
 import {getTheme, Snackbar, ThemeContext} from 'react-native-material-ui';
 import {initDatabase, initTheme} from "../../db";
-import {flex} from '../../shared/styles';
 import Dialog from "../../components/UI/Dialog/Dialog";
 
 import {connect} from 'react-redux';
@@ -57,11 +56,12 @@ class Template extends Component {
                         <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent/>
                     </View>
                     <View
-                        style={[flex, {
+                        style={{
+                            flex: 1,
                             backgroundColor: this.props.bgColor ?
                                 this.props.bgColor :
                                 this.props.theme.primaryBackgroundColor
-                        }]}>
+                        }}>
                         {this.props.children}
                     </View>
 

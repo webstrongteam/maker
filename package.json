@@ -1,6 +1,6 @@
 {
   "name": "maker",
-  "version": "2.0.7",
+  "version": "2.1.0",
   "author": "WebStrong",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {

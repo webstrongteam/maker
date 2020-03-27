@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {View} from 'react-native';
 import {IconToggle} from 'react-native-material-ui'
 import {TextField} from 'react-native-material-textfield';
-import {fullWidth} from '../../../shared/styles';
 import {valid} from "../../../shared/utility";
 import styles from './Input.styles';
 
@@ -48,7 +47,7 @@ class Input extends Component {
                 <View style={{flex: 1}}>
                     <TextField
                         {...control}
-                        style={style ? style : fullWidth}
+                        style={{marginRight: 25, ...style}}
                         textColor={theme.thirdTextColor}
                         baseColor={theme.thirdTextColor}
                         tintColor={theme.primaryColor}
@@ -59,7 +58,7 @@ class Input extends Component {
                     />
                 </View>
                 {value !== '' &&
-                <View style={{marginLeft: -30, marginRight: -10}}>
+                <View style={{marginLeft: -30, marginRight: -10, marginTop: 5}}>
                     <IconToggle
                         onPress={() => this.checkValid('')}
                         name="clear"

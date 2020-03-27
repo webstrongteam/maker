@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {ActionButton, BottomNavigation, Icon, IconToggle, ListItem, Subheader, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject, sortingByType} from '../../shared/utility';
-import {empty, flex, shadow} from '../../shared/styles';
+import {empty, shadow} from '../../shared/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
 import ConfigCategory from "../Categories/ConfigCategory/ConfigCategory";
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -65,7 +65,7 @@ class TaskList extends Component {
             this.refreshPriorityColors();
         }
         if (prevProps.refresh !== this.props.refresh) {
-            this.refreshComponent();
+            this.refreshComponent(this.state.visibleData);
         }
         if (prevProps.categories.length !== this.props.categories.length) {
             this.renderDropdownData();
@@ -120,6 +120,25 @@ class TaskList extends Component {
         });
 
         this.setState({rotateInterpolate});
+    };
+
+    moveAnimate = (callback = () => null) => {
+        const {animations} = this.state;
+        animations[`move${this.state.selectedTask.id}`] = new Animated.Value(0);
+        this.setState({animations}, () => {
+            Animated.timing(
+                this.state.animations[`move${this.state.selectedTask.id}`],
+                {
+                    toValue: -400,
+                    duration: 350,
+                    easing: Easing.bezier(0.0, 0.0, 0.2, 1),
+                    useNativeDriver: false
+                }
+            ).start(() => {
+                animations[`hide${this.state.selectedTask.id}`] = true;
+                this.setState({animations}, callback());
+            });
+        })
     };
 
     refreshPriorityColors = () => {
@@ -269,25 +288,6 @@ class TaskList extends Component {
         })
     };
 
-    moveAnimate = (callback = () => null) => {
-        const {animations} = this.state;
-        animations[`move${this.state.selectedTask.id}`] = new Animated.Value(0);
-        this.setState({animations}, () => {
-            Animated.timing(
-                this.state.animations[`move${this.state.selectedTask.id}`],
-                {
-                    toValue: -400,
-                    duration: 500,
-                    easing: Easing.bezier(0.0, 0.0, 0.2, 1),
-                    useNativeDriver: false
-                }
-            ).start(() => {
-                animations[`hide${this.state.selectedTask.id}`] = true;
-                this.setState({animations}, callback());
-            });
-        })
-    };
-
     setSortingType = (key) => {
         if (key === this.props.sorting) {
             if (this.props.sortingType === 'ASC') {
@@ -300,8 +300,9 @@ class TaskList extends Component {
         }
     };
 
-    divisionTask = () => {
-        const {tasks} = this.state;
+    divisionTask = (
+        tasks = this.state.tasks,
+        visibleData = this.state.visibleData) => {
         const {sorting, sortingType, translations} = this.props;
         const division = {
             [translations.overdue]: [],
@@ -335,7 +336,11 @@ class TaskList extends Component {
                         })
                 });
 
-            this.setState({data, animations: {}, loading: false});
+            if (visibleData < this.state.visibleData) {
+                this.setState({data, tasks, visibleData, animations: {}, loading: false});
+            } else {
+                this.setState({data, tasks, animations: {}, loading: false});
+            }
         });
     };
 
@@ -372,8 +377,10 @@ class TaskList extends Component {
     };
 
     loadNextData = () => {
-        const {visibleData} = this.state;
-        this.setState({visibleData: visibleData + 8});
+        const {visibleData, data} = this.state;
+        if (visibleData < data.length) {
+            this.setState({visibleData: visibleData + 8});
+        }
     };
 
     toggleConfigCategory = () => {
@@ -408,12 +415,18 @@ class TaskList extends Component {
             filterTask = tasks.filter(task => task.category.id === category.id);
         }
 
-        this.setState({
-            selectedCategory: category,
-            selectedIndex: +index,
-            tasks: filterTask,
-            visibleData: 8
-        }, this.divisionTask);
+        if (category !== this.state.selectedCategory) {
+            this.flatList.scrollToIndex({animated: false, index: 0});
+            this.setState({
+                selectedCategory: category,
+                selectedIndex: +index
+            }, () => this.divisionTask(filterTask, 8));
+        } else {
+            this.setState({
+                selectedCategory: category,
+                selectedIndex: +index
+            }, () => this.divisionTask(filterTask));
+        }
     };
 
     renderDropdownData = () => {
@@ -506,7 +519,7 @@ class TaskList extends Component {
         })
     };
 
-    refreshComponent = () => {
+    refreshComponent = (visibleData = 8) => {
         this.props.onInitToDo((tasks, finished) => {
             const {selectedCategory} = this.state;
             const {translations} = this.props;
@@ -521,7 +534,7 @@ class TaskList extends Component {
             }
 
             this.renderDropdownData();
-            this.setState({tasks: filterTask, visibleData: 8}, this.divisionTask);
+            this.divisionTask(filterTask, visibleData);
         })
     };
 
@@ -656,7 +669,7 @@ class TaskList extends Component {
         const {theme, navigation, sortingType, sorting, finished, translations} = this.props;
 
         return (
-            <View style={flex}>
+            <View style={{flex: 1}}>
                 <Toolbar
                     searchable={{
                         autoFocus: true,
@@ -708,11 +721,11 @@ class TaskList extends Component {
                 />
 
                 <FlatList
+                    ref={e => this.flatList = e}
                     keyboardShouldPersistTaps="always"
                     keyboardDismissMode="interactive"
                     onScroll={this.onScroll}
                     scrollEventThrottle={16}
-                    initialNumToRender={8}
 
                     refreshControl={
                         <RefreshControl
@@ -726,6 +739,7 @@ class TaskList extends Component {
                         </Text>
                     }
                     data={data.filter((d, i) => i <= visibleData)}
+                    initialNumToRender={8}
                     onEndReachedThreshold={0.2}
                     onEndReached={this.loadNextData}
                     renderItem={({item}) => this.renderTaskList(item)}

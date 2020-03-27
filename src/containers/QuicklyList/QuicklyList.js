@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {ActionButton, IconToggle, ListItem, Toolbar} from 'react-native-material-ui';
 import {generateDialogObject} from '../../shared/utility';
-import {empty, flex, fullWidth, shadow} from '../../shared/styles';
+import {empty, shadow} from '../../shared/styles';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import styles from './QuicklyList.styles';
 
@@ -139,7 +139,7 @@ class QuicklyList extends Component {
         });
 
         return (
-            <View style={flex}>
+            <View style={{flex: 1}}>
                 <Toolbar
                     searchable={{
                         autoFocus: true,
@@ -157,7 +157,7 @@ class QuicklyList extends Component {
                         keyboardShouldPersistTaps="always"
                         keyboardDismissMode="interactive"
                         onScroll={this.onScroll}
-                        style={fullWidth}>
+                        style={{width: '100%'}}>
                         {lists && lists.length ?
                             <View style={{paddingTop: 20}}>
                                 {quicklyList}

@@ -53,7 +53,6 @@ This app working with Android and iOS.
 
 ### ToDo:
 **iOS:**
-- Dismissing local notifications
 - Adding backup file from file system not working
 
 ### WebStrong &copy;  

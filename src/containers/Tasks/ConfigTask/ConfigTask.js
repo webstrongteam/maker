@@ -18,7 +18,6 @@ import {
     generateDialogObject
 } from '../../../shared/utility';
 import {configTask} from '../../../shared/configTask';
-import {fullWidth} from '../../../shared/styles';
 import {BannerAd} from "../../../shared/bannerAd";
 import styles from './ConfigTask.styles';
 import moment from 'moment';
@@ -422,7 +421,7 @@ class ConfigTask extends Component {
                             <Subheader text={translations.dueDate}/>
                             <DatePicker
                                 ref={(e) => this.datepickerDate = e}
-                                style={fullWidth}
+                                style={{width: '100%'}}
                                 date={task.date.slice(0, 10)}
                                 mode="date"
                                 iconComponent={
@@ -450,7 +449,7 @@ class ConfigTask extends Component {
                             <React.Fragment>
                                 <DatePicker
                                     ref={(e) => this.datepickerTime = e}
-                                    style={fullWidth}
+                                    style={{width: '100%'}}
                                     date={task.date.slice(13, 18)}
                                     is24Hour={!!settings.timeFormat}
                                     mode="time"

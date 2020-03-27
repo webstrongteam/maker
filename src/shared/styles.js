@@ -1,14 +1,11 @@
 // GLOBAL STYLES
 
-export const flex = {flex: 1};
 export const row = {flexDirection: 'row'};
 
 export const container = {
     flex: 1,
     alignItems: 'center'
 };
-
-export const fullWidth = {width: "100%"};
 
 export const listRow = {
     backgroundColor: "#fff",
