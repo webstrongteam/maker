@@ -8,7 +8,7 @@
     "version": "2.2.0",
     "sdkVersion": "37.0.0",
     "ios": {
-      "buildNumber": "2.1.0",
+      "buildNumber": "2.2.0",
       "supportsTablet": false,
       "bundleIdentifier": "com.webStrong.maker",
       "usesIcloudStorage": true,

@@ -50,7 +50,9 @@
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
-    "babel-preset-expo": "^8.1.0"
+    "babel-preset-expo": "^8.1.0",
+    "logkitty": ">=0.7.1",
+    "mem": ">=4.0.0"
   },
   "private": true
 }
