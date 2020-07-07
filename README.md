@@ -30,9 +30,9 @@ This app working with Android and iOS.
 ## Technologies  
 **Maker** was created together with:
 
-- Expo <i>36.0.0</i>
+- Expo <i>37.0.0</i>
 - React <i>16.9.0</i>
-- React Native SDK <i>36.0.1</i>
+- React Native SDK <i>37.0.1</i>
 - React Redux <i>7.1.0</i>  
 - Redux <i>4.0.4</i>  
 - Redux Thunk <i>2.3.0</i>  
@@ -40,13 +40,13 @@ This app working with Android and iOS.
 - React Native MaterialUI <i>1.30.1</i>  
 - React Native Datepicker <i>1.7.2</i>  
 - React Native Dialog <i>5.6.0</i>  
-- React Native Modal Dropdown <i>0.6.2</i>  
+- React Native Modal Dropdown <i>0.7.0</i>  
 - React Native Material TextField <i>0.12.0</i>  
 - React Native Color Wheel <i>0.1.7</i>  
 - React Native Settings List <i>1.8.0</i>  
 - React Native Modalbox <i>2.0.0</i>  
 - React Native Sortable Listview <i>0.2.9</i>  
-- React Native Reanimated <i>1.0.1</i>  
+- React Native Reanimated <i>1.7.0</i>  
 - React Native Tab View <i>2.10.0</i>  
 - Moment.JS <i>2.24.0</i>
 - Colorsys <i>1.0.22</i>

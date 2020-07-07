@@ -53,7 +53,7 @@ class QuicklyList extends Component {
         const currentOffset = e.nativeEvent.contentOffset.y;
         const sub = this.state.offset - currentOffset;
 
-        if (sub > -10 && sub < 10) return;
+        if (sub > -50 && sub < 50) return;
         this.state.offset = e.nativeEvent.contentOffset.y;
 
         const currentDirection = sub > 0 ? UP : DOWN;
@@ -130,7 +130,7 @@ class QuicklyList extends Component {
                             }
                             centerElement={{
                                 primaryText: list.name,
-                                secondaryText: `${translations.totalTasks} ${amounts[list.id]}`
+                                secondaryText: `${translations.totalTasks} ${amounts[list.id] ? amounts[list.id] : 0}`
                             }}
                         />
                     </View>
@@ -154,6 +154,7 @@ class QuicklyList extends Component {
 
                 {!loading ?
                     <ScrollView
+                        scrollEventThrottle={16}
                         keyboardShouldPersistTaps="always"
                         keyboardDismissMode="interactive"
                         onScroll={this.onScroll}

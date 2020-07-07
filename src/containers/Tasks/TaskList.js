@@ -92,7 +92,7 @@ class TaskList extends Component {
         const currentOffset = e.nativeEvent.contentOffset.y;
         const sub = this.state.offset - currentOffset;
 
-        if (sub > -10 && sub < 10) return;
+        if (sub > -50 && sub < 50) return;
         this.state.offset = e.nativeEvent.contentOffset.y;
 
         const currentDirection = sub > 0 ? UP : DOWN;

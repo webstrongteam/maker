@@ -91,7 +91,7 @@ class QuicklyTaskList extends Component {
             {
                 elementConfig: control,
                 focus: true,
-                value: newListName,
+                value: newListName === this.props.translations.listName ? '' : newListName,
                 onChange: (value, control) => {
                     this.setState({newListName: value, control}, this.showDialog);
                 }
@@ -197,7 +197,7 @@ class QuicklyTaskList extends Component {
                         navigation.goBack()
                     }}
                     centerElement={
-                        list.name ?
+                        list.name && !loading ?
                             <TouchableOpacity onPress={() => this.showDialog()}>
                                 <Text style={{
                                     color: theme.primaryTextColor,
