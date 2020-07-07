@@ -1,11 +1,12 @@
+<img align="right" width="145px" src="https://webstrong.pl/assets/Maker/app_images/logo.png" alt="">
+
 # Maker - ToDo app 
-<a href="https://play.google.com/store/apps/details?id=com.webStrong.maker" target="_blank"><img src="http://webstrong.pl/templates/google_play_pl.png" width="150"/></a>
-<a href="https://apps.apple.com/us/app/maker-todo-list/id1502811101" target="_blank"><img src="http://webstrong.pl/templates/apple_store_pl.png" width="150"/></a>
+<a href="https://play.google.com/store/apps/details?id=com.webStrong.maker" target="_blank"><img src="https://webstrong.pl/assets/templates/google_play_en.png" width="150"/></a>
+<a href="https://apps.apple.com/us/app/maker-todo-list/id1502811101" target="_blank"><img src="https://webstrong.pl/assets/templates/apple_store_en.png" width="150"/></a>
 
-**Maker** is an advanced ToDo mobile application created with React Native and Expo framework. 
-This app working with Android and iOS. 
+**Maker** is an advanced ToDo mobile application. This app offers the possibility to **quickly save tasks** with **name, description, date, time, repetition cycles, categories, and priority**. The intelligent dashboard offers **advanced sorting of tasks and displaying them by categories**. All completed tasks are stored in the finished category where you can restore or delete them. Maker was created with React Native and Expo framework.
 
-<p align="center"><img src="http://webstrong.pl/Maker/promo_images/maker_promo.png" width="500px" /></p>
+<p align="center"><img src="https://webstrong.pl/assets/Maker/promo_images/maker_promo.png" width="500px" /></p>
 
 ## Basic features  
   
