@@ -8,7 +8,7 @@
     "version": "2.2.0",
     "sdkVersion": "37.0.0",
     "ios": {
-      "buildNumber": "2.2.0",
+      "buildNumber": "2.2.1",
       "supportsTablet": false,
       "bundleIdentifier": "com.webStrong.maker",
       "usesIcloudStorage": true,
@@ -19,7 +19,7 @@
     "android": {
       "package": "com.webStrong.maker",
       "playStoreUrl": "https://play.google.com/store/apps/details?id=com.webStrong.maker",
-      "versionCode": 220
+      "versionCode": 221
     },
     "platforms": [
       "ios",

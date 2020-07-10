@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, View, Platform} from 'react-native';
 import {Icon, IconToggle, Toolbar} from 'react-native-material-ui';
 import {empty, listContainer, listRow, shadow} from '../../../shared/styles';
 import Input from '../../../components/UI/Input/Input';
@@ -232,9 +232,8 @@ class QuicklyTaskList extends Component {
                     buttons={dialog.buttons}
                 />
                 }
-
-                <KeyboardAvoidingView behavior={'padding'} style={{flex: 1}}>
-                    {!loading ?
+                {!loading ?
+                    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'none'} style={{flex: 1}}>
                         <View style={{flex: 1, justifyContent: 'space-between'}}>
                             {quicklyTasks.length ?
                                 <SortableListView
@@ -304,9 +303,9 @@ class QuicklyTaskList extends Component {
                                     <IconToggle onPress={this.addTask} name="add"/>
                                 </View>
                             </View>
-                        </View> : <Spinner/>
-                    }
-                </KeyboardAvoidingView>
+                        </View>
+                    </KeyboardAvoidingView> : <Spinner/>
+                }
             </Template>
         )
     }
