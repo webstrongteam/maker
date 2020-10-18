@@ -211,3 +211,10 @@ export const valid = (control, value, translations, callback) => {
 }
 
 export const checkValid = (control, value) => !!(!control.error && value && value.trim() !== '')
+
+export const dateDiff = (firstDate, secondDate) => {
+	const formattedFirstDate = moment(firstDate, 'DD-MM-YYYY').startOf('day')
+	const formattedSecondDate = moment(secondDate, 'DD-MM-YYYY').startOf('day')
+
+	return formattedFirstDate.diff(formattedSecondDate, 'days')
+}

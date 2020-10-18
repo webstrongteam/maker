@@ -22,7 +22,7 @@ import {
 import ModalDropdown from 'react-native-modal-dropdown'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import { generateDialogObject, sortingByType } from '../../shared/utility'
+import { dateDiff, generateDialogObject, sortingByType } from '../../shared/utility'
 import { empty, shadow } from '../../shared/styles'
 import ConfigCategory from '../Categories/ConfigCategory/ConfigCategory'
 import Spinner from '../../components/UI/Spinner/Spinner'
@@ -559,6 +559,23 @@ class TaskList extends Component {
 		})
 	}
 
+	getTaskDateLabel = (task) => {
+		const { translations } = this.props
+
+		if (task.date) {
+			const dateDifference = dateDiff(task.date, moment())
+
+			if (dateDifference !== 0) {
+				if (dateDifference === 1 || dateDifference === -1) {
+					return `${this.convertTimeCycle(task.date)} (${dateDifference} ${translations.day})`
+				}
+				return `${this.convertTimeCycle(task.date)} (${dateDifference} ${translations.days})`
+			}
+			return this.convertTimeCycle(task.date)
+		}
+		return task.description ?? ''
+	}
+
 	refreshComponent = (visibleData = 8) => {
 		const { onInitToDo } = this.props
 
@@ -667,7 +684,7 @@ class TaskList extends Component {
 													: theme.thirdTextColor,
 											}}
 										>
-											{task.date ? this.convertTimeCycle(task.date) : task.description ?? ''}
+											{this.getTaskDateLabel(task)}
 										</Text>
 										{task.repeat !== 'noRepeat' && (
 											<Icon
@@ -899,6 +916,7 @@ const mapStateToProps = (state) => ({
 	refresh: state.tasks.refresh,
 	translations: {
 		...state.settings.translations.TaskList,
+		...state.settings.translations.OtherRepeat,
 		...state.settings.translations.common,
 	},
 })
