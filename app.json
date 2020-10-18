@@ -1,43 +1,37 @@
 {
-  "expo": {
-    "name": "Maker - ToDo List",
-    "slug": "maker",
-    "description": "Maker is an advanced ToDo mobile application created with React Native and Expo framework. This app working with Android and iOS.",
-    "githubUrl": "https://github.com/mateuszpijanowski/maker",
-    "privacy": "public",
-    "version": "2.2.0",
-    "sdkVersion": "37.0.0",
-    "ios": {
-      "buildNumber": "2.2.1",
-      "supportsTablet": false,
-      "bundleIdentifier": "com.webStrong.maker",
-      "usesIcloudStorage": true,
-      "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "We need this for selecting profile avatar."
-      }
-    },
-    "android": {
-      "package": "com.webStrong.maker",
-      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.webStrong.maker",
-      "versionCode": 221
-    },
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "primaryColor": "#f4511e",
-    "orientation": "default",
-    "icon": "./src/assets/icon.png",
-    "splash": {
-      "image": "./src/assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#f4511e"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ]
-  }
+	"expo": {
+		"name": "Maker - ToDo List",
+		"slug": "maker",
+		"description": "Maker is an advanced ToDo mobile application created with React Native and Expo framework. This app working with Android and iOS.",
+		"githubUrl": "https://github.com/mateuszpijanowski/maker",
+		"privacy": "public",
+		"version": "2.2.0",
+		"ios": {
+			"buildNumber": "2.2.1",
+			"supportsTablet": false,
+			"bundleIdentifier": "com.webStrong.maker",
+			"usesIcloudStorage": true,
+			"infoPlist": {
+				"NSPhotoLibraryUsageDescription": "We need this for selecting profile avatar."
+			}
+		},
+		"android": {
+			"package": "com.webStrong.maker",
+			"playStoreUrl": "https://play.google.com/store/apps/details?id=com.webStrong.maker",
+			"versionCode": 221
+		},
+		"platforms": ["ios", "android"],
+		"primaryColor": "#f4511e",
+		"orientation": "default",
+		"icon": "./src/assets/icon.png",
+		"splash": {
+			"image": "./src/assets/splash.png",
+			"resizeMode": "cover",
+			"backgroundColor": "#f4511e"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0
+		},
+		"assetBundlePatterns": ["**/*"]
+	}
 }

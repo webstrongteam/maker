@@ -1,29 +1,27 @@
-import * as actionTypes from '../actions/actionTypes';
-import {updateObject} from '../../shared/utility';
+import * as actionTypes from '../actions/actionTypes'
+import { updateObject } from '../../shared/utility'
 
-const initState = {};
+const initState = {}
 
-const initTheme = (state, action) => {
-    return updateObject(state, {
-        theme: action.theme
-    });
-};
+const initTheme = (state, action) =>
+	updateObject(state, {
+		theme: action.theme,
+	})
 
-const initThemes = (state, action) => {
-    return updateObject(state, {
-        themes: action.themes
-    });
-};
+const initThemes = (state, action) =>
+	updateObject(state, {
+		themes: action.themes,
+	})
 
 const reducer = (state = initState, action) => {
-    switch (action.type) {
-        case actionTypes.INIT_THEME:
-            return initTheme(state, action);
-        case actionTypes.INIT_THEMES:
-            return initThemes(state, action);
-        default:
-            return state;
-    }
-};
+	switch (action.type) {
+		case actionTypes.INIT_THEME:
+			return initTheme(state, action)
+		case actionTypes.INIT_THEMES:
+			return initThemes(state, action)
+		default:
+			return state
+	}
+}
 
-export default reducer;
+export default reducer

@@ -1,9 +1,9 @@
-import {StyleSheet} from "react-native";
+import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-    rightElements: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
-});
+	rightElements: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+})
