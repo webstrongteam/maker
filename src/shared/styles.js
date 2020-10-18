@@ -1,5 +1,7 @@
 // GLOBAL STYLES
 
+export const flex = { flex: 1 }
+
 export const row = { flexDirection: 'row' }
 
 export const container = {

@@ -10,16 +10,16 @@ export const { width } = Dimensions.get('window')
 
 export const setCategories = (tasks, categories) => {
 	return Promise.all(
-		tasks.map(({ category }) => {
+		tasks.map((task) => {
 			let findCate
-			if (!isNaN(+category)) {
-				findCate = categories.find(({ id }) => +id === +category)
+			if (!isNaN(+task.category)) {
+				findCate = categories.find(({ id }) => +id === +task.category)
 			} else {
-				findCate = categories.find(({ name }) => name === category)
+				findCate = categories.find(({ name }) => name === task.category)
 			}
 
-			if (findCate) category = findCate
-			else category = categories[0]
+			if (findCate) task.category = findCate
+			else task.category = categories[0]
 		}),
 	).then(() => tasks)
 }

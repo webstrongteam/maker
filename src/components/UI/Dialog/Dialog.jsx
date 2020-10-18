@@ -23,7 +23,7 @@ const checkSelectedOption = (value, selectedValue) => {
 	return value === selectedValue
 }
 
-const blur = () => <BlurView tint='light' intensity={50} />
+const blur = <BlurView tint='light' intensity={50} />
 
 const defaultDialog = (props) => (
 	<TouchableWithoutFeedback onPress={Keyboard.dismiss}>

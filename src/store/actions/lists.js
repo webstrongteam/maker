@@ -71,17 +71,15 @@ export const saveList = (list, callback) => (dispatch) => {
 }
 
 export const saveQuicklyTask = (quicklyTask, list, callback = () => {}) => () => {
-	console.log(quicklyTask)
 	const addQuicklyTask = (list_id = list.id) => {
 		if (quicklyTask.id !== false) {
 			db.transaction(
 				(tx) => {
 					tx.executeSql(
 						`update quickly_tasks
-                                       set name     = ?,
-                                           order_nr = ?
+                                       set name = ?
                                        where id = ?;`,
-						[quicklyTask.name, quicklyTask.order_nr, quicklyTask.id],
+						[quicklyTask.name, quicklyTask.id],
 						() => {
 							callback({ id: list_id, name: list.name })
 						},
@@ -93,8 +91,8 @@ export const saveQuicklyTask = (quicklyTask, list, callback = () => {}) => () =>
 			db.transaction(
 				(tx) => {
 					tx.executeSql(
-						'insert into quickly_tasks (name, order_nr, list_id) values (?,?,?)',
-						[quicklyTask.name, quicklyTask.order_nr, list_id],
+						'insert into quickly_tasks (name, list_id) values (?,?)',
+						[quicklyTask.name, list_id],
 						() => {
 							callback({ id: list_id, name: list.name })
 						},

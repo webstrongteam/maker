@@ -7,7 +7,7 @@ import {
 	Platform,
 	RefreshControl,
 	Text,
-	TouchableHighlight,
+	TouchableOpacity,
 	View,
 } from 'react-native'
 import {
@@ -291,7 +291,11 @@ class TaskList extends Component {
 	}
 
 	// eslint-disable-next-line react/destructuring-assignment
-	divisionTask = (tasks = this.state.tasks, visibleData = this.state.visibleData) => {
+	divisionTask = (
+		tasks = this.state.tasks,
+		visibleData = this.state.visibleData,
+		scrollTop = false,
+	) => {
 		const { sorting, sortingType, translations } = this.props
 
 		const division = {
@@ -342,6 +346,10 @@ class TaskList extends Component {
 						animations: {},
 						loading: false,
 					})
+				}
+
+				if (scrollTop && tasks.length) {
+					this.flatList.scrollToIndex({ animated: false, index: 0 })
 				}
 			})
 	}
@@ -413,23 +421,29 @@ class TaskList extends Component {
 		const { selectedCategory } = this.state
 		const { tasks, finished, translations } = this.props
 
+		if (this.dropdown) {
+			this.dropdown.hide()
+		}
+
+		if (category.name === translations.newCategory) {
+			this.toggleConfigCategory()
+			return
+		}
+
 		let filterTask = tasks
 		if (category.name === translations.finished) {
 			filterTask = finished
-		} else if (category.name === translations.newCategory) {
-			return this.toggleConfigCategory()
 		} else if (category.name !== translations.all) {
 			filterTask = tasks.filter((task) => task.category.id === category.id)
 		}
 
 		if (category !== selectedCategory) {
-			this.flatList.scrollToIndex({ animated: false, index: 0 })
 			this.setState(
 				{
 					selectedCategory: category,
 					selectedIndex: +index,
 				},
-				() => this.divisionTask(filterTask, 8),
+				() => this.divisionTask(filterTask, 8, true),
 			)
 		} else {
 			this.setState(
@@ -462,9 +476,10 @@ class TaskList extends Component {
 		this.setState({ dropdownData })
 	}
 
-	dropdownRenderRow(rowData) {
+	dropdownRenderRow = (rowData, index) => {
 		const { selectedCategory } = this.state
 		const { tasks, finished, theme } = this.props
+
 		let data
 		if (rowData.id === -3) {
 			data = {
@@ -494,7 +509,10 @@ class TaskList extends Component {
 		}
 
 		return (
-			<TouchableHighlight underlayColor={theme.primaryColor}>
+			<TouchableOpacity
+				onPress={() => this.selectedCategoryHandler(rowData, index)}
+				underlayColor={theme.primaryColor}
+			>
 				<View style={[styles.dropdownRow, { backgroundColor: data.bgColor }]}>
 					<Icon
 						name={data.icon}
@@ -522,7 +540,7 @@ class TaskList extends Component {
 						{data.amount ? `(${data.amount})` : ''}
 					</Text>
 				</View>
-			</TouchableHighlight>
+			</TouchableOpacity>
 		)
 	}
 
@@ -542,15 +560,17 @@ class TaskList extends Component {
 		const { onInitToDo } = this.props
 
 		onInitToDo((tasks, finished) => {
-			console.log(tasks)
 			const { selectedCategory } = this.state
 			const { translations } = this.props
 			let filterTask = tasks
 
+			if (selectedCategory === translations.newCategory) {
+				this.toggleConfigCategory()
+				return
+			}
+
 			if (selectedCategory === translations.finished) {
 				filterTask = finished
-			} else if (selectedCategory === translations.newCategory) {
-				return this.toggleConfigCategory()
 			} else if (selectedCategory !== translations.all) {
 				filterTask = tasks.filter((task) => task.category === selectedCategory)
 			}
@@ -726,45 +746,48 @@ class TaskList extends Component {
 					leftElement='menu'
 					onLeftElementPress={() => navigation.navigate('Drawer')}
 					centerElement={
-						<ModalDropdown
-							ref={(e) => {
-								this.dropdown = e
-							}}
-							style={styles.dropdown}
-							textStyle={styles.dropdownText}
-							dropdownStyle={styles.dropdownDropdown}
-							defaultValue={selectedCategory.name}
-							defaultIndex={selectedIndex}
-							options={dropdownData}
-							onDropdownWillShow={() => this.rotate(1)}
-							onDropdownWillHide={() => this.rotate(0)}
-							onSelect={(index, item) => {
-								this.selectedCategoryHandler(item, index)
-							}}
-							renderButtonText={(rowData) => rowData.name}
-							renderRow={this.dropdownRenderRow.bind(this)}
-						>
-							<View style={styles.dropdownButton}>
-								<Text
-									style={[
-										styles.dropdownText,
-										{
-											color: theme.primaryTextColor,
-											fontWeight: '500',
-										},
-									]}
+						<>
+							{dropdownData ? (
+								<ModalDropdown
+									ref={(e) => {
+										this.dropdown = e
+									}}
+									style={styles.dropdown}
+									textStyle={styles.dropdownText}
+									dropdownStyle={styles.dropdownDropdown}
+									defaultValue={selectedCategory.name}
+									defaultIndex={selectedIndex}
+									options={dropdownData}
+									onDropdownWillShow={() => this.rotate(1)}
+									onDropdownWillHide={() => this.rotate(0)}
+									renderButtonText={({ name }) => name}
+									renderRow={(renderRow, index) => this.dropdownRenderRow(renderRow, index)}
 								>
-									{selectedCategory.name}
-								</Text>
-								<Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-									<Icon
-										style={styles.dropdownButtonIcon}
-										color={theme.primaryTextColor}
-										name='expand-more'
-									/>
-								</Animated.View>
-							</View>
-						</ModalDropdown>
+									<View style={styles.dropdownButton}>
+										<Text
+											style={[
+												styles.dropdownText,
+												{
+													color: theme.primaryTextColor,
+													fontWeight: '500',
+												},
+											]}
+										>
+											{selectedCategory.name}
+										</Text>
+										<Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
+											<Icon
+												style={styles.dropdownButtonIcon}
+												color={theme.primaryTextColor}
+												name='expand-more'
+											/>
+										</Animated.View>
+									</View>
+								</ModalDropdown>
+							) : (
+								<Spinner />
+							)}
+						</>
 					}
 				/>
 

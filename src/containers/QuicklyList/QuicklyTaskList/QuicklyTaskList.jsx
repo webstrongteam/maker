@@ -1,17 +1,16 @@
 import React, { Component } from 'react'
 import {
+	FlatList,
 	KeyboardAvoidingView,
 	Platform,
-	ScrollView,
+	RefreshControl,
 	Text,
 	TouchableOpacity,
 	View,
 } from 'react-native'
-import { Icon, IconToggle, Toolbar } from 'react-native-material-ui'
-import SortableListView from 'react-native-sortable-list'
-import { selectionAsync } from 'expo-haptics'
+import { IconToggle, Toolbar } from 'react-native-material-ui'
 import { connect } from 'react-redux'
-import { empty, listContainer, listRow, shadow } from '../../../shared/styles'
+import { empty, listContainer, listRow, shadow, flex } from '../../../shared/styles'
 import Input from '../../../components/UI/Input/Input'
 import { generateDialogObject } from '../../../shared/utility'
 import ConfigQuicklyTask from '../ConfigQuicklyTask/ConfigQuicklyTask'
@@ -21,6 +20,8 @@ import Dialog from '../../../components/UI/Dialog/Dialog'
 import styles from './QuicklyTaskList.styles'
 
 import * as actions from '../../../store/actions'
+
+const initialNumToRender = 16
 
 class QuicklyTaskList extends Component {
 	state = {
@@ -35,7 +36,6 @@ class QuicklyTaskList extends Component {
 		},
 		// eslint-disable-next-line react/destructuring-assignment
 		newListName: this.props.translations.listName,
-		order: [],
 		control: {
 			// eslint-disable-next-line react/destructuring-assignment
 			label: this.props.translations.listName,
@@ -51,6 +51,7 @@ class QuicklyTaskList extends Component {
 			},
 			value: '',
 		},
+		visibleData: initialNumToRender,
 		loading: true,
 	}
 
@@ -67,18 +68,13 @@ class QuicklyTaskList extends Component {
 
 	// eslint-disable-next-line react/destructuring-assignment
 	reloadTasks = (list = this.state.list) => {
-		this.setState({ loading: true }, () => {
-			const { onInitList } = this.props
-
-			onInitList(list.id, (tasks) => {
-				const order = [...tasks.map(({ order_nr }) => order_nr)]
-				this.setState({
-					quicklyTasks: tasks,
-					newListName: list.name,
-					order,
-					list,
-					loading: false,
-				})
+		const { onInitList } = this.props
+		onInitList(list.id, (tasks) => {
+			this.setState({
+				quicklyTasks: tasks,
+				newListName: list.name,
+				list,
+				loading: false,
 			})
 		})
 	}
@@ -142,18 +138,16 @@ class QuicklyTaskList extends Component {
 	}
 
 	addTask = () => {
-		const { input, list, quicklyTasks } = this.state
+		const { input, list } = this.state
 		const { onSaveQuicklyTask } = this.props
 
 		if (!input.control.error) {
 			const newTask = {
 				id: false,
 				name: input.value,
-				order_nr: quicklyTasks.length,
 			}
 			onSaveQuicklyTask(newTask, list, (list) => {
-				input.value = ''
-				this.setState({ input })
+				this.setState({ input: { ...input, value: '' }, loading: true })
 				this.reloadTasks(list)
 			})
 		}
@@ -178,22 +172,19 @@ class QuicklyTaskList extends Component {
 		})
 	}
 
-	updateOrder = (order) => {
-		const { quicklyTasks, list } = this.state
-		const { onSaveQuicklyTask } = this.props
-
-		order.map((o, i) => {
-			quicklyTasks[i].order_nr = +o
-			onSaveQuicklyTask(quicklyTasks[i], list)
-		})
-	}
-
 	saveList = (list) => {
 		const { onSaveList } = this.props
 
 		onSaveList(list, (savedList) => {
 			this.setState({ list: savedList })
 		})
+	}
+
+	loadNextData = () => {
+		const { visibleData, quicklyTasks } = this.state
+		if (visibleData < quicklyTasks.length) {
+			this.setState({ visibleData: visibleData + initialNumToRender })
+		}
 	}
 
 	render() {
@@ -205,7 +196,7 @@ class QuicklyTaskList extends Component {
 			input,
 			list,
 			quicklyTasks,
-			order,
+			visibleData,
 			loading,
 		} = this.state
 		const { navigation, theme, translations, onInitLists } = this.props
@@ -269,85 +260,72 @@ class QuicklyTaskList extends Component {
 					/>
 				)}
 				{!loading ? (
-					<KeyboardAvoidingView
-						behavior={Platform.OS === 'ios' ? 'padding' : 'none'}
-						style={{ flex: 1 }}
-					>
+					<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'none'} style={flex}>
 						<View style={{ flex: 1, justifyContent: 'space-between' }}>
-							{quicklyTasks.length ? (
-								<SortableListView
-									activeOpacity={0.4}
-									data={quicklyTasks}
-									order={order}
-									style={{ paddingTop: 5 }}
-									onRowActive={selectionAsync}
-									onRowMoved={(e) => {
-										order.splice(e.to, 0, order.splice(e.from, 1)[0])
-										this.updateOrder(order)
-									}}
-									renderRow={({ data }) => (
-										<TouchableOpacity
-											style={{
-												...shadow,
-												...listRow,
-												backgroundColor: theme.primaryBackgroundColor,
-											}}
-											onPress={() => this.toggleModalHandler(data.id)}
-										>
-											<View style={listContainer}>
-												<View
-													style={{
-														width: '75%',
-														marginTop: 5,
-														marginBottom: 5,
-													}}
-												>
-													<Text
-														numberOfLines={1}
-														style={{
-															...styles.taskName,
-															color: theme.secondaryTextColor,
-														}}
-													>
-														{data.name}
-													</Text>
-												</View>
-												<View style={styles.taskIconContainer}>
-													<IconToggle
-														color={theme.doneIconColor}
-														onPress={() => this.removeTask(data)}
-														name='done'
-													/>
-													<Icon name='dehaze' />
-												</View>
-											</View>
-										</TouchableOpacity>
-									)}
-								/>
-							) : (
-								<ScrollView>
+							<FlatList
+								keyboardShouldPersistTaps='handled'
+								keyboardDismissMode='interactive'
+								data={quicklyTasks.filter((d, i) => i <= visibleData)}
+								refreshControl={
+									<RefreshControl
+										refreshing={loading}
+										tintColor={theme.primaryColor}
+										onRefresh={this.reloadTasks}
+									/>
+								}
+								style={{ paddingTop: 5 }}
+								onEndReached={this.loadNextData}
+								initialNumToRender={initialNumToRender}
+								ListEmptyComponent={
 									<Text style={[empty, { color: theme.thirdTextColor }]}>
 										{translations.emptyList}
 									</Text>
-								</ScrollView>
-							)}
-							<View
-								style={{
-									marginRight: 30,
-									marginBottom: 15,
-									bottom: 10,
-									flexDirection: 'row',
-									alignItems: 'center',
-								}}
-							>
+								}
+								renderItem={({ item }) => (
+									<TouchableOpacity
+										style={{
+											...shadow,
+											...listRow,
+											backgroundColor: theme.primaryBackgroundColor,
+										}}
+										onPress={() => this.toggleModalHandler(item.id)}
+									>
+										<View style={listContainer}>
+											<View style={styles.taskNameWrapper}>
+												<Text
+													numberOfLines={1}
+													style={{
+														...styles.taskName,
+														color: theme.secondaryTextColor,
+													}}
+												>
+													{item.name}
+												</Text>
+											</View>
+											<View style={styles.taskIconContainer}>
+												<IconToggle
+													color={theme.doneIconColor}
+													onPress={() => this.removeTask(item)}
+													name='done'
+												/>
+											</View>
+										</View>
+									</TouchableOpacity>
+								)}
+								keyExtractor={(item) => item.id}
+								onRefresh={this.reloadTasks}
+								refreshing={loading}
+								ListFooterComponent={quicklyTasks.length > visibleData && <Spinner />}
+							/>
+
+							<View style={styles.inputWrapper}>
 								<Input
 									elementConfig={input.control}
 									focus={false}
 									value={input.value}
 									changed={(value) => {
 										const { input } = this.state
-										input.value = value
-										this.setState({ input })
+										this.setState({ input: { ...input, value } })
 									}}
 								/>
 								<View style={{ marginLeft: -20 }}>
