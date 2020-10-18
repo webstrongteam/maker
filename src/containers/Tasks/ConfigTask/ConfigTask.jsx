@@ -282,7 +282,6 @@ class ConfigTask extends Component {
 
 	convertDate = (newDate) => {
 		const { task } = this.state
-		console.log(newDate)
 
 		if (task.date.length > 12) {
 			newDate += task.date.slice(10, 18)
@@ -572,7 +571,6 @@ class ConfigTask extends Component {
 										headerTextIOS={translations.selectDueTime}
 										onCancel={this.showTimeModal}
 										onConfirm={(date) => {
-											console.log(task)
 											this.updateTask(
 												'date',
 												this.convertDate(

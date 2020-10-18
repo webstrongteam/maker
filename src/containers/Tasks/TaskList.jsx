@@ -114,6 +114,7 @@ class TaskList extends Component {
 
 	rotate = (value) => {
 		const { rotateAnimated } = this.state
+
 		Animated.timing(rotateAnimated, {
 			toValue: value,
 			duration: 250,
@@ -290,9 +291,10 @@ class TaskList extends Component {
 		}
 	}
 
-	// eslint-disable-next-line react/destructuring-assignment
 	divisionTask = (
+		// eslint-disable-next-line react/destructuring-assignment
 		tasks = this.state.tasks,
+		// eslint-disable-next-line react/destructuring-assignment
 		visibleData = this.state.visibleData,
 		scrollTop = false,
 	) => {
@@ -423,6 +425,7 @@ class TaskList extends Component {
 
 		if (this.dropdown) {
 			this.dropdown.hide()
+			this.rotate(0)
 		}
 
 		if (category.name === translations.newCategory) {
@@ -580,7 +583,7 @@ class TaskList extends Component {
 		})
 	}
 
-	renderTaskList = ({ task, div, showDiv }) => {
+	renderTaskRow = ({ task, div, showDiv }) => {
 		const { priorityColors, animations } = this.state
 		const { translations, theme, navigation } = this.props
 
@@ -664,11 +667,7 @@ class TaskList extends Component {
 													: theme.thirdTextColor,
 											}}
 										>
-											{task.date
-												? this.convertTimeCycle(task.date)
-												: task.description
-												? task.description
-												: ' '}
+											{task.date ? this.convertTimeCycle(task.date) : task.description ?? ''}
 										</Text>
 										{task.repeat !== 'noRepeat' && (
 											<Icon
@@ -819,7 +818,7 @@ class TaskList extends Component {
 					initialNumToRender={8}
 					onEndReachedThreshold={0.2}
 					onEndReached={this.loadNextData}
-					renderItem={({ item }) => this.renderTaskList(item)}
+					renderItem={({ item }) => this.renderTaskRow(item)}
 					keyExtractor={({ task }) => `${task.id}`}
 					onRefresh={this.refreshComponent}
 					refreshing={loading}

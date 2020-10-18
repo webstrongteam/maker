@@ -8,7 +8,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native'
-import { IconToggle, Toolbar } from 'react-native-material-ui'
+import { IconToggle, ListItem, Toolbar } from 'react-native-material-ui'
 import { connect } from 'react-redux'
 import { empty, listContainer, listRow, shadow, flex } from '../../../shared/styles'
 import Input from '../../../components/UI/Input/Input'
@@ -52,6 +52,7 @@ class QuicklyTaskList extends Component {
 			value: '',
 		},
 		visibleData: initialNumToRender,
+		searchText: '',
 		loading: true,
 	}
 
@@ -187,6 +188,49 @@ class QuicklyTaskList extends Component {
 		}
 	}
 
+	renderTaskRow = (item, index) => {
+		const { theme } = this.props
+
+		// Searching system
+		// eslint-disable-next-line react/destructuring-assignment
+		const searchText = this.state.searchText.toLowerCase()
+		if (searchText.length > 0 && item.name.toLowerCase().indexOf(searchText) < 0) {
+			return null
+		}
+
+		return (
+			<TouchableOpacity
+				style={{
+					...shadow,
+					...listRow,
+					backgroundColor: theme.primaryBackgroundColor,
+				}}
+				onPress={() => this.toggleModalHandler(item.id)}
+			>
+				<View style={listContainer}>
+					<View style={styles.taskNameWrapper}>
+						<Text
+							numberOfLines={1}
+							style={{
+								...styles.taskName,
+								color: theme.secondaryTextColor,
+							}}
+						>
+							{index + 1}. {item.name}
+						</Text>
+					</View>
+					<View style={styles.taskIconContainer}>
+						<IconToggle
+							color={theme.doneIconColor}
+							onPress={() => this.removeTask(item)}
+							name='done'
+						/>
+					</View>
+				</View>
+			</TouchableOpacity>
+		)
+	}
+
 	render() {
 		const {
 			showModal,
@@ -204,6 +248,12 @@ class QuicklyTaskList extends Component {
 		return (
 			<Template bgColor={theme.secondaryBackgroundColor}>
 				<Toolbar
+					searchable={{
+						autoFocus: true,
+						placeholder: translations.search,
+						onChangeText: (value) => this.setState({ searchText: value }),
+						onSearchClosed: () => this.setState({ searchText: '' }),
+					}}
 					leftElement='arrow-back'
 					rightElement={
 						<>
@@ -221,8 +271,9 @@ class QuicklyTaskList extends Component {
 					}}
 					centerElement={
 						list.name && !loading ? (
-							<TouchableOpacity onPress={() => this.showDialog()}>
+							<TouchableOpacity onPress={this.showDialog}>
 								<Text
+									numberOfLines={1}
 									style={{
 										color: theme.primaryTextColor,
 										fontWeight: 'bold',
@@ -282,37 +333,7 @@ class QuicklyTaskList extends Component {
 										{translations.emptyList}
 									</Text>
 								}
-								renderItem={({ item, index }) => (
-									<TouchableOpacity
-										style={{
-											...shadow,
-											...listRow,
-											backgroundColor: theme.primaryBackgroundColor,
-										}}
-										onPress={() => this.toggleModalHandler(item.id)}
-									>
-										<View style={listContainer}>
-											<View style={styles.taskNameWrapper}>
-												<Text
-													numberOfLines={1}
-													style={{
-														...styles.taskName,
-														color: theme.secondaryTextColor,
-													}}
-												>
-													{index + 1}. {item.name}
-												</Text>
-											</View>
-											<View style={styles.taskIconContainer}>
-												<IconToggle
-													color={theme.doneIconColor}
-													onPress={() => this.removeTask(item)}
-													name='done'
-												/>
-											</View>
-										</View>
-									</TouchableOpacity>
-								)}
+								renderItem={({ item, index }) => this.renderTaskRow(item, index)}
 								keyExtractor={(item) => `${item.id}`}
 								onRefresh={this.reloadTasks}
 								refreshing={loading}
