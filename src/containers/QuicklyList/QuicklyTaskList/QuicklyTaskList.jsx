@@ -259,6 +259,7 @@ class QuicklyTaskList extends Component {
 						buttons={dialog.buttons}
 					/>
 				)}
+
 				{!loading ? (
 					<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'none'} style={flex}>
 						<View style={{ flex: 1, justifyContent: 'space-between' }}>
@@ -281,7 +282,7 @@ class QuicklyTaskList extends Component {
 										{translations.emptyList}
 									</Text>
 								}
-								renderItem={({ item }) => (
+								renderItem={({ item, index }) => (
 									<TouchableOpacity
 										style={{
 											...shadow,
@@ -299,7 +300,7 @@ class QuicklyTaskList extends Component {
 														color: theme.secondaryTextColor,
 													}}
 												>
-													{item.name}
+													{index + 1}. {item.name}
 												</Text>
 											</View>
 											<View style={styles.taskIconContainer}>
@@ -312,7 +313,7 @@ class QuicklyTaskList extends Component {
 										</View>
 									</TouchableOpacity>
 								)}
-								keyExtractor={(item) => item.id}
+								keyExtractor={(item) => `${item.id}`}
 								onRefresh={this.reloadTasks}
 								refreshing={loading}
 								ListFooterComponent={quicklyTasks.length > visibleData && <Spinner />}

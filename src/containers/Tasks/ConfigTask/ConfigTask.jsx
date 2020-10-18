@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import DatePicker from 'react-native-datepicker'
-import { Checkbox, IconToggle, Toolbar } from 'react-native-material-ui'
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
+import { IconToggle, Toolbar, Checkbox } from 'react-native-material-ui'
 import { askAsync, CALENDAR, NOTIFICATIONS, REMINDERS } from 'expo-permissions'
 import moment from 'moment'
-import { connect } from 'react-redux'
+import { dateFormat } from '../../../shared/consts'
 import Subheader from '../../../components/UI/Subheader/Subheader'
 import Spinner from '../../../components/UI/Spinner/Spinner'
 import Template from '../../Template/Template'
@@ -24,6 +24,7 @@ import { BannerAd } from '../../../shared/bannerAd'
 import styles from './ConfigTask.styles'
 
 import * as actions from '../../../store/actions'
+import { connect } from 'react-redux'
 
 class ConfigTask extends Component {
 	state = {
@@ -60,6 +61,8 @@ class ConfigTask extends Component {
 		showConfigCategory: false,
 		setEvent: false,
 		setNotification: false,
+		isVisibleDate: false,
+		isVisibleTime: false,
 		loading: true,
 	}
 
@@ -88,7 +91,6 @@ class ConfigTask extends Component {
 		const { categories, translations, onInitTask } = this.props
 
 		onInitTask(id, (task) => {
-			console.log('testtt')
 			const findCate = categories.find((c) => +c.id === +task.category)
 			if (findCate) {
 				task.category = findCate
@@ -280,6 +282,7 @@ class ConfigTask extends Component {
 
 	convertDate = (newDate) => {
 		const { task } = this.state
+		console.log(newDate)
 
 		if (task.date.length > 12) {
 			newDate += task.date.slice(10, 18)
@@ -353,6 +356,18 @@ class ConfigTask extends Component {
 			.catch(() => onSaveTask(task, navigation.goBack))
 	}
 
+	showDateModal = () => {
+		const { isVisibleDate } = this.state
+
+		this.setState({ isVisibleDate: !isVisibleDate })
+	}
+
+	showTimeModal = () => {
+		const { isVisibleTime } = this.state
+
+		this.setState({ isVisibleTime: !isVisibleTime })
+	}
+
 	render() {
 		const {
 			task,
@@ -366,6 +381,8 @@ class ConfigTask extends Component {
 			otherOption,
 			setEvent,
 			setNotification,
+			isVisibleTime,
+			isVisibleDate,
 		} = this.state
 		const { navigation, theme, settings, translations } = this.props
 		let date
@@ -375,7 +392,7 @@ class ConfigTask extends Component {
 			date = moment(task.date, 'DD-MM-YYYY - HH:mm')
 			now = new Date()
 		} else {
-			date = moment(task.date, 'DD-MM-YYYY')
+			date = moment(task.date, dateFormat)
 			now = new Date().setHours(0, 0, 0, 0)
 		}
 
@@ -451,79 +468,123 @@ class ConfigTask extends Component {
 						/>
 						<View style={styles.container}>
 							<Subheader text={translations.dueDate} />
-							<DatePicker
-								ref={(e) => {
-									this.datepickerDate = e
-								}}
-								style={{ width: '100%' }}
-								date={task.date.slice(0, 10)}
-								mode='date'
-								iconComponent={
-									task.date ? (
-										<IconToggle
-											onPress={() => {
-												this.updateTask('date', '')
-												this.updateTask('repeat', 'noRepeat')
-											}}
-											name='clear'
-										/>
-									) : (
-										<IconToggle onPress={() => this.datepickerDate.onPressDate()} name='event' />
-									)
-								}
-								placeholder={translations.selectDueDate}
-								format='DD-MM-YYYY'
-								confirmBtnText={translations.confirm}
-								cancelBtnText={translations.cancel}
-								customStyles={{
-									dateInput: [styles.datePicker, { borderColor: theme.primaryColor }],
-									datePickerCon: { backgroundColor: '#3b3b3b' },
-									dateText: {
-										color: +date < +now ? theme.warningColor : theme.thirdTextColor,
-									},
-								}}
-								onDateChange={(date) => this.updateTask('date', this.convertDate(date))}
-							/>
-							{task.date !== '' && (
-								<>
-									<DatePicker
-										ref={(e) => {
-											this.datepickerTime = e
-										}}
-										style={{ width: '100%' }}
-										date={task.date.slice(13, 18)}
-										is24Hour={!!settings.timeFormat}
-										mode='time'
-										iconComponent={
-											task.date.slice(13, 18) ? (
+							<View style={{ flex: 1, width: '100%' }}>
+								<TouchableOpacity onPress={this.showDateModal}>
+									<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+										<View style={{ ...styles.datePicker, borderColor: theme.primaryColor }}>
+											<Text
+												style={{
+													textAlign: 'center',
+													color: +date < +now ? theme.warningColor : theme.thirdTextColor,
+												}}
+											>
+												{task.date ? task.date.slice(0, 10) : translations.selectDueDate}
+											</Text>
+										</View>
+										<View>
+											{task.date ? (
 												<IconToggle
 													onPress={() => {
-														this.updateTask('date', task.date.slice(0, 10))
+														this.updateTask('date', '')
+														this.updateTask('repeat', 'noRepeat')
 													}}
 													name='clear'
 												/>
 											) : (
-												<IconToggle
-													onPress={() => this.datepickerTime.onPressDate()}
-													name='access-time'
-												/>
-											)
+												<IconToggle onPress={this.showDateModal} name='event' />
+											)}
+										</View>
+									</View>
+								</TouchableOpacity>
+							</View>
+
+							<DateTimePickerModal
+								isVisible={isVisibleDate}
+								mode='date'
+								date={
+									task.date.slice(0, 10)
+										? new Date(moment(task.date.slice(0, 10), dateFormat).format())
+										: new Date()
+								}
+								format={dateFormat}
+								isDarkModeEnabled={false}
+								confirmTextIOS={translations.confirm}
+								cancelTextIOS={translations.cancel}
+								headerTextIOS={translations.selectDueDate}
+								onCancel={this.showDateModal}
+								onConfirm={(date) => {
+									this.updateTask('date', this.convertDate(moment(date).format(dateFormat)))
+									this.showDateModal()
+								}}
+							/>
+
+							{task.date !== '' && (
+								<>
+									<View style={{ flex: 1, width: '100%', marginBottom: 10 }}>
+										<TouchableOpacity onPress={this.showTimeModal}>
+											<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+												<View style={{ ...styles.datePicker, borderColor: theme.primaryColor }}>
+													<Text
+														style={{
+															textAlign: 'center',
+															color: +date < +now ? theme.warningColor : theme.thirdTextColor,
+														}}
+													>
+														{task.date.slice(13, 18)
+															? task.date.slice(13, 18)
+															: translations.selectDueTime}
+													</Text>
+												</View>
+												<View>
+													{task.date.slice(13, 18) ? (
+														<IconToggle
+															onPress={() => {
+																this.updateTask('date', task.date.slice(0, 10))
+															}}
+															name='clear'
+														/>
+													) : (
+														<IconToggle onPress={this.showDateModal} name='access-time' />
+													)}
+												</View>
+											</View>
+										</TouchableOpacity>
+									</View>
+
+									<DateTimePickerModal
+										isVisible={isVisibleTime}
+										mode='time'
+										date={
+											task.date.slice(13, 18)
+												? new Date(
+														moment(
+															task.date.slice(13, 18),
+															settings.timeFormat ? 'HH:mm' : 'hh:mm A',
+														).format(),
+												  )
+												: new Date()
 										}
-										placeholder={translations.selectDueTime}
+										is24Hour={!!settings.timeFormat}
 										format={settings.timeFormat ? 'HH:mm' : 'hh:mm A'}
-										confirmBtnText={translations.confirm}
-										cancelBtnText={translations.cancel}
-										customStyles={{
-											dateInput: [styles.datePicker, { borderColor: theme.primaryColor }],
-											datePickerCon: { backgroundColor: '#3b3b3b' },
-											dateText: {
-												color: +date < +now ? theme.warningColor : theme.thirdTextColor,
-											},
-										}}
-										onDateChange={(date) => {
-											this.updateTask('date', `${task.date.slice(0, 10)} - ${date}`)
+										isDarkModeEnabled={false}
+										confirmTextIOS={translations.confirm}
+										cancelTextIOS={translations.cancel}
+										headerTextIOS={translations.selectDueTime}
+										onCancel={this.showTimeModal}
+										onConfirm={(date) => {
+											console.log(task)
+											this.updateTask(
+												'date',
+												this.convertDate(
+													`${task.date.slice(0, 10)} - ${moment(date).format(
+														settings.timeFormat ? 'HH:mm' : 'hh:mm A',
+													)}`,
+												),
+											)
+											this.showTimeModal()
 										}}
 									/>
+
 									<Checkbox
 										style={{ label: { color: theme.thirdTextColor } }}
 										label={translations.setCalendarEvent}

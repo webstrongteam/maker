@@ -1,4 +1,5 @@
-import { createAppContainer, createStackNavigator } from 'react-navigation'
+import { createAppContainer } from 'react-navigation'
+import { createStackNavigator } from 'react-navigation-stack'
 // Components
 import ToDo from './containers/ToDo/ToDo'
 import ConfigTask from './containers/Tasks/ConfigTask/ConfigTask'

@@ -11,11 +11,12 @@ export default StyleSheet.create({
 	},
 	datePicker: {
 		marginRight: 5,
-		marginLeft: 5,
 		borderBottomWidth: 0.5,
 		borderLeftWidth: 0,
 		borderRightWidth: 0,
 		borderTopWidth: 0,
+		width: '85%',
+		justifyContent: 'center',
 	},
 	category: {
 		flex: 1,

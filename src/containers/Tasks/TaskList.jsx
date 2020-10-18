@@ -820,7 +820,7 @@ class TaskList extends Component {
 					onEndReachedThreshold={0.2}
 					onEndReached={this.loadNextData}
 					renderItem={({ item }) => this.renderTaskList(item)}
-					keyExtractor={(item) => item.id}
+					keyExtractor={({ task }) => `${task.id}`}
 					onRefresh={this.refreshComponent}
 					refreshing={loading}
 					ListFooterComponent={data.length > visibleData && <Spinner />}

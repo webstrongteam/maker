@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View } from 'react-native'
 import { IconToggle } from 'react-native-material-ui'
-import { TextField } from 'react-native-material-textfield'
+import { TextField } from '@ubaids/react-native-material-textfield'
 import { connect } from 'react-redux'
 import { valid } from '../../../shared/utility'
 import styles from './Input.styles'
