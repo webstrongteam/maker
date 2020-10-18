@@ -4,6 +4,7 @@ import { timezone } from 'expo-localization'
 import * as Calendar from 'expo-calendar'
 import moment from 'moment'
 
+/* eslint-disable no-param-reassign */
 export const configTask = async (task, color, setEvent, setNotification) => {
 	if (setEvent) {
 		if (task.event_id) {

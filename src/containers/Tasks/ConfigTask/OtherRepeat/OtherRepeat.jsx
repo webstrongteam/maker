@@ -12,9 +12,7 @@ class OtherRepeat extends Component {
 		tabs: {
 			index: 0,
 			routes: [
-				// eslint-disable-next-line react/destructuring-assignment
 				{ key: 'time', title: this.props.translations.repeatTime },
-				// eslint-disable-next-line react/destructuring-assignment
 				{ key: 'days', title: this.props.translations.repeatDay },
 			],
 		},

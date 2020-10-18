@@ -33,6 +33,7 @@ export const initTask = (id, callback = () => null) => () => {
 				callback(rows._array[0])
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -58,6 +59,7 @@ export const initToDo = (callback = () => null) => {
 					dispatch(onInitToDo(tasks, finished))
 				})
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	}
@@ -76,6 +78,7 @@ export const initTasks = () => {
 					dispatch(onInitTasks(tasks))
 				})
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	}
@@ -94,6 +97,7 @@ export const initFinished = () => {
 					dispatch(onInitFinished(tasks))
 				})
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	}
@@ -131,6 +135,7 @@ export const saveTask = (task, callback = () => null) => (dispatch) => {
 					},
 				)
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	} else {
@@ -154,6 +159,7 @@ export const saveTask = (task, callback = () => null) => (dispatch) => {
 					},
 				)
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	}
@@ -166,7 +172,7 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
 	if (+task.repeat === parseInt(task.repeat, 10)) {
 		// Other repeat
 		if (+task.repeat[0] === 6) {
-			[...Array(5).keys()].forEach((i) => {
+			;[...Array(5).keys()].forEach((i) => {
 				task.repeat.split('').forEach((weekday, index) => {
 					if (index && nextDate === task.date) {
 						const actualDate = moment(task.date, dateFormat).add(i, 'days').format(dateFormat)
@@ -234,6 +240,7 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
 						},
 					)
 				},
+				// eslint-disable-next-line no-console
 				(err) => console.log(err),
 			)
 		} else {
@@ -249,6 +256,7 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
 						callback()
 						dispatch(initTasks())
 					},
+					// eslint-disable-next-line no-console
 					(err) => console.log(err),
 				)
 			})
@@ -268,6 +276,7 @@ export const undoTask = (task) => (dispatch) => {
 				},
 			)
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -281,6 +290,7 @@ export const removeTask = (task, finished = true, callback = () => null) => (dis
 					dispatch(initFinished())
 				})
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	} else {
@@ -297,6 +307,7 @@ export const removeTask = (task, finished = true, callback = () => null) => (dis
 					dispatch(initTasks())
 				})
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	}

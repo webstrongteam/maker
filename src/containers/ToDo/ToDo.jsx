@@ -14,9 +14,7 @@ class ToDo extends Component {
 		tabs: {
 			index: 0,
 			routes: [
-				// eslint-disable-next-line react/destructuring-assignment
 				{ key: 'tasks', title: this.props.translations.tasks },
-				// eslint-disable-next-line react/destructuring-assignment
 				{ key: 'lists', title: this.props.translations.quicklyLists },
 			],
 		},

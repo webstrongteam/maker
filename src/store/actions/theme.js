@@ -27,6 +27,7 @@ export const initTheme = (callback = () => null) => (dispatch) => {
 				)
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -38,6 +39,7 @@ export const initThemes = () => (dispatch) => {
 				dispatch(onInitThemes(rows._array))
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -49,6 +51,7 @@ export const initCustomTheme = (id, callback = () => null) => () => {
 				callback(rows._array[0])
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -60,6 +63,7 @@ export const setSelectedTheme = (id) => (dispatch) => {
 				dispatch(initTheme())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -91,6 +95,7 @@ export const saveTheme = (theme) => (dispatch) => {
 					},
 				)
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	} else {
@@ -118,6 +123,7 @@ export const saveTheme = (theme) => (dispatch) => {
 					},
 				)
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	}
@@ -130,6 +136,7 @@ export const deleteTheme = (id) => (dispatch) => {
 				dispatch(initThemes())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }

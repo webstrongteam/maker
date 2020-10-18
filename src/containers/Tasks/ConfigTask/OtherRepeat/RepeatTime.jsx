@@ -8,7 +8,6 @@ import Input from '../../../../components/UI/Input/Input'
 class RepeatTime extends Component {
 	state = {
 		control: {
-			// eslint-disable-next-line react/destructuring-assignment
 			label: this.props.translations.valueLabel,
 			number: true,
 			positiveNumber: true,

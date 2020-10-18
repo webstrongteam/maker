@@ -15,15 +15,11 @@ import * as actions from '../../store/actions'
 class Settings extends PureComponent {
 	state = {
 		daysOfWeek: [
-			// eslint-disable-next-line react/destructuring-assignment
 			{ name: this.props.translations.sunday, value: 'Sunday' },
-			// eslint-disable-next-line react/destructuring-assignment
 			{ name: this.props.translations.monday, value: 'Monday' },
 		],
 		languages: [
-			// eslint-disable-next-line react/destructuring-assignment
 			{ name: this.props.translations.english, short_name: 'en' },
-			// eslint-disable-next-line react/destructuring-assignment
 			{ name: this.props.translations.polish, short_name: 'pl' },
 		],
 		loading: true,
@@ -59,11 +55,12 @@ class Settings extends PureComponent {
 	}
 
 	toggleSetting = (value, name) => {
-		if (value) value = 1
-		else value = 0
+		let newValue
 
-		// eslint-disable-next-line react/destructuring-assignment
-		this.props[`onChange${name}`](value, name)
+		if (value) newValue = 1
+		else newValue = 0
+
+		this.props[`onChange${name}`](newValue, name)
 	}
 
 	showDialog = (action) => {

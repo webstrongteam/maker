@@ -26,13 +26,11 @@ class Report extends Component {
 		sending: false,
 		controls: {
 			title: {
-				// eslint-disable-next-line react/destructuring-assignment
 				label: this.props.translations.titleLabel,
 				required: true,
 				characterRestriction: 50,
 			},
 			description: {
-				// eslint-disable-next-line react/destructuring-assignment
 				label: this.props.translations.descriptionLabel,
 				required: true,
 				multiline: true,

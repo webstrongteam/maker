@@ -18,7 +18,6 @@ class Input extends Component {
 		})
 	}
 
-	// eslint-disable-next-line react/destructuring-assignment
 	checkValid = (value = this.props.value, initial = false) => {
 		const { control } = this.state
 		const { changed } = this.props

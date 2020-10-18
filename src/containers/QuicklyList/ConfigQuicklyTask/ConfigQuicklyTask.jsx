@@ -14,7 +14,6 @@ class ConfigQuicklyTask extends Component {
 			list_id: false,
 		},
 		control: {
-			// eslint-disable-next-line react/destructuring-assignment
 			label: this.props.translations.quicklyTaskName,
 			required: true,
 			characterRestriction: 40,

@@ -24,7 +24,6 @@ class Backup extends PureComponent {
 		loading: true,
 		selectedBackup: {},
 		control: {
-			// eslint-disable-next-line react/destructuring-assignment
 			label: this.props.translations.newName,
 			required: true,
 			characterRestriction: 40,

@@ -15,6 +15,7 @@ export const initLists = () => (dispatch) => {
 				dispatch(onInitLists(rows._array))
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -26,6 +27,7 @@ export const initList = (id, callback = () => null) => () => {
 				callback(rows._array)
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -37,6 +39,7 @@ export const initQuicklyTask = (id, callback = () => null) => () => {
 				callback(rows._array[0])
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -55,6 +58,7 @@ export const saveList = (list, callback) => (dispatch) => {
 					},
 				)
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	} else {
@@ -65,6 +69,7 @@ export const saveList = (list, callback) => (dispatch) => {
 					dispatch(initLists(), callback(rows._array[0]))
 				})
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	}
@@ -85,6 +90,7 @@ export const saveQuicklyTask = (quicklyTask, list, callback = () => {}) => () =>
 						},
 					)
 				},
+				// eslint-disable-next-line no-console
 				(err) => console.log(err),
 			)
 		} else {
@@ -98,6 +104,7 @@ export const saveQuicklyTask = (quicklyTask, list, callback = () => {}) => () =>
 						},
 					)
 				},
+				// eslint-disable-next-line no-console
 				(err) => console.log(err),
 			)
 		}
@@ -112,6 +119,7 @@ export const saveQuicklyTask = (quicklyTask, list, callback = () => {}) => () =>
 					addQuicklyTask(insertId)
 				})
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	}
@@ -125,6 +133,7 @@ export const removeList = (id) => (dispatch) => {
 				dispatch(initLists())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -136,6 +145,7 @@ export const removeQuicklyTask = (id, callback) => () => {
 				callback()
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }

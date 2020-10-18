@@ -15,6 +15,7 @@ export const initProfile = (callback = () => null) => (dispatch) => {
 				dispatch(onUpdateProfile(rows._array[0]), callback())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -26,6 +27,7 @@ export const changeName = (name) => (dispatch) => {
 				dispatch(initProfile())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -37,6 +39,7 @@ export const changeAvatar = (avatar) => (dispatch) => {
 				dispatch(initProfile())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -49,6 +52,7 @@ export const addEndedTask = () => (dispatch, getState) => {
 				dispatch(initProfile())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }

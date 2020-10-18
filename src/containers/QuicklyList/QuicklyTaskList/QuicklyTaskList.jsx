@@ -8,7 +8,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native'
-import { IconToggle, ListItem, Toolbar } from 'react-native-material-ui'
+import { IconToggle, Toolbar } from 'react-native-material-ui'
 import { connect } from 'react-redux'
 import { empty, listContainer, listRow, shadow, flex } from '../../../shared/styles'
 import Input from '../../../components/UI/Input/Input'
@@ -31,20 +31,16 @@ class QuicklyTaskList extends Component {
 		selectedTask: false,
 		list: {
 			id: false,
-			// eslint-disable-next-line react/destructuring-assignment
 			name: this.props.translations.listName,
 		},
-		// eslint-disable-next-line react/destructuring-assignment
 		newListName: this.props.translations.listName,
 		control: {
-			// eslint-disable-next-line react/destructuring-assignment
 			label: this.props.translations.listName,
 			required: true,
 			characterRestriction: 20,
 		},
 		input: {
 			control: {
-				// eslint-disable-next-line react/destructuring-assignment
 				label: this.props.translations.quicklyAdding,
 				required: true,
 				characterRestriction: 40,
@@ -67,7 +63,6 @@ class QuicklyTaskList extends Component {
 		}
 	}
 
-	// eslint-disable-next-line react/destructuring-assignment
 	reloadTasks = (list = this.state.list) => {
 		const { onInitList } = this.props
 		onInitList(list.id, (tasks) => {
@@ -192,7 +187,6 @@ class QuicklyTaskList extends Component {
 		const { theme } = this.props
 
 		// Searching system
-		// eslint-disable-next-line react/destructuring-assignment
 		const searchText = this.state.searchText.toLowerCase()
 		if (searchText.length > 0 && item.name.toLowerCase().indexOf(searchText) < 0) {
 			return null

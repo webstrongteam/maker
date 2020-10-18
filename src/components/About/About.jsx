@@ -9,8 +9,8 @@ import styles from './About.styles'
 import { VERSION } from '../../db'
 
 const about = (props) => {
-	const openWebBrowser = async () => {
-		await WebBrowser.openBrowserAsync('https://github.com/mateuszpijanowski/maker')
+	const openWebBrowser = async (url) => {
+		await WebBrowser.openBrowserAsync(url)
 	}
 
 	return (
@@ -30,7 +30,9 @@ const about = (props) => {
 					<Text style={[styles.secondaryText, { color: props.theme.secondaryTextColor }]}>
 						{props.translations.secondaryText}
 					</Text>
-					<TouchableOpacity onPress={openWebBrowser}>
+					<TouchableOpacity
+						onPress={() => openWebBrowser('https://github.com/mateuszpijanowski/maker')}
+					>
 						<Image
 							tintColor={props.theme.secondaryTextColor}
 							style={{
@@ -42,10 +44,11 @@ const about = (props) => {
 					</TouchableOpacity>
 
 					<View style={{ opacity: 0.5 }}>
-						<Text style={[styles.copy, { color: props.theme.thirdTextColor }]}>
-							&copy; by Mateusz Pijanowski (https://webstrong.pl) v.
-							{VERSION}
-						</Text>
+						<TouchableOpacity onPress={() => openWebBrowser('https://webstrong.pl')}>
+							<Text style={[styles.copy, { color: props.theme.thirdTextColor }]}>
+								&copy; by Mateusz Pijanowski https://webstrong.pl) v. {VERSION}
+							</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
 			</ScrollView>

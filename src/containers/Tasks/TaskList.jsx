@@ -47,7 +47,6 @@ class TaskList extends Component {
 		data: [],
 		visibleData: 8,
 		dropdownData: null,
-		// eslint-disable-next-line react/destructuring-assignment
 		selectedCategory: { id: -1, name: this.props.translations.all },
 		selectedIndex: 0,
 		searchText: '',
@@ -292,9 +291,7 @@ class TaskList extends Component {
 	}
 
 	divisionTask = (
-		// eslint-disable-next-line react/destructuring-assignment
 		tasks = this.state.tasks,
-		// eslint-disable-next-line react/destructuring-assignment
 		visibleData = this.state.visibleData,
 		scrollTop = false,
 	) => {
@@ -332,7 +329,6 @@ class TaskList extends Component {
 					}),
 				)
 
-				// eslint-disable-next-line react/destructuring-assignment
 				if (visibleData < this.state.visibleData) {
 					this.setState({
 						data,
@@ -358,31 +354,30 @@ class TaskList extends Component {
 
 	getDateDivision = (date) => {
 		const { translations, settings } = this.props
+		let newDate, text, now
 
-		let text
-		let now
 		if (!date) {
 			text = translations.other
 			return text
 		}
 		if (date.length > 12) {
-			date = moment(date, 'DD-MM-YYYY - HH:mm')
+			newDate = moment(date, 'DD-MM-YYYY - HH:mm')
 			now = new Date()
 		} else {
-			date = moment(date, 'DD-MM-YYYY')
+			newDate = moment(date, 'DD-MM-YYYY')
 			now = new Date().setHours(0, 0, 0, 0)
 		}
 
 		let week = 'week'
 		if (settings.firstDayOfWeek === 'Monday') week = 'isoWeek'
 
-		if (+date < +now) text = translations.overdue
-		else if (+date <= moment(now).endOf('day')) text = translations.today
-		else if (+date <= +moment(now).add(1, 'days').endOf('day')) text = translations.tomorrow
-		else if (date <= moment(now).endOf(week)) text = translations.thisWeek
-		else if (+date <= +moment(now).add(1, 'week').endOf(week)) text = translations.nextWeek
-		else if (date <= moment(now).endOf('month')) text = translations.thisMonth
-		else if (date <= moment(now).add(1, 'month').endOf('month')) text = translations.nextMonth
+		if (+newDate < +now) text = translations.overdue
+		else if (+newDate <= moment(now).endOf('day')) text = translations.today
+		else if (+newDate <= +moment(now).add(1, 'days').endOf('day')) text = translations.tomorrow
+		else if (newDate <= moment(now).endOf(week)) text = translations.thisWeek
+		else if (+newDate <= +moment(now).add(1, 'week').endOf(week)) text = translations.nextWeek
+		else if (newDate <= moment(now).endOf('month')) text = translations.thisMonth
+		else if (newDate <= moment(now).add(1, 'month').endOf('month')) text = translations.nextMonth
 		else text = translations.later
 
 		return text
@@ -415,9 +410,7 @@ class TaskList extends Component {
 	}
 
 	selectedCategoryHandler = (
-		// eslint-disable-next-line react/destructuring-assignment
 		category = this.state.selectedCategory,
-		// eslint-disable-next-line react/destructuring-assignment
 		index = this.state.selectedIndex,
 	) => {
 		const { selectedCategory } = this.state
@@ -608,7 +601,6 @@ class TaskList extends Component {
 		const hideTask = animations[`hide${task.id}`] ? 0 : 'auto'
 
 		// Searching system
-		// eslint-disable-next-line react/destructuring-assignment
 		const searchText = this.state.searchText.toLowerCase()
 		if (searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0) {
 			if (task.description.toLowerCase().indexOf(searchText) < 0) {

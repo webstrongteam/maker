@@ -16,6 +16,7 @@ export const initSettings = (callback = () => null) => (dispatch) => {
 				dispatch(onUpdateSettings(rows._array[0]))
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -31,6 +32,7 @@ export const changeSorting = (sorting, type) => (dispatch) => {
 				},
 			)
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -42,6 +44,7 @@ export const changeTimeFormat = (value) => (dispatch) => {
 				dispatch(initSettings())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -53,6 +56,7 @@ export const changeFirstDayOfWeek = (value) => (dispatch) => {
 				dispatch(initSettings())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -64,6 +68,7 @@ export const changeLang = (value) => (dispatch) => {
 				dispatch(initSettings())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -75,6 +80,7 @@ export const changeConfirmFinishingTask = (value) => (dispatch) => {
 				dispatch(initSettings())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -86,6 +92,7 @@ export const changeConfirmRepeatingTask = (value) => (dispatch) => {
 				dispatch(initSettings())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -97,6 +104,7 @@ export const changeConfirmDeletingTask = (value) => (dispatch) => {
 				dispatch(initSettings())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -108,6 +116,7 @@ export const changeHideTabView = (value) => (dispatch) => {
 				dispatch(initSettings())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }

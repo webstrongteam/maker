@@ -10,7 +10,6 @@ class ConfigCategory extends Component {
 	state = {
 		category: { id: false, name: '' },
 		control: {
-			// eslint-disable-next-line react/destructuring-assignment
 			label: this.props.translations.nameLabel,
 			required: true,
 			characterRestriction: 20,

@@ -34,7 +34,6 @@ class ConfigTask extends Component {
 			description: '',
 			date: '',
 			repeat: 'noRepeat',
-			// eslint-disable-next-line react/destructuring-assignment
 			category: this.props.categories[0],
 			priority: 'none',
 			event_id: null,
@@ -42,13 +41,11 @@ class ConfigTask extends Component {
 		},
 		controls: {
 			name: {
-				// eslint-disable-next-line react/destructuring-assignment
 				label: this.props.translations.nameLabel,
 				required: true,
 				characterRestriction: 40,
 			},
 			description: {
-				// eslint-disable-next-line react/destructuring-assignment
 				label: this.props.translations.descriptionLabel,
 				multiline: true,
 			},
@@ -284,9 +281,8 @@ class ConfigTask extends Component {
 		const { task } = this.state
 
 		if (task.date.length > 12) {
-			newDate += task.date.slice(10, 18)
+			return `${newDate}${task.date.slice(10, 18)}`
 		}
-
 		return newDate
 	}
 

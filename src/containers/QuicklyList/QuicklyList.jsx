@@ -97,8 +97,6 @@ class QuicklyList extends Component {
 
 		const quicklyList = lists.map((list, index) => {
 			// Searching system
-
-			// eslint-disable-next-line react/destructuring-assignment
 			const searchText = this.state.searchText.toLowerCase()
 			if (searchText.length > 0 && list.name.toLowerCase().indexOf(searchText) < 0) {
 				return null

@@ -56,6 +56,11 @@
 
 ### ToDo:
 
+- Custom repeat not working
+- Add deadline info to settings
+- Update README
+- Clear code
+
 **iOS:**
 
 - Adding backup file from file system not working

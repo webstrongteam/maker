@@ -20,7 +20,6 @@ class Theme extends Component {
 		customTheme: { id: false, name: '' },
 		customThemeCopy: { id: false, name: '' },
 		newThemeName: '',
-		// eslint-disable-next-line react/destructuring-assignment
 		defaultName: this.props.translations.defaultName,
 
 		showColorPicker: false,
@@ -32,7 +31,6 @@ class Theme extends Component {
 		showModal: false,
 
 		control: {
-			// eslint-disable-next-line react/destructuring-assignment
 			label: this.props.translations.themeNameLabel,
 			required: true,
 			characterRestriction: 30,
@@ -153,7 +151,6 @@ class Theme extends Component {
 		onDeleteTheme(customTheme.id)
 	}
 
-	// eslint-disable-next-line react/destructuring-assignment
 	checkChanges = (name = this.state.customTheme.name) => {
 		const { customTheme, customThemeCopy, control } = this.state
 

@@ -16,6 +16,7 @@ export const initCategories = (callback = () => null) => (dispatch) => {
 				dispatch(onInitCategories(rows._array))
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -27,6 +28,7 @@ export const initCategory = (id, callback = () => null) => () => {
 				callback(rows._array[0])
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -45,6 +47,7 @@ export const saveCategory = (category, callback) => () => {
 					},
 				)
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	} else {
@@ -58,6 +61,7 @@ export const saveCategory = (category, callback) => () => {
 					},
 				)
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	}
@@ -71,6 +75,7 @@ export const removeCategory = (id, callback = () => null) => (dispatch) => {
 				dispatch(initCategories())
 			})
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }

@@ -65,6 +65,7 @@ export const initDatabase = (callback) => {
 				},
 			)
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -163,6 +164,7 @@ export const initApp = (callback, backup = false) => {
 				() => initDatabase(callback),
 			)
 		},
+		// eslint-disable-next-line no-console
 		(err) => console.log(err),
 	)
 }
@@ -197,6 +199,7 @@ export const initTheme = (callback) => {
 					},
 				)
 			},
+			// eslint-disable-next-line no-console
 			(err) => console.log(err),
 		)
 	})
