@@ -20,7 +20,7 @@ import {
 	generateDialogObject,
 } from '../../../shared/utility'
 import { configTask } from '../../../shared/configTask'
-import { BannerAd } from '../../../shared/bannerAd'
+import { BannerAd } from '../../../components/Ads/BannerAd'
 import styles from './ConfigTask.styles'
 
 import * as actions from '../../../store/actions'

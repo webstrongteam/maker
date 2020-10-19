@@ -2,7 +2,7 @@ import { openDatabase } from 'expo-sqlite'
 import { AsyncStorage, NativeModules, Platform } from 'react-native'
 
 export const VERSION = '2.5.0' // APP VERSION
-const db = openDatabase('makerr.db', VERSION)
+const db = openDatabase('maker.db', VERSION)
 
 const getLocale = () => {
 	const locale =
@@ -110,9 +110,7 @@ export const initApp = (callback, backup = false) => {
 																tx.executeSql(
 																	'update quickly_tasks set order_nr = ? where id = ?;',
 																	[index, id],
-																	() => {
-																		resolve()
-																	},
+																	() => resolve(),
 																)
 															})
 														}).then(() => {

@@ -24,10 +24,8 @@ class ConfigCategory extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		const { category } = this.props
-
-		if (prevProps.category !== category) {
-			this.initCategory(category)
+		if (prevProps.category !== this.props.category) {
+			this.initCategory(this.props.category)
 		}
 	}
 

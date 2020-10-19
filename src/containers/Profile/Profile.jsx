@@ -9,10 +9,12 @@ import Input from '../../components/UI/Input/Input'
 import Template from '../Template/Template'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import { separator } from '../../shared/styles'
-import { BannerAd } from '../../shared/bannerAd'
+import { BannerAd } from '../../components/Ads/BannerAd'
 import styles from './Profile.styles'
 
 import * as actions from '../../store/actions'
+
+const defaultAvatar = require('../../assets/profile.png')
 
 class Profile extends PureComponent {
 	state = {
@@ -118,9 +120,10 @@ class Profile extends PureComponent {
 								<TouchableOpacity onPress={this.getPermissionAsync}>
 									<Image
 										style={styles.image}
-										source={
-											profile.avatar ? { uri: profile.avatar } : require('../../assets/profile.png')
-										}
+										onError={(ev) => {
+											ev.target.src = defaultAvatar
+										}}
+										source={profile.avatar ? { uri: profile.avatar } : defaultAvatar}
 									/>
 								</TouchableOpacity>
 								<Input

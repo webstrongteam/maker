@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { listRow, shadow } from '../../shared/styles'
 import ConfigCategory from './ConfigCategory/ConfigCategory'
 import Template from '../Template/Template'
-import { BannerAd } from '../../shared/bannerAd'
+import { BannerAd } from '../../components/Ads/BannerAd'
 
 import * as actions from '../../store/actions'
 

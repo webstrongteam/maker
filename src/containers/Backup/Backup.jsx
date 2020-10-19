@@ -12,7 +12,7 @@ import Dialog from '../../components/UI/Dialog/Dialog'
 import { empty, listRow, row, shadow } from '../../shared/styles'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import Template from '../Template/Template'
-import { BannerAd } from '../../shared/bannerAd'
+import { BannerAd } from '../../components/Ads/BannerAd'
 import { initApp } from '../../db'
 
 import * as actions from '../../store/actions'

@@ -34,10 +34,9 @@ class ToDo extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		const { translations } = this.props
-
-		if (prevProps.translations !== translations) {
+		if (prevProps.translations !== this.props.translations) {
 			const { tabs } = this.state
+			const { translations } = this.props
 
 			tabs.routes[0].title = translations.tasks
 			tabs.routes[1].title = translations.quicklyLists

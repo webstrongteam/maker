@@ -7,7 +7,7 @@ import QuicklyTaskList from './containers/QuicklyList/QuicklyTaskList/QuicklyTas
 import CategoriesList from './containers/Categories/CategoriesList'
 import Drawer from './containers/Drawer/Drawer'
 import Themes from './containers/Themes/Themes'
-import Theme from './containers/Themes/Theme'
+import Theme from './containers/Themes/Theme/Theme'
 import Profile from './containers/Profile/Profile'
 import Settings from './containers/Settings/Settings'
 import Backups from './containers/Backup/Backup'

@@ -64,22 +64,22 @@ class TaskList extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		const { visibleData } = this.state
-		const { theme, refresh, categories, tasks, finished, sorting, sortingType } = this.props
-
-		if (prevProps.theme !== theme) {
+		if (prevProps.theme !== this.props.theme) {
 			this.refreshPriorityColors()
 		}
-		if (prevProps.refresh !== refresh) {
-			this.refreshComponent(visibleData)
+		if (prevProps.refresh !== this.props.refresh) {
+			this.refreshComponent(this.state.visibleData)
 		}
-		if (prevProps.categories.length !== categories.length) {
+		if (prevProps.categories.length !== this.props.categories.length) {
 			this.renderDropdownData()
 		}
-		if (prevProps.tasks !== tasks || prevProps.finished !== finished) {
+		if (prevProps.tasks !== this.props.tasks || prevProps.finished !== this.props.finished) {
 			this.selectedCategoryHandler()
 		}
-		if (prevProps.sorting !== sorting || prevProps.sortingType !== sortingType) {
+		if (
+			prevProps.sorting !== this.props.sorting ||
+			prevProps.sortingType !== this.props.sortingType
+		) {
 			this.divisionTask()
 		}
 	}
@@ -558,7 +558,7 @@ class TaskList extends Component {
 		if (task.date) {
 			const dateDifference = dateDiff(task.date, moment())
 
-			if (settings.showDeadlineTime && dateDifference !== 0) {
+			if (!!settings.showDeadlineTime && dateDifference !== 0) {
 				if (dateDifference === 1 || dateDifference === -1) {
 					return `${this.convertTimeCycle(task.date)} (${dateDifference} ${translations.day})`
 				}

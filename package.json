@@ -1,8 +1,18 @@
 {
 	"name": "maker",
+	"description": "Maker is an advanced ToDo mobile application created with React Native and Expo framework. This app working with Android and iOS.",
 	"version": "2.5.0",
-	"author": "WebStrong",
+	"author": "WebStrong (https://webstrong.pl)",
 	"main": "node_modules/expo/AppEntry.js",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/webstrongteam/maker/issues"
+	},
+	"homepage": "https://webstrong.pl",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/webstrongteam/maker.git"
+	},
 	"scripts": {
 		"start": "expo start",
 		"android": "expo start --android",

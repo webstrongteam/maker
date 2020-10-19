@@ -31,9 +31,7 @@ class Template extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		const { theme } = this.props
-
-		if (prevProps.theme !== theme) {
+		if (prevProps.theme !== this.props.theme) {
 			initDatabase(() => {
 				initTheme((state) => this.setState(state))
 			})
@@ -60,7 +58,7 @@ class Template extends Component {
 						<View
 							style={{
 								height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
-								backgroundColor: '#af3f1f',
+								backgroundColor: theme.primaryColor,
 							}}
 						>
 							<StatusBar backgroundColor='rgba(0, 0, 0, 0.2)' translucent />
@@ -87,7 +85,10 @@ class Template extends Component {
 						<Snackbar
 							visible={showSnackbar}
 							message={snackbarText}
-							style={{ container: { backgroundColor: '#1a1a1a' } }}
+							style={{
+								container: { backgroundColor: theme.primaryBackgroundColor },
+								message: { color: theme.thirdTextColor },
+							}}
 							onPress={() => onUpdateSnackbar(false)}
 							onRequestClose={() => onUpdateSnackbar(false)}
 						/>

@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import Template from '../Template/Template'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import { iconStyle } from '../../shared/styles'
-import { BannerAd } from '../../shared/bannerAd'
+import { BannerAd } from '../../components/Ads/BannerAd'
 
 import * as actions from '../../store/actions'
 
@@ -23,9 +23,10 @@ class Themes extends PureComponent {
 	}
 
 	componentDidUpdate(prevProps) {
-		const { themes, actualTheme } = this.props
-
-		if (themes !== prevProps.themes || actualTheme.id !== prevProps.actualTheme.id) {
+		if (
+			this.props.themes !== prevProps.themes ||
+			this.props.actualTheme.id !== prevProps.actualTheme.id
+		) {
 			this.initThemes()
 		}
 	}
@@ -58,8 +59,8 @@ class Themes extends PureComponent {
 			const { onSetSelectedTheme, translations } = this.props
 
 			this.setState({ loading: true }, () => {
-				onSetSelectedTheme(id)
 				const { selectedTheme } = this.state
+				onSetSelectedTheme(id)
 
 				Object.keys(selectedTheme).map((theme) => {
 					selectedTheme[theme] = +theme === +id

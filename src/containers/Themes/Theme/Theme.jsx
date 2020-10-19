@@ -6,14 +6,14 @@ import { ColorWheel } from 'react-native-color-wheel'
 import colorsys from 'colorsys'
 import Modal from 'react-native-modalbox'
 import { connect } from 'react-redux'
-import Spinner from '../../components/UI/Spinner/Spinner'
-import Template from '../Template/Template'
-import Dialog from '../../components/UI/Dialog/Dialog'
-import { checkValid, generateDialogObject } from '../../shared/utility'
-import { BannerAd } from '../../shared/bannerAd'
+import Spinner from '../../../components/UI/Spinner/Spinner'
+import Template from '../../Template/Template'
+import Dialog from '../../../components/UI/Dialog/Dialog'
+import { checkValid, generateDialogObject } from '../../../shared/utility'
+import { BannerAd } from '../../../components/Ads/BannerAd'
 import styles from './Theme.styles'
 
-import * as actions from '../../store/actions'
+import * as actions from '../../../store/actions'
 
 class Theme extends Component {
 	state = {

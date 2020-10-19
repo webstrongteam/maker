@@ -7,7 +7,7 @@ import Template from '../Template/Template'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import { iconStyle } from '../../shared/styles'
 import { generateDialogObject } from '../../shared/utility'
-import { BannerAd } from '../../shared/bannerAd'
+import { BannerAd } from '../../components/Ads/BannerAd'
 import styles from './Settings.styles'
 
 import * as actions from '../../store/actions'
@@ -32,9 +32,7 @@ class Settings extends PureComponent {
 	}
 
 	componentDidUpdate(prevProps) {
-		const { settings } = this.props
-
-		if (prevProps.settings.lang !== settings.lang) {
+		if (prevProps.settings.lang !== this.props.settings.lang) {
 			const { translations } = this.props
 			const daysOfWeek = [
 				{ name: translations.sunday, value: 'Sunday' },

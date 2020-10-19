@@ -28,9 +28,7 @@ class QuicklyList extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		const { lists } = this.props
-
-		if (prevProps.lists !== lists) {
+		if (prevProps.lists !== this.props.lists) {
 			this.reloadListsAmount()
 		}
 	}

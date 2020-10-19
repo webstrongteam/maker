@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Drawer, Toolbar } from 'react-native-material-ui'
 import { connect } from 'react-redux'
 import Template from '../Template/Template'
-import { BannerAd } from '../../shared/bannerAd'
+import { BannerAd } from '../../components/Ads/BannerAd'
 
 class DrawerContainer extends Component {
 	render() {
