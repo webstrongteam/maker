@@ -31,6 +31,7 @@ export {
 	changeHideTabView,
 	changeFirstDayOfWeek,
 	changeTimeFormat,
+	changeShowDeadlineTime,
 	changeLang,
 } from './settings'
 

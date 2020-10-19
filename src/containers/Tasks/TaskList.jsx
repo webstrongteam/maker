@@ -553,12 +553,12 @@ class TaskList extends Component {
 	}
 
 	getTaskDateLabel = (task) => {
-		const { translations } = this.props
+		const { translations, settings } = this.props
 
 		if (task.date) {
 			const dateDifference = dateDiff(task.date, moment())
 
-			if (dateDifference !== 0) {
+			if (settings.showDeadlineTime && dateDifference !== 0) {
 				if (dateDifference === 1 || dateDifference === -1) {
 					return `${this.convertTimeCycle(task.date)} (${dateDifference} ${translations.day})`
 				}

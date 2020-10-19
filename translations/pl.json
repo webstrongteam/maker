@@ -95,6 +95,7 @@
 		"confirmFinishing": "Potwierdź ukończenie zadania",
 		"confirmRepeating": "Potwierdź powtórzenie zadania",
 		"confirmDeleting": "Potwierdź usuwanie zadania",
+		"showDeadlineTime": "Pokaż czas do końca zadania",
 		"adjustTaskName": "Dopasuj wielkość nazwy zadania",
 		"hideTabView": "Ukryj widok zakładek",
 		"version": "Wersja"

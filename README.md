@@ -56,8 +56,7 @@
 
 ### ToDo:
 
-- Custom repeat not working
-- Add deadline info to settings
+- Custom repeating not working
 - Update README
 - Clear code
 

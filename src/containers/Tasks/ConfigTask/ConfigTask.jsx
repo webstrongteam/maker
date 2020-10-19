@@ -65,9 +65,9 @@ class ConfigTask extends Component {
 
 	componentDidMount() {
 		const { navigation } = this.props
-
 		const task = navigation.getParam('task', false)
 		const category = navigation.getParam('category', false)
+
 		if (task !== false) this.initTask(task)
 		else {
 			const { task } = this.state

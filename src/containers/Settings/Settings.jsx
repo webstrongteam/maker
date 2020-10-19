@@ -234,6 +234,24 @@ class Settings extends PureComponent {
 								title={translations.confirmDeleting}
 							/>
 							<SettingsList.Item
+								icon={
+									<View style={iconStyle}>
+										<Icon
+											color={theme.thirdTextColor}
+											style={{ alignSelf: 'center' }}
+											name='timelapse'
+										/>
+									</View>
+								}
+								hasNavArrow={false}
+								itemWidth={70}
+								hasSwitch
+								switchState={!!settings.showDeadlineTime}
+								switchOnValueChange={(value) => this.toggleSetting(value, 'ShowDeadlineTime')}
+								titleStyle={{ color: theme.thirdTextColor, fontSize: 16 }}
+								title={translations.showDeadlineTime}
+							/>
+							<SettingsList.Item
 								hasNavArrow={false}
 								title={translations.general}
 								titleStyle={{ color: '#009688', fontWeight: '500' }}
@@ -310,6 +328,7 @@ const mapDispatchToProps = (dispatch) => ({
 	onChangeConfirmFinishingTask: (value) => dispatch(actions.changeConfirmFinishingTask(value)),
 	onChangeConfirmDeletingTask: (value) => dispatch(actions.changeConfirmDeletingTask(value)),
 	onChangeHideTabView: (value) => dispatch(actions.changeHideTabView(value)),
+	onChangeShowDeadlineTime: (value) => dispatch(actions.changeShowDeadlineTime(value)),
 	onUpdateSnackbar: (showSnackbar, snackbarText) =>
 		dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
 	onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal)),

@@ -155,7 +155,7 @@ export const saveTask = (task, callback = () => null) => (dispatch) => {
 					],
 					() => {
 						callback()
-						dispatch(initTasks(callback))
+						dispatch(initTasks())
 					},
 				)
 			},

@@ -92,6 +92,7 @@
 		"confirmFinishing": "Confirm finishing task",
 		"confirmRepeating": "Confirm repeating task",
 		"confirmDeleting": "Confirm deleting task",
+		"showDeadlineTime": "Show deadline time",
 		"adjustTaskName": "Adjust task name",
 		"hideTabView": "Hide tab view",
 		"version": "Version"

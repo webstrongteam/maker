@@ -2,7 +2,7 @@ import { openDatabase } from 'expo-sqlite'
 import { AsyncStorage, NativeModules, Platform } from 'react-native'
 
 export const VERSION = '2.5.0' // APP VERSION
-const db = openDatabase('maker.db', VERSION)
+const db = openDatabase('makerr.db', VERSION)
 
 const getLocale = () => {
 	const locale =
@@ -43,7 +43,7 @@ export const initDatabase = (callback) => {
 				'create table if not exists profile (id integer primary key not null, name text, avatar text, endedTask integer);',
 			)
 			tx.executeSql(
-				'create table if not exists settings (id integer primary key not null, sorting text, sortingType text, timeFormat integer, firstDayOfWeek text, confirmFinishingTask integer, confirmRepeatingTask integer, confirmDeletingTask integer, version text, hideTabView integer DEFAULT 0, theme integer DEFAULT 0 REFERENCES themes(id) ON DELETE SET DEFAULT, lang text);',
+				'create table if not exists settings (id integer primary key not null, sorting text, sortingType text, timeFormat integer, firstDayOfWeek text, confirmFinishingTask integer, confirmRepeatingTask integer, confirmDeletingTask integer, version text, hideTabView integer DEFAULT 0, theme integer DEFAULT 0 REFERENCES themes(id) ON DELETE SET DEFAULT, showDeadlineTime integer DEFAULT 1, lang text);',
 			)
 			tx.executeSql('INSERT OR IGNORE INTO categories (id, name) values (0, ?);', [
 				getLocale() === 'pl' ? 'Domyślna' : 'Default',
@@ -58,7 +58,7 @@ export const initDatabase = (callback) => {
 				"INSERT OR IGNORE INTO profile (id, name, avatar, endedTask) values (0, 'Maker', '', 0);",
 			)
 			tx.executeSql(
-				"INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, hideTabView, theme, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 0, ?);",
+				"INSERT OR IGNORE INTO settings (id, sorting, sortingType, timeFormat, firstDayOfWeek, confirmFinishingTask, confirmRepeatingTask, confirmDeletingTask, version, hideTabView, theme, showDeadlineTime, lang) values (0, 'byAZ', 'ASC', 1, 'Sunday', 1, 1, 1, ?, 0, 0, 1, ?);",
 				[`${VERSION}_INIT`, getLocale()],
 				() => {
 					initApp(callback)
@@ -88,7 +88,13 @@ export const initApp = (callback, backup = false) => {
 						}
 
 						const prepareToUpdate = (update) => {
-							if (update === '2.0.0') {
+							if (update === '2.5.0') {
+								tx.executeSql(
+									'ALTER TABLE settings ADD COLUMN showDeadlineTime integer DEFAULT 1;',
+									[],
+									() => initDatabase(callback),
+								)
+							} else if (update === '2.0.0') {
 								tx.executeSql('DROP TABLE IF EXISTS themes;', [], () => {
 									tx.executeSql(
 										'ALTER TABLE quickly_tasks ADD COLUMN order_nr integer DEFAULT 0;',
@@ -113,7 +119,7 @@ export const initApp = (callback, backup = false) => {
 															if (!backup) {
 																AsyncStorage.setItem('updated', 'true')
 															}
-															initDatabase(callback)
+															prepareToUpdate('2.5.0')
 														})
 													})
 												},
@@ -150,7 +156,9 @@ export const initApp = (callback, backup = false) => {
 
 						const versionID = +version.split('.').join('')
 						// Init prepare DB for newest version
-						if (versionID === 110) {
+						if (versionID === 220) {
+							prepareToUpdate('2.5.0')
+						} else if (versionID === 110) {
 							prepareToUpdate('2.0.0')
 						} else if (versionID < 110) {
 							prepareToUpdate('1.1.0')

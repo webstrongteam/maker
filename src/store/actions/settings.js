@@ -120,3 +120,15 @@ export const changeHideTabView = (value) => (dispatch) => {
 		(err) => console.log(err),
 	)
 }
+
+export const changeShowDeadlineTime = (value) => (dispatch) => {
+	db.transaction(
+		(tx) => {
+			tx.executeSql('update settings set showDeadlineTime = ? where id = 0;', [value], () => {
+				dispatch(initSettings())
+			})
+		},
+		// eslint-disable-next-line no-console
+		(err) => console.log(err),
+	)
+}
