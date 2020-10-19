@@ -114,7 +114,7 @@
 		"emptyList": "Szybka lista jest pusta!"
 	},
 	"ConfigQuicklyTask": {
-		"quicklyTaskName": "Wprowadź nazwę szybkiego zadania",
+		"quicklyTaskName": "Wprowadź nazwę zadania",
 		"editTask": "Edytuj zadanie",
 		"newTask": "Nowe zadanie"
 	},

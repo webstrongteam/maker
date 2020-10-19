@@ -18,6 +18,12 @@ class Input extends Component {
 		})
 	}
 
+	componentDidUpdate(prevProps) {
+		if (prevProps.value !== this.props.value && this.props.value === '') {
+			this.checkValid('', true)
+		}
+	}
+
 	checkValid = (value = this.props.value, initial = false) => {
 		const { control } = this.state
 		const { changed } = this.props

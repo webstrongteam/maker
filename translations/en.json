@@ -110,7 +110,7 @@
 		"emptyList": "Quickly list is empty!"
 	},
 	"ConfigQuicklyTask": {
-		"quicklyTaskName": "Enter quickly task name",
+		"quicklyTaskName": "Enter task name",
 		"editTask": "Edit task",
 		"newTask": "New task"
 	},

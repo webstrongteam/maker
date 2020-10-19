@@ -143,7 +143,7 @@ class QuicklyTaskList extends Component {
 				name: input.value,
 			}
 			onSaveQuicklyTask(newTask, list, (list) => {
-				this.setState({ input: { ...input, value: '' }, loading: true })
+				this.setState({ input: { ...input, value: '' } })
 				this.reloadTasks(list)
 			})
 		}
