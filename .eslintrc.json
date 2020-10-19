@@ -1,3 +1,3 @@
 {
-	"extends": ["webstrong", "webstrong/native"]
+	"extends": ["webstrong/native"]
 }
