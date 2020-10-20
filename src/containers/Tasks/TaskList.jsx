@@ -397,8 +397,7 @@ class TaskList extends Component {
 
 	convertTimeCycle = (date) => {
 		const { settings } = this.props
-
-		const allDay = date.length < 13
+		const allDay = date.length < 12
 
 		if (allDay) return date
 
@@ -556,13 +555,22 @@ class TaskList extends Component {
 		const { translations, settings } = this.props
 
 		if (task.date) {
-			const dateDifference = dateDiff(task.date, moment())
-
-			if (!!settings.showDeadlineTime && dateDifference !== 0) {
-				if (dateDifference === 1 || dateDifference === -1) {
-					return `${this.convertTimeCycle(task.date)} (${dateDifference} ${translations.day})`
+			if (settings.showDeadlineTime) {
+				const firstDate = {
+					date: task.date,
+					format: task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY',
 				}
-				return `${this.convertTimeCycle(task.date)} (${dateDifference} ${translations.days})`
+				const secondDate = {
+					date: moment(),
+					format: moment().format(),
+				}
+
+				const dateDifference = dateDiff(firstDate, secondDate, translations, settings.lang)
+				if (dateDifference) {
+					return `${this.convertTimeCycle(task.date)} (${dateDifference.value} ${
+						dateDifference.prefix
+					})`
+				}
 			}
 			return this.convertTimeCycle(task.date)
 		}

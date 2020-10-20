@@ -357,7 +357,7 @@ class ConfigTask extends Component {
 		this.setState({ isVisibleDate: !isVisibleDate })
 	}
 
-	showTimeModal = () => {
+	toggleTimeModal = () => {
 		const { isVisibleTime } = this.state
 
 		this.setState({ isVisibleTime: !isVisibleTime })
@@ -516,7 +516,7 @@ class ConfigTask extends Component {
 							{task.date !== '' && (
 								<>
 									<View style={{ flex: 1, width: '100%', marginBottom: 10 }}>
-										<TouchableOpacity onPress={this.showTimeModal}>
+										<TouchableOpacity onPress={this.toggleTimeModal}>
 											<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 												<View style={{ ...styles.datePicker, borderColor: theme.primaryColor }}>
 													<Text
@@ -551,12 +551,7 @@ class ConfigTask extends Component {
 										mode='time'
 										date={
 											task.date.slice(13, 18)
-												? new Date(
-														moment(
-															task.date.slice(13, 18),
-															settings.timeFormat ? 'HH:mm' : 'hh:mm A',
-														).format(),
-												  )
+												? new Date(moment(task.date.slice(13, 18), 'HH:mm').format())
 												: new Date()
 										}
 										is24Hour={!!settings.timeFormat}
@@ -565,17 +560,13 @@ class ConfigTask extends Component {
 										confirmTextIOS={translations.confirm}
 										cancelTextIOS={translations.cancel}
 										headerTextIOS={translations.selectDueTime}
-										onCancel={this.showTimeModal}
+										onCancel={this.toggleTimeModal}
 										onConfirm={(date) => {
 											this.updateTask(
 												'date',
-												this.convertDate(
-													`${task.date.slice(0, 10)} - ${moment(date).format(
-														settings.timeFormat ? 'HH:mm' : 'hh:mm A',
-													)}`,
-												),
+												`${task.date.slice(0, 10)} - ${moment(date).format('HH:mm')}`,
 											)
-											this.showTimeModal()
+											this.toggleTimeModal()
 										}}
 									/>
 

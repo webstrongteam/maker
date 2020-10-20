@@ -7,7 +7,14 @@
 		"confirm": "Confirm",
 		"search": "Search",
 		"defaultTitle": "Are you sure?",
-		"permissionError": "Error with permissions"
+		"permissionError": "Error with permissions",
+		"day": "day",
+		"days": "days",
+		"hour": "hour",
+		"hours": "hours",
+		"minute": "minute",
+		"minutes": "minutes",
+		"ago": "ago"
 	},
 	"ToDo": {
 		"tasks": "Tasks",
@@ -17,7 +24,6 @@
 		"done": "Done",
 		"undo": "Undo",
 		"overdue": "Overdue",
-		"day": "day",
 		"today": "Today",
 		"tomorrow": "Tomorrow",
 		"thisWeek": "This week",

@@ -33,14 +33,20 @@ export const sortingData = (array, field, type) => {
 	}
 
 	if (field === 'date') {
+		const getCorrectDate = (date) => {
+			if (date.length > 12) {
+				return moment(date, 'DD-MM-YYYY - HH:mm')
+			}
+			return moment(date, 'DD-MM-YYYY').endOf('day')
+		}
+
 		// SORTING DATE
 		return array.sort((a, b) => {
 			let dateA = a[field]
 			let dateB = b[field]
-			const dateAFormat = dateA.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY'
-			const dateBFormat = dateB.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY'
-			if (a[field] !== '') dateA = moment(a[field], dateAFormat)
-			if (b[field] !== '') dateB = moment(b[field], dateBFormat)
+
+			if (a[field] !== '') dateA = getCorrectDate(a[field])
+			if (b[field] !== '') dateB = getCorrectDate(b[field])
 			if (`${dateA}` === `${dateB}`) return nestedSort(a, b)
 
 			if (type === 'ASC') return dateA > dateB
@@ -212,9 +218,58 @@ export const valid = (control, value, translations, callback) => {
 
 export const checkValid = (control, value) => !!(!control.error && value && value.trim() !== '')
 
-export const dateDiff = (firstDate, secondDate) => {
-	const formattedFirstDate = moment(firstDate, 'DD-MM-YYYY').startOf('day')
-	const formattedSecondDate = moment(secondDate, 'DD-MM-YYYY').startOf('day')
+export const dateDiff = (firstDate, secondDate, translations, lang) => {
+	if (
+		(firstDate.date.length < 12 &&
+			firstDate.date === moment(new Date()).format(firstDate.format)) ||
+		(secondDate.date.length < 12 &&
+			secondDate.date === moment(new Date()).format(secondDate.format))
+	) {
+		return
+	}
 
-	return formattedFirstDate.diff(formattedSecondDate, 'days')
+	const formattedFirstDate = moment(firstDate.date, firstDate.format)
+	const formattedSecondDate = moment(secondDate.date, secondDate.format)
+
+	const getCorrectPrefix = (diff, prefix) => {
+		let correctPrefix = translations[prefix]
+
+		if (diff > 1 || diff < -1) {
+			correctPrefix = translations[`${prefix}s`]
+		}
+
+		// set prefix for PL variety
+		if (lang === 'pl' && prefix !== 'day') {
+			if (
+				`${diff}`.length > 1 &&
+				[0, 1, 5, 6, 7, 8, 9].includes(+`${diff}`[`${diff}`.length - 1])
+			) {
+				correctPrefix = correctPrefix.slice(0, -1)
+			} else if (prefix !== 'day' && [5, 6, 7, 8, 9].includes(+diff)) {
+				correctPrefix = correctPrefix.slice(0, -1)
+			}
+		}
+
+		if (diff < 0) {
+			correctPrefix = `${correctPrefix} ${translations.ago}`
+		}
+
+		return correctPrefix
+	}
+
+	const minutesDiff = formattedFirstDate.diff(formattedSecondDate, 'minutes')
+	const hoursDiff = formattedFirstDate.diff(formattedSecondDate, 'hours')
+	const daysDiff = formattedFirstDate.diff(formattedSecondDate, 'days')
+
+	if (daysDiff !== 0) {
+		return { value: Math.abs(daysDiff), prefix: getCorrectPrefix(daysDiff, 'day') }
+	}
+
+	if (hoursDiff !== 0 && hoursDiff < 24) {
+		return { value: Math.abs(hoursDiff), prefix: getCorrectPrefix(hoursDiff, 'hour') }
+	}
+
+	if (minutesDiff !== 0 && minutesDiff < 60) {
+		return { value: Math.abs(minutesDiff), prefix: getCorrectPrefix(minutesDiff, 'minute') }
+	}
 }
