@@ -219,18 +219,6 @@ export const valid = (control, value, translations, callback) => {
 export const checkValid = (control, value) => !!(!control.error && value && value.trim() !== '')
 
 export const dateDiff = (firstDate, secondDate, translations, lang) => {
-	if (
-		(firstDate.date.length < 12 &&
-			firstDate.date === moment(new Date()).format(firstDate.format)) ||
-		(secondDate.date.length < 12 &&
-			secondDate.date === moment(new Date()).format(secondDate.format))
-	) {
-		return
-	}
-
-	const formattedFirstDate = moment(firstDate.date, firstDate.format)
-	const formattedSecondDate = moment(secondDate.date, secondDate.format)
-
 	const getCorrectPrefix = (diff, prefix) => {
 		let correctPrefix = translations[prefix]
 
@@ -257,19 +245,21 @@ export const dateDiff = (firstDate, secondDate, translations, lang) => {
 		return correctPrefix
 	}
 
-	const minutesDiff = formattedFirstDate.diff(formattedSecondDate, 'minutes')
-	const hoursDiff = formattedFirstDate.diff(formattedSecondDate, 'hours')
-	const daysDiff = formattedFirstDate.diff(formattedSecondDate, 'days')
+	if (firstDate.dateTime && secondDate.dateTime) {
+		const minutesDiff = firstDate.date.diff(secondDate.date, 'minutes')
+		const hoursDiff = firstDate.date.diff(secondDate.date, 'hours')
 
+		if (hoursDiff !== 0 && hoursDiff < 24) {
+			return { value: Math.abs(hoursDiff), prefix: getCorrectPrefix(hoursDiff, 'hour') }
+		}
+
+		if (minutesDiff !== 0 && minutesDiff < 60) {
+			return { value: Math.abs(minutesDiff), prefix: getCorrectPrefix(minutesDiff, 'minute') }
+		}
+	}
+
+	const daysDiff = firstDate.date.endOf('day').diff(secondDate.date.startOf('day'), 'days')
 	if (daysDiff !== 0) {
 		return { value: Math.abs(daysDiff), prefix: getCorrectPrefix(daysDiff, 'day') }
-	}
-
-	if (hoursDiff !== 0 && hoursDiff < 24) {
-		return { value: Math.abs(hoursDiff), prefix: getCorrectPrefix(hoursDiff, 'hour') }
-	}
-
-	if (minutesDiff !== 0 && minutesDiff < 60) {
-		return { value: Math.abs(minutesDiff), prefix: getCorrectPrefix(minutesDiff, 'minute') }
 	}
 }

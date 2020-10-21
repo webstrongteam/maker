@@ -27,6 +27,7 @@ export default StyleSheet.create({
 		textAlignVertical: 'center',
 	},
 	dropdownDropdown: {
+		backgroundColor: 'red',
 		marginTop: Platform.OS === 'ios' ? 5 : -20,
 		justifyContent: 'flex-start',
 		width: 230,

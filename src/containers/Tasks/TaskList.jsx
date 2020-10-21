@@ -557,12 +557,12 @@ class TaskList extends Component {
 		if (task.date) {
 			if (settings.showDeadlineTime) {
 				const firstDate = {
-					date: task.date,
-					format: task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY',
+					date: moment(task.date, task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY'),
+					dateTime: task.date.length > 12,
 				}
 				const secondDate = {
 					date: moment(),
-					format: moment().format(),
+					dateTime: true,
 				}
 
 				const dateDifference = dateDiff(firstDate, secondDate, translations, settings.lang)
@@ -770,7 +770,10 @@ class TaskList extends Component {
 									}}
 									style={styles.dropdown}
 									textStyle={styles.dropdownText}
-									dropdownStyle={styles.dropdownDropdown}
+									dropdownStyle={{
+										...styles.dropdownDropdown,
+										backgroundColor: theme.primaryBackgroundColor,
+									}}
 									defaultValue={selectedCategory.name}
 									defaultIndex={selectedIndex}
 									options={dropdownData}

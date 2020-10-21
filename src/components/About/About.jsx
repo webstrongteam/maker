@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import { separator } from '../../shared/styles'
 import Template from '../../containers/Template/Template'
 import styles from './About.styles'
-import { VERSION } from '../../db'
 
 const about = (props) => {
 	const openWebBrowser = async (url) => {
@@ -24,10 +23,10 @@ const about = (props) => {
 				<View style={styles.container}>
 					<Image style={styles.logo} source={require('../../assets/icon.png')} />
 					<Text style={separator} />
-					<Text style={[styles.primaryText, { color: props.theme.secondaryTextColor }]}>
+					<Text style={[styles.primaryText, { color: props.theme.thirdTextColor }]}>
 						{props.translations.primaryText}
 					</Text>
-					<Text style={[styles.secondaryText, { color: props.theme.secondaryTextColor }]}>
+					<Text style={[styles.secondaryText, { color: props.theme.thirdTextColor }]}>
 						{props.translations.secondaryText}
 					</Text>
 					<TouchableOpacity
@@ -43,10 +42,10 @@ const about = (props) => {
 						/>
 					</TouchableOpacity>
 
-					<View style={{ opacity: 0.5 }}>
+					<View style={{ opacity: 0.75 }}>
 						<TouchableOpacity onPress={() => openWebBrowser('https://webstrong.pl')}>
 							<Text style={[styles.copy, { color: props.theme.thirdTextColor }]}>
-								&copy; by Mateusz Pijanowski https://webstrong.pl) v. {VERSION}
+								&copy; by https://webstrong.pl
 							</Text>
 						</TouchableOpacity>
 					</View>
