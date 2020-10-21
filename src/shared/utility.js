@@ -258,8 +258,14 @@ export const dateDiff = (firstDate, secondDate, translations, lang) => {
 		}
 	}
 
-	const daysDiff = firstDate.date.endOf('day').diff(secondDate.date.startOf('day'), 'days')
-	if (daysDiff !== 0) {
+	let daysDiff
+	if (firstDate.date > secondDate.date) {
+		daysDiff = firstDate.date.endOf('day').diff(secondDate.date.startOf('day'), 'days')
+	} else if (firstDate.date < secondDate.date) {
+		daysDiff = firstDate.date.startOf('day').diff(secondDate.date.endOf('day'), 'days')
+	}
+
+	if (daysDiff) {
 		return { value: Math.abs(daysDiff), prefix: getCorrectPrefix(daysDiff, 'day') }
 	}
 }

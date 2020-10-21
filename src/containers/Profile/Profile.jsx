@@ -127,6 +127,7 @@ class Profile extends PureComponent {
 									/>
 								</TouchableOpacity>
 								<Input
+									hideClearIcon
 									elementConfig={{ label: '' }}
 									style={styles.name}
 									value={name}

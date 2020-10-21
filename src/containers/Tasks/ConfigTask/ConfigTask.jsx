@@ -103,10 +103,9 @@ class ConfigTask extends Component {
 				selectedTime = task.repeat[0]
 				repeatValue = task.repeat.substring(1)
 				if (+selectedTime !== 6) {
-					otherOption = `${translations.other} (${+repeatValue} ${convertNumberToDate(
-						+selectedTime,
-						translations,
-					)})`
+					otherOption = `${translations.other} (${+repeatValue} ${
+						translations[convertNumberToDate(+selectedTime)]
+					})`
 				} else {
 					otherOption = `${translations.other} (${translations.repeatDays} ${convertDaysIndex(
 						repeatValue,
@@ -258,10 +257,9 @@ class ConfigTask extends Component {
 		const repeat = selectedTime + repeatValue
 		let otherOption
 		if (+selectedTime !== 6) {
-			otherOption = `${translations.other} (${+repeatValue} ${convertNumberToDate(
-				+selectedTime,
-				translations,
-			)})`
+			otherOption = `${translations.other} (${+repeatValue} ${
+				translations[convertNumberToDate(+selectedTime)]
+			})`
 		} else {
 			otherOption = `${translations.other} (${translations.repeatDays} ${convertDaysIndex(
 				repeatValue,
@@ -351,7 +349,7 @@ class ConfigTask extends Component {
 			.catch(() => onSaveTask(task, navigation.goBack))
 	}
 
-	showDateModal = () => {
+	toggleDateModal = () => {
 		const { isVisibleDate } = this.state
 
 		this.setState({ isVisibleDate: !isVisibleDate })
@@ -464,7 +462,7 @@ class ConfigTask extends Component {
 						<View style={styles.container}>
 							<Subheader text={translations.dueDate} />
 							<View style={{ flex: 1, width: '100%' }}>
-								<TouchableOpacity onPress={this.showDateModal}>
+								<TouchableOpacity onPress={this.toggleDateModal}>
 									<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 										<View style={{ ...styles.datePicker, borderColor: theme.primaryColor }}>
 											<Text
@@ -486,7 +484,7 @@ class ConfigTask extends Component {
 													name='clear'
 												/>
 											) : (
-												<IconToggle onPress={this.showDateModal} name='event' />
+												<IconToggle onPress={this.toggleDateModal} name='event' />
 											)}
 										</View>
 									</View>
@@ -494,6 +492,7 @@ class ConfigTask extends Component {
 							</View>
 
 							<DateTimePickerModal
+								locale={settings.lang}
 								isVisible={isVisibleDate}
 								mode='date'
 								date={
@@ -506,10 +505,10 @@ class ConfigTask extends Component {
 								confirmTextIOS={translations.confirm}
 								cancelTextIOS={translations.cancel}
 								headerTextIOS={translations.selectDueDate}
-								onCancel={this.showDateModal}
+								onCancel={this.toggleDateModal}
 								onConfirm={(date) => {
+									this.toggleDateModal()
 									this.updateTask('date', this.convertDate(moment(date).format(dateFormat)))
-									this.showDateModal()
 								}}
 							/>
 
@@ -539,7 +538,7 @@ class ConfigTask extends Component {
 															name='clear'
 														/>
 													) : (
-														<IconToggle onPress={this.showDateModal} name='access-time' />
+														<IconToggle onPress={this.toggleTimeModal} name='access-time' />
 													)}
 												</View>
 											</View>
@@ -562,11 +561,11 @@ class ConfigTask extends Component {
 										headerTextIOS={translations.selectDueTime}
 										onCancel={this.toggleTimeModal}
 										onConfirm={(date) => {
+											this.toggleTimeModal()
 											this.updateTask(
 												'date',
 												`${task.date.slice(0, 10)} - ${moment(date).format('HH:mm')}`,
 											)
-											this.toggleTimeModal()
 										}}
 									/>
 

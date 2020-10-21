@@ -171,21 +171,16 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
 
 	if (+task.repeat === parseInt(task.repeat, 10)) {
 		// Other repeat
-		if (+task.repeat[0] === 6) {
-			;[...Array(5).keys()].forEach((i) => {
-				task.repeat.split('').forEach((weekday, index) => {
-					if (index && nextDate === task.date) {
-						const actualDate = moment(task.date, dateFormat).add(i, 'days').format(dateFormat)
-						const compareDate = moment(task.date, dateFormat)
-							.day(weekday)
-							.add(1, 'days')
-							.format(dateFormat)
-						if (actualDate === compareDate) {
-							nextDate = compareDate
-						}
-					}
-				})
-			})
+		if (task.repeat[0] === '6') {
+			const repeatDays = task.repeat.substring(1).split('').sort()
+			const actualWeekday = moment(task.date, dateFormat).day()
+			let nextWeekday = repeatDays.find((weekday) => +weekday > +actualWeekday)
+
+			if (nextWeekday) {
+				nextDate = moment(task.date, dateFormat).day(nextWeekday)
+			} else {
+				nextDate = moment(task.date, dateFormat).day(+repeatDays[0] + 7)
+			}
 		} else {
 			nextDate = moment(nextDate, dateFormat).add(
 				+task.repeat.substring(1),

@@ -7,14 +7,7 @@
 		"save": "Zapisz",
 		"no": "Nie",
 		"defaultTitle": "Jesteś pewien?",
-		"permissionError": "Wystąpił problem z uprawnieniami",
-		"day": "dzień",
-		"days": "dni",
-		"hour": "godzina",
-		"hours": "godziny",
-		"minute": "minuta",
-		"minutes": "minuty",
-		"ago": "temu"
+		"permissionError": "Wystąpił problem z uprawnieniami"
 	},
 	"ToDo": {
 		"tasks": "Zadania",
@@ -254,5 +247,14 @@
 		"number": "Wartość musi zawierać liczbę!",
 		"greaterThanZero": "Wartość musi być większę od zera!",
 		"required": "Pole jest wymagane!"
+	},
+	"times": {
+		"day": "dzień",
+		"days": "dni",
+		"hour": "godzina",
+		"hours": "godziny",
+		"minute": "minuta",
+		"minutes": "minuty",
+		"ago": "temu"
 	}
 }

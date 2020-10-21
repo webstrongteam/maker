@@ -1,22 +1,46 @@
 import React, { Component } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { Avatar, Button } from 'react-native-material-ui'
+import { weekdaysCodes } from '../../../../shared/consts'
 
 import { connect } from 'react-redux'
 
 class RepeatDays extends Component {
-	state = {
-		repeat: '',
-		selectedTime: '6',
-		repeatTimes: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
-	}
+	state = {}
 
 	componentDidMount() {
-		const { selectedTime, repeat } = this.props
+		const { selectedTime, repeat, firstDayOfWeek } = this.props
+		let newState = {}
+
+		if (firstDayOfWeek === 'Monday') {
+			newState.repeatTimes = [
+				'monday',
+				'tuesday',
+				'wednesday',
+				'thursday',
+				'friday',
+				'saturday',
+				'sunday',
+			]
+		} else {
+			newState.repeatTimes = [
+				'sunday',
+				'monday',
+				'tuesday',
+				'wednesday',
+				'thursday',
+				'friday',
+				'saturday',
+			]
+		}
 
 		if (`${selectedTime}` === '6') {
-			this.setState({ repeat: `${repeat}` })
+			newState.repeat = `${repeat}`
+		} else {
+			newState.repeat = ''
 		}
+
+		this.setState(newState)
 	}
 
 	checkDay = (index) => {
@@ -32,6 +56,10 @@ class RepeatDays extends Component {
 	render() {
 		const { repeat, repeatTimes } = this.state
 		const { theme, translations, save, close } = this.props
+
+		if (!repeatTimes) {
+			return <></>
+		}
 
 		return (
 			<View style={{ flex: 1 }}>
@@ -57,13 +85,13 @@ class RepeatDays extends Component {
 						}}
 					>
 						{repeatTimes.map((day, index) => (
-							<TouchableOpacity key={index} onPress={() => this.checkDay(index)}>
+							<TouchableOpacity key={index} onPress={() => this.checkDay(weekdaysCodes[day])}>
 								<Avatar
 									size={82}
 									style={{
 										container: {
 											margin: 5,
-											backgroundColor: repeat.includes(`${index}`)
+											backgroundColor: repeat.includes(weekdaysCodes[day])
 												? theme.primaryColor
 												: theme.thirdTextColor,
 										},
@@ -76,7 +104,7 @@ class RepeatDays extends Component {
 					</View>
 					<View
 						style={{
-							flex: 2,
+							flex: 1,
 							flexDirection: 'row',
 							alignItems: 'center',
 							justifyContent: 'space-between',
@@ -88,9 +116,9 @@ class RepeatDays extends Component {
 							icon='done'
 							text={translations.save}
 							onPress={() => {
-								const { repeat, selectedTime } = this.state
+								const { repeat } = this.state
 								if (repeat.length) {
-									save(repeat, selectedTime)
+									save(repeat, '6')
 								}
 							}}
 							style={{
@@ -117,9 +145,10 @@ class RepeatDays extends Component {
 
 const mapStateToProps = (state) => ({
 	theme: state.theme.theme,
+	firstDayOfWeek: state.settings.settings.firstDayOfWeek,
 	translations: {
-		...state.settings.translations.OtherDays,
 		...state.settings.translations.common,
+		...state.settings.translations.OtherDays,
 	},
 })
 

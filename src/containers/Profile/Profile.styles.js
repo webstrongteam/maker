@@ -7,8 +7,8 @@ export default StyleSheet.create({
 		paddingBottom: 10,
 	},
 	name: {
-		alignSelf: 'center',
 		textAlign: 'center',
+		marginRight: 0,
 		fontSize: 21,
 	},
 	image: {

@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Button, ListItem } from 'react-native-material-ui'
+import Input from '../../../../components/UI/Input/Input'
 
 import { connect } from 'react-redux'
-import Input from '../../../../components/UI/Input/Input'
+
+const repeatTimes = ['minutes', 'hours', 'days', 'weeks', 'months', 'years']
 
 class RepeatTime extends Component {
 	state = {
@@ -17,33 +19,39 @@ class RepeatTime extends Component {
 		},
 		repeat: '',
 		selectedTime: '2',
-		repeatTimes: ['minutes', 'hours', 'days', 'weeks', 'months', 'years'],
+		loading: true,
 	}
 
 	componentDidMount() {
 		const { selectedTime } = this.props
+		let newState = {}
 
 		if (!selectedTime) {
 			const { usingTime } = this.props
 
 			if (usingTime) {
-				this.setState({ selectedTime: '0' })
+				newState.selectedTime = '0'
 			} else {
-				this.setState({ selectedTime: '2' })
+				newState.selectedTime = '2'
 			}
 		} else {
-			this.setState({ selectedTime: selectedTime })
+			newState.selectedTime = selectedTime
 		}
 		if (+selectedTime !== 6) {
 			const { repeat } = this.props
-
-			this.setState({ repeat: repeat })
+			newState.repeat = repeat
 		}
+
+		this.setState({ ...newState, loading: false })
 	}
 
 	render() {
-		const { control, repeat, selectedTime, repeatTimes } = this.state
+		const { control, repeat, selectedTime, loading } = this.state
 		const { usingTime, theme, translations, save, close } = this.props
+
+		if (loading) {
+			return <></>
+		}
 
 		return (
 			<View style={{ flex: 1 }}>

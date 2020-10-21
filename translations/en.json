@@ -7,14 +7,7 @@
 		"confirm": "Confirm",
 		"search": "Search",
 		"defaultTitle": "Are you sure?",
-		"permissionError": "Error with permissions",
-		"day": "day",
-		"days": "days",
-		"hour": "hour",
-		"hours": "hours",
-		"minute": "minute",
-		"minutes": "minutes",
-		"ago": "ago"
+		"permissionError": "Error with permissions"
 	},
 	"ToDo": {
 		"tasks": "Tasks",
@@ -249,5 +242,14 @@
 		"number": "Value must be a number!",
 		"greaterThanZero": "Value must be greater than zero!",
 		"required": "Field is required!"
+	},
+	"times": {
+		"day": "day",
+		"days": "days",
+		"hour": "hour",
+		"hours": "hours",
+		"minute": "minute",
+		"minutes": "minutes",
+		"ago": "ago"
 	}
 }

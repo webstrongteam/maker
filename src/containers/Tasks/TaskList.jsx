@@ -919,8 +919,7 @@ const mapStateToProps = (state) => ({
 	refresh: state.tasks.refresh,
 	translations: {
 		...state.settings.translations.TaskList,
-		...state.settings.translations.OtherRepeat,
-		...state.settings.translations.common,
+		...state.settings.translations.times,
 	},
 })
 

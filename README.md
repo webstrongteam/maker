@@ -56,7 +56,7 @@
 
 ### ToDo:
 
-- Custom repeating not working
+- Showing correct verb variant in PL language
 - Update README
 - Clear code
 

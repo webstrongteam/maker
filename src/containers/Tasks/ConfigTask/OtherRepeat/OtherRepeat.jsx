@@ -41,6 +41,7 @@ class OtherRepeat extends Component {
 			>
 				<TabView
 					navigationState={tabs}
+					style={{ flex: 1, justifyContent: 'center', textAlign: 'center' }}
 					tabStyle={{ backgroundColor: theme.primaryColor }}
 					onIndexChange={(index) => {
 						tabs.index = index

@@ -20,7 +20,7 @@ class Input extends Component {
 
 	componentDidUpdate(prevProps) {
 		if (prevProps.value !== this.props.value && this.props.value === '') {
-			this.checkValid('', true)
+			this.checkValid('')
 		}
 	}
 
@@ -46,7 +46,7 @@ class Input extends Component {
 
 	render() {
 		const { control } = this.state
-		const { style, theme, focus, value } = this.props
+		const { style, theme, focus, value, hideClearIcon } = this.props
 
 		return (
 			<View style={styles.container}>
@@ -66,7 +66,7 @@ class Input extends Component {
 						value={value}
 					/>
 				</View>
-				{value !== '' && (
+				{!hideClearIcon && value !== '' && (
 					<View style={{ marginLeft: -30, marginRight: -10, marginTop: 5 }}>
 						<IconToggle onPress={() => this.checkValid('')} name='clear' size={18} />
 					</View>
