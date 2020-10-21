@@ -15,8 +15,8 @@ export default StyleSheet.create({
 		height: 125,
 		width: 125,
 		borderRadius: 65,
-		marginTop: 10,
-		marginBottom: -10,
+		marginTop: 15,
+		marginBottom: -20,
 		alignSelf: 'center',
 	},
 })

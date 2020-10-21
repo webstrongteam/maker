@@ -19,8 +19,8 @@ class Input extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if (prevProps.value !== this.props.value && this.props.value === '') {
-			this.checkValid('')
+		if (prevProps.value !== this.props.value && this.props.value === null) {
+			this.checkValid(null)
 		}
 	}
 

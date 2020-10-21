@@ -17,12 +17,13 @@ class RepeatTime extends Component {
 			characterRestriction: 4,
 			keyboardType: 'number-pad',
 		},
-		repeat: '',
+		repeat: null,
 		selectedTime: '2',
 		loading: true,
 	}
 
 	componentDidMount() {
+		const { repeat } = this.props
 		const { selectedTime } = this.props
 		let newState = {}
 
@@ -37,8 +38,7 @@ class RepeatTime extends Component {
 		} else {
 			newState.selectedTime = selectedTime
 		}
-		if (+selectedTime !== 6) {
-			const { repeat } = this.props
+		if (+selectedTime !== 6 && repeat) {
 			newState.repeat = repeat
 		}
 

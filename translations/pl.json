@@ -189,13 +189,13 @@
 		"weeks": "Tygodnie",
 		"months": "Miesiące",
 		"years": "Lata",
-		"day0": "Pon.",
-		"day1": "Wt.",
-		"day2": "Śr.",
-		"day3": "Czw.",
-		"day4": "Pt.",
-		"day5": "Sob.",
-		"day6": "Niedz."
+		"day1": "Pon.",
+		"day2": "Wt.",
+		"day3": "Śr.",
+		"day4": "Czw.",
+		"day5": "Pt.",
+		"day6": "Sob.",
+		"day0": "Niedz."
 	},
 	"OtherDays": {
 		"repeatDaysTitle": "Powtarzaj cyklicznie w każdy:",
