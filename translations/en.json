@@ -184,13 +184,13 @@
 		"weeks": "Weeks",
 		"months": "Months",
 		"years": "Years",
-		"day0": "Mon.",
-		"day1": "Tues.",
-		"day2": "Wed.",
-		"day3": "Thurs.",
-		"day4": "Fri.",
-		"day5": "Sat.",
-		"day6": "Sun."
+		"day1": "Mon.",
+		"day2": "Tues.",
+		"day3": "Wed.",
+		"day4": "Thurs.",
+		"day5": "Fri.",
+		"day6": "Sat.",
+		"day0": "Sun."
 	},
 	"OtherDays": {
 		"repeatDaysTitle": "Repeat in each:",
