@@ -56,7 +56,6 @@
 
 ### ToDo:
 
-- Showing correct verb variant in PL language
 - Update README
 - Clear code
 

@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Button, ListItem } from 'react-native-material-ui'
 import Input from '../../../../components/UI/Input/Input'
+import { getTimeVariant } from '../../../../shared/utility'
 
 import { connect } from 'react-redux'
 
-const repeatTimes = ['minutes', 'hours', 'days', 'weeks', 'months', 'years']
+const repeatTimes = ['minute', 'hour', 'day', 'week', 'month', 'year']
 
 class RepeatTime extends Component {
 	state = {
@@ -47,7 +48,7 @@ class RepeatTime extends Component {
 
 	render() {
 		const { control, repeat, selectedTime, loading } = this.state
-		const { usingTime, theme, translations, save, close } = this.props
+		const { usingTime, lang, theme, translations, save, close } = this.props
 
 		if (loading) {
 			return <></>
@@ -67,7 +68,7 @@ class RepeatTime extends Component {
 
 					<View style={{ marginTop: 10, color: theme.primaryTextColor }}>
 						{repeatTimes.map((time, index) => {
-							if (!usingTime && (time === 'hours' || time === 'minutes')) return null
+							if (!usingTime && (time === 'hour' || time === 'minute')) return null
 							return (
 								<TouchableOpacity
 									key={index}
@@ -89,7 +90,7 @@ class RepeatTime extends Component {
 											},
 										}}
 										centerElement={{
-											primaryText: translations[time],
+											primaryText: getTimeVariant(+repeat, time, lang, translations),
 										}}
 									/>
 								</TouchableOpacity>
@@ -139,8 +140,10 @@ class RepeatTime extends Component {
 
 const mapStateToProps = (state) => ({
 	theme: state.theme.theme,
+	lang: state.settings.settings.lang,
 	translations: {
 		...state.settings.translations.OtherRepeat,
+		...state.settings.translations.times,
 		...state.settings.translations.common,
 	},
 })

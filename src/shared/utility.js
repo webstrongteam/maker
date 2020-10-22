@@ -8,6 +8,40 @@ export const updateObject = (oldObject, newProps) => ({
 
 export const { width } = Dimensions.get('window')
 
+export const getTimeVariant = (number, verb, lang, translations) => {
+	let correctVerb = translations[verb]
+
+	if (!number) {
+		return correctVerb
+	}
+
+	if (number > 1 || number < -1) {
+		correctVerb = translations[`${verb}s`]
+	}
+
+	// set prefix for PL variety
+	if (lang === 'pl' && correctVerb && verb !== 'day') {
+		if (
+			`${number}`.length > 1 &&
+			[0, 1, 5, 6, 7, 8, 9].includes(+`${number}`[`${number}`.length - 1])
+		) {
+			if (verb !== 'month') {
+				correctVerb = correctVerb.slice(0, -1)
+			} else {
+				correctVerb = translations.miesiecy
+			}
+		} else if ([5, 6, 7, 8, 9].includes(+number)) {
+			if (verb !== 'month') {
+				correctVerb = correctVerb.slice(0, -1)
+			} else {
+				correctVerb = translations.miesiecy
+			}
+		}
+	}
+
+	return correctVerb
+}
+
 export const setCategories = (tasks, categories) => {
 	return Promise.all(
 		tasks.map((task) => {
@@ -116,19 +150,19 @@ export const sortingByType = (array, sorting, sortingType) => {
 export const convertNumberToDate = (number) => {
 	switch (number) {
 		case 0:
-			return 'minutes'
+			return 'minute'
 		case 1:
-			return 'hours'
+			return 'hour'
 		case 2:
-			return 'days'
+			return 'day'
 		case 3:
-			return 'weeks'
+			return 'week'
 		case 4:
-			return 'months'
+			return 'month'
 		case 5:
-			return 'years'
+			return 'year'
 		default:
-			return 'days'
+			return 'day'
 	}
 }
 
@@ -220,23 +254,7 @@ export const checkValid = (control, value) => !!(!control.error && value && valu
 
 export const dateDiff = (firstDate, secondDate, translations, lang) => {
 	const getCorrectPrefix = (diff, prefix) => {
-		let correctPrefix = translations[prefix]
-
-		if (diff > 1 || diff < -1) {
-			correctPrefix = translations[`${prefix}s`]
-		}
-
-		// set prefix for PL variety
-		if (lang === 'pl' && prefix !== 'day') {
-			if (
-				`${diff}`.length > 1 &&
-				[0, 1, 5, 6, 7, 8, 9].includes(+`${diff}`[`${diff}`.length - 1])
-			) {
-				correctPrefix = correctPrefix.slice(0, -1)
-			} else if (prefix !== 'day' && [5, 6, 7, 8, 9].includes(+diff)) {
-				correctPrefix = correctPrefix.slice(0, -1)
-			}
-		}
+		let correctPrefix = getTimeVariant(+diff, prefix, lang, translations)
 
 		if (diff < 0) {
 			correctPrefix = `${correctPrefix} ${translations.ago}`

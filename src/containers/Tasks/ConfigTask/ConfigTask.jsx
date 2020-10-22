@@ -18,6 +18,7 @@ import {
 	convertPriorityNames,
 	convertRepeatNames,
 	generateDialogObject,
+	getTimeVariant,
 } from '../../../shared/utility'
 import { configTask } from '../../../shared/configTask'
 import { BannerAd } from '../../../components/Ads/BannerAd'
@@ -85,7 +86,7 @@ class ConfigTask extends Component {
 	}
 
 	initTask = (id) => {
-		const { categories, translations, onInitTask } = this.props
+		const { categories, translations, onInitTask, settings } = this.props
 
 		onInitTask(id, (task) => {
 			const findCate = categories.find((c) => +c.id === +task.category)
@@ -103,9 +104,12 @@ class ConfigTask extends Component {
 				selectedTime = task.repeat[0]
 				repeatValue = task.repeat.substring(1)
 				if (+selectedTime !== 6) {
-					otherOption = `${translations.other} (${+repeatValue} ${
-						translations[convertNumberToDate(+selectedTime)]
-					})`
+					otherOption = `${translations.other} (${repeatValue} ${getTimeVariant(
+						+repeatValue,
+						convertNumberToDate(+selectedTime),
+						settings.lang,
+						translations,
+					)})`
 				} else {
 					otherOption = `${translations.other} (${translations.repeatDays} ${convertDaysIndex(
 						repeatValue,
@@ -252,14 +256,17 @@ class ConfigTask extends Component {
 	}
 
 	saveOtherRepeat = (repeatValue, selectedTime) => {
-		const { translations } = this.props
+		const { translations, settings } = this.props
 
 		const repeat = selectedTime + repeatValue
 		let otherOption
 		if (+selectedTime !== 6) {
-			otherOption = `${translations.other} (${+repeatValue} ${
-				translations[convertNumberToDate(+selectedTime)]
-			})`
+			otherOption = `${translations.other} (${repeatValue} ${getTimeVariant(
+				+repeatValue,
+				convertNumberToDate(+selectedTime),
+				settings.lang,
+				translations,
+			)})`
 		} else {
 			otherOption = `${translations.other} (${translations.repeatDays} ${convertDaysIndex(
 				repeatValue,
@@ -647,6 +654,7 @@ const mapStateToProps = (state) => ({
 		...state.settings.translations.ConfigTask,
 		...state.settings.translations.OtherRepeat,
 		...state.settings.translations.validation,
+		...state.settings.translations.times,
 		...state.settings.translations.common,
 	},
 })

@@ -18,7 +18,7 @@
 		"android": "expo start --android",
 		"ios": "expo start --ios",
 		"eject": "expo eject",
-		"prettify": "prettier --write \"**/*.+(js|jsx|json|css|md)\" && eslint --fix . --fix"
+		"cleanup": "prettier --write \"**/*.+(js|jsx|json|css|md)\" && eslint --fix . --fix"
 	},
 	"dependencies": {
 		"@react-native-community/datetimepicker": "3.0.0",

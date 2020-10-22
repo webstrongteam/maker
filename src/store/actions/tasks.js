@@ -184,7 +184,7 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
 		} else {
 			nextDate = moment(nextDate, dateFormat).add(
 				+task.repeat.substring(1),
-				convertNumberToDate(+task.repeat[0]),
+				`${convertNumberToDate(+task.repeat[0])}s`,
 			)
 		}
 	} else if (task.repeat === 'onceDay') nextDate = moment(nextDate, dateFormat).add(1, 'days')
