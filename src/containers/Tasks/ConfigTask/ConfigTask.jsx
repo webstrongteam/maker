@@ -159,8 +159,8 @@ class ConfigTask extends Component {
 						navigation.goBack()
 					},
 					[translations.save]: () => {
-						this.saveTask()
 						onUpdateModal(false)
+						this.saveTask()
 					},
 					[translations.cancel]: cancelHandler,
 				},
@@ -172,7 +172,7 @@ class ConfigTask extends Component {
 				translations.deleteDescription,
 				{
 					[translations.yes]: () => {
-						const { onUpdateModal, onRemoveTask, navigation } = this.props
+						const { onRemoveTask, navigation } = this.props
 						onUpdateModal(false)
 						onRemoveTask(task, navigation.goBack)
 					},
@@ -237,8 +237,8 @@ class ConfigTask extends Component {
 					name: convertPriorityNames(p, translations),
 					value: p,
 					onClick: (value) => {
-						this.updateTask('priority', value)
 						onUpdateModal(false)
+						this.updateTask('priority', value)
 					},
 				})
 			})
