@@ -3,7 +3,6 @@ import { Platform, StatusBar, View } from 'react-native'
 import { getTheme, Snackbar, ThemeContext } from 'react-native-material-ui'
 import { connect } from 'react-redux'
 import { initDatabase, initTheme } from '../../db'
-import Dialog from '../../components/UI/Dialog/Dialog'
 
 import * as actions from '../../store/actions'
 
@@ -40,16 +39,7 @@ class Template extends Component {
 
 	render() {
 		const { uiTheme, ready } = this.state
-		const {
-			showModal,
-			modal,
-			showSnackbar,
-			snackbarText,
-			bgColor,
-			theme,
-			children,
-			onUpdateSnackbar,
-		} = this.props
+		const { showSnackbar, snackbarText, bgColor, theme, children, onUpdateSnackbar } = this.props
 
 		return (
 			<>
@@ -72,17 +62,6 @@ class Template extends Component {
 							{children}
 						</View>
 
-						<Dialog
-							showModal={showModal}
-							input={modal.input}
-							cancelHandler={modal.cancelHandler}
-							select={modal.select}
-							selectedValue={modal.selectedValue}
-							title={modal.title}
-							body={modal.body}
-							buttons={modal.buttons}
-						/>
-
 						<Snackbar
 							visible={showSnackbar}
 							message={snackbarText}
@@ -102,8 +81,6 @@ class Template extends Component {
 
 const mapStateToProps = (state) => ({
 	theme: state.theme.theme,
-	showModal: state.config.showModal,
-	modal: state.config.modal,
 	showSnackbar: state.config.showSnackbar,
 	snackbarText: state.config.snackbarText,
 })

@@ -20,6 +20,7 @@ import * as actions from '../../store/actions'
 class Backup extends PureComponent {
 	state = {
 		dialog: null,
+		showDialog: false,
 		backups: [],
 		loading: true,
 		selectedBackup: {},
@@ -171,9 +172,9 @@ class Backup extends PureComponent {
 	}
 
 	showDialog = (action, name = null) => {
-		const { translations, onUpdateModal } = this.props
+		const { translations } = this.props
 
-		const cancelHandler = () => onUpdateModal(false)
+		const cancelHandler = () => this.setState({ showDialog: false })
 
 		let dialog
 		if (action === 'showBackupAlert') {
@@ -183,7 +184,7 @@ class Backup extends PureComponent {
 				`${translations.showBackupAlertDescription1} "${name}"?\n\n${translations.showBackupAlertDescription2}`,
 				{
 					[translations.yes]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.useBackupDB(name)
 					},
 					[translations.cancel]: cancelHandler,
@@ -196,7 +197,7 @@ class Backup extends PureComponent {
 				translations.showConfirmDeleteDescription,
 				{
 					[translations.yes]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.removeBackup(`Backup/${name}`)
 					},
 					[translations.cancel]: cancelHandler,
@@ -211,7 +212,7 @@ class Backup extends PureComponent {
 						name: translations.yourApp,
 						value: translations.yourApp,
 						onClick: () => {
-							onUpdateModal(false)
+							cancelHandler()
 							this.createBackup()
 						},
 					},
@@ -219,7 +220,7 @@ class Backup extends PureComponent {
 						name: translations.yourStorage,
 						value: translations.yourStorage,
 						onClick: () => {
-							onUpdateModal(false)
+							cancelHandler()
 							this.addBackupFromStorage()
 						},
 					},
@@ -231,8 +232,6 @@ class Backup extends PureComponent {
 			dialog.select = true
 		} else if (action === 'rename') {
 			const { control, selectedBackup } = this.state
-
-			const cancelHandler = () => this.setState({ showModal: false })
 
 			dialog = generateDialogObject(
 				cancelHandler,
@@ -258,12 +257,13 @@ class Backup extends PureComponent {
 								.then(() => this.loadBackupFiles())
 								.catch(() => this.toggleSnackbar(translations.backupRenameError))
 						}
-						this.setState({ showModal: false })
+						this.setState({ showDialog: false })
 					},
 					[translations.cancel]: cancelHandler,
 				},
 			)
-			return this.setState({ dialog, showModal: true })
+
+			dialog.input = true
 		} else if (action === 'restart') {
 			dialog = generateDialogObject(
 				cancelHandler,
@@ -272,11 +272,11 @@ class Backup extends PureComponent {
 			)
 		}
 
-		onUpdateModal(true, dialog)
+		this.setState({ dialog, showDialog: true })
 	}
 
 	render() {
-		const { loading, dialog, showModal, backups } = this.state
+		const { loading, dialog, showDialog, backups } = this.state
 		const { navigation, theme, translations } = this.props
 
 		return (
@@ -294,16 +294,7 @@ class Backup extends PureComponent {
 					centerElement={translations.title}
 				/>
 
-				{dialog && (
-					<Dialog
-						showModal={showModal}
-						input
-						cancelHandler={dialog.cancelHandler}
-						title={dialog.title}
-						body={dialog.body}
-						buttons={dialog.buttons}
-					/>
-				)}
+				{dialog && <Dialog showDialog={showDialog} {...dialog} />}
 
 				{!loading ? (
 					<View style={{ flex: 1 }}>
@@ -391,7 +382,6 @@ const mapDispatchToProps = (dispatch) => ({
 	onInitSettings: (callback) => dispatch(actions.initSettings(callback)),
 	onUpdateSnackbar: (showSnackbar, snackbarText) =>
 		dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
-	onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Backup)

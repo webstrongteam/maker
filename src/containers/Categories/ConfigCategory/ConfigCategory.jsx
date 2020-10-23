@@ -80,17 +80,12 @@ class ConfigCategory extends Component {
 
 	render() {
 		const { dialog, control, category } = this.state
-		const { showModal } = this.props
+		const { showDialog } = this.props
 
 		return (
 			<>
 				{dialog && category && (
-					<Dialog
-						showModal={showModal}
-						cancelHandler={dialog.cancelHandler}
-						title={dialog.title}
-						buttons={dialog.buttons}
-					>
+					<Dialog {...dialog} showDialog={showDialog}>
 						<Input
 							elementConfig={control}
 							focus

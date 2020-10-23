@@ -22,6 +22,7 @@ import {
 } from '../../../shared/utility'
 import { configTask } from '../../../shared/configTask'
 import { BannerAd } from '../../../components/Ads/BannerAd'
+import Dialog from '../../../components/UI/Dialog/Dialog'
 import styles from './ConfigTask.styles'
 
 import * as actions from '../../../store/actions'
@@ -51,6 +52,8 @@ class ConfigTask extends Component {
 				multiline: true,
 			},
 		},
+		dialog: null,
+		showDialog: false,
 		otherOption: null,
 		taskCopy: null,
 		selectedTime: 0,
@@ -143,9 +146,9 @@ class ConfigTask extends Component {
 
 	showDialog = (action) => {
 		const { task } = this.state
-		const { translations, onUpdateModal, navigation } = this.props
+		const { translations, navigation } = this.props
 
-		const cancelHandler = () => onUpdateModal(false)
+		const cancelHandler = () => this.setState({ showDialog: false })
 
 		let dialog
 		if (action === 'exit') {
@@ -155,11 +158,11 @@ class ConfigTask extends Component {
 				translations.exitDescription,
 				{
 					[translations.yes]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						navigation.goBack()
 					},
 					[translations.save]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.saveTask()
 					},
 					[translations.cancel]: cancelHandler,
@@ -173,7 +176,7 @@ class ConfigTask extends Component {
 				{
 					[translations.yes]: () => {
 						const { onRemoveTask, navigation } = this.props
-						onUpdateModal(false)
+						cancelHandler()
 						onRemoveTask(task, navigation.goBack)
 					},
 					[translations.cancel]: cancelHandler,
@@ -195,7 +198,7 @@ class ConfigTask extends Component {
 					name: convertRepeatNames(p, translations),
 					value: p,
 					onClick: (value) => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.updateTask('repeat', value)
 					},
 				})
@@ -217,8 +220,7 @@ class ConfigTask extends Component {
 					value: c,
 					onClick: (value) => {
 						task.category = value
-						this.setState({ task })
-						onUpdateModal(false)
+						this.setState({ task, showDialog: false })
 					},
 				})
 			})
@@ -237,7 +239,7 @@ class ConfigTask extends Component {
 					name: convertPriorityNames(p, translations),
 					value: p,
 					onClick: (value) => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.updateTask('priority', value)
 					},
 				})
@@ -251,7 +253,7 @@ class ConfigTask extends Component {
 			dialog.selectedValue = task.priority
 		}
 
-		onUpdateModal(true, dialog)
+		this.setState({ dialog, showDialog: true })
 	}
 
 	toggleConfigCategory = (category) => {
@@ -393,6 +395,8 @@ class ConfigTask extends Component {
 			setNotification,
 			isVisibleTime,
 			isVisibleDate,
+			dialog,
+			showDialog,
 		} = this.state
 		const { navigation, theme, settings, translations } = this.props
 		let date
@@ -453,10 +457,12 @@ class ConfigTask extends Component {
 				/>
 
 				<ConfigCategory
-					showModal={showConfigCategory}
+					showDialog={showConfigCategory}
 					category={false}
 					toggleModal={this.toggleConfigCategory}
 				/>
+
+				{dialog && <Dialog showDialog={showDialog} {...dialog} />}
 
 				{!loading ? (
 					<ScrollView>
@@ -674,7 +680,6 @@ const mapDispatchToProps = (dispatch) => ({
 	onRemoveTask: (task, callback) => dispatch(actions.removeTask(task, false, callback)),
 	onUpdateSnackbar: (showSnackbar, snackbarText) =>
 		dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
-	onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigTask)

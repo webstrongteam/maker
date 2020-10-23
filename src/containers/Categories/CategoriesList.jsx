@@ -6,14 +6,18 @@ import { listRow, shadow } from '../../shared/styles'
 import ConfigCategory from './ConfigCategory/ConfigCategory'
 import Template from '../Template/Template'
 import { BannerAd } from '../../components/Ads/BannerAd'
+import { generateDialogObject } from '../../shared/utility'
+import Dialog from '../../components/UI/Dialog/Dialog'
 
 import * as actions from '../../store/actions'
 
 class CategoriesList extends PureComponent {
 	state = {
-		showModal: false,
+		showConfigCategory: false,
 		taskPerCategory: {},
 		selectedCategory: false,
+		dialog: null,
+		showDialog: false,
 		ready: false,
 	}
 
@@ -47,23 +51,51 @@ class CategoriesList extends PureComponent {
 	}
 
 	toggleModalHandler = (selected = false) => {
-		const { showModal } = this.state
+		const { showConfigCategory } = this.state
 
 		if (selected !== false) {
 			this.setState({
-				showModal: !showModal,
+				showConfigCategory: !showConfigCategory,
 				selectedCategory: selected,
 			})
 		} else {
 			this.setState({
-				showModal: !showModal,
+				showConfigCategory: !showConfigCategory,
 				selectedCategory: false,
 			})
 		}
 	}
 
+	showDialog = (id) => {
+		const { translations } = this.props
+
+		const cancelHandler = () => this.setState({ showDialog: false })
+
+		const dialog = generateDialogObject(
+			cancelHandler,
+			translations.deleteCategoryTitle,
+			translations.deleteCategoryDescription,
+			{
+				[translations.yes]: () => {
+					this.setState({ showDialog: false })
+					this.deleteCategory(id)
+				},
+				[translations.cancel]: cancelHandler,
+			},
+		)
+
+		this.setState({ dialog, showDialog: true })
+	}
+
 	render() {
-		const { showModal, selectedCategory, taskPerCategory, ready } = this.state
+		const {
+			showConfigCategory,
+			selectedCategory,
+			taskPerCategory,
+			dialog,
+			showDialog,
+			ready,
+		} = this.state
 		const { categories, navigation, theme, translations } = this.props
 
 		return (
@@ -81,13 +113,15 @@ class CategoriesList extends PureComponent {
 					centerElement={translations.title}
 				/>
 
-				{showModal && (
+				{showConfigCategory && (
 					<ConfigCategory
-						showModal={showModal}
+						showDialog={showConfigCategory}
 						category={selectedCategory}
 						toggleModal={this.toggleModalHandler}
 					/>
 				)}
+
+				{dialog && <Dialog showDialog={showDialog} {...dialog} />}
 
 				{ready && (
 					<View style={{ flex: 1 }}>
@@ -105,7 +139,7 @@ class CategoriesList extends PureComponent {
 									rightElement={
 										cate.id !== 0 ? (
 											<IconToggle
-												onPress={() => this.deleteCategory(cate.id)}
+												onPress={() => this.showDialog(cate.id)}
 												name='delete'
 												color={theme.warningColor}
 											/>
@@ -132,7 +166,10 @@ const mapStateToProps = (state) => ({
 	tasks: state.tasks.tasks,
 	categories: state.categories.categories,
 	theme: state.theme.theme,
-	translations: state.settings.translations.Categories,
+	translations: {
+		...state.settings.translations.Categories,
+		...state.settings.translations.common,
+	},
 })
 
 const mapDispatchToProps = (dispatch) => ({

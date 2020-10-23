@@ -11,6 +11,7 @@ import { BannerAd } from '../../components/Ads/BannerAd'
 import styles from './Settings.styles'
 
 import * as actions from '../../store/actions'
+import Dialog from '../../components/UI/Dialog/Dialog'
 
 class Settings extends PureComponent {
 	state = {
@@ -62,9 +63,9 @@ class Settings extends PureComponent {
 	}
 
 	showDialog = (action) => {
-		const { translations, onUpdateModal } = this.props
+		const { translations } = this.props
 
-		const cancelHandler = () => onUpdateModal(false)
+		const cancelHandler = () => this.setState({ showDialog: false })
 
 		let dialog
 		if (action === 'showFirstDayOfWeek') {
@@ -77,7 +78,7 @@ class Settings extends PureComponent {
 					name: day.name,
 					value: day.value,
 					onClick: (value) => {
-						onUpdateModal(false)
+						cancelHandler()
 						onChangeFirstDayOfWeek(value)
 						onRefreshTask()
 						this.toggleSnackbar(translations.firstDaySnackbar)
@@ -100,7 +101,7 @@ class Settings extends PureComponent {
 					name: lang.name,
 					value: lang.short_name,
 					onClick: (value) => {
-						onUpdateModal(false)
+						cancelHandler()
 						onChangeLang(value)
 						this.toggleSnackbar(translations.langSnackbar)
 					},
@@ -114,11 +115,11 @@ class Settings extends PureComponent {
 			dialog.selectedValue = settings.lang
 		}
 
-		onUpdateModal(true, dialog)
+		this.setState({ showDialog: true, dialog })
 	}
 
 	render() {
-		const { loading, daysOfWeek } = this.state
+		const { loading, daysOfWeek, dialog, showDialog } = this.state
 		const { navigation, settings, theme, translations } = this.props
 
 		return (
@@ -128,6 +129,8 @@ class Settings extends PureComponent {
 					onLeftElementPress={() => navigation.goBack()}
 					centerElement={translations.settings}
 				/>
+
+				{dialog && <Dialog showDialog={showDialog} {...dialog} />}
 
 				{!loading ? (
 					<>
@@ -331,7 +334,6 @@ const mapDispatchToProps = (dispatch) => ({
 	onChangeShowDeadlineTime: (value) => dispatch(actions.changeShowDeadlineTime(value)),
 	onUpdateSnackbar: (showSnackbar, snackbarText) =>
 		dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
-	onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal)),
 	onRefreshTask: () => dispatch(actions.onRefresh()),
 })
 

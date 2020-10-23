@@ -29,6 +29,7 @@ import Spinner from '../../components/UI/Spinner/Spinner'
 import styles from './TaskList.styles'
 
 import * as actions from '../../store/actions'
+import Dialog from '../../components/UI/Dialog/Dialog'
 
 const UP = 1
 const DOWN = -1
@@ -53,6 +54,8 @@ class TaskList extends Component {
 		rotateAnimated: new Animated.Value(0),
 		rotateInterpolate: '0deg',
 		animations: {},
+		dialog: null,
+		showDialog: false,
 		loading: false,
 	}
 
@@ -161,9 +164,9 @@ class TaskList extends Component {
 
 	showDialog = (action) => {
 		const { selectedTask, animations } = this.state
-		const { theme, translations, onUpdateModal, onFinishTask, onAddEndedTask } = this.props
+		const { theme, translations, onFinishTask, onAddEndedTask } = this.props
 
-		const cancelHandler = () => onUpdateModal(false)
+		const cancelHandler = () => this.setState({ showDialog: false })
 
 		let dialog
 		if (action === 'repeat') {
@@ -173,18 +176,17 @@ class TaskList extends Component {
 				translations.repeatDescription,
 				{
 					[translations.yes]: () => {
-						onUpdateModal(false)
 						this.moveAnimate(() => {
 							onFinishTask(selectedTask, false, theme.primaryColor, () => {
 								onAddEndedTask()
 								animations[`move${selectedTask.id}`] = new Animated.Value(0)
 								animations[`hide${selectedTask.id}`] = false
-								this.setState({ animations })
+								this.setState({ animations, showDialog: false })
 							})
 						})
 					},
 					[translations.no]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.moveAnimate(() => {
 							onFinishTask(selectedTask, true, theme.primaryColor, onAddEndedTask)
 						})
@@ -199,7 +201,7 @@ class TaskList extends Component {
 				translations.finishDescription,
 				{
 					[translations.yes]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.moveAnimate(() => {
 							onFinishTask(selectedTask, true, theme.primaryColor, onAddEndedTask)
 						})
@@ -214,7 +216,7 @@ class TaskList extends Component {
 				translations.deleteDescription,
 				{
 					[translations.yes]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.moveAnimate(() => {
 							const { onRemoveTask } = this.props
 							onRemoveTask(selectedTask)
@@ -230,7 +232,7 @@ class TaskList extends Component {
 				translations.finishAllDescription,
 				{
 					[translations.yes]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.deleteAllTask()
 					},
 					[translations.no]: cancelHandler,
@@ -247,7 +249,7 @@ class TaskList extends Component {
 			)
 		}
 
-		onUpdateModal(true, dialog)
+		this.setState({ dialog, showDialog: true })
 	}
 
 	checkTaskRepeatHandler = (task) => {
@@ -765,6 +767,8 @@ class TaskList extends Component {
 			rotateInterpolate,
 			bottomHidden,
 			selectedCategory,
+			dialog,
+			showDialog,
 			loading,
 		} = this.state
 		const { theme, navigation, sortingType, sorting, finished, translations } = this.props
@@ -831,9 +835,11 @@ class TaskList extends Component {
 
 				<ConfigCategory
 					category={false}
-					showModal={showConfigCategory}
+					showDialog={showConfigCategory}
 					toggleModal={this.toggleConfigCategory}
 				/>
+
+				{dialog && <Dialog showDialog={showDialog} {...dialog} />}
 
 				<FlatList
 					ref={(e) => {
@@ -950,7 +956,6 @@ const mapDispatchToProps = (dispatch) => ({
 	onUndoTask: (task) => dispatch(actions.undoTask(task)),
 	onAddEndedTask: () => dispatch(actions.addEndedTask()),
 	onChangeSorting: (sorting, type) => dispatch(actions.changeSorting(sorting, type)),
-	onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList)

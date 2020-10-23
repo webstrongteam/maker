@@ -18,7 +18,7 @@ class ConfigQuicklyTask extends Component {
 			required: true,
 			characterRestriction: 40,
 		},
-		dialog: false,
+		dialog: null,
 	}
 
 	componentDidMount() {
@@ -85,27 +85,15 @@ class ConfigQuicklyTask extends Component {
 				[translations.cancel]: toggleModal,
 			},
 		)
+
 		this.setState({ dialog })
 	}
 
 	render() {
 		const { dialog } = this.state
-		const { showModal } = this.props
+		const { showDialog } = this.props
 
-		return (
-			<>
-				{dialog && (
-					<Dialog
-						showModal={showModal}
-						input
-						cancelHandler={dialog.cancelHandler}
-						title={dialog.title}
-						body={dialog.body}
-						buttons={dialog.buttons}
-					/>
-				)}
-			</>
-		)
+		return <>{dialog && <Dialog {...dialog} input showDialog={showDialog} />}</>
 	}
 }
 

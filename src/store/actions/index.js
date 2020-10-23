@@ -35,7 +35,7 @@ export {
 	changeLang,
 } from './settings'
 
-export { updateModal, updateSnackbar } from './config'
+export { updateSnackbar } from './config'
 
 export { initProfile, changeName, changeAvatar, addEndedTask } from './profile'
 

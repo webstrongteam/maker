@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { generateDialogObject } from '../../shared/utility'
 import { empty, shadow } from '../../shared/styles'
 import Spinner from '../../components/UI/Spinner/Spinner'
+import Dialog from '../../components/UI/Dialog/Dialog'
 import styles from './QuicklyList.styles'
 
 import * as actions from '../../store/actions'
@@ -20,6 +21,8 @@ class QuicklyList extends Component {
 		offset: 0,
 		scrollDirection: 0,
 		bottomHidden: false,
+		dialog: null,
+		showDialog: false,
 		loading: true,
 	}
 
@@ -70,9 +73,9 @@ class QuicklyList extends Component {
 	}
 
 	showDialog = (list_id) => {
-		const { translations, onUpdateModal, onRemoveList } = this.props
+		const { translations, onRemoveList } = this.props
 
-		const cancelHandler = () => onUpdateModal(false)
+		const cancelHandler = () => this.setState({ showDialog: false })
 
 		const dialog = generateDialogObject(
 			cancelHandler,
@@ -80,18 +83,18 @@ class QuicklyList extends Component {
 			`${translations.dialogDescription}`,
 			{
 				[translations.yes]: () => {
-					onUpdateModal(false)
+					cancelHandler()
 					onRemoveList(list_id)
 				},
 				[translations.no]: cancelHandler,
 			},
 		)
 
-		onUpdateModal(true, dialog)
+		this.setState({ dialog, showDialog: true })
 	}
 
 	render() {
-		const { amounts, bottomHidden, loading } = this.state
+		const { amounts, bottomHidden, showDialog, dialog, loading } = this.state
 		const { lists, theme, navigation, translations } = this.props
 
 		const quicklyList = lists.map((list, index) => {
@@ -154,6 +157,8 @@ class QuicklyList extends Component {
 					onLeftElementPress={() => navigation.navigate('Drawer')}
 				/>
 
+				{dialog && <Dialog showDialog={showDialog} {...dialog} />}
+
 				{!loading ? (
 					<ScrollView
 						scrollEventThrottle={16}
@@ -201,7 +206,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 	onInitList: (id, callback) => dispatch(actions.initList(id, callback)),
 	onRemoveList: (list_id) => dispatch(actions.removeList(list_id)),
-	onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuicklyList)

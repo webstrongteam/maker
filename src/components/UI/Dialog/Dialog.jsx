@@ -1,5 +1,5 @@
 import React from 'react'
-import { Keyboard, Platform, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Keyboard, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { ListItem } from 'react-native-material-ui'
 import Dialog from 'react-native-dialog'
 import { connect } from 'react-redux'
@@ -24,11 +24,7 @@ const checkSelectedOption = (value, selectedValue) => {
 
 const defaultDialog = (props) => (
 	<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-		<Dialog.Container
-			onBackdropPress={props.cancelHandler}
-			contentStyle={{ backgroundColor: props.theme.secondaryBackgroundColor }}
-			visible={props.showModal}
-		>
+		<Dialog.Container onBackdropPress={props.cancelHandler} visible={props.showDialog}>
 			{props.title && (
 				<Dialog.Title style={{ textAlign: 'center', color: props.theme.thirdTextColor }}>
 					{props.title}
@@ -52,11 +48,7 @@ const defaultDialog = (props) => (
 )
 
 const selectDialog = (props) => (
-	<Dialog.Container
-		onBackdropPress={props.cancelHandler}
-		contentStyle={{ backgroundColor: props.theme.secondaryBackgroundColor }}
-		visible={props.showModal}
-	>
+	<Dialog.Container onBackdropPress={props.cancelHandler} visible={props.showDialog}>
 		{props.title && (
 			<Dialog.Title style={{ color: props.theme.thirdTextColor }}>{props.title}</Dialog.Title>
 		)}
@@ -70,8 +62,7 @@ const selectDialog = (props) => (
 							dense
 							style={{
 								contentViewContainer: {
-									backgroundColor:
-										Platform.OS === 'ios' ? props.theme.secondaryBackgroundColor : 'transparent',
+									backgroundColor: props.theme.primaryBackgroundColor,
 								},
 								primaryText: {
 									color: checkSelectedOption(option.value, props.selectedValue)
@@ -98,11 +89,7 @@ const selectDialog = (props) => (
 
 const inputDialog = (props) => (
 	<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-		<Dialog.Container
-			onBackdropPress={props.cancelHandler}
-			contentStyle={{ backgroundColor: props.theme.secondaryBackgroundColor }}
-			visible={props.showModal}
-		>
+		<Dialog.Container onBackdropPress={props.cancelHandler} visible={props.showDialog}>
 			{props.title && (
 				<Dialog.Title style={{ textAlign: 'center', color: props.theme.thirdTextColor }}>
 					{props.title}

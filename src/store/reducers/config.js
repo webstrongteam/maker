@@ -2,17 +2,9 @@ import * as actionTypes from '../actions/actionTypes'
 import { updateObject } from '../../shared/utility'
 
 const initState = {
-	showModal: false,
-	modal: {},
 	showSnackbar: false,
 	snackbarText: '',
 }
-
-const updateModal = (state, action) =>
-	updateObject(state, {
-		showModal: action.showModal,
-		modal: action.modal ? action.modal : state.modal,
-	})
 
 const updateSnackbar = (state, action) =>
 	updateObject(state, {
@@ -22,8 +14,6 @@ const updateSnackbar = (state, action) =>
 
 const reducer = (state = initState, action) => {
 	switch (action.type) {
-		case actionTypes.UPDATE_MODAL:
-			return updateModal(state, action)
 		case actionTypes.UPDATE_SNACKBAR:
 			return updateSnackbar(state, action)
 		default:

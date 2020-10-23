@@ -202,7 +202,9 @@
 		"newCategory": "New category"
 	},
 	"Categories": {
-		"title": "Categories"
+		"title": "Categories",
+		"deleteCategoryTitle": "Are you sure you want to delete this category?",
+		"deleteCategoryDescription": "Tasks assigned to this category will be assigned to the default category."
 	},
 	"Backup": {
 		"title": "Backups",

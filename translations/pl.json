@@ -207,7 +207,9 @@
 		"newCategory": "Nowa kategoria"
 	},
 	"Categories": {
-		"title": "Kategorie"
+		"title": "Kategorie",
+		"deleteCategoryTitle": "Czy na pewną chcesz usunąć tę kategorię?",
+		"deleteCategoryDescription": "Zadania przypisane do tej kategorii zostaną przypisane do kategorii domyślnej."
 	},
 	"Backup": {
 		"title": "Kopie zapasowe",

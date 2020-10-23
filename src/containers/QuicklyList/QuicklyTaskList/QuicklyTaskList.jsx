@@ -26,8 +26,8 @@ const initialNumToRender = 16
 class QuicklyTaskList extends Component {
 	state = {
 		quicklyTasks: [],
-		showModal: false,
-		showInputModal: false,
+		showDialog: false,
+		showInputDialog: false,
 		selectedTask: false,
 		list: {
 			id: false,
@@ -76,17 +76,17 @@ class QuicklyTaskList extends Component {
 	}
 
 	toggleModalHandler = (selected = false, list = false) => {
-		const { showModal } = this.state
+		const { showDialog } = this.state
 		if (selected !== false) {
 			if (list) this.reloadTasks(list)
 
 			this.setState({
-				showModal: !showModal,
+				showDialog: !showDialog,
 				selectedTask: selected,
 			})
 		} else {
 			this.setState({
-				showModal: !showModal,
+				showDialog: !showDialog,
 				selectedTask: false,
 			})
 		}
@@ -99,7 +99,7 @@ class QuicklyTaskList extends Component {
 		const cancelHandler = () => {
 			delete control.error
 			this.setState({
-				showInputModal: false,
+				showInputDialog: false,
 				newListName: list.name,
 				control,
 			})
@@ -124,15 +124,14 @@ class QuicklyTaskList extends Component {
 							id: list.id,
 							name: newListName,
 						})
-						this.setState({ showInputModal: false })
+						this.setState({ showInputDialog: false })
 					}
 				},
 				[translations.cancel]: cancelHandler,
 			},
 		)
 
-		dialog.input = true
-		this.setState({ showInputModal: true, dialog })
+		this.setState({ showInputDialog: true, dialog })
 	}
 
 	addTask = () => {
@@ -229,8 +228,8 @@ class QuicklyTaskList extends Component {
 
 	render() {
 		const {
-			showModal,
-			showInputModal,
+			showDialog,
+			showInputDialog,
 			dialog,
 			selectedTask,
 			input,
@@ -287,9 +286,9 @@ class QuicklyTaskList extends Component {
 					}
 				/>
 
-				{showModal && (
+				{showDialog && (
 					<ConfigQuicklyTask
-						showModal={showModal}
+						showDialog={showDialog}
 						task_id={selectedTask}
 						list={list}
 						taskLength={quicklyTasks.length}
@@ -297,16 +296,7 @@ class QuicklyTaskList extends Component {
 					/>
 				)}
 
-				{dialog && (
-					<Dialog
-						showModal={showInputModal}
-						input
-						cancelHandler={dialog.cancelHandler}
-						title={dialog.title}
-						body={dialog.body}
-						buttons={dialog.buttons}
-					/>
-				)}
+				{dialog && <Dialog {...dialog} input showDialog={showInputDialog} />}
 
 				{!loading ? (
 					<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'none'} style={flex}>

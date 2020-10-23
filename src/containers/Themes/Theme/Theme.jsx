@@ -28,7 +28,7 @@ class Theme extends Component {
 		actualColor: '',
 
 		dialog: {},
-		showModal: false,
+		showDialog: false,
 
 		control: {
 			label: this.props.translations.themeNameLabel,
@@ -74,9 +74,9 @@ class Theme extends Component {
 	}
 
 	showDialog = (action) => {
-		const { translations, onUpdateModal, navigation } = this.props
+		const { translations, navigation } = this.props
 
-		const cancelHandler = () => onUpdateModal(false)
+		const cancelHandler = () => this.setState({ showDialog: false })
 
 		let dialog
 		if (action === 'exit') {
@@ -86,11 +86,11 @@ class Theme extends Component {
 				translations.exitDescription,
 				{
 					[translations.yes]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						navigation.goBack()
 					},
 					[translations.save]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.checkValid('name', true)
 					},
 					[translations.cancel]: cancelHandler,
@@ -103,7 +103,7 @@ class Theme extends Component {
 				translations.deleteDescription,
 				{
 					[translations.yes]: () => {
-						onUpdateModal(false)
+						cancelHandler()
 						this.deleteTheme()
 						navigation.goBack()
 					},
@@ -117,7 +117,7 @@ class Theme extends Component {
 				const { customTheme, control } = this.state
 				delete control.error
 				this.setState({
-					showModal: false,
+					showDialog: false,
 					newThemeName: customTheme.name,
 					control,
 				})
@@ -141,7 +141,7 @@ class Theme extends Component {
 						if (!control.error) {
 							const { customTheme, newThemeName } = this.state
 							customTheme.name = newThemeName
-							this.setState({ showModal: false, customTheme })
+							this.setState({ showDialog: false, customTheme })
 						}
 					},
 					[translations.cancel]: cancelHandler,
@@ -149,10 +149,9 @@ class Theme extends Component {
 			)
 
 			dialog.input = true
-			return this.setState({ dialog, showModal: true })
 		}
 
-		onUpdateModal(true, dialog)
+		this.setState({ dialog, showDialog: true })
 	}
 
 	deleteTheme = () => {
@@ -203,7 +202,7 @@ class Theme extends Component {
 			selectedColor,
 			colorPickerTitle,
 			dialog,
-			showModal,
+			showDialog,
 		} = this.state
 		const { navigation, theme, translations } = this.props
 
@@ -256,16 +255,7 @@ class Theme extends Component {
 					}
 				/>
 
-				{dialog && (
-					<Dialog
-						showModal={showModal}
-						input
-						cancelHandler={dialog.cancelHandler}
-						title={dialog.title}
-						body={dialog.body}
-						buttons={dialog.buttons}
-					/>
-				)}
+				{dialog && <Dialog {...dialog} showDialog={showDialog} />}
 
 				<Modal
 					coverScreen
@@ -422,7 +412,6 @@ const mapDispatchToProps = (dispatch) => ({
 	onSaveTheme: (theme) => dispatch(actions.saveTheme(theme)),
 	onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),
 	onDeleteTheme: (id) => dispatch(actions.deleteTheme(id)),
-	onUpdateModal: (showModal, modal) => dispatch(actions.updateModal(showModal, modal)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Theme)
