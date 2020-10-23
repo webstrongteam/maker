@@ -93,10 +93,20 @@ class QuicklyTaskList extends Component {
 	}
 
 	showDialog = () => {
-		const { newListName, control } = this.state
+		const { newListName, list, control } = this.state
 		const { translations } = this.props
 
+		const cancelHandler = () => {
+			delete control.error
+			this.setState({
+				showInputModal: false,
+				newListName: list.name,
+				control,
+			})
+		}
+
 		const dialog = generateDialogObject(
+			cancelHandler,
 			translations.dialogTitle,
 			{
 				elementConfig: control,
@@ -117,15 +127,7 @@ class QuicklyTaskList extends Component {
 						this.setState({ showInputModal: false })
 					}
 				},
-				[translations.cancel]: () => {
-					const { list, control } = this.state
-					delete control.error
-					this.setState({
-						showInputModal: false,
-						newListName: list.name,
-						control,
-					})
-				},
+				[translations.cancel]: cancelHandler,
 			},
 		)
 
@@ -299,6 +301,7 @@ class QuicklyTaskList extends Component {
 					<Dialog
 						showModal={showInputModal}
 						input
+						cancelHandler={dialog.cancelHandler}
 						title={dialog.title}
 						body={dialog.body}
 						buttons={dialog.buttons}

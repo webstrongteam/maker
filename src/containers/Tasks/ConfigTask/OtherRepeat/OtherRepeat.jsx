@@ -36,7 +36,7 @@ class OtherRepeat extends Component {
 					backgroundColor: theme.secondaryBackgroundColor,
 				}}
 				isOpen={showModal}
-				swipeToClose={showModal}
+				swipeToClose={false}
 				onClosed={cancel}
 			>
 				<TabView

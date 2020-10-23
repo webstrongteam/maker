@@ -72,7 +72,10 @@ class QuicklyList extends Component {
 	showDialog = (list_id) => {
 		const { translations, onUpdateModal, onRemoveList } = this.props
 
+		const cancelHandler = () => onUpdateModal(false)
+
 		const dialog = generateDialogObject(
+			cancelHandler,
 			translations.defaultTitle,
 			`${translations.dialogDescription}`,
 			{
@@ -80,9 +83,7 @@ class QuicklyList extends Component {
 					onUpdateModal(false)
 					onRemoveList(list_id)
 				},
-				[translations.no]: () => {
-					onUpdateModal(false)
-				},
+				[translations.no]: cancelHandler,
 			},
 		)
 

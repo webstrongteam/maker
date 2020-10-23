@@ -76,32 +76,55 @@ class Theme extends Component {
 	showDialog = (action) => {
 		const { translations, onUpdateModal, navigation } = this.props
 
+		const cancelHandler = () => onUpdateModal(false)
+
 		let dialog
 		if (action === 'exit') {
-			dialog = generateDialogObject(translations.defaultTitle, translations.exitDescription, {
-				[translations.yes]: () => {
-					onUpdateModal(false)
-					navigation.goBack()
+			dialog = generateDialogObject(
+				cancelHandler,
+				translations.defaultTitle,
+				translations.exitDescription,
+				{
+					[translations.yes]: () => {
+						onUpdateModal(false)
+						navigation.goBack()
+					},
+					[translations.save]: () => {
+						onUpdateModal(false)
+						this.checkValid('name', true)
+					},
+					[translations.cancel]: cancelHandler,
 				},
-				[translations.save]: () => {
-					onUpdateModal(false)
-					this.checkValid('name', true)
-				},
-				[translations.cancel]: () => onUpdateModal(false),
-			})
+			)
 		} else if (action === 'delete') {
-			dialog = generateDialogObject(translations.defaultTitle, translations.deleteDescription, {
-				[translations.yes]: () => {
-					onUpdateModal(false)
-					this.deleteTheme()
-					navigation.goBack()
+			dialog = generateDialogObject(
+				cancelHandler,
+				translations.defaultTitle,
+				translations.deleteDescription,
+				{
+					[translations.yes]: () => {
+						onUpdateModal(false)
+						this.deleteTheme()
+						navigation.goBack()
+					},
+					[translations.no]: cancelHandler,
 				},
-				[translations.no]: () => onUpdateModal(false),
-			})
+			)
 		} else if (action === 'changeName') {
 			const { newThemeName, defaultName, control } = this.state
 
+			const cancelHandler = () => {
+				const { customTheme, control } = this.state
+				delete control.error
+				this.setState({
+					showModal: false,
+					newThemeName: customTheme.name,
+					control,
+				})
+			}
+
 			dialog = generateDialogObject(
+				cancelHandler,
 				translations.changeNameTitle,
 				{
 					elementConfig: control,
@@ -121,15 +144,7 @@ class Theme extends Component {
 							this.setState({ showModal: false, customTheme })
 						}
 					},
-					[translations.cancel]: () => {
-						const { customTheme, control } = this.state
-						delete control.error
-						this.setState({
-							showModal: false,
-							newThemeName: customTheme.name,
-							control,
-						})
-					},
+					[translations.cancel]: cancelHandler,
 				},
 			)
 
@@ -245,6 +260,7 @@ class Theme extends Component {
 					<Dialog
 						showModal={showModal}
 						input
+						cancelHandler={dialog.cancelHandler}
 						title={dialog.title}
 						body={dialog.body}
 						buttons={dialog.buttons}
@@ -258,7 +274,7 @@ class Theme extends Component {
 						backgroundColor: theme.secondaryBackgroundColor,
 					}}
 					isOpen={showColorPicker}
-					swipeToClose={showColorPicker}
+					swipeToClose={false}
 					onClosed={() => this.setState({ showColorPicker: false })}
 				>
 					<View style={{ flex: 1, padding: 45 }}>

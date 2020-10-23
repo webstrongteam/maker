@@ -75,6 +75,7 @@ class Template extends Component {
 						<Dialog
 							showModal={showModal}
 							input={modal.input}
+							cancelHandler={modal.cancelHandler}
 							select={modal.select}
 							selectedValue={modal.selectedValue}
 							title={modal.title}

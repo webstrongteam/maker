@@ -52,9 +52,10 @@ class ConfigQuicklyTask extends Component {
 
 	showDialog = (title) => {
 		const { task, control } = this.state
-		const { toggleModal } = this.props
+		const { toggleModal, translations } = this.props
 
 		const dialog = generateDialogObject(
+			toggleModal,
 			title,
 			{
 				elementConfig: control,
@@ -69,7 +70,7 @@ class ConfigQuicklyTask extends Component {
 				},
 			},
 			{
-				Save: () => {
+				[translations.save]: () => {
 					const { control } = this.state
 					const { list, taskLength, onSaveQuicklyTask } = this.props
 					if (!control.error) {
@@ -81,7 +82,7 @@ class ConfigQuicklyTask extends Component {
 						})
 					}
 				},
-				Cancel: toggleModal,
+				[translations.cancel]: toggleModal,
 			},
 		)
 		this.setState({ dialog })
@@ -97,6 +98,7 @@ class ConfigQuicklyTask extends Component {
 					<Dialog
 						showModal={showModal}
 						input
+						cancelHandler={dialog.cancelHandler}
 						title={dialog.title}
 						body={dialog.body}
 						buttons={dialog.buttons}
@@ -111,6 +113,7 @@ const mapStateToProps = (state) => ({
 	translations: {
 		...state.settings.translations.ConfigQuicklyTask,
 		...state.settings.translations.validation,
+		...state.settings.translations.common,
 	},
 })
 const mapDispatchToProps = (dispatch) => ({

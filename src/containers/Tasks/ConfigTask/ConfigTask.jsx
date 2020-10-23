@@ -145,30 +145,40 @@ class ConfigTask extends Component {
 		const { task } = this.state
 		const { translations, onUpdateModal, navigation } = this.props
 
+		const cancelHandler = () => onUpdateModal(false)
+
 		let dialog
 		if (action === 'exit') {
-			dialog = generateDialogObject(translations.defaultTitle, translations.exitDescription, {
-				[translations.yes]: () => {
-					onUpdateModal(false)
-					navigation.goBack()
+			dialog = generateDialogObject(
+				cancelHandler,
+				translations.defaultTitle,
+				translations.exitDescription,
+				{
+					[translations.yes]: () => {
+						onUpdateModal(false)
+						navigation.goBack()
+					},
+					[translations.save]: () => {
+						this.saveTask()
+						onUpdateModal(false)
+					},
+					[translations.cancel]: cancelHandler,
 				},
-				[translations.save]: () => {
-					this.saveTask()
-					onUpdateModal(false)
-				},
-				[translations.cancel]: () => {
-					onUpdateModal(false)
-				},
-			})
+			)
 		} else if (action === 'delete') {
-			dialog = generateDialogObject(translations.defaultTitle, translations.deleteDescription, {
-				[translations.yes]: () => {
-					const { onUpdateModal, onRemoveTask, navigation } = this.props
-					onUpdateModal(false)
-					onRemoveTask(task, navigation.goBack)
+			dialog = generateDialogObject(
+				cancelHandler,
+				translations.defaultTitle,
+				translations.deleteDescription,
+				{
+					[translations.yes]: () => {
+						const { onUpdateModal, onRemoveTask, navigation } = this.props
+						onUpdateModal(false)
+						onRemoveTask(task, navigation.goBack)
+					},
+					[translations.cancel]: cancelHandler,
 				},
-				[translations.cancel]: () => onUpdateModal(false),
-			})
+			)
 		} else if (action === 'repeat') {
 			const repeats = [
 				'noRepeat',
@@ -191,8 +201,8 @@ class ConfigTask extends Component {
 				})
 			})
 
-			dialog = generateDialogObject(translations.repeat, options, {
-				[translations.cancel]: () => onUpdateModal(false),
+			dialog = generateDialogObject(cancelHandler, translations.repeat, options, {
+				[translations.cancel]: cancelHandler,
 			})
 
 			dialog.select = true
@@ -213,8 +223,8 @@ class ConfigTask extends Component {
 				})
 			})
 
-			dialog = generateDialogObject(translations.category, options, {
-				[translations.cancel]: () => onUpdateModal(false),
+			dialog = generateDialogObject(cancelHandler, translations.category, options, {
+				[translations.cancel]: cancelHandler,
 			})
 
 			dialog.select = true
@@ -233,8 +243,8 @@ class ConfigTask extends Component {
 				})
 			})
 
-			dialog = generateDialogObject(translations.priority, options, {
-				[translations.cancel]: () => onUpdateModal(false),
+			dialog = generateDialogObject(cancelHandler, translations.priority, options, {
+				[translations.cancel]: cancelHandler,
 			})
 
 			dialog.select = true

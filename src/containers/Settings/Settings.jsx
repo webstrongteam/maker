@@ -64,6 +64,8 @@ class Settings extends PureComponent {
 	showDialog = (action) => {
 		const { translations, onUpdateModal } = this.props
 
+		const cancelHandler = () => onUpdateModal(false)
+
 		let dialog
 		if (action === 'showFirstDayOfWeek') {
 			const { daysOfWeek } = this.state
@@ -82,8 +84,8 @@ class Settings extends PureComponent {
 					},
 				})
 			})
-			dialog = generateDialogObject(translations.showFirstDayOfWeekTitle, options, {
-				[translations.cancel]: () => onUpdateModal(false),
+			dialog = generateDialogObject(cancelHandler, translations.showFirstDayOfWeekTitle, options, {
+				[translations.cancel]: cancelHandler,
 			})
 
 			dialog.select = true
@@ -104,8 +106,8 @@ class Settings extends PureComponent {
 					},
 				})
 			})
-			dialog = generateDialogObject(translations.showLanguagesTitle, options, {
-				[translations.cancel]: () => onUpdateModal(false),
+			dialog = generateDialogObject(cancelHandler, translations.showLanguagesTitle, options, {
+				[translations.cancel]: cancelHandler,
 			})
 
 			dialog.select = true

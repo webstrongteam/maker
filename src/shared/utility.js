@@ -15,27 +15,34 @@ export const getTimeVariant = (number, verb, lang, translations) => {
 		return correctVerb
 	}
 
+	const textNumber = `${number}`
+
 	if (number > 1 || number < -1) {
 		correctVerb = translations[`${verb}s`]
 	}
 
 	// set prefix for PL variety
 	if (lang === 'pl' && correctVerb && verb !== 'day') {
+		const getCorrectVerb = () => {
+			if (verb !== 'month') {
+				correctVerb = correctVerb.slice(0, -1)
+			} else {
+				correctVerb = translations.miesiecy
+			}
+		}
+
 		if (
-			`${number}`.length > 1 &&
-			[0, 1, 5, 6, 7, 8, 9].includes(+`${number}`[`${number}`.length - 1])
+			textNumber.length > 1 &&
+			[0, 1, 5, 6, 7, 8, 9].includes(+textNumber[textNumber.length - 1])
 		) {
-			if (verb !== 'month') {
-				correctVerb = correctVerb.slice(0, -1)
-			} else {
-				correctVerb = translations.miesiecy
-			}
+			getCorrectVerb()
+		} else if (
+			textNumber[textNumber.length - 2] === '1' &&
+			[2, 3, 4, 5, 6, 7, 8, 9].includes(+textNumber[textNumber.length - 1])
+		) {
+			getCorrectVerb()
 		} else if ([5, 6, 7, 8, 9].includes(+number)) {
-			if (verb !== 'month') {
-				correctVerb = correctVerb.slice(0, -1)
-			} else {
-				correctVerb = translations.miesiecy
-			}
+			getCorrectVerb()
 		}
 	}
 
@@ -173,8 +180,9 @@ export const convertDaysIndex = (daysIndex, translations) =>
 		.map((index) => translations[`day${index}`])
 		.join(', ')
 
-export const generateDialogObject = (title, body, buttons = {}) => {
+export const generateDialogObject = (cancelHandler, title, body, buttons = {}) => {
 	const object = {
+		cancelHandler,
 		title,
 		body,
 		buttons: [],

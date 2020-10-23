@@ -1,7 +1,6 @@
 import React from 'react'
 import { Keyboard, Platform, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { ListItem } from 'react-native-material-ui'
-import { BlurView } from 'expo-blur'
 import Dialog from 'react-native-dialog'
 import { connect } from 'react-redux'
 import Input from '../Input/Input'
@@ -23,12 +22,9 @@ const checkSelectedOption = (value, selectedValue) => {
 	return value === selectedValue
 }
 
-const blur = <BlurView tint='light' intensity={50} />
-
 const defaultDialog = (props) => (
 	<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 		<Dialog.Container
-			blurComponentIOS={blur}
 			contentStyle={{ backgroundColor: props.theme.secondaryBackgroundColor }}
 			visible={props.showModal}
 		>
@@ -56,7 +52,6 @@ const defaultDialog = (props) => (
 
 const selectDialog = (props) => (
 	<Dialog.Container
-		blurComponentIOS={blur}
 		contentStyle={{ backgroundColor: props.theme.secondaryBackgroundColor }}
 		visible={props.showModal}
 	>
@@ -102,7 +97,6 @@ const selectDialog = (props) => (
 const inputDialog = (props) => (
 	<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 		<Dialog.Container
-			blurComponentIOS={blur}
 			contentStyle={{ backgroundColor: props.theme.secondaryBackgroundColor }}
 			visible={props.showModal}
 		>

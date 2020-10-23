@@ -172,9 +172,13 @@ class Backup extends PureComponent {
 
 	showDialog = (action, name = null) => {
 		const { translations, onUpdateModal } = this.props
+
+		const cancelHandler = () => onUpdateModal(false)
+
 		let dialog
 		if (action === 'showBackupAlert') {
 			dialog = generateDialogObject(
+				cancelHandler,
 				translations.defaultTitle,
 				`${translations.showBackupAlertDescription1} "${name}"?\n\n${translations.showBackupAlertDescription2}`,
 				{
@@ -182,13 +186,12 @@ class Backup extends PureComponent {
 						onUpdateModal(false)
 						this.useBackupDB(name)
 					},
-					[translations.cancel]: () => {
-						onUpdateModal(false)
-					},
+					[translations.cancel]: cancelHandler,
 				},
 			)
 		} else if (action === 'showConfirmDelete') {
 			dialog = generateDialogObject(
+				cancelHandler,
 				translations.defaultTitle,
 				translations.showConfirmDeleteDescription,
 				{
@@ -196,13 +199,12 @@ class Backup extends PureComponent {
 						onUpdateModal(false)
 						this.removeBackup(`Backup/${name}`)
 					},
-					[translations.cancel]: () => {
-						onUpdateModal(false)
-					},
+					[translations.cancel]: cancelHandler,
 				},
 			)
 		} else if (action === 'showSelectBackupSource') {
 			dialog = generateDialogObject(
+				cancelHandler,
 				translations.showSelectBackupSourceTitle,
 				[
 					{
@@ -223,13 +225,17 @@ class Backup extends PureComponent {
 					},
 				],
 				{
-					Cancel: () => onUpdateModal(false),
+					[translations.cancel]: cancelHandler,
 				},
 			)
 			dialog.select = true
 		} else if (action === 'rename') {
 			const { control, selectedBackup } = this.state
+
+			const cancelHandler = () => this.setState({ showModal: false })
+
 			dialog = generateDialogObject(
+				cancelHandler,
 				translations.newName,
 				{
 					elementConfig: control,
@@ -242,7 +248,7 @@ class Backup extends PureComponent {
 					},
 				},
 				{
-					Save: () => {
+					[translations.save]: () => {
 						const { selectedBackup, control } = this.state
 						if (!control.error) {
 							FileSystem.moveAsync({
@@ -254,12 +260,16 @@ class Backup extends PureComponent {
 						}
 						this.setState({ showModal: false })
 					},
-					Cancel: () => this.setState({ showModal: false }),
+					[translations.cancel]: cancelHandler,
 				},
 			)
 			return this.setState({ dialog, showModal: true })
 		} else if (action === 'restart') {
-			dialog = generateDialogObject(translations.restartTitle, translations.restartDescription)
+			dialog = generateDialogObject(
+				cancelHandler,
+				translations.restartTitle,
+				translations.restartDescription,
+			)
 		}
 
 		onUpdateModal(true, dialog)
@@ -288,6 +298,7 @@ class Backup extends PureComponent {
 					<Dialog
 						showModal={showModal}
 						input
+						cancelHandler={dialog.cancelHandler}
 						title={dialog.title}
 						body={dialog.body}
 						buttons={dialog.buttons}

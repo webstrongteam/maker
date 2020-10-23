@@ -55,7 +55,12 @@ class ConfigCategory extends Component {
 			onRefreshTask,
 		} = this.props
 
-		const dialog = generateDialogObject(title, false, {
+		const cancelHandler = () => {
+			toggleModal()
+			this.setState({ category: { id: false, name: '' } })
+		}
+
+		const dialog = generateDialogObject(cancelHandler, title, false, {
 			[translations.save]: () => {
 				const { category, control, editCategory } = this.state
 				if (!control.error) {
@@ -68,10 +73,7 @@ class ConfigCategory extends Component {
 					})
 				}
 			},
-			[translations.cancel]: () => {
-				toggleModal()
-				this.setState({ category: { id: false, name: '' } })
-			},
+			[translations.cancel]: cancelHandler,
 		})
 		this.setState({ dialog })
 	}
@@ -83,7 +85,12 @@ class ConfigCategory extends Component {
 		return (
 			<>
 				{dialog && category && (
-					<Dialog showModal={showModal} title={dialog.title} buttons={dialog.buttons}>
+					<Dialog
+						showModal={showModal}
+						cancelHandler={dialog.cancelHandler}
+						title={dialog.title}
+						buttons={dialog.buttons}
+					>
 						<Input
 							elementConfig={control}
 							focus
