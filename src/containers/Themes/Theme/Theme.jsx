@@ -255,7 +255,7 @@ class Theme extends Component {
 					}
 				/>
 
-				{dialog && <Dialog {...dialog} showDialog={showDialog} />}
+				<Dialog {...dialog} showDialog={showDialog} />
 
 				<Modal
 					coverScreen

@@ -462,7 +462,7 @@ class ConfigTask extends Component {
 					toggleModal={this.toggleConfigCategory}
 				/>
 
-				{dialog && <Dialog showDialog={showDialog} {...dialog} />}
+				<Dialog {...dialog} showDialog={showDialog} />
 
 				{!loading ? (
 					<ScrollView>

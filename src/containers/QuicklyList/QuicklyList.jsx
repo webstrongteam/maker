@@ -157,7 +157,7 @@ class QuicklyList extends Component {
 					onLeftElementPress={() => navigation.navigate('Drawer')}
 				/>
 
-				{dialog && <Dialog showDialog={showDialog} {...dialog} />}
+				<Dialog {...dialog} showDialog={showDialog} />
 
 				{!loading ? (
 					<ScrollView

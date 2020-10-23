@@ -839,7 +839,7 @@ class TaskList extends Component {
 					toggleModal={this.toggleConfigCategory}
 				/>
 
-				{dialog && <Dialog showDialog={showDialog} {...dialog} />}
+				<Dialog {...dialog} showDialog={showDialog} />
 
 				<FlatList
 					ref={(e) => {
@@ -944,6 +944,7 @@ const mapStateToProps = (state) => ({
 	refresh: state.tasks.refresh,
 	translations: {
 		...state.settings.translations.TaskList,
+		...state.settings.translations.common,
 		...state.settings.translations.times,
 	},
 })

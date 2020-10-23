@@ -93,7 +93,7 @@ class ConfigQuicklyTask extends Component {
 		const { dialog } = this.state
 		const { showDialog } = this.props
 
-		return <>{dialog && <Dialog {...dialog} input showDialog={showDialog} />}</>
+		return <Dialog {...dialog} input showDialog={showDialog} />
 	}
 }
 
