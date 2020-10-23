@@ -15,7 +15,7 @@ export const getTimeVariant = (number, verb, lang, translations) => {
 		return correctVerb
 	}
 
-	const textNumber = `${number}`
+	const textNumber = `${Math.abs(number)}`
 
 	if (number > 1 || number < -1) {
 		correctVerb = translations[`${verb}s`]
@@ -31,17 +31,16 @@ export const getTimeVariant = (number, verb, lang, translations) => {
 			}
 		}
 
-		if (
-			textNumber.length > 1 &&
-			[0, 1, 5, 6, 7, 8, 9].includes(+textNumber[textNumber.length - 1])
-		) {
-			getCorrectVerb()
-		} else if (
-			textNumber[textNumber.length - 2] === '1' &&
-			[2, 3, 4, 5, 6, 7, 8, 9].includes(+textNumber[textNumber.length - 1])
-		) {
-			getCorrectVerb()
-		} else if ([5, 6, 7, 8, 9].includes(+number)) {
+		if (textNumber.length > 1) {
+			if ([0, 1, 5, 6, 7, 8, 9].includes(+textNumber[textNumber.length - 1])) {
+				getCorrectVerb()
+			} else if (
+				textNumber[textNumber.length - 2] === '1' &&
+				[2, 3, 4, 5, 6, 7, 8, 9].includes(+textNumber[textNumber.length - 1])
+			) {
+				getCorrectVerb()
+			}
+		} else if ([5, 6, 7, 8, 9].includes(+textNumber)) {
 			getCorrectVerb()
 		}
 	}
