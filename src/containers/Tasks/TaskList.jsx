@@ -576,7 +576,7 @@ class TaskList extends Component {
 		const { translations, settings } = this.props
 
 		if (task.date) {
-			if (settings.showDeadlineTime) {
+			if (!task.finish && settings.showDeadlineTime) {
 				const firstDate = {
 					date: moment(task.date, task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY'),
 					dateTime: task.date.length > 12,
@@ -698,7 +698,7 @@ class TaskList extends Component {
 											style={{
 												margin: 2,
 												fontWeight: '500',
-												color: task.finished
+												color: task.finish
 													? theme.thirdTextColor
 													: div === translations.overdue
 													? theme.warningColor

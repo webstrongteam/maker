@@ -270,6 +270,21 @@ export const dateDiff = (firstDate, secondDate, translations, lang) => {
 		return correctPrefix
 	}
 
+	let daysDiff
+	if (firstDate.date > secondDate.date) {
+		daysDiff = moment(firstDate.date)
+			.endOf('day')
+			.diff(moment(secondDate.date).startOf('day'), 'days')
+	} else if (firstDate.date < secondDate.date) {
+		daysDiff = moment(firstDate.date)
+			.startOf('day')
+			.diff(moment(secondDate.date).endOf('day'), 'days')
+	}
+
+	if (daysDiff) {
+		return { value: Math.abs(daysDiff), prefix: getCorrectPrefix(daysDiff, 'day') }
+	}
+
 	if (firstDate.dateTime && secondDate.dateTime) {
 		const minutesDiff = firstDate.date.diff(secondDate.date, 'minutes')
 		const hoursDiff = firstDate.date.diff(secondDate.date, 'hours')
@@ -281,16 +296,5 @@ export const dateDiff = (firstDate, secondDate, translations, lang) => {
 		if (minutesDiff !== 0 && minutesDiff < 60) {
 			return { value: Math.abs(minutesDiff), prefix: getCorrectPrefix(minutesDiff, 'minute') }
 		}
-	}
-
-	let daysDiff
-	if (firstDate.date > secondDate.date) {
-		daysDiff = firstDate.date.endOf('day').diff(secondDate.date.startOf('day'), 'days')
-	} else if (firstDate.date < secondDate.date) {
-		daysDiff = firstDate.date.startOf('day').diff(secondDate.date.endOf('day'), 'days')
-	}
-
-	if (daysDiff) {
-		return { value: Math.abs(daysDiff), prefix: getCorrectPrefix(daysDiff, 'day') }
 	}
 }
