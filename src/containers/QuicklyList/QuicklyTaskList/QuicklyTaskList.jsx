@@ -6,8 +6,8 @@ import {
 	RefreshControl,
 	Text,
 	TouchableOpacity,
-	View,
-} from 'react-native'
+	View, Keyboard
+} from "react-native";
 import { IconToggle, Toolbar } from 'react-native-material-ui'
 import { connect } from 'react-redux'
 import { empty, listContainer, listRow, shadow, flex } from '../../../shared/styles'
@@ -47,6 +47,7 @@ class QuicklyTaskList extends Component {
 			},
 			value: '',
 		},
+		keyboardDidShow: false,
 		visibleData: initialNumToRender,
 		searchText: '',
 		loading: true,
@@ -55,12 +56,30 @@ class QuicklyTaskList extends Component {
 	componentDidMount() {
 		const { navigation } = this.props
 
+		this.keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => this.keyboardDidShow(true),
+		);
+		this.keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => this.keyboardDidShow(false),
+		);
+
 		const list = navigation.getParam('list', false)
 		if (list && list.id !== false) {
 			this.reloadTasks(list)
 		} else {
 			this.setState({ loading: false })
 		}
+	}
+
+	componentWillUnmount() {
+		this.keyboardDidShowListener.remove();
+		this.keyboardDidHideListener.remove();
+	}
+
+	keyboardDidShow = (status) => {
+		this.setState({keyboardDidShow: status})
 	}
 
 	reloadTasks = (list = this.state.list) => {
@@ -185,6 +204,7 @@ class QuicklyTaskList extends Component {
 	}
 
 	renderTaskRow = (item, index) => {
+		const {keyboardDidShow} = this.state
 		const { theme } = this.props
 
 		// Searching system
@@ -200,7 +220,13 @@ class QuicklyTaskList extends Component {
 					...listRow,
 					backgroundColor: theme.primaryBackgroundColor,
 				}}
-				onPress={() => this.toggleModalHandler(item.id)}
+				onPress={() => {
+					if (keyboardDidShow) {
+						Keyboard.dismiss()
+					} else {
+						this.toggleModalHandler(item.id)
+					}
+				}}
 			>
 				<View style={listContainer}>
 					<View style={styles.taskNameWrapper}>
