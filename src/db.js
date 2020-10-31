@@ -1,19 +1,9 @@
+import { AsyncStorage } from 'react-native'
 import { openDatabase } from 'expo-sqlite'
-import { AsyncStorage, NativeModules, Platform } from 'react-native'
+import { getLocale } from './shared/utility'
 
 export const VERSION = '2.5.0' // APP VERSION
 const db = openDatabase('maker.db', VERSION)
-
-const getLocale = () => {
-	const locale =
-		Platform.OS === 'ios'
-			? NativeModules.SettingsManager.settings.AppleLocale
-			: NativeModules.I18nManager.localeIdentifier
-	if (locale === 'pl_PL') {
-		return 'pl'
-	}
-	return 'en'
-}
 
 export const initDatabase = (callback) => {
 	db.transaction(

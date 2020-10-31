@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Button, ListItem } from 'react-native-material-ui'
-import Input from '../../../../components/UI/Input/Input'
+import Input from '../../../../components/Input/Input'
 import { getTimeVariant } from '../../../../shared/utility'
+import { flex } from '../../../../shared/styles'
+import styles from './RepeatTime.styles'
 
 import { connect } from 'react-redux'
 
@@ -55,7 +57,7 @@ class RepeatTime extends Component {
 		}
 
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={flex}>
 				<ScrollView>
 					<Input
 						elementConfig={control}
@@ -97,15 +99,7 @@ class RepeatTime extends Component {
 							)
 						})}
 					</View>
-					<View
-						style={{
-							flex: 2,
-							flexDirection: 'row',
-							alignItems: 'center',
-							justifyContent: 'space-between',
-							margin: 50,
-						}}
-					>
+					<View style={styles.buttons}>
 						<Button
 							raised
 							icon='done'

@@ -6,20 +6,21 @@ import {
 	RefreshControl,
 	Text,
 	TouchableOpacity,
-	View, Keyboard
-} from "react-native";
+	View,
+	Keyboard,
+} from 'react-native'
 import { IconToggle, Toolbar } from 'react-native-material-ui'
-import { connect } from 'react-redux'
-import { empty, listContainer, listRow, shadow, flex } from '../../../shared/styles'
-import Input from '../../../components/UI/Input/Input'
+import { empty, listRow, shadow, flex } from '../../../shared/styles'
+import Input from '../../../components/Input/Input'
 import { generateDialogObject } from '../../../shared/utility'
 import ConfigQuicklyTask from '../ConfigQuicklyTask/ConfigQuicklyTask'
-import Spinner from '../../../components/UI/Spinner/Spinner'
+import Spinner from '../../../components/Spinner/Spinner'
 import Template from '../../Template/Template'
-import Dialog from '../../../components/UI/Dialog/Dialog'
+import Dialog from '../../../components/Dialog/Dialog'
 import styles from './QuicklyTaskList.styles'
 
 import * as actions from '../../../store/actions'
+import { connect } from 'react-redux'
 
 const initialNumToRender = 16
 
@@ -56,14 +57,12 @@ class QuicklyTaskList extends Component {
 	componentDidMount() {
 		const { navigation } = this.props
 
-		this.keyboardDidShowListener = Keyboard.addListener(
-			'keyboardDidShow',
-			() => this.keyboardDidShow(true),
-		);
-		this.keyboardDidHideListener = Keyboard.addListener(
-			'keyboardDidHide',
-			() => this.keyboardDidShow(false),
-		);
+		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
+			this.keyboardDidShow(true),
+		)
+		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () =>
+			this.keyboardDidShow(false),
+		)
 
 		const list = navigation.getParam('list', false)
 		if (list && list.id !== false) {
@@ -74,12 +73,12 @@ class QuicklyTaskList extends Component {
 	}
 
 	componentWillUnmount() {
-		this.keyboardDidShowListener.remove();
-		this.keyboardDidHideListener.remove();
+		this.keyboardDidShowListener.remove()
+		this.keyboardDidHideListener.remove()
 	}
 
 	keyboardDidShow = (status) => {
-		this.setState({keyboardDidShow: status})
+		this.setState({ keyboardDidShow: status })
 	}
 
 	reloadTasks = (list = this.state.list) => {
@@ -204,7 +203,7 @@ class QuicklyTaskList extends Component {
 	}
 
 	renderTaskRow = (item, index) => {
-		const {keyboardDidShow} = this.state
+		const { keyboardDidShow } = this.state
 		const { theme } = this.props
 
 		// Searching system
@@ -228,7 +227,7 @@ class QuicklyTaskList extends Component {
 					}
 				}}
 			>
-				<View style={listContainer}>
+				<View style={styles.listContainer}>
 					<View style={styles.taskNameWrapper}>
 						<Text
 							numberOfLines={1}
@@ -250,6 +249,12 @@ class QuicklyTaskList extends Component {
 				</View>
 			</TouchableOpacity>
 		)
+	}
+
+	renderEmptyList = () => {
+		const { theme, translations } = this.props
+
+		return <Text style={[empty, { color: theme.thirdTextColor }]}>{translations.emptyList}</Text>
 	}
 
 	render() {
@@ -305,7 +310,7 @@ class QuicklyTaskList extends Component {
 								</Text>
 							</TouchableOpacity>
 						) : (
-							<View style={{ marginTop: 10 }}>
+							<View style={styles.spinnerWrapper}>
 								<Spinner color={theme.secondaryBackgroundColor} size='small' />
 							</View>
 						)
@@ -326,7 +331,7 @@ class QuicklyTaskList extends Component {
 
 				{!loading ? (
 					<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'none'} style={flex}>
-						<View style={{ flex: 1, justifyContent: 'space-between' }}>
+						<View style={styles.quicklyTaskListWrapper}>
 							<FlatList
 								keyboardShouldPersistTaps='handled'
 								keyboardDismissMode='interactive'
@@ -338,14 +343,10 @@ class QuicklyTaskList extends Component {
 										onRefresh={this.reloadTasks}
 									/>
 								}
-								style={{ paddingTop: 5 }}
+								style={styles.quicklyTaskList}
 								onEndReached={this.loadNextData}
 								initialNumToRender={initialNumToRender}
-								ListEmptyComponent={
-									<Text style={[empty, { color: theme.thirdTextColor }]}>
-										{translations.emptyList}
-									</Text>
-								}
+								ListEmptyComponent={this.renderEmptyList()}
 								renderItem={({ item, index }) => this.renderTaskRow(item, index)}
 								keyExtractor={(item) => `${item.id}`}
 								onRefresh={this.reloadTasks}
@@ -363,7 +364,7 @@ class QuicklyTaskList extends Component {
 										this.setState({ input: { ...input, value } })
 									}}
 								/>
-								<View style={{ marginLeft: -20 }}>
+								<View style={styles.addIcon}>
 									<IconToggle onPress={this.addTask} name='add' />
 								</View>
 							</View>

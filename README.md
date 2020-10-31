@@ -58,7 +58,8 @@
 
 ### ToDo:
 
-- Clean up code
+- Add analytics request
+- Update privacy policy
 
 **iOS:**
 
@@ -68,6 +69,4 @@
 
 This application was created by **https://webstrong.pl** <br />
 
-> **Google Play:** https://play.google.com/store/apps/details?id=com.webStrong.maker <br />
-> **Apple Store:** https://apps.apple.com/us/app/maker-todo-list/id1502811101 <br />
-> **Expo:** https://expo.io/@mateuszpijanowski/maker
+> **Google Play:** https://play.google.com/store/apps/details?id=com.webStrong.maker <br /> > **Apple Store:** https://apps.apple.com/us/app/maker-todo-list/id1502811101 <br /> > **Expo:** https://expo.io/@mateuszpijanowski/maker

@@ -21,6 +21,9 @@ export default StyleSheet.create({
 		paddingTop: 20,
 		paddingBottom: 5,
 	},
+	footer: {
+		opacity: 0.75,
+	},
 	copy: {
 		textAlign: 'center',
 		paddingTop: 10,

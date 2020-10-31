@@ -8,16 +8,17 @@ import {
 	TouchableWithoutFeedback,
 	View,
 } from 'react-native'
-import { Button, Toolbar } from 'react-native-material-ui'
 import axios from 'axios'
-import { connect } from 'react-redux'
+import { Button, Toolbar } from 'react-native-material-ui'
+import { flex } from '../../shared/styles'
 import { AUTH_KEY } from '../../config/auth'
-import Spinner from '../../components/UI/Spinner/Spinner'
-import Input from '../../components/UI/Input/Input'
+import Spinner from '../../components/Spinner/Spinner'
+import Input from '../../components/Input/Input'
 import Template from '../Template/Template'
 import styles from './Report.styles'
 
 import * as actions from '../../store/actions'
+import { connect } from 'react-redux'
 
 class Report extends Component {
 	state = {
@@ -95,23 +96,25 @@ class Report extends Component {
 		const { title, description, sending, controls } = this.state
 		const { navigation, theme, translations } = this.props
 
+		const validDate = !controls.title.error && !controls.description.error
+
 		return (
 			<Template bgColor={theme.secondaryBackgroundColor}>
 				<Toolbar
 					leftElement='arrow-back'
-					onLeftElementPress={() => navigation.goBack()}
+					onLeftElementPress={navigation.goBack}
 					centerElement={translations.title}
 				/>
-				<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-					<View style={styles.form}>
-						<KeyboardAvoidingView behavior='padding' style={{ flex: 1 }}>
+				<KeyboardAvoidingView behavior='padding' style={flex}>
+					<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+						<View style={styles.formWrapper}>
 							<View>
 								<Text style={{ ...styles.headerText, color: theme.thirdTextColor }}>
 									{translations.headerText}
 								</Text>
 							</View>
 							<ScrollView>
-								<View style={{ flex: 1, paddingBottom: 50 }}>
+								<View style={styles.form}>
 									<Input
 										elementConfig={controls.title}
 										focus={false}
@@ -136,17 +139,18 @@ class Report extends Component {
 								<Button
 									raised
 									icon='send'
+									disabled={!validDate}
 									text={translations.sendButton}
 									onPress={this.sendReport}
 									style={{
-										container: { backgroundColor: theme.doneIconColor },
+										container: { backgroundColor: validDate ? theme.doneIconColor : '#bfbfbf' },
 										text: { color: theme.primaryTextColor },
 									}}
 								/>
 							)}
-						</KeyboardAvoidingView>
-					</View>
-				</TouchableWithoutFeedback>
+						</View>
+					</TouchableWithoutFeedback>
+				</KeyboardAvoidingView>
 			</Template>
 		)
 	}

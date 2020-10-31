@@ -59,4 +59,22 @@ export default StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
+	taskRow: {
+		marginLeft: 15,
+		marginRight: 15,
+		marginBottom: 15,
+	},
+	taskRowLeftElement: {
+		marginLeft: -20,
+		width: 15,
+		height: '100%',
+	},
+	taskName: {
+		margin: 2,
+		fontSize: 16,
+	},
+	taskDate: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
 })

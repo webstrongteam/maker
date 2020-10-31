@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Drawer, Toolbar } from 'react-native-material-ui'
-import { connect } from 'react-redux'
 import Template from '../Template/Template'
-import { BannerAd } from '../../components/Ads/BannerAd'
+
+import { connect } from 'react-redux'
 
 class DrawerContainer extends Component {
 	render() {
@@ -12,7 +12,7 @@ class DrawerContainer extends Component {
 			<Template bgColor={theme.secondaryBackgroundColor}>
 				<Toolbar
 					leftElement='arrow-back'
-					onLeftElementPress={() => navigation.goBack()}
+					onLeftElementPress={navigation.goBack}
 					centerElement={translations.back}
 				/>
 				<Drawer style={{ container: { backgroundColor: theme.secondaryBackgroundColor } }}>
@@ -65,7 +65,6 @@ class DrawerContainer extends Component {
 						]}
 					/>
 				</Drawer>
-				<BannerAd />
 			</Template>
 		)
 	}

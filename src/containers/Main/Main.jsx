@@ -1,16 +1,15 @@
 import React, { Component } from 'react'
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
-import { connect } from 'react-redux'
-import Spinner from '../../components/UI/Spinner/Spinner'
+import Spinner from '../../components/Spinner/Spinner'
 import TaskList from '../Tasks/TaskList'
 import Template from '../Template/Template'
 import QuicklyList from '../QuicklyList/QuicklyList'
 
 import * as actions from '../../store/actions'
+import { connect } from 'react-redux'
 
-class ToDo extends Component {
+class Main extends Component {
 	state = {
-		loading: true,
 		tabs: {
 			index: 0,
 			routes: [
@@ -18,17 +17,16 @@ class ToDo extends Component {
 				{ key: 'lists', title: this.props.translations.quicklyLists },
 			],
 		},
+		loading: true,
 	}
 
 	componentDidMount() {
-		const { props } = this
-
-		props.onInitTheme()
-		props.onInitCategories()
-		props.onInitProfile()
-		props.onInitToDo()
-		props.onInitLists()
-		props.onInitSettings(() => {
+		this.props.onInitTheme()
+		this.props.onInitCategories()
+		this.props.onInitProfile()
+		this.props.onInitToDo()
+		this.props.onInitLists()
+		this.props.onInitSettings(() => {
 			this.setState({ loading: false })
 		})
 	}
@@ -92,8 +90,9 @@ const mapStateToProps = (state) => ({
 	theme: state.theme.theme,
 	lang: state.settings.settings.lang,
 	hideTabView: state.settings.settings.hideTabView,
-	translations: state.settings.translations.ToDo,
+	translations: state.settings.translations.Main,
 })
+
 const mapDispatchToProps = (dispatch) => ({
 	onInitToDo: () => dispatch(actions.initToDo()),
 	onInitLists: () => dispatch(actions.initLists()),
@@ -103,4 +102,4 @@ const mapDispatchToProps = (dispatch) => ({
 	onInitSettings: (callback) => dispatch(actions.initSettings(callback)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ToDo)
+export default connect(mapStateToProps, mapDispatchToProps)(Main)

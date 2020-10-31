@@ -1,5 +1,5 @@
+import { Dimensions, NativeModules, Platform } from 'react-native'
 import moment from 'moment'
-import { Dimensions } from 'react-native'
 
 export const updateObject = (oldObject, newProps) => ({
 	...oldObject,
@@ -7,6 +7,19 @@ export const updateObject = (oldObject, newProps) => ({
 })
 
 export const { width } = Dimensions.get('window')
+
+export const dateTime = (date) => date.length > 12
+
+export const getLocale = () => {
+	const locale =
+		Platform.OS === 'ios'
+			? NativeModules.SettingsManager.settings.AppleLocale
+			: NativeModules.I18nManager.localeIdentifier
+	if (locale === 'pl_PL') {
+		return 'pl'
+	}
+	return 'en'
+}
 
 export const getTimeVariant = (number, verb, lang, translations) => {
 	let correctVerb = translations[verb]

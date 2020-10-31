@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { Avatar, Button } from 'react-native-material-ui'
 import { weekdaysCodes } from '../../../../shared/consts'
+import { flex } from '../../../../shared/styles'
+import styles from './RepeatDays.styles'
 
 import { connect } from 'react-redux'
 
@@ -62,25 +64,19 @@ class RepeatDays extends Component {
 		}
 
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={flex}>
 				<ScrollView>
 					<Text
 						style={{
-							margin: 40,
+							...styles.title,
 							color: theme.thirdTextColor,
-							fontSize: 21,
-							textAlign: 'center',
 						}}
 					>
 						{translations.repeatDaysTitle}
 					</Text>
 					<View
 						style={{
-							flex: 1,
-							marginTop: 20,
-							flexDirection: 'row',
-							justifyContent: 'center',
-							flexWrap: 'wrap',
+							...styles.repeatTimesWrapper,
 							color: theme.primaryTextColor,
 						}}
 					>
@@ -102,15 +98,7 @@ class RepeatDays extends Component {
 							</TouchableOpacity>
 						))}
 					</View>
-					<View
-						style={{
-							flex: 1,
-							flexDirection: 'row',
-							alignItems: 'center',
-							justifyContent: 'space-between',
-							margin: 50,
-						}}
-					>
+					<View style={styles.buttons}>
 						<Button
 							raised
 							icon='done'

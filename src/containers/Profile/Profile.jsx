@@ -4,15 +4,14 @@ import { askAsync, CAMERA_ROLL } from 'expo-permissions'
 import Constants from 'expo-constants'
 import { launchImageLibraryAsync, MediaTypeOptions } from 'expo-image-picker'
 import { Toolbar } from 'react-native-material-ui'
-import { connect } from 'react-redux'
-import Input from '../../components/UI/Input/Input'
+import Input from '../../components/Input/Input'
 import Template from '../Template/Template'
-import Spinner from '../../components/UI/Spinner/Spinner'
+import Spinner from '../../components/Spinner/Spinner'
 import { separator } from '../../shared/styles'
-import { BannerAd } from '../../components/Ads/BannerAd'
 import styles from './Profile.styles'
 
 import * as actions from '../../store/actions'
+import { connect } from 'react-redux'
 
 const defaultAvatar = require('../../assets/profile.png')
 
@@ -93,7 +92,7 @@ class Profile extends PureComponent {
 				<View key={index}>
 					<View style={[styles.item, { backgroundColor: theme.primaryBackgroundColor }]}>
 						<Text style={{ color: theme.thirdTextColor, fontSize: 16 }}>{item.label}</Text>
-						<Text style={{ fontSize: 19, color: theme.primaryColor }}>{item.data}</Text>
+						<Text style={{ color: theme.primaryColor, fontSize: 18 }}>{item.data}</Text>
 					</View>
 					<View style={separator} />
 				</View>
@@ -104,7 +103,7 @@ class Profile extends PureComponent {
 			<Template>
 				<Toolbar
 					leftElement='arrow-back'
-					onLeftElementPress={() => navigation.goBack()}
+					onLeftElementPress={navigation.goBack}
 					centerElement={translations.title}
 				/>
 
@@ -144,7 +143,6 @@ class Profile extends PureComponent {
 				) : (
 					<Spinner />
 				)}
-				<BannerAd />
 			</Template>
 		)
 	}
@@ -160,6 +158,7 @@ const mapStateToProps = (state) => ({
 	lists: state.lists.lists,
 	translations: state.settings.translations.Profile,
 })
+
 const mapDispatchToProps = (dispatch) => ({
 	onInitSettings: () => dispatch(actions.initSettings()),
 	onInitProfile: (callback) => dispatch(actions.initProfile(callback)),

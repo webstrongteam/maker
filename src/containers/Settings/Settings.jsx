@@ -1,17 +1,15 @@
 import React, { PureComponent } from 'react'
-import { Icon, Toolbar } from 'react-native-material-ui'
-import SettingsList from 'react-native-settings-list'
+import { Toolbar } from 'react-native-material-ui'
 import { Text, View } from 'react-native'
-import { connect } from 'react-redux'
+import SettingsList from './SettingsList/SettingsList'
 import Template from '../Template/Template'
-import Spinner from '../../components/UI/Spinner/Spinner'
-import { iconStyle } from '../../shared/styles'
+import Spinner from '../../components/Spinner/Spinner'
+import Dialog from '../../components/Dialog/Dialog'
 import { generateDialogObject } from '../../shared/utility'
-import { BannerAd } from '../../components/Ads/BannerAd'
 import styles from './Settings.styles'
 
 import * as actions from '../../store/actions'
-import Dialog from '../../components/UI/Dialog/Dialog'
+import { connect } from 'react-redux'
 
 class Settings extends PureComponent {
 	state = {
@@ -27,9 +25,7 @@ class Settings extends PureComponent {
 	}
 
 	componentDidMount() {
-		const { onInitSettings } = this.props
-
-		onInitSettings(() => this.setState({ loading: false }))
+		this.props.onInitSettings(() => this.setState({ loading: false }))
 	}
 
 	componentDidUpdate(prevProps) {
@@ -48,9 +44,7 @@ class Settings extends PureComponent {
 	}
 
 	toggleSnackbar = (message, visible = true) => {
-		const { onUpdateSnackbar } = this.props
-
-		onUpdateSnackbar(visible, message)
+		this.props.onUpdateSnackbar(visible, message)
 	}
 
 	toggleSetting = (value, name) => {
@@ -135,169 +129,13 @@ class Settings extends PureComponent {
 				{!loading ? (
 					<>
 						<SettingsList
-							backgroundColor={theme.secondaryBackgroundColor}
-							borderColor={theme.secondaryBackgroundColor}
-							defaultItemSize={50}
-						>
-							<SettingsList.Item
-								hasNavArrow={false}
-								title={translations.app}
-								titleStyle={{ color: '#009688', fontWeight: '500' }}
-								itemWidth={50}
-								borderHide='Both'
-							/>
-							<SettingsList.Item
-								icon={
-									<View style={iconStyle}>
-										<Icon
-											color={theme.thirdTextColor}
-											style={{ alignSelf: 'center' }}
-											name='alarm'
-										/>
-									</View>
-								}
-								hasNavArrow={false}
-								itemWidth={70}
-								hasSwitch
-								switchState={!!settings.timeFormat}
-								switchOnValueChange={(value) => this.toggleSetting(value, 'TimeFormat')}
-								titleStyle={{ color: theme.thirdTextColor, fontSize: 16 }}
-								title={translations.timeCycle}
-							/>
-							<SettingsList.Item
-								icon={
-									<View style={iconStyle}>
-										<Icon
-											color={theme.thirdTextColor}
-											style={{ alignSelf: 'center' }}
-											name='event'
-										/>
-									</View>
-								}
-								hasNavArrow
-								itemWidth={70}
-								hasSwitch={false}
-								titleInfo={daysOfWeek.find((d) => d.value === settings.firstDayOfWeek).name}
-								onPress={() => this.showDialog('showFirstDayOfWeek')}
-								titleStyle={{ color: theme.thirdTextColor, fontSize: 16 }}
-								title={translations.firstDayOfWeek}
-							/>
-							<SettingsList.Item
-								icon={
-									<View style={iconStyle}>
-										<Icon
-											color={theme.thirdTextColor}
-											style={{ alignSelf: 'center' }}
-											name='done'
-										/>
-									</View>
-								}
-								hasNavArrow={false}
-								itemWidth={70}
-								hasSwitch
-								switchState={!!settings.confirmFinishingTask}
-								switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmFinishingTask')}
-								titleStyle={{ color: theme.thirdTextColor, fontSize: 16 }}
-								title={translations.confirmFinishing}
-							/>
-							<SettingsList.Item
-								icon={
-									<View style={iconStyle}>
-										<Icon
-											color={theme.thirdTextColor}
-											style={{ alignSelf: 'center' }}
-											name='autorenew'
-										/>
-									</View>
-								}
-								hasNavArrow={false}
-								itemWidth={70}
-								hasSwitch
-								switchState={!!settings.confirmRepeatingTask}
-								switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmRepeatingTask')}
-								titleStyle={{ color: theme.thirdTextColor, fontSize: 16 }}
-								title={translations.confirmRepeating}
-							/>
-							<SettingsList.Item
-								icon={
-									<View style={iconStyle}>
-										<Icon
-											color={theme.thirdTextColor}
-											style={{ alignSelf: 'center' }}
-											name='delete'
-										/>
-									</View>
-								}
-								hasNavArrow={false}
-								itemWidth={70}
-								hasSwitch
-								switchState={!!settings.confirmDeletingTask}
-								switchOnValueChange={(value) => this.toggleSetting(value, 'ConfirmDeletingTask')}
-								titleStyle={{ color: theme.thirdTextColor, fontSize: 16 }}
-								title={translations.confirmDeleting}
-							/>
-							<SettingsList.Item
-								icon={
-									<View style={iconStyle}>
-										<Icon
-											color={theme.thirdTextColor}
-											style={{ alignSelf: 'center' }}
-											name='timelapse'
-										/>
-									</View>
-								}
-								hasNavArrow={false}
-								itemWidth={70}
-								hasSwitch
-								switchState={!!settings.showDeadlineTime}
-								switchOnValueChange={(value) => this.toggleSetting(value, 'ShowDeadlineTime')}
-								titleStyle={{ color: theme.thirdTextColor, fontSize: 16 }}
-								title={translations.showDeadlineTime}
-							/>
-							<SettingsList.Item
-								hasNavArrow={false}
-								title={translations.general}
-								titleStyle={{ color: '#009688', fontWeight: '500' }}
-								itemWidth={50}
-								borderHide='Both'
-							/>
-							<SettingsList.Item
-								icon={
-									<View style={iconStyle}>
-										<Icon
-											color={theme.thirdTextColor}
-											style={{ alignSelf: 'center' }}
-											name='g-translate'
-										/>
-									</View>
-								}
-								hasNavArrow
-								itemWidth={70}
-								hasSwitch={false}
-								titleInfo={settings.lang}
-								onPress={() => this.showDialog('showLanguages')}
-								titleStyle={{ color: theme.thirdTextColor, fontSize: 16 }}
-								title={translations.language}
-							/>
-							<SettingsList.Item
-								icon={
-									<View style={iconStyle}>
-										<Icon
-											color={theme.thirdTextColor}
-											style={{ alignSelf: 'center' }}
-											name='view-compact'
-										/>
-									</View>
-								}
-								hasNavArrow={false}
-								itemWidth={70}
-								hasSwitch
-								switchState={!!settings.hideTabView}
-								switchOnValueChange={(value) => this.toggleSetting(value, 'HideTabView')}
-								titleStyle={{ color: theme.thirdTextColor, fontSize: 16 }}
-								title={translations.hideTabView}
-							/>
-						</SettingsList>
+							translations={translations}
+							theme={theme}
+							settings={settings}
+							daysOfWeek={daysOfWeek}
+							showDialog={this.showDialog}
+							toggleSetting={this.toggleSetting}
+						/>
 						<View style={styles.version}>
 							<Text style={{ color: theme.thirdTextColor }}>
 								{translations.version}: &nbsp;
@@ -308,7 +146,6 @@ class Settings extends PureComponent {
 				) : (
 					<Spinner />
 				)}
-				<BannerAd />
 			</Template>
 		)
 	}
@@ -322,6 +159,7 @@ const mapStateToProps = (state) => ({
 		...state.settings.translations.common,
 	},
 })
+
 const mapDispatchToProps = (dispatch) => ({
 	onInitSettings: (callback) => dispatch(actions.initSettings(callback)),
 	onChangeLang: (value) => dispatch(actions.changeLang(value)),

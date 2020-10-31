@@ -4,11 +4,12 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { IconToggle, Toolbar, Checkbox } from 'react-native-material-ui'
 import { askAsync, CALENDAR, NOTIFICATIONS, REMINDERS } from 'expo-permissions'
 import moment from 'moment'
-import { dateFormat } from '../../../shared/consts'
-import Subheader from '../../../components/UI/Subheader/Subheader'
-import Spinner from '../../../components/UI/Spinner/Spinner'
+import { flex } from '../../../shared/styles'
+import { dateFormat, dateTimeFormat, timeFormat, timeFormatA } from '../../../shared/consts'
+import Subheader from '../../../components/Subheader/Subheader'
+import Spinner from '../../../components/Spinner/Spinner'
 import Template from '../../Template/Template'
-import Input from '../../../components/UI/Input/Input'
+import Input from '../../../components/Input/Input'
 import ConfigCategory from '../../Categories/ConfigCategory/ConfigCategory'
 import OtherRepeat from './OtherRepeat/OtherRepeat'
 import {
@@ -17,12 +18,12 @@ import {
 	convertNumberToDate,
 	convertPriorityNames,
 	convertRepeatNames,
+	dateTime,
 	generateDialogObject,
 	getTimeVariant,
 } from '../../../shared/utility'
 import { configTask } from '../../../shared/configTask'
-import { BannerAd } from '../../../components/Ads/BannerAd'
-import Dialog from '../../../components/UI/Dialog/Dialog'
+import Dialog from '../../../components/Dialog/Dialog'
 import styles from './ConfigTask.styles'
 
 import * as actions from '../../../store/actions'
@@ -297,7 +298,7 @@ class ConfigTask extends Component {
 	convertDate = (newDate) => {
 		const { task } = this.state
 
-		if (task.date.length > 12) {
+		if (dateTime(task.date)) {
 			return `${newDate}${task.date.slice(10, 18)}`
 		}
 		return newDate
@@ -360,7 +361,7 @@ class ConfigTask extends Component {
 		let { task, setEvent, setNotification } = this.state
 		const { navigation, theme, onSaveTask } = this.props
 
-		if (task.date.length < 13) setNotification = false
+		if (dateTime(task.date)) setNotification = false
 		configTask(task, theme.primaryColor, setEvent, setNotification)
 			.then((task) => {
 				onSaveTask(task, navigation.goBack)
@@ -399,11 +400,12 @@ class ConfigTask extends Component {
 			showDialog,
 		} = this.state
 		const { navigation, theme, settings, translations } = this.props
+		const isDateTime = dateTime(task.date)
 		let date
 		let now
 
-		if (task.date.length > 12) {
-			date = moment(task.date, 'DD-MM-YYYY - HH:mm')
+		if (isDateTime) {
+			date = moment(task.date, dateTimeFormat)
 			now = new Date()
 		} else {
 			date = moment(task.date, dateFormat)
@@ -422,13 +424,13 @@ class ConfigTask extends Component {
 								translations.newTask
 							)
 						) : (
-							<View style={{ marginTop: 10 }}>
+							<View style={styles.spinnerWrapper}>
 								<Spinner color={theme.primaryBackgroundColor} size='small' />
 							</View>
 						)
 					}
 					rightElement={
-						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+						<View style={styles.headerIcons}>
 							{editTask && (
 								<IconToggle
 									name='delete'
@@ -451,7 +453,7 @@ class ConfigTask extends Component {
 					showModal={showOtherRepeat}
 					repeat={repeatValue}
 					selectedTime={selectedTime}
-					usingTime={task.date.length > 13}
+					usingTime={isDateTime}
 					save={(repeat, selectedTime) => this.saveOtherRepeat(repeat, selectedTime)}
 					cancel={() => this.setState({ showOtherRepeat: false })}
 				/>
@@ -482,11 +484,12 @@ class ConfigTask extends Component {
 							value={task.description}
 							changed={(value) => this.updateTask('description', value)}
 						/>
+
 						<View style={styles.container}>
 							<Subheader text={translations.dueDate} />
-							<View style={{ flex: 1, width: '100%' }}>
+							<View style={styles.dateContainer}>
 								<TouchableOpacity onPress={this.toggleDateModal}>
-									<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+									<View style={styles.dateWrapper}>
 										<View style={{ ...styles.datePicker, borderColor: theme.primaryColor }}>
 											<Text
 												style={{
@@ -537,9 +540,9 @@ class ConfigTask extends Component {
 
 							{task.date !== '' && (
 								<>
-									<View style={{ flex: 1, width: '100%', marginBottom: 10 }}>
+									<View style={styles.dateContainer}>
 										<TouchableOpacity onPress={this.toggleTimeModal}>
-											<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+											<View style={styles.dateWrapper}>
 												<View style={{ ...styles.datePicker, borderColor: theme.primaryColor }}>
 													<Text
 														style={{
@@ -573,11 +576,11 @@ class ConfigTask extends Component {
 										mode='time'
 										date={
 											task.date.slice(13, 18)
-												? new Date(moment(task.date.slice(13, 18), 'HH:mm').format())
+												? new Date(moment(task.date.slice(13, 18), timeFormat).format())
 												: new Date()
 										}
 										is24Hour={!!settings.timeFormat}
-										format={settings.timeFormat ? 'HH:mm' : 'hh:mm A'}
+										format={settings.timeFormat ? timeFormat : timeFormatA}
 										isDarkModeEnabled={false}
 										confirmTextIOS={translations.confirm}
 										cancelTextIOS={translations.cancel}
@@ -587,7 +590,7 @@ class ConfigTask extends Component {
 											this.toggleTimeModal()
 											this.updateTask(
 												'date',
-												`${task.date.slice(0, 10)} - ${moment(date).format('HH:mm')}`,
+												`${task.date.slice(0, 10)} - ${moment(date).format(timeFormat)}`,
 											)
 										}}
 									/>
@@ -599,7 +602,8 @@ class ConfigTask extends Component {
 										checked={setEvent}
 										onCheck={(value) => this.setEvent(value)}
 									/>
-									{task.date.length > 12 && (
+
+									{isDateTime && (
 										<Checkbox
 											style={{ label: { color: theme.thirdTextColor } }}
 											label={translations.setNotification}
@@ -608,9 +612,10 @@ class ConfigTask extends Component {
 											onCheck={(value) => this.setNotification(value)}
 										/>
 									)}
+
 									<Subheader text={translations.repeat} />
 									<View style={styles.select}>
-										<TouchableOpacity style={{ flex: 1 }} onPress={() => this.showDialog('repeat')}>
+										<TouchableOpacity style={flex} onPress={() => this.showDialog('repeat')}>
 											<Text
 												style={{
 													...styles.selectedOption,
@@ -620,13 +625,14 @@ class ConfigTask extends Component {
 												{+task.repeat ? otherOption : convertRepeatNames(task.repeat, translations)}
 											</Text>
 										</TouchableOpacity>
-										<IconToggle onPress={() => this.toggleOtherRepeat()} name='playlist-add' />
+										<IconToggle onPress={this.toggleOtherRepeat} name='playlist-add' />
 									</View>
 								</>
 							)}
+
 							<Subheader text={translations.category} />
 							<View style={styles.select}>
-								<TouchableOpacity style={{ flex: 1 }} onPress={() => this.showDialog('category')}>
+								<TouchableOpacity style={flex} onPress={() => this.showDialog('category')}>
 									<Text
 										style={{
 											...styles.selectedOption,
@@ -636,11 +642,12 @@ class ConfigTask extends Component {
 										{task.category.name}
 									</Text>
 								</TouchableOpacity>
-								<IconToggle onPress={() => this.toggleConfigCategory()} name='playlist-add' />
+								<IconToggle onPress={this.toggleConfigCategory} name='playlist-add' />
 							</View>
+
 							<Subheader text={translations.priority} />
 							<View style={styles.select}>
-								<TouchableOpacity style={{ flex: 1 }} onPress={() => this.showDialog('priority')}>
+								<TouchableOpacity style={flex} onPress={() => this.showDialog('priority')}>
 									<Text
 										style={{
 											...styles.selectedOption,
@@ -656,7 +663,6 @@ class ConfigTask extends Component {
 				) : (
 					<Spinner />
 				)}
-				<BannerAd />
 			</Template>
 		)
 	}
@@ -674,6 +680,7 @@ const mapStateToProps = (state) => ({
 		...state.settings.translations.common,
 	},
 })
+
 const mapDispatchToProps = (dispatch) => ({
 	onInitTask: (id, callback) => dispatch(actions.initTask(id, callback)),
 	onSaveTask: (task, callback) => dispatch(actions.saveTask(task, callback)),

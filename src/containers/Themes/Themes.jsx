@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react'
-import { Icon, IconToggle, Toolbar, withTheme } from 'react-native-material-ui'
+import { Toolbar, withTheme } from 'react-native-material-ui'
 import SettingsList from 'react-native-settings-list'
-import { View } from 'react-native'
-import { connect } from 'react-redux'
 import Template from '../Template/Template'
-import Spinner from '../../components/UI/Spinner/Spinner'
-import { iconStyle } from '../../shared/styles'
-import { BannerAd } from '../../components/Ads/BannerAd'
+import Spinner from '../../components/Spinner/Spinner'
+import Icon from '../../components/Icon/Icon'
+import { settingsHeading } from '../../shared/styles'
+import { headingWidth, itemWidth } from '../../shared/consts'
 
 import * as actions from '../../store/actions'
+import { connect } from 'react-redux'
 
 class Themes extends PureComponent {
 	state = {
@@ -17,9 +17,7 @@ class Themes extends PureComponent {
 	}
 
 	componentDidMount() {
-		const { onInitThemes } = this.props
-
-		onInitThemes()
+		this.props.onInitThemes()
 	}
 
 	componentDidUpdate(prevProps) {
@@ -32,24 +30,21 @@ class Themes extends PureComponent {
 	}
 
 	toggleSnackbar = (message, visible = true) => {
-		const { onUpdateSnackbar } = this.props
-
-		onUpdateSnackbar(visible, message)
+		this.props.onUpdateSnackbar(visible, message)
 	}
 
 	initThemes = () => {
 		const { actualTheme } = this.props
 
 		if (actualTheme.id === false) {
-			const { onInitTheme } = this.props
-
-			onInitTheme()
+			this.props.onInitTheme()
 		} else {
-			const { themes } = this.props
 			const selectedTheme = {}
-			themes.map((theme) => {
+
+			this.props.themes.map((theme) => {
 				selectedTheme[theme.id] = +actualTheme.id === +theme.id
 			})
+
 			this.setState({ selectedTheme, loading: false })
 		}
 	}
@@ -80,14 +75,8 @@ class Themes extends PureComponent {
 			<Template bgColor={actualTheme.secondaryBackgroundColor}>
 				<Toolbar
 					leftElement='arrow-back'
-					rightElement={
-						<IconToggle
-							name='add'
-							color={actualTheme.primaryTextColor}
-							onPress={() => navigation.navigate('Theme')}
-						/>
-					}
-					onLeftElementPress={() => navigation.goBack()}
+					rightElement={<Icon name='add' color={actualTheme.primaryTextColor} />}
+					onLeftElementPress={navigation.goBack}
 					centerElement={translations.title}
 				/>
 
@@ -95,27 +84,19 @@ class Themes extends PureComponent {
 					<SettingsList
 						backgroundColor={actualTheme.secondaryBackgroundColor}
 						borderColor={actualTheme.secondaryBackgroundColor}
-						defaultItemSize={50}
+						defaultItemSize={headingWidth}
 					>
 						<SettingsList.Item
 							hasNavArrow={false}
 							title={translations.themesList}
-							titleStyle={{ color: '#009688', fontWeight: '500' }}
-							itemWidth={50}
+							titleStyle={settingsHeading}
+							itemWidth={headingWidth}
 							borderHide='Both'
 						/>
 						<SettingsList.Item
-							icon={
-								<View style={iconStyle}>
-									<Icon
-										name='home'
-										color={actualTheme.thirdTextColor}
-										style={{ alignSelf: 'center' }}
-									/>
-								</View>
-							}
+							icon={<Icon name='home' color={actualTheme.thirdTextColor} />}
 							hasNavArrow={false}
-							itemWidth={70}
+							itemWidth={itemWidth}
 							hasSwitch
 							switchState={selectedTheme['0']}
 							switchOnValueChange={(value) => this.selectedThemeHandler(value, 0)}
@@ -123,17 +104,9 @@ class Themes extends PureComponent {
 							title={translations.defaultTheme}
 						/>
 						<SettingsList.Item
-							icon={
-								<View style={iconStyle}>
-									<Icon
-										name='brightness-2'
-										color={actualTheme.thirdTextColor}
-										style={{ alignSelf: 'center' }}
-									/>
-								</View>
-							}
+							icon={<Icon name='brightness-2' color={actualTheme.thirdTextColor} />}
 							hasNavArrow={false}
-							itemWidth={70}
+							itemWidth={itemWidth}
 							hasSwitch
 							switchState={selectedTheme['1']}
 							switchOnValueChange={(value) => this.selectedThemeHandler(value, 1)}
@@ -144,8 +117,8 @@ class Themes extends PureComponent {
 						<SettingsList.Item
 							hasNavArrow={false}
 							title={translations.yourThemes}
-							titleStyle={{ color: '#009688', fontWeight: 'bold' }}
-							itemWidth={70}
+							titleStyle={settingsHeading}
+							itemWidth={itemWidth}
 							borderHide='Both'
 						/>
 						{themes.map((themeEl, index) => {
@@ -155,7 +128,7 @@ class Themes extends PureComponent {
 										key={index}
 										hasNavArrow
 										onPress={() => navigation.navigate('Theme', { theme: themeEl.id })}
-										itemWidth={70}
+										itemWidth={itemWidth}
 										hasSwitch
 										switchState={selectedTheme[themeEl.id]}
 										switchOnValueChange={(value) => this.selectedThemeHandler(value, themeEl.id)}
@@ -170,7 +143,7 @@ class Themes extends PureComponent {
 						})}
 						<SettingsList.Item
 							title={translations.addTheme}
-							itemWidth={70}
+							itemWidth={itemWidth}
 							onPress={() => navigation.navigate('Theme')}
 							titleStyle={{ color: actualTheme.thirdTextColor, fontSize: 16 }}
 						/>
@@ -178,7 +151,6 @@ class Themes extends PureComponent {
 				) : (
 					<Spinner />
 				)}
-				<BannerAd />
 			</Template>
 		)
 	}
@@ -189,6 +161,7 @@ const mapStateToProps = (state) => ({
 	themes: state.theme.themes,
 	translations: state.settings.translations.Themes,
 })
+
 const mapDispatchToProps = (dispatch) => ({
 	onInitTheme: (callback) => dispatch(actions.initTheme(callback)),
 	onInitThemes: () => dispatch(actions.initThemes()),

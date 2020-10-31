@@ -5,15 +5,16 @@ import SettingsList from 'react-native-settings-list'
 import { ColorWheel } from 'react-native-color-wheel'
 import colorsys from 'colorsys'
 import Modal from 'react-native-modalbox'
-import { connect } from 'react-redux'
-import Spinner from '../../../components/UI/Spinner/Spinner'
+import Spinner from '../../../components/Spinner/Spinner'
 import Template from '../../Template/Template'
-import Dialog from '../../../components/UI/Dialog/Dialog'
+import Dialog from '../../../components/Dialog/Dialog'
 import { checkValid, generateDialogObject } from '../../../shared/utility'
-import { BannerAd } from '../../../components/Ads/BannerAd'
+import { settingsHeading, flex } from '../../../shared/styles'
+import { headingWidth, itemWidth } from '../../../shared/consts'
 import styles from './Theme.styles'
 
 import * as actions from '../../../store/actions'
+import { connect } from 'react-redux'
 
 class Theme extends Component {
 	state = {
@@ -39,9 +40,7 @@ class Theme extends Component {
 	}
 
 	componentDidMount() {
-		const { navigation } = this.props
-
-		const theme = navigation.getParam('theme', false)
+		const theme = this.props.navigation.getParam('theme', false)
 		this.initTheme(theme)
 	}
 
@@ -90,8 +89,11 @@ class Theme extends Component {
 						navigation.goBack()
 					},
 					[translations.save]: () => {
+						const { navigation, onSaveTheme } = this.props
+
 						cancelHandler()
-						this.checkValid('name', true)
+						onSaveTheme(this.state.customTheme)
+						navigation.goBack()
 					},
 					[translations.cancel]: cancelHandler,
 				},
@@ -211,7 +213,7 @@ class Theme extends Component {
 				<Toolbar
 					leftElement='arrow-back'
 					rightElement={
-						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+						<View style={styles.rightElement}>
 							<IconToggle
 								color={theme.primaryTextColor}
 								onPress={() => this.showDialog('changeName')}
@@ -248,7 +250,7 @@ class Theme extends Component {
 								</Text>
 							</TouchableOpacity>
 						) : (
-							<View style={{ marginTop: 10, marginRight: 40 }}>
+							<View style={styles.spinnerWrapper}>
 								<Spinner color={theme.secondaryBackgroundColor} size='small' />
 							</View>
 						)
@@ -267,8 +269,8 @@ class Theme extends Component {
 					swipeToClose={false}
 					onClosed={() => this.setState({ showColorPicker: false })}
 				>
-					<View style={{ flex: 1, padding: 45 }}>
-						<View style={{ flex: 1 }}>
+					<View style={styles.modalContent}>
+						<View style={flex}>
 							<Text
 								style={{
 									color: theme.secondaryTextColor,
@@ -280,18 +282,11 @@ class Theme extends Component {
 							</Text>
 						</View>
 						<ColorWheel
-							style={{ flex: 5 }}
+							style={styles.colorWheel}
 							initialColor={customTheme[selectedColor]}
 							onColorChangeComplete={(color) => this.setState({ actualColor: color })}
 						/>
-						<View
-							style={{
-								flex: 2,
-								flexDirection: 'row',
-								alignItems: 'center',
-								justifyContent: 'space-between',
-							}}
-						>
+						<View style={styles.colorWheelButtons}>
 							<Button
 								raised
 								icon='done'
@@ -321,55 +316,55 @@ class Theme extends Component {
 					<SettingsList
 						backgroundColor={theme.primaryBackgroundColor}
 						borderColor={theme.secondaryBackgroundColor}
-						defaultItemSize={50}
+						defaultItemSize={headingWidth}
 					>
 						<SettingsList.Item
 							hasNavArrow={false}
 							title={translations.main}
-							titleStyle={{ color: '#009688', fontWeight: '500' }}
-							itemWidth={50}
+							titleStyle={settingsHeading}
+							itemWidth={headingWidth}
 							borderHide='Both'
 						/>
 						{Object.keys(customTheme).map((key) => {
 							if (key === 'id' || key === 'name') return null
 							const themeList = []
 							if (key === 'primaryTextColor') {
-								themeList.push(<SettingsList.Header headerStyle={{ marginTop: -5 }} />)
+								themeList.push(<SettingsList.Header headerStyle={styles.headerStyle} />)
 								themeList.push(
 									<SettingsList.Item
 										hasNavArrow={false}
 										title={translations.fonts}
-										titleStyle={styles.titleStyle}
-										itemWidth={70}
+										titleStyle={settingsHeading}
+										itemWidth={itemWidth}
 										borderHide='Both'
 									/>,
 								)
 							} else if (key === 'doneIconColor') {
-								themeList.push(<SettingsList.Header headerStyle={{ marginTop: -5 }} />)
+								themeList.push(<SettingsList.Header headerStyle={styles.headerStyle} />)
 								themeList.push(
 									<SettingsList.Item
 										hasNavArrow={false}
 										title={translations.icons}
-										titleStyle={styles.titleStyle}
-										itemWidth={70}
+										titleStyle={settingsHeading}
+										itemWidth={itemWidth}
 										borderHide='Both'
 									/>,
 								)
 							} else if (key === 'lowColor') {
-								themeList.push(<SettingsList.Header headerStyle={{ marginTop: -5 }} />)
+								themeList.push(<SettingsList.Header headerStyle={styles.headerStyle} />)
 								themeList.push(
 									<SettingsList.Item
 										hasNavArrow={false}
 										title={translations.priorities}
-										titleStyle={styles.titleStyle}
-										itemWidth={70}
+										titleStyle={settingsHeading}
+										itemWidth={itemWidth}
 										borderHide='Both'
 									/>,
 								)
 							}
 							themeList.push(
 								<SettingsList.Item
-									itemWidth={70}
+									itemWidth={itemWidth}
 									titleStyle={{ color: theme.thirdTextColor, fontSize: 16 }}
 									title={translations[key]}
 									onPress={() => this.configColorPicker(translations[key], key)}
@@ -392,7 +387,6 @@ class Theme extends Component {
 				) : (
 					<Spinner />
 				)}
-				<BannerAd />
 			</Template>
 		)
 	}
@@ -406,6 +400,7 @@ const mapStateToProps = (state) => ({
 		...state.settings.translations.common,
 	},
 })
+
 const mapDispatchToProps = (dispatch) => ({
 	onInitTheme: (callback) => dispatch(actions.initTheme(callback)),
 	onInitCustomTheme: (id, callback) => dispatch(actions.initCustomTheme(id, callback)),

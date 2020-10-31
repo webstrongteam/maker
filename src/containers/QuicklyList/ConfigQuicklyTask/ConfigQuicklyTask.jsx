@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import Dialog from '../../../components/UI/Dialog/Dialog'
+import Dialog from '../../../components/Dialog/Dialog'
 import { generateDialogObject } from '../../../shared/utility'
 
 import * as actions from '../../../store/actions'
+import { connect } from 'react-redux'
 
 class ConfigQuicklyTask extends Component {
 	state = {
@@ -22,9 +22,7 @@ class ConfigQuicklyTask extends Component {
 	}
 
 	componentDidMount() {
-		const { task_id } = this.props
-
-		this.initQuicklyTask(task_id)
+		this.initQuicklyTask(this.props.task_id)
 	}
 
 	initQuicklyTask = (task_id) => {
@@ -104,6 +102,7 @@ const mapStateToProps = (state) => ({
 		...state.settings.translations.common,
 	},
 })
+
 const mapDispatchToProps = (dispatch) => ({
 	onInitQuicklyTask: (id, callback) => dispatch(actions.initQuicklyTask(id, callback)),
 	onSaveQuicklyTask: (task, list, callback) =>

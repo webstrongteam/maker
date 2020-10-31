@@ -1,12 +1,7 @@
 // GLOBAL STYLES
 
-export const flex = { flex: 1 }
-
-export const row = { flexDirection: 'row' }
-
-export const container = {
+export const flex = {
 	flex: 1,
-	alignItems: 'center',
 }
 
 export const listRow = {
@@ -16,13 +11,6 @@ export const listRow = {
 	marginLeft: 10,
 	marginRight: 10,
 	height: 50,
-}
-
-export const listContainer = {
-	flex: 1,
-	flexDirection: 'row',
-	justifyContent: 'space-between',
-	alignItems: 'center',
 }
 
 export const activity = {
@@ -39,11 +27,9 @@ export const empty = {
 	textAlign: 'center',
 }
 
-export const iconStyle = {
-	marginLeft: 15,
-	marginRight: 5,
-	alignSelf: 'center',
-	justifyContent: 'center',
+export const settingsHeading = {
+	color: '#009688',
+	fontWeight: '700',
 }
 
 export const shadow = {
@@ -52,16 +38,16 @@ export const shadow = {
 		width: 2,
 		height: 2,
 	},
-	shadowOpacity: 0.3,
+	shadowOpacity: 0.25,
 	shadowRadius: 5,
 	elevation: 7,
 }
 
 export const separator = {
+	flex: 1,
 	width: '100%',
 	height: 1,
 	marginLeft: 15,
 	marginRight: 15,
-	flex: 1,
 	backgroundColor: '#E4E4E4',
 }

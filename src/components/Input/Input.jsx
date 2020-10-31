@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import { View } from 'react-native'
 import { IconToggle } from 'react-native-material-ui'
 import { TextField } from '@ubaids/react-native-material-textfield'
-import { connect } from 'react-redux'
-import { valid } from '../../../shared/utility'
+import { valid } from '../../shared/utility'
+import { flex } from '../../shared/styles'
 import styles from './Input.styles'
+
+import { connect } from 'react-redux'
 
 class Input extends Component {
 	state = {
@@ -50,7 +52,7 @@ class Input extends Component {
 
 		return (
 			<View style={styles.container}>
-				<View style={{ flex: 1 }}>
+				<View style={flex}>
 					<TextField
 						{...control}
 						ref={(e) => {
@@ -67,7 +69,7 @@ class Input extends Component {
 					/>
 				</View>
 				{!hideClearIcon && value !== '' && (
-					<View style={{ marginLeft: -30, marginRight: -10, marginTop: 5 }}>
+					<View style={styles.clearIconWrapper}>
 						<IconToggle onPress={() => this.checkValid('')} name='clear' size={18} />
 					</View>
 				)}

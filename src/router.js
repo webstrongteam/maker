@@ -1,7 +1,7 @@
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 // Components
-import ToDo from './containers/ToDo/ToDo'
+import Main from './containers/Main/Main'
 import ConfigTask from './containers/Tasks/ConfigTask/ConfigTask'
 import QuicklyTaskList from './containers/QuicklyList/QuicklyTaskList/QuicklyTaskList'
 import CategoriesList from './containers/Categories/CategoriesList'
@@ -12,11 +12,11 @@ import Profile from './containers/Profile/Profile'
 import Settings from './containers/Settings/Settings'
 import Backups from './containers/Backup/Backup'
 import Report from './containers/Report/Report'
-import About from './components/About/About'
+import About from './containers/About/About'
 
 const MainNavigator = createStackNavigator(
 	{
-		ToDo: { screen: ToDo },
+		Main: { screen: Main },
 		ConfigTask: { screen: ConfigTask },
 		QuicklyTaskList: { screen: QuicklyTaskList },
 		CategoriesList: { screen: CategoriesList },
@@ -30,7 +30,7 @@ const MainNavigator = createStackNavigator(
 		About: { screen: About },
 	},
 	{
-		initialRouteName: 'ToDo',
+		initialRouteName: 'Main',
 		headerMode: 'none',
 	},
 )

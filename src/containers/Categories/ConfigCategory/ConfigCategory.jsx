@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import Dialog from '../../../components/UI/Dialog/Dialog'
-import Input from '../../../components/UI/Input/Input'
+import Dialog from '../../../components/Dialog/Dialog'
+import Input from '../../../components/Input/Input'
 import { generateDialogObject } from '../../../shared/utility'
 
 import * as actions from '../../../store/actions'
+import { connect } from 'react-redux'
 
 class ConfigCategory extends Component {
 	state = {
@@ -110,10 +110,12 @@ const mapStateToProps = (state) => ({
 		...state.settings.translations.common,
 	},
 })
+
 const mapDispatchToProps = (dispatch) => ({
 	onInitCategories: (callback) => dispatch(actions.initCategories(callback)),
 	onInitCategory: (id, callback) => dispatch(actions.initCategory(id, callback)),
 	onSaveCategory: (category, callback) => dispatch(actions.saveCategory(category, callback)),
 	onRefreshTask: () => dispatch(actions.onRefresh()),
 })
+
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigCategory)

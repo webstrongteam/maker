@@ -10,8 +10,28 @@ export default StyleSheet.create({
 		borderRadius: 30,
 		borderWidth: 0.75,
 	},
-	titleStyle: {
-		color: '#009688',
-		fontWeight: 'bold',
+	rightElement: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	spinnerWrapper: {
+		marginTop: 10,
+		marginRight: 40,
+	},
+	modalContent: {
+		flex: 1,
+		padding: 45,
+	},
+	colorWheel: {
+		flex: 5,
+	},
+	colorWheelButtons: {
+		flex: 2,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
+	headerStyle: {
+		marginTop: -5,
 	},
 })

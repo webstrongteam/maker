@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Platform, StatusBar, View } from 'react-native'
 import { getTheme, Snackbar, ThemeContext } from 'react-native-material-ui'
-import { connect } from 'react-redux'
 import { initDatabase, initTheme } from '../../db'
 
 import * as actions from '../../store/actions'
+import { connect } from 'react-redux'
 
 class Template extends Component {
 	state = {
@@ -84,6 +84,7 @@ const mapStateToProps = (state) => ({
 	showSnackbar: state.config.showSnackbar,
 	snackbarText: state.config.snackbarText,
 })
+
 const mapDispatchToProps = (dispatch) => ({
 	onUpdateSnackbar: (showSnackbar, snackbarText) =>
 		dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),

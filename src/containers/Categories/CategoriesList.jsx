@@ -1,15 +1,14 @@
 import React, { PureComponent } from 'react'
 import { ScrollView, View } from 'react-native'
 import { IconToggle, ListItem, Toolbar } from 'react-native-material-ui'
-import { connect } from 'react-redux'
-import { listRow, shadow } from '../../shared/styles'
+import { listRow, shadow, flex } from '../../shared/styles'
 import ConfigCategory from './ConfigCategory/ConfigCategory'
 import Template from '../Template/Template'
-import { BannerAd } from '../../components/Ads/BannerAd'
 import { generateDialogObject } from '../../shared/utility'
-import Dialog from '../../components/UI/Dialog/Dialog'
+import Dialog from '../../components/Dialog/Dialog'
 
 import * as actions from '../../store/actions'
+import { connect } from 'react-redux'
 
 class CategoriesList extends PureComponent {
 	state = {
@@ -87,6 +86,14 @@ class CategoriesList extends PureComponent {
 		this.setState({ dialog, showDialog: true })
 	}
 
+	deleteCategoryHandler = (id) => {
+		if (this.state.taskPerCategory[id]) {
+			this.showDialog(id)
+		} else {
+			this.deleteCategory(id)
+		}
+	}
+
 	render() {
 		const {
 			showConfigCategory,
@@ -105,11 +112,11 @@ class CategoriesList extends PureComponent {
 					rightElement={
 						<IconToggle
 							color={theme.primaryTextColor}
-							onPress={() => this.toggleModalHandler()}
+							onPress={this.toggleModalHandler}
 							name='add'
 						/>
 					}
-					onLeftElementPress={() => navigation.goBack()}
+					onLeftElementPress={navigation.goBack}
 					centerElement={translations.title}
 				/>
 
@@ -124,7 +131,7 @@ class CategoriesList extends PureComponent {
 				<Dialog {...dialog} showDialog={showDialog} />
 
 				{ready && (
-					<View style={{ flex: 1 }}>
+					<View style={flex}>
 						<ScrollView style={{ paddingTop: 5 }}>
 							{categories.map((cate) => (
 								<ListItem
@@ -139,7 +146,7 @@ class CategoriesList extends PureComponent {
 									rightElement={
 										cate.id !== 0 ? (
 											<IconToggle
-												onPress={() => this.showDialog(cate.id)}
+												onPress={() => this.deleteCategoryHandler(cate.id)}
 												name='delete'
 												color={theme.warningColor}
 											/>
@@ -156,7 +163,6 @@ class CategoriesList extends PureComponent {
 						</ScrollView>
 					</View>
 				)}
-				<BannerAd />
 			</Template>
 		)
 	}

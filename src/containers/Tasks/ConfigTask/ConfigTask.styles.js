@@ -33,4 +33,19 @@ export default StyleSheet.create({
 	selectedOption: {
 		marginLeft: 10,
 	},
+	spinnerWrapper: {
+		marginTop: 10,
+	},
+	headerIcons: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	dateContainer: {
+		flex: 1,
+		width: '100%',
+	},
+	dateWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+	},
 })

@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import { Platform } from 'react-native'
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
 import Modal from 'react-native-modalbox'
+import RepeatTime from '../components/RepeatTime'
+import RepeatDays from '../components/RepeatDays'
+import Spinner from '../../../../components/Spinner/Spinner'
+import styles from './OtherRepeat.styles'
+
 import { connect } from 'react-redux'
-import RepeatTime from './RepeatTime'
-import RepeatDays from './RepeatDays'
-import Spinner from '../../../../components/UI/Spinner/Spinner'
 
 class OtherRepeat extends Component {
 	state = {
@@ -41,7 +43,7 @@ class OtherRepeat extends Component {
 			>
 				<TabView
 					navigationState={tabs}
-					style={{ flex: 1, justifyContent: 'center', textAlign: 'center' }}
+					style={styles.tabView}
 					tabStyle={{ backgroundColor: theme.primaryColor }}
 					onIndexChange={(index) => {
 						tabs.index = index

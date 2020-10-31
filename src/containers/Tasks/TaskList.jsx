@@ -21,18 +21,16 @@ import {
 } from 'react-native-material-ui'
 import ModalDropdown from 'react-native-modal-dropdown'
 import moment from 'moment'
-import { connect } from 'react-redux'
-import { dateDiff, generateDialogObject, sortingByType } from '../../shared/utility'
-import { empty, shadow } from '../../shared/styles'
+import { dateDiff, dateTime, generateDialogObject, sortingByType } from '../../shared/utility'
+import { empty, flex, shadow } from '../../shared/styles'
+import { dateFormat, dateTimeAFormat, dateTimeFormat, UP, DOWN } from '../../shared/consts'
 import ConfigCategory from '../Categories/ConfigCategory/ConfigCategory'
-import Spinner from '../../components/UI/Spinner/Spinner'
+import Dialog from '../../components/Dialog/Dialog'
+import Spinner from '../../components/Spinner/Spinner'
 import styles from './TaskList.styles'
 
 import * as actions from '../../store/actions'
-import Dialog from '../../components/UI/Dialog/Dialog'
-
-const UP = 1
-const DOWN = -1
+import { connect } from 'react-redux'
 
 class TaskList extends Component {
 	state = {
@@ -381,11 +379,11 @@ class TaskList extends Component {
 			text = translations.other
 			return text
 		}
-		if (date.length > 12) {
-			newDate = moment(date, 'DD-MM-YYYY - HH:mm')
+		if (dateTime(date)) {
+			newDate = moment(date, dateTimeFormat)
 			now = new Date()
 		} else {
-			newDate = moment(date, 'DD-MM-YYYY')
+			newDate = moment(date, dateFormat)
 			now = new Date().setHours(0, 0, 0, 0)
 		}
 
@@ -418,7 +416,7 @@ class TaskList extends Component {
 
 	convertTimeCycle = (date) => {
 		const { settings } = this.props
-		const allDay = date.length < 12
+		const allDay = !dateTime(date)
 
 		if (allDay) return date
 
@@ -426,7 +424,7 @@ class TaskList extends Component {
 			return date
 		}
 
-		return moment(date, 'DD-MM-YYYY - HH:mm').format('DD-MM-YYYY - hh:mm A')
+		return moment(date, dateTimeFormat).format(dateTimeAFormat)
 	}
 
 	selectedCategoryHandler = (
@@ -577,9 +575,10 @@ class TaskList extends Component {
 
 		if (task.date) {
 			if (!task.finish && settings.showDeadlineTime) {
+				const isDateTime = dateTime(task.date)
 				const firstDate = {
-					date: moment(task.date, task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY'),
-					dateTime: task.date.length > 12,
+					date: moment(task.date, isDateTime ? dateTimeFormat : dateFormat),
+					dateTime: isDateTime,
 				}
 				const secondDate = {
 					date: moment(),
@@ -653,7 +652,7 @@ class TaskList extends Component {
 					/>
 				)}
 				<Animated.View style={{ height: hideTask, left: moveValue }}>
-					<View style={{ marginLeft: 15, marginRight: 15, marginBottom: 15 }}>
+					<View style={styles.taskRow}>
 						<ListItem
 							divider
 							dense
@@ -673,9 +672,7 @@ class TaskList extends Component {
 							leftElement={
 								<View
 									style={{
-										marginLeft: -20,
-										width: 15,
-										height: '100%',
+										...styles.taskRowLeftElement,
 										backgroundColor: priorityColors[task.priority].bgColor,
 									}}
 								/>
@@ -685,19 +682,18 @@ class TaskList extends Component {
 									<Text
 										numberOfLines={1}
 										style={{
-											margin: 2,
-											fontSize: 17,
+											...styles.taskName,
 											color: theme.secondaryTextColor,
 										}}
 									>
 										{task.name}
 									</Text>
-									<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+									<View style={styles.taskDate}>
 										<Text
 											numberOfLines={1}
 											style={{
 												margin: 2,
-												fontWeight: '500',
+												fontWeight: '700',
 												color: task.finish
 													? theme.thirdTextColor
 													: div === translations.overdue
@@ -774,7 +770,7 @@ class TaskList extends Component {
 		const { theme, navigation, sortingType, sorting, finished, translations } = this.props
 
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={flex}>
 				<Toolbar
 					searchable={{
 						autoFocus: true,
@@ -811,7 +807,7 @@ class TaskList extends Component {
 												styles.dropdownText,
 												{
 													color: theme.primaryTextColor,
-													fontWeight: '500',
+													fontWeight: '700',
 												},
 											]}
 										>
@@ -893,6 +889,7 @@ class TaskList extends Component {
 						/>
 					) : null}
 				</View>
+
 				<BottomNavigation
 					style={{ container: { backgroundColor: theme.primaryBackgroundColor } }}
 					hidden={bottomHidden}

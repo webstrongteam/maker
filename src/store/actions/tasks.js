@@ -1,7 +1,8 @@
 import { openDatabase } from 'expo-sqlite'
 import moment from 'moment'
 import * as actionTypes from './actionTypes'
-import { convertNumberToDate, setCategories } from '../../shared/utility'
+import { dateTimeFormat, dateFormat } from '../../shared/consts'
+import { convertNumberToDate, setCategories, dateTime } from '../../shared/utility'
 import { configTask, deleteCalendarEvent, deleteLocalNotification } from '../../shared/configTask'
 
 const db = openDatabase('maker.db')
@@ -167,53 +168,53 @@ export const saveTask = (task, callback = () => null) => (dispatch) => {
 
 export const finishTask = (task, endTask, primaryColor, callback = () => null) => {
 	let nextDate = task.date
-	const dateFormat = task.date.length > 12 ? 'DD-MM-YYYY - HH:mm' : 'DD-MM-YYYY'
+	const format = dateTime(task.date) ? dateTimeFormat : dateFormat
 
 	if (+task.repeat === parseInt(task.repeat, 10)) {
 		// Other repeat
 		if (task.repeat[0] === '6') {
 			const repeatDays = task.repeat.substring(1).split('').sort()
-			const actualWeekday = moment(task.date, dateFormat).day()
+			const actualWeekday = moment(task.date, format).day()
 			let nextWeekday = repeatDays.find((weekday) => +weekday > +actualWeekday)
 
 			if (nextWeekday) {
-				nextDate = moment(task.date, dateFormat).day(nextWeekday)
+				nextDate = moment(task.date, format).day(nextWeekday)
 			} else {
-				nextDate = moment(task.date, dateFormat).day(+repeatDays[0] + 7)
+				nextDate = moment(task.date, format).day(+repeatDays[0] + 7)
 			}
 		} else {
-			nextDate = moment(nextDate, dateFormat).add(
+			nextDate = moment(nextDate, format).add(
 				+task.repeat.substring(1),
 				`${convertNumberToDate(+task.repeat[0])}s`,
 			)
 		}
-	} else if (task.repeat === 'onceDay') nextDate = moment(nextDate, dateFormat).add(1, 'days')
+	} else if (task.repeat === 'onceDay') nextDate = moment(nextDate, format).add(1, 'days')
 	else if (task.repeat === 'onceDayMonFri') {
-		if (moment(task.date, dateFormat).day() === 5) {
+		if (moment(task.date, format).day() === 5) {
 			// Friday
-			nextDate = moment(nextDate, dateFormat).add(3, 'days')
-		} else if (moment(task.date, dateFormat).day() === 6) {
+			nextDate = moment(nextDate, format).add(3, 'days')
+		} else if (moment(task.date, format).day() === 6) {
 			// Saturday
-			nextDate = moment(nextDate, dateFormat).add(2, 'days')
+			nextDate = moment(nextDate, format).add(2, 'days')
 		} else {
-			nextDate = moment(nextDate, dateFormat).add(1, 'days')
+			nextDate = moment(nextDate, format).add(1, 'days')
 		}
 	} else if (task.repeat === 'onceDaySatSun') {
-		if (moment(task.date, dateFormat).day() === 6) {
+		if (moment(task.date, format).day() === 6) {
 			// Saturday
-			nextDate = moment(nextDate, dateFormat).add(1, 'days')
-		} else if (moment(task.date, dateFormat).day() === 0) {
+			nextDate = moment(nextDate, format).add(1, 'days')
+		} else if (moment(task.date, format).day() === 0) {
 			// Sunday
-			nextDate = moment(nextDate, dateFormat).add(6, 'days')
+			nextDate = moment(nextDate, format).add(6, 'days')
 		} else {
 			// Other day
-			nextDate = moment(nextDate, dateFormat).day(6)
+			nextDate = moment(nextDate, format).day(6)
 		}
-	} else if (task.repeat === 'onceWeek') nextDate = moment(nextDate, dateFormat).add(1, 'week')
-	else if (task.repeat === 'onceMonth') nextDate = moment(nextDate, dateFormat).add(1, 'month')
-	else if (task.repeat === 'onceYear') nextDate = moment(nextDate, dateFormat).add(1, 'year')
+	} else if (task.repeat === 'onceWeek') nextDate = moment(nextDate, format).add(1, 'week')
+	else if (task.repeat === 'onceMonth') nextDate = moment(nextDate, format).add(1, 'month')
+	else if (task.repeat === 'onceYear') nextDate = moment(nextDate, format).add(1, 'year')
 
-	nextDate = moment(nextDate, dateFormat).format(dateFormat)
+	nextDate = moment(nextDate, format).format(format)
 
 	return (dispatch) => {
 		if (task.repeat === 'noRepeat' || endTask) {

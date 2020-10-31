@@ -9,7 +9,7 @@
 		"defaultTitle": "Are you sure?",
 		"permissionError": "Error with permissions"
 	},
-	"ToDo": {
+	"Main": {
 		"tasks": "Tasks",
 		"quicklyLists": "Quickly Lists"
 	},

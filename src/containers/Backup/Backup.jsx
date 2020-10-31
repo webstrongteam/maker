@@ -1,21 +1,20 @@
 import React, { PureComponent } from 'react'
-import { Platform, ScrollView, Text, View } from 'react-native'
-import { IconToggle, ListItem, Toolbar } from 'react-native-material-ui'
+import { Platform } from 'react-native'
+import { IconToggle, Toolbar } from 'react-native-material-ui'
+import moment from 'moment'
 import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
 import * as SQLite from 'expo-sqlite'
-import moment from 'moment'
-import { connect } from 'react-redux'
 import { generateDialogObject } from '../../shared/utility'
-import Dialog from '../../components/UI/Dialog/Dialog'
-import { empty, listRow, row, shadow } from '../../shared/styles'
-import Spinner from '../../components/UI/Spinner/Spinner'
+import Dialog from '../../components/Dialog/Dialog'
+import Spinner from '../../components/Spinner/Spinner'
 import Template from '../Template/Template'
-import { BannerAd } from '../../components/Ads/BannerAd'
 import { initApp } from '../../db'
+import BackupList from './BackupList'
 
 import * as actions from '../../store/actions'
+import { connect } from 'react-redux'
 
 class Backup extends PureComponent {
 	state = {
@@ -166,6 +165,18 @@ class Backup extends PureComponent {
 		)
 	}
 
+	renameBackup = (name) => {
+		this.setState(
+			{
+				selectedBackup: {
+					name,
+					uri: `${FileSystem.documentDirectory}Backup/${name}`,
+				},
+			},
+			() => this.showDialog('rename'),
+		)
+	}
+
 	toggleSnackbar = (message, visible = true) => {
 		const { onUpdateSnackbar } = this.props
 		onUpdateSnackbar(visible, message)
@@ -297,69 +308,17 @@ class Backup extends PureComponent {
 				<Dialog {...dialog} showDialog={showDialog} />
 
 				{!loading ? (
-					<View style={{ flex: 1 }}>
-						<ScrollView style={{ paddingTop: 5 }}>
-							{backups.length ? (
-								backups.map((name) => (
-									<ListItem
-										divider
-										dense
-										key={name}
-										onPress={() => this.showDialog('showBackupAlert', name)}
-										style={{
-											container: {
-												...shadow,
-												...listRow,
-												backgroundColor: theme.primaryBackgroundColor,
-											},
-										}}
-										rightElement={
-											<View style={row}>
-												<IconToggle
-													style={{ container: { marginRight: -10 } }}
-													onPress={() =>
-														this.setState(
-															{
-																selectedBackup: {
-																	name,
-																	uri: `${FileSystem.documentDirectory}Backup/${name}`,
-																},
-															},
-															() => this.showDialog('rename'),
-														)
-													}
-													color={theme.undoIconColor}
-													name='edit'
-												/>
-												<IconToggle
-													style={{ container: { marginRight: -7 } }}
-													onPress={() => this.shareBackup(name)}
-													color={theme.undoIconColor}
-													name='share'
-												/>
-												<IconToggle
-													onPress={() => this.showDialog('showConfirmDelete', name)}
-													color={theme.warningColor}
-													name='delete'
-												/>
-											</View>
-										}
-										centerElement={{
-											primaryText: name,
-										}}
-									/>
-								))
-							) : (
-								<Text style={[empty, { color: theme.thirdTextColor }]}>
-									{translations.emptyList}
-								</Text>
-							)}
-						</ScrollView>
-					</View>
+					<BackupList
+						showDialog={this.showDialog}
+						backups={backups}
+						renameBackup={this.renameBackup}
+						shareBackup={this.shareBackup}
+						theme={theme}
+						translations={translations}
+					/>
 				) : (
 					<Spinner />
 				)}
-				<BannerAd />
 			</Template>
 		)
 	}

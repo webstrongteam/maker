@@ -1,8 +1,10 @@
+import moment from 'moment'
 import { Platform } from 'react-native'
 import * as Notifications from 'expo-notifications'
 import { timezone } from 'expo-localization'
 import * as Calendar from 'expo-calendar'
-import moment from 'moment'
+import { dateTime } from './utility'
+import { dateTimeFormat, makerTitle, makerFullTitle, dateFormat } from './consts'
 
 /* eslint-disable no-param-reassign */
 export const configTask = async (task, color, setEvent, setNotification) => {
@@ -35,7 +37,7 @@ export const configTask = async (task, color, setEvent, setNotification) => {
 
 export const setLocalNotification = async (task, color) => {
 	// Convert date
-	const data = new Date(moment(task.date, 'DD-MM-YYYY HH:mm').format())
+	const data = new Date(moment(task.date, dateTimeFormat).format())
 
 	// Remove old notification
 	if (task.notification_id !== null) await deleteLocalNotification(task.notification_id)
@@ -47,7 +49,7 @@ const setScheduleLocalNotification = async (task, data, color) => {
 	return Notifications.scheduleNotificationAsync({
 		content: {
 			title: task.name,
-			body: task.description ? task.description : ' ',
+			body: task.description ?? ' ',
 			data,
 			sound: true,
 			color,
@@ -62,21 +64,21 @@ export const setCalendarEvent = async (task, color, calendarId = null) => {
 	const calendars = await Calendar.getCalendarsAsync()
 	if (Platform.OS === 'android') {
 		// For android
-		const calendar = calendars.find((c) => c.title === 'Maker - ToDo list')
+		const calendar = calendars.find((c) => c.title === makerFullTitle)
 		if (calendar) calendarId = calendar.id
 
 		if (!calendarId) {
 			// Create new calendar
 			const details = {
-				title: 'Maker - ToDo list',
+				title: makerFullTitle,
 				color,
 				source: {
 					isLocalAccount: true,
-					name: 'Maker',
+					name: makerTitle,
 					type: Calendar.EntityTypes.REMINDER,
 				},
-				name: 'Maker',
-				ownerAccount: 'Maker',
+				name: makerTitle,
+				ownerAccount: makerTitle,
 				timeZone: timezone,
 				allowsModifications: true,
 				allowedAvailabilities: [
@@ -102,7 +104,7 @@ export const setCalendarEvent = async (task, color, calendarId = null) => {
 		}
 	} else if (Platform.OS === 'ios') {
 		// For iOS
-		const calendar = calendars.find((c) => c.title === 'Maker - ToDo list')
+		const calendar = calendars.find((c) => c.title === makerFullTitle)
 		if (calendar) calendarId = calendar.id
 
 		if (!calendarId) {
@@ -114,8 +116,8 @@ export const setCalendarEvent = async (task, color, calendarId = null) => {
 			const defaultCalendarSource = await getDefaultCalendarSource()
 
 			const details = {
-				title: 'Maker - ToDo list',
-				name: 'Maker',
+				title: makerFullTitle,
+				name: makerTitle,
 				ownerAccount: 'personal',
 				color,
 				entityType: Calendar.EntityTypes.EVENT,
@@ -131,18 +133,18 @@ export const setCalendarEvent = async (task, color, calendarId = null) => {
 
 	// Create event
 	if (calendarId !== null) {
-		const allDay = task.date.length < 13
+		const allDay = dateTime(task.date)
 
 		// Convert date
 		let date
 		if (allDay) {
 			if (Platform.OS === 'android') {
-				date = new Date(moment(task.date, 'DD-MM-YYYY').add(1, 'days').format())
+				date = new Date(moment(task.date, dateFormat).add(1, 'days').format())
 			} else {
-				date = new Date(moment(task.date, 'DD-MM-YYYY').format())
+				date = new Date(moment(task.date, dateFormat).format())
 			}
 		} else {
-			date = new Date(moment(task.date, 'DD-MM-YYYY HH:mm').format())
+			date = new Date(moment(task.date, dateTimeFormat).format())
 		}
 
 		const detailsEvent = {

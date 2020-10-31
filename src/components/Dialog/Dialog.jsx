@@ -2,10 +2,11 @@ import React from 'react'
 import { Keyboard, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { ListItem } from 'react-native-material-ui'
 import Dialog from 'react-native-dialog'
-import { connect } from 'react-redux'
 import Input from '../Input/Input'
 
-const dialog = (props) => {
+import { connect } from 'react-redux'
+
+const GetDialog = (props) => {
 	if (props.select) {
 		return selectDialog(props)
 	}
@@ -115,4 +116,4 @@ const inputDialog = (props) => (
 
 const mapStateToProps = (state) => ({ theme: state.theme.theme })
 
-export default connect(mapStateToProps)(dialog)
+export default connect(mapStateToProps)(GetDialog)

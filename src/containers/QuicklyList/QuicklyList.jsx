@@ -1,17 +1,15 @@
-import React, { Component } from 'react'
-import { ScrollView, Text, View } from 'react-native'
-import { ActionButton, IconToggle, ListItem, Toolbar } from 'react-native-material-ui'
-import { connect } from 'react-redux'
-import { generateDialogObject } from '../../shared/utility'
-import { empty, shadow } from '../../shared/styles'
-import Spinner from '../../components/UI/Spinner/Spinner'
-import Dialog from '../../components/UI/Dialog/Dialog'
-import styles from './QuicklyList.styles'
+import React, { Component } from "react";
+import { ScrollView, Text, View } from "react-native";
+import { ActionButton, IconToggle, ListItem, Toolbar } from "react-native-material-ui";
+import { generateDialogObject } from "../../shared/utility";
+import { empty, flex, shadow } from "../../shared/styles";
+import { DOWN, UP } from "../../shared/consts";
+import Spinner from "../../components/Spinner/Spinner";
+import Dialog from "../../components/Dialog/Dialog";
+import styles from "./QuicklyList.styles";
 
-import * as actions from '../../store/actions'
-
-const UP = 1
-const DOWN = -1
+import * as actions from "../../store/actions";
+import { connect } from "react-redux";
 
 class QuicklyList extends Component {
 	state = {
@@ -39,6 +37,7 @@ class QuicklyList extends Component {
 	reloadListsAmount = () => {
 		const { lists } = this.props
 		const { amounts } = this.state
+
 		if (lists.length) {
 			const { onInitList } = this.props
 			lists.map((list) => {
@@ -93,11 +92,11 @@ class QuicklyList extends Component {
 		this.setState({ dialog, showDialog: true })
 	}
 
-	render() {
-		const { amounts, bottomHidden, showDialog, dialog, loading } = this.state
+	renderQuicklyList = () => {
+		const { amounts } = this.state
 		const { lists, theme, navigation, translations } = this.props
 
-		const quicklyList = lists.map((list, index) => {
+		return lists.map((list, index) => {
 			// Searching system
 			const searchText = this.state.searchText.toLowerCase()
 			if (searchText.length > 0 && list.name.toLowerCase().indexOf(searchText) < 0) {
@@ -105,46 +104,49 @@ class QuicklyList extends Component {
 			}
 
 			return (
-				<View key={index}>
-					<View style={{ marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
-						<ListItem
-							divider
-							dense
-							onPress={() => navigation.navigate('QuicklyTaskList', { list })}
-							style={{
-								container: [shadow, { backgroundColor: theme.primaryBackgroundColor }],
-								primaryText: {
-									fontSize: 18,
-									color: theme.secondaryTextColor,
-								},
-								secondaryText: {
-									color: theme.thirdTextColor,
-								},
-							}}
-							rightElement={
-								<View style={styles.rightElements}>
-									<IconToggle
-										onPress={() => this.showDialog(list.id, list.name)}
-										name='delete'
-										color={theme.warningColor}
-										size={26}
-									/>
-								</View>
-							}
-							centerElement={{
-								primaryText: list.name,
-								secondaryText: `${translations.totalTasks} ${
-									amounts[list.id] ? amounts[list.id] : 0
-								}`,
-							}}
-						/>
-					</View>
+				<View key={index} style={styles.quicklyTaskList}>
+					<ListItem
+						divider
+						dense
+						onPress={() => navigation.navigate('QuicklyTaskList', { list })}
+						style={{
+							container: [shadow, { backgroundColor: theme.primaryBackgroundColor }],
+							primaryText: {
+								fontSize: 18,
+								color: theme.secondaryTextColor,
+							},
+							secondaryText: {
+								color: theme.thirdTextColor,
+							},
+						}}
+						centerElement={{
+							primaryText: list.name,
+							secondaryText: `${translations.totalTasks} ${
+								amounts[list.id] ? amounts[list.id] : 0
+							}`,
+						}}
+						rightElement={
+							<View style={styles.rightElements}>
+								<IconToggle
+									onPress={() => this.showDialog(list.id, list.name)}
+									name='delete'
+									color={theme.warningColor}
+									size={26}
+								/>
+							</View>
+						}
+					/>
 				</View>
 			)
 		})
+	}
+
+	render() {
+		const { bottomHidden, showDialog, dialog, loading } = this.state
+		const { lists, theme, navigation, translations } = this.props
 
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={flex}>
 				<Toolbar
 					searchable={{
 						autoFocus: true,
@@ -165,10 +167,10 @@ class QuicklyList extends Component {
 						keyboardShouldPersistTaps='always'
 						keyboardDismissMode='interactive'
 						onScroll={this.onScroll}
-						style={{ width: '100%' }}
+						style={styles.scrollView}
 					>
 						{lists && lists.length ? (
-							<View style={{ paddingTop: 20 }}>{quicklyList}</View>
+							<View style={styles.quicklyTaskListWrapper}>{this.renderQuicklyList()}</View>
 						) : (
 							<Text style={[empty, { color: theme.thirdTextColor }]}>{translations.emptyList}</Text>
 						)}
@@ -177,7 +179,7 @@ class QuicklyList extends Component {
 					<Spinner />
 				)}
 
-				<View style={{ marginBottom: -40 }}>
+				<View style={styles.actionButtonWrapper}>
 					<ActionButton
 						hidden={bottomHidden}
 						onPress={() => navigation.navigate('QuicklyTaskList', { list: false })}
