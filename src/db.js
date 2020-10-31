@@ -1,5 +1,6 @@
 import { AsyncStorage } from 'react-native'
 import { openDatabase } from 'expo-sqlite'
+import * as Analytics from 'expo-firebase-analytics'
 import { getLocale } from './shared/utility'
 
 export const VERSION = '2.5.0' // APP VERSION
@@ -71,11 +72,23 @@ export const initApp = (callback, backup = false) => {
 					const { version } = rows._array[0]
 					if (version !== VERSION) {
 						if (version.includes('_INIT')) {
-							tx.executeSql('UPDATE settings SET lang = ?, version = ? WHERE id = 0;', [
-								getLocale(),
-								VERSION,
-							])
+							return tx.executeSql(
+								'UPDATE settings SET lang = ?, version = ? WHERE id = 0;',
+								[getLocale(), VERSION],
+								() => {
+									Analytics.logEvent('firstStartup', {
+										name: 'initDB',
+									})
+
+									callback()
+								},
+							)
 						}
+
+						Analytics.logEvent('updateApp', {
+							name: 'updateApp',
+							version,
+						})
 
 						const prepareToUpdate = (update) => {
 							if (update === '2.5.0') {

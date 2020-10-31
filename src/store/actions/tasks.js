@@ -1,5 +1,6 @@
 import { openDatabase } from 'expo-sqlite'
 import moment from 'moment'
+import * as Analytics from 'expo-firebase-analytics'
 import * as actionTypes from './actionTypes'
 import { dateTimeFormat, dateFormat } from '../../shared/consts'
 import { convertNumberToDate, setCategories, dateTime } from '../../shared/utility'
@@ -131,6 +132,10 @@ export const saveTask = (task, callback = () => null) => (dispatch) => {
 						task.id,
 					],
 					() => {
+						Analytics.logEvent('updatedTask', {
+							name: 'taskAction',
+						})
+
 						callback()
 						dispatch(initTasks())
 					},
@@ -155,6 +160,10 @@ export const saveTask = (task, callback = () => null) => (dispatch) => {
 						task.notification_id,
 					],
 					() => {
+						Analytics.logEvent('createdTask', {
+							name: 'taskAction',
+						})
+
 						callback()
 						dispatch(initTasks())
 					},
@@ -225,6 +234,10 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
 						'insert into finished (name, description, date, category, priority, repeat, finish) values (?,?,?,?,?,?,1)',
 						[task.name, task.description, task.date, task.category.id, task.priority, task.repeat],
 						() => {
+							Analytics.logEvent('finishedTask', {
+								name: 'taskAction',
+							})
+
 							if (task.event_id !== false) {
 								deleteCalendarEvent(task.event_id)
 							}
@@ -247,6 +260,10 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
                                    where id = ?;`,
 					[nextDate, task.id],
 					() => {
+						Analytics.logEvent('repeatedTask', {
+							name: 'taskAction',
+						})
+
 						task.date = nextDate
 						configTask(task, primaryColor, task.event_id, task.notification_id !== null)
 						callback()
@@ -268,6 +285,10 @@ export const undoTask = (task) => (dispatch) => {
 				'insert into tasks (name, description, date, category, priority, repeat) values (?,?,?,?,?,?)',
 				[task.name, task.description, task.date, task.category.id, task.priority, task.repeat],
 				() => {
+					Analytics.logEvent('undoTask', {
+						name: 'taskAction',
+					})
+
 					dispatch(initToDo())
 				},
 			)
@@ -282,6 +303,10 @@ export const removeTask = (task, finished = true, callback = () => null) => (dis
 		db.transaction(
 			(tx) => {
 				tx.executeSql('delete from finished where id = ?', [task.id], () => {
+					Analytics.logEvent('removedTask', {
+						name: 'taskAction',
+					})
+
 					callback()
 					dispatch(initFinished())
 				})
@@ -293,6 +318,10 @@ export const removeTask = (task, finished = true, callback = () => null) => (dis
 		db.transaction(
 			(tx) => {
 				tx.executeSql('delete from tasks where id = ?', [task.id], () => {
+					Analytics.logEvent('removedTask', {
+						name: 'taskAction',
+					})
+
 					if (task.event_id !== null) {
 						deleteCalendarEvent(task.event_id)
 					}

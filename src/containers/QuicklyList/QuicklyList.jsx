@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import { ScrollView, Text, View } from "react-native";
-import { ActionButton, IconToggle, ListItem, Toolbar } from "react-native-material-ui";
-import { generateDialogObject } from "../../shared/utility";
-import { empty, flex, shadow } from "../../shared/styles";
-import { DOWN, UP } from "../../shared/consts";
-import Spinner from "../../components/Spinner/Spinner";
-import Dialog from "../../components/Dialog/Dialog";
-import styles from "./QuicklyList.styles";
+import React, { Component } from 'react'
+import { ScrollView, Text, View } from 'react-native'
+import { ActionButton, IconToggle, ListItem, Toolbar } from 'react-native-material-ui'
+import { generateDialogObject } from '../../shared/utility'
+import { empty, flex, shadow } from '../../shared/styles'
+import { DOWN, UP } from '../../shared/consts'
+import Spinner from '../../components/Spinner/Spinner'
+import Dialog from '../../components/Dialog/Dialog'
+import styles from './QuicklyList.styles'
 
-import * as actions from "../../store/actions";
-import { connect } from "react-redux";
+import * as actions from '../../store/actions'
+import { connect } from 'react-redux'
 
 class QuicklyList extends Component {
 	state = {

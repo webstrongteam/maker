@@ -1,4 +1,5 @@
 import { openDatabase } from 'expo-sqlite'
+import * as Analytics from 'expo-firebase-analytics'
 import * as actionTypes from './actionTypes'
 
 const db = openDatabase('maker.db')
@@ -43,6 +44,10 @@ export const saveCategory = (category, callback) => () => {
                                    where id = ?;`,
 					[category.name, category.id],
 					() => {
+						Analytics.logEvent('updatedCategory', {
+							name: 'categoryAction',
+						})
+
 						callback()
 					},
 				)
@@ -57,6 +62,10 @@ export const saveCategory = (category, callback) => () => {
 					'insert into categories (name) values (?)',
 					[category.name],
 					(_, { insertId }) => {
+						Analytics.logEvent('createdCategory', {
+							name: 'categoryAction',
+						})
+
 						callback({ id: insertId, name: category.name })
 					},
 				)
@@ -71,6 +80,10 @@ export const removeCategory = (id, callback = () => null) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('delete from categories where id = ?', [id], () => {
+				Analytics.logEvent('removedCategory', {
+					name: 'categoryAction',
+				})
+
 				callback()
 				dispatch(initCategories())
 			})

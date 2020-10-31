@@ -161,30 +161,12 @@ class QuicklyTaskList extends Component {
 				id: false,
 				name: input.value,
 			}
+
 			onSaveQuicklyTask(newTask, list, (list) => {
 				this.setState({ input: { ...input, value: null } })
 				this.reloadTasks(list)
 			})
 		}
-	}
-
-	removeTask = (row) => {
-		const { onRemoveQuicklyTask, onSaveQuicklyTask } = this.props
-
-		onRemoveQuicklyTask(row.id, () => {
-			const { quicklyTasks, list } = this.state
-			Promise.all(
-				quicklyTasks.map(
-					(task) =>
-						new Promise((resolve) => {
-							if (task.order_nr > row.order_nr) {
-								task.order_nr -= 1
-								onSaveQuicklyTask(task, list, resolve)
-							} else resolve()
-						}),
-				),
-			).then(() => this.reloadTasks())
-		})
 	}
 
 	saveList = (list) => {
@@ -193,6 +175,12 @@ class QuicklyTaskList extends Component {
 		onSaveList(list, (savedList) => {
 			this.setState({ list: savedList })
 		})
+	}
+
+	finishTask = (id) => {
+		const { onRemoveQuicklyTask } = this.props
+
+		onRemoveQuicklyTask(id, () => this.reloadTasks())
 	}
 
 	loadNextData = () => {
@@ -242,7 +230,7 @@ class QuicklyTaskList extends Component {
 					<View style={styles.taskIconContainer}>
 						<IconToggle
 							color={theme.doneIconColor}
-							onPress={() => this.removeTask(item)}
+							onPress={() => this.finishTask(item.id)}
 							name='done'
 						/>
 					</View>

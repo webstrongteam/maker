@@ -62,7 +62,8 @@
 		"react-navigation-stack": "2.8.4",
 		"react-redux": "7.2.1",
 		"redux": "4.0.4",
-		"redux-thunk": "2.3.0"
+		"redux-thunk": "2.3.0",
+		"expo-firebase-analytics": "~2.5.0"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^4.4.1",

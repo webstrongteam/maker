@@ -1,6 +1,7 @@
 node_modules/**/*
 .expo*
 /.idea/*
+/firebase/*
 npm-debug.*
 /src/config/auth.js
 *.jks

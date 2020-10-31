@@ -58,7 +58,6 @@
 
 ### ToDo:
 
-- Add analytics request
 - Update privacy policy
 
 **iOS:**

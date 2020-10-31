@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { ActivityIndicator, NativeModules, View, LogBox } from 'react-native'
 import { applyMiddleware, combineReducers, createStore } from 'redux'
 import { getTheme, ThemeContext } from 'react-native-material-ui'
+import * as Analytics from 'expo-firebase-analytics'
 import { loadAsync } from 'expo-font'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
@@ -46,6 +47,10 @@ class App extends Component {
 			initTheme((state) => {
 				this.setState(state)
 			})
+		})
+
+		await Analytics.logEvent('startedApp', {
+			name: 'startedApp',
 		})
 	}
 

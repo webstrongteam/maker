@@ -1,4 +1,5 @@
 import { openDatabase } from 'expo-sqlite'
+import * as Analytics from 'expo-firebase-analytics'
 import * as actionTypes from './actionTypes'
 
 const db = openDatabase('maker.db')
@@ -54,6 +55,10 @@ export const saveList = (list, callback) => (dispatch) => {
                                    where id = ?;`,
 					[list.name, list.id],
 					() => {
+						Analytics.logEvent('updatedList', {
+							name: 'listAction',
+						})
+
 						dispatch(initLists(), callback(list))
 					},
 				)
@@ -66,6 +71,10 @@ export const saveList = (list, callback) => (dispatch) => {
 			(tx) => {
 				tx.executeSql('insert into lists (name) values (?)', [list.name])
 				tx.executeSql('select * from lists ORDER BY id DESC', [], (_, { rows }) => {
+					Analytics.logEvent('createdList', {
+						name: 'listAction',
+					})
+
 					dispatch(initLists(), callback(rows._array[0]))
 				})
 			},
@@ -75,7 +84,7 @@ export const saveList = (list, callback) => (dispatch) => {
 	}
 }
 
-export const saveQuicklyTask = (quicklyTask, list, callback = () => {}) => () => {
+export const saveQuicklyTask = (quicklyTask, list, callback = () => null) => () => {
 	const addQuicklyTask = (list_id = list.id) => {
 		if (quicklyTask.id !== false) {
 			db.transaction(
@@ -86,6 +95,10 @@ export const saveQuicklyTask = (quicklyTask, list, callback = () => {}) => () =>
                                        where id = ?;`,
 						[quicklyTask.name, quicklyTask.id],
 						() => {
+							Analytics.logEvent('updatedQuicklyTask', {
+								name: 'listAction',
+							})
+
 							callback({ id: list_id, name: list.name })
 						},
 					)
@@ -100,6 +113,10 @@ export const saveQuicklyTask = (quicklyTask, list, callback = () => {}) => () =>
 						'insert into quickly_tasks (name, list_id) values (?,?)',
 						[quicklyTask.name, list_id],
 						() => {
+							Analytics.logEvent('createdQuicklyTask', {
+								name: 'listAction',
+							})
+
 							callback({ id: list_id, name: list.name })
 						},
 					)
@@ -116,6 +133,10 @@ export const saveQuicklyTask = (quicklyTask, list, callback = () => {}) => () =>
 		db.transaction(
 			(tx) => {
 				tx.executeSql('insert into lists (name) values (?)', [list.name], (_, { insertId }) => {
+					Analytics.logEvent('createdList', {
+						name: 'listAction',
+					})
+
 					addQuicklyTask(insertId)
 				})
 			},
@@ -130,6 +151,10 @@ export const removeList = (id) => (dispatch) => {
 		(tx) => {
 			tx.executeSql('delete from quickly_tasks where list_id = ?', [id])
 			tx.executeSql('delete from lists where id = ?', [id], () => {
+				Analytics.logEvent('removedList', {
+					name: 'listAction',
+				})
+
 				dispatch(initLists())
 			})
 		},
@@ -142,6 +167,10 @@ export const removeQuicklyTask = (id, callback) => () => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('delete from quickly_tasks where id = ?', [id], () => {
+				Analytics.logEvent('removedQuicklyTask', {
+					name: 'listAction',
+				})
+
 				callback()
 			})
 		},

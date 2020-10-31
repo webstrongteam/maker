@@ -1,4 +1,5 @@
 import { openDatabase } from 'expo-sqlite'
+import * as Analytics from 'expo-firebase-analytics'
 import * as actionTypes from './actionTypes'
 
 const db = openDatabase('maker.db')
@@ -41,6 +42,10 @@ export const changeTimeFormat = (value) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update settings set timeFormat = ? where id = 0;', [value], () => {
+				Analytics.logEvent('changedTimeFormat', {
+					name: 'settingsAction',
+				})
+
 				dispatch(initSettings())
 			})
 		},
@@ -53,6 +58,10 @@ export const changeFirstDayOfWeek = (value) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update settings set firstDayOfWeek = ? where id = 0;', [value], () => {
+				Analytics.logEvent('changedFirstDayOfWeek', {
+					name: 'settingsAction',
+				})
+
 				dispatch(initSettings())
 			})
 		},
@@ -65,6 +74,10 @@ export const changeLang = (value) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update settings set lang = ? where id = 0;', [value], () => {
+				Analytics.logEvent('changedLang', {
+					name: 'settingsAction',
+				})
+
 				dispatch(initSettings())
 			})
 		},
@@ -77,6 +90,10 @@ export const changeConfirmFinishingTask = (value) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update settings set confirmFinishingTask = ? where id = 0;', [value], () => {
+				Analytics.logEvent('changedConfirmFinishingTask', {
+					name: 'settingsAction',
+				})
+
 				dispatch(initSettings())
 			})
 		},
@@ -89,6 +106,10 @@ export const changeConfirmRepeatingTask = (value) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update settings set confirmRepeatingTask = ? where id = 0;', [value], () => {
+				Analytics.logEvent('changedConfirmRepeatingTask', {
+					name: 'settingsAction',
+				})
+
 				dispatch(initSettings())
 			})
 		},
@@ -101,6 +122,10 @@ export const changeConfirmDeletingTask = (value) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update settings set confirmDeletingTask = ? where id = 0;', [value], () => {
+				Analytics.logEvent('changedConfirmDeletingTask', {
+					name: 'settingsAction',
+				})
+
 				dispatch(initSettings())
 			})
 		},
@@ -113,6 +138,10 @@ export const changeHideTabView = (value) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update settings set hideTabView = ? where id = 0;', [value], () => {
+				Analytics.logEvent('changedHideTabView', {
+					name: 'settingsAction',
+				})
+
 				dispatch(initSettings())
 			})
 		},
@@ -125,6 +154,10 @@ export const changeShowDeadlineTime = (value) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update settings set showDeadlineTime = ? where id = 0;', [value], () => {
+				Analytics.logEvent('changeShowDeadlineTime', {
+					name: 'settingsAction',
+				})
+
 				dispatch(initSettings())
 			})
 		},

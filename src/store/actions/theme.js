@@ -1,4 +1,5 @@
 import { openDatabase } from 'expo-sqlite'
+import * as Analytics from 'expo-firebase-analytics'
 import * as actionTypes from './actionTypes'
 
 const db = openDatabase('maker.db')
@@ -60,6 +61,10 @@ export const setSelectedTheme = (id) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update settings set theme = ? where id = 0;', [id], () => {
+				Analytics.logEvent('changedTheme', {
+					name: 'themeAction',
+				})
+
 				dispatch(initTheme())
 			})
 		},
@@ -91,6 +96,10 @@ export const saveTheme = (theme) => (dispatch) => {
 						theme.id,
 					],
 					() => {
+						Analytics.logEvent('updatedTheme', {
+							name: 'themeAction',
+						})
+
 						dispatch(initTheme())
 					},
 				)
@@ -119,6 +128,10 @@ export const saveTheme = (theme) => (dispatch) => {
 						theme.highColor,
 					],
 					() => {
+						Analytics.logEvent('createdTheme', {
+							name: 'themeAction',
+						})
+
 						dispatch(initThemes())
 					},
 				)
@@ -133,6 +146,10 @@ export const deleteTheme = (id) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('delete from themes where id = ?', [id], () => {
+				Analytics.logEvent('deletedTheme', {
+					name: 'themeAction',
+				})
+
 				dispatch(initThemes())
 			})
 		},
