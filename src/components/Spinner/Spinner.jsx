@@ -4,15 +4,12 @@ import { activity } from '../../shared/styles'
 
 import { connect } from 'react-redux'
 
-const Spinner = (props) => (
+const Spinner = ({ size = 'large', color, primaryColor = '#f4511e' }) => (
 	<View style={activity}>
-		<ActivityIndicator
-			size={props.size ? props.size : 'large'}
-			color={props.color ? props.color : props.theme.primaryColor}
-		/>
+		<ActivityIndicator size={size} color={color ?? primaryColor} />
 	</View>
 )
 
-const mapStateToProps = (state) => ({ theme: state.theme.theme })
+const mapStateToProps = (state) => ({ primaryColor: state.theme.theme?.primaryColor })
 
 export default connect(mapStateToProps)(Spinner)

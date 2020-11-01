@@ -290,7 +290,6 @@ class QuicklyTaskList extends Component {
 									numberOfLines={1}
 									style={{
 										color: theme.primaryTextColor,
-										fontWeight: 'bold',
 										fontSize: 20,
 									}}
 								>

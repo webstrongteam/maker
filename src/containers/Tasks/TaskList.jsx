@@ -693,7 +693,6 @@ class TaskList extends Component {
 											numberOfLines={1}
 											style={{
 												margin: 2,
-												fontWeight: '700',
 												color: task.finish
 													? theme.thirdTextColor
 													: div === translations.overdue
@@ -807,7 +806,6 @@ class TaskList extends Component {
 												styles.dropdownText,
 												{
 													color: theme.primaryTextColor,
-													fontWeight: '700',
 												},
 											]}
 										>

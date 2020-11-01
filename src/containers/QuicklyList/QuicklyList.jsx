@@ -37,13 +37,16 @@ class QuicklyList extends Component {
 	reloadListsAmount = () => {
 		const { lists } = this.props
 		const { amounts } = this.state
+		const listsLength = lists.length
 
-		if (lists.length) {
+		if (listsLength) {
 			const { onInitList } = this.props
-			lists.map((list) => {
+			lists.map((list, index) => {
 				onInitList(list.id, (tasks) => {
 					amounts[list.id] = tasks.length
-					this.setState({ amounts, loading: false })
+					if (index === listsLength - 1) {
+						this.setState({ amounts, loading: false })
+					}
 				})
 			})
 		} else {
@@ -112,7 +115,7 @@ class QuicklyList extends Component {
 						style={{
 							container: [shadow, { backgroundColor: theme.primaryBackgroundColor }],
 							primaryText: {
-								fontSize: 18,
+								fontSize: 17,
 								color: theme.secondaryTextColor,
 							},
 							secondaryText: {

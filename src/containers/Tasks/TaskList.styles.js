@@ -71,7 +71,7 @@ export default StyleSheet.create({
 	},
 	taskName: {
 		margin: 2,
-		fontSize: 16,
+		fontSize: 17,
 	},
 	taskDate: {
 		flexDirection: 'row',

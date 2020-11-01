@@ -1,25 +1,25 @@
 {
 	"expo": {
 		"name": "Maker - ToDo List",
-		"slug": "maker-test",
+		"slug": "maker",
 		"description": "Maker is an advanced ToDo mobile application created with React Native and Expo framework. This app working with Android and iOS.",
 		"githubUrl": "https://github.com/mateuszpijanowski/maker",
 		"privacy": "public",
 		"version": "2.5.0",
 		"ios": {
 			"buildNumber": "2.5.0",
-			"supportsTablet": false,
 			"bundleIdentifier": "com.webStrong.maker",
-			"googleServicesFile": "./firebase/GoogleService-Info.plist",
+			"supportsTablet": false,
 			"usesIcloudStorage": true,
+			"googleServicesFile": "./firebase/GoogleService-Info.plist",
 			"infoPlist": {
 				"NSPhotoLibraryUsageDescription": "We need this for selecting profile avatar."
 			}
 		},
 		"android": {
+			"versionCode": 240,
 			"package": "com.webStrong.maker",
 			"playStoreUrl": "https://play.google.com/store/apps/details?id=com.webStrong.maker",
-			"versionCode": 221,
 			"googleServicesFile": "./firebase/google-services.json"
 		},
 		"platforms": ["ios", "android"],

@@ -242,7 +242,6 @@ class Theme extends Component {
 								<Text
 									style={{
 										color: theme.primaryTextColor,
-										fontWeight: 'bold',
 										fontSize: 18,
 									}}
 								>

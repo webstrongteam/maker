@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 export default StyleSheet.create({
 	taskName: {
 		marginLeft: 15,
-		fontSize: 16,
+		fontSize: 17,
 		color: '#000',
 	},
 	taskIconContainer: {

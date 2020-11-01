@@ -74,12 +74,10 @@ class Main extends Component {
 									}}
 								/>
 							)}
-							renderLazyPlaceholder={() => <Spinner color='#f4511e' />}
-							lazy
 						/>
 					</Template>
 				) : (
-					<Spinner color='#f4511e' />
+					<Spinner />
 				)}
 			</>
 		)

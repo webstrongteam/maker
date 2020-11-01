@@ -29,7 +29,6 @@ export const empty = {
 
 export const settingsHeading = {
 	color: '#009688',
-	fontWeight: '700',
 }
 
 export const shadow = {
