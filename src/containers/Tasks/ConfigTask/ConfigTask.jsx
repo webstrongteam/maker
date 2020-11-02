@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { IconToggle, Toolbar, Checkbox } from 'react-native-material-ui'
-import { askAsync, CALENDAR, NOTIFICATIONS, REMINDERS } from 'expo-permissions'
+import { askAsync, CALENDAR, REMINDERS } from 'expo-permissions'
 import moment from 'moment'
 import { flex } from '../../../shared/styles'
 import { dateFormat, dateTimeFormat, timeFormat, timeFormatA } from '../../../shared/consts'
@@ -344,29 +344,7 @@ class ConfigTask extends Component {
 	}
 
 	setNotification = async (value) => {
-		if (value) {
-			const { status } = await askAsync(NOTIFICATIONS)
-			if (status === 'granted') {
-				this.setState({ setNotification: value })
-			} else {
-				const { translations } = this.props
-				this.toggleSnackbar(translations.permissionError)
-			}
-		} else {
-			this.setState({ setNotification: value })
-		}
-	}
-
-	saveTask = () => {
-		let { task, setEvent, setNotification } = this.state
-		const { navigation, theme, onSaveTask } = this.props
-
-		if (dateTime(task.date)) setNotification = false
-		configTask(task, theme.primaryColor, setEvent, setNotification)
-			.then((task) => {
-				onSaveTask(task, navigation.goBack)
-			})
-			.catch(() => onSaveTask(task, navigation.goBack))
+		this.setState({ setNotification: value })
 	}
 
 	toggleDateModal = () => {
@@ -379,6 +357,18 @@ class ConfigTask extends Component {
 		const { isVisibleTime } = this.state
 
 		this.setState({ isVisibleTime: !isVisibleTime })
+	}
+
+	saveTask = () => {
+		let { task, setEvent, setNotification } = this.state
+		const { navigation, theme, onSaveTask } = this.props
+
+		if (!dateTime(task.date)) setNotification = false
+		configTask(task, theme.primaryColor, setEvent, setNotification)
+			.then((task) => {
+				onSaveTask(task, navigation.goBack)
+			})
+			.catch(() => onSaveTask(task, navigation.goBack))
 	}
 
 	render() {

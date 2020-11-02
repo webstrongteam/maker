@@ -13,11 +13,18 @@
 			"usesIcloudStorage": true,
 			"googleServicesFile": "./firebase/GoogleService-Info.plist",
 			"infoPlist": {
-				"NSPhotoLibraryUsageDescription": "We need this for selecting profile avatar."
+				"NSPhotoLibraryUsageDescription": "We need this for selecting profile avatar.",
+				"NSCalendarsUsageDescription": "We need this for saving task in system calendar."
 			}
 		},
 		"android": {
-			"versionCode": 241,
+			"permissions": [
+				"READ_CALENDAR",
+				"WRITE_CALENDAR",
+				"READ_EXTERNAL_STORAGE",
+				"WRITE_EXTERNAL_STORAGE"
+			],
+			"versionCode": 243,
 			"package": "com.webStrong.maker",
 			"playStoreUrl": "https://play.google.com/store/apps/details?id=com.webStrong.maker",
 			"googleServicesFile": "./firebase/google-services.json"

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import { Platform } from 'react-native'
 import { IconToggle, Toolbar } from 'react-native-material-ui'
 import moment from 'moment'
+import * as Analytics from 'expo-firebase-analytics'
 import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
@@ -66,6 +67,10 @@ class Backup extends PureComponent {
 					props.onInitSettings(() => {
 						this.setState({ loading: false })
 						this.toggleSnackbar(translations.dbReplaced)
+
+						Analytics.logEvent('useBackupDB', {
+							name: 'backupAction',
+						})
 					})
 				}, true)
 			})
@@ -97,6 +102,10 @@ class Backup extends PureComponent {
 			.then(() => {
 				this.loadBackupFiles()
 				this.toggleSnackbar(translations.backupCreated)
+
+				Analytics.logEvent('createdBackup', {
+					name: 'backupAction',
+				})
 			})
 			.catch(() => {
 				this.toggleSnackbar(translations.backupCreatedError)
@@ -277,7 +286,7 @@ class Backup extends PureComponent {
 			dialog.input = true
 		} else if (action === 'restart') {
 			dialog = generateDialogObject(
-				cancelHandler,
+				() => null,
 				translations.restartTitle,
 				translations.restartDescription,
 			)

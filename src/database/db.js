@@ -76,19 +76,23 @@ export const initApp = (callback, backup = false) => {
 								'UPDATE settings SET lang = ?, version = ? WHERE id = 0;',
 								[getLocale(), VERSION],
 								() => {
-									Analytics.logEvent('firstStartup', {
-										name: 'initDB',
-									})
+									if (!backup) {
+										Analytics.logEvent('firstStartup', {
+											name: 'initDB',
+										})
+									}
 
 									callback()
 								},
 							)
 						}
 
-						Analytics.logEvent('updateApp', {
-							name: 'updateApp',
-							version,
-						})
+						if (!backup) {
+							Analytics.logEvent('updateApp', {
+								name: 'updateApp',
+								version,
+							})
+						}
 
 						startMigrations(tx, version, backup, callback)
 					} else callback()
