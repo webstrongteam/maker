@@ -6,7 +6,7 @@ export const updateObject = (oldObject, newProps) => ({
 	...newProps,
 })
 
-export const { width } = Dimensions.get('window')
+export const { width, height } = Dimensions.get('window')
 
 export const dateTime = (date) => date.length > 12
 

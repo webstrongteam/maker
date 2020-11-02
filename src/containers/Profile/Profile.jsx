@@ -18,6 +18,7 @@ const defaultAvatar = require('../../assets/profile.png')
 class Profile extends PureComponent {
 	state = {
 		name: '',
+		showDefaultAvatar: false,
 		loading: true,
 	}
 
@@ -61,12 +62,14 @@ class Profile extends PureComponent {
 		if (!result.cancelled) {
 			const { onChangeAvatar } = this.props
 
-			onChangeAvatar(result.uri)
+			onChangeAvatar(result.uri, () => {
+				this.setState({ showDefaultAvatar: false })
+			})
 		}
 	}
 
 	render() {
-		const { loading, name } = this.state
+		const { loading, showDefaultAvatar, name } = this.state
 		const {
 			navigation,
 			theme,
@@ -119,10 +122,12 @@ class Profile extends PureComponent {
 								<TouchableOpacity onPress={this.getPermissionAsync}>
 									<Image
 										style={styles.image}
-										onError={(ev) => {
-											ev.target.src = defaultAvatar
+										source={
+											profile.avatar && !showDefaultAvatar ? { uri: profile.avatar } : defaultAvatar
+										}
+										onError={() => {
+											this.setState({ showDefaultAvatar: true })
 										}}
-										source={profile.avatar ? { uri: profile.avatar } : defaultAvatar}
 									/>
 								</TouchableOpacity>
 								<Input
@@ -163,7 +168,7 @@ const mapDispatchToProps = (dispatch) => ({
 	onInitSettings: () => dispatch(actions.initSettings()),
 	onInitProfile: (callback) => dispatch(actions.initProfile(callback)),
 	onChangeName: (name) => dispatch(actions.changeName(name)),
-	onChangeAvatar: (avatar) => dispatch(actions.changeAvatar(avatar)),
+	onChangeAvatar: (avatar, callback) => dispatch(actions.changeAvatar(avatar, callback)),
 	onUpdateSnackbar: (showSnackbar, snackbarText) =>
 		dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
 })

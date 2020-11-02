@@ -10,7 +10,7 @@ import { generateDialogObject } from '../../shared/utility'
 import Dialog from '../../components/Dialog/Dialog'
 import Spinner from '../../components/Spinner/Spinner'
 import Template from '../Template/Template'
-import { initApp } from '../../db'
+import { initApp } from '../../database/db'
 import BackupList from './BackupList'
 
 import * as actions from '../../store/actions'

@@ -1,16 +1,16 @@
-import { AsyncStorage } from 'react-native'
 import { openDatabase } from 'expo-sqlite'
 import * as Analytics from 'expo-firebase-analytics'
-import { getLocale } from './shared/utility'
+import { getLocale } from '../shared/utility'
+import startMigrations from './migrations'
 
 export const VERSION = '2.5.0' // APP VERSION
-const db = openDatabase('maker.db', VERSION)
+export const db = openDatabase('maker.db', VERSION)
 
 export const initDatabase = (callback) => {
 	db.transaction(
 		(tx) => {
 			// tx.executeSql(
-			//     'DROP TABLE IF EXISTS tasks;'
+			//     'DROP TABLE IF EXISTS settings;'
 			// );
 			tx.executeSql(
 				'create table if not exists categories (id integer primary key not null, name text);',
@@ -90,84 +90,7 @@ export const initApp = (callback, backup = false) => {
 							version,
 						})
 
-						const prepareToUpdate = (update) => {
-							if (update === '2.5.0') {
-								tx.executeSql(
-									'ALTER TABLE settings ADD COLUMN showDeadlineTime integer DEFAULT 1;',
-									[],
-									() => initDatabase(callback),
-								)
-							} else if (update === '2.0.0') {
-								tx.executeSql('DROP TABLE IF EXISTS themes;', [], () => {
-									tx.executeSql(
-										'ALTER TABLE quickly_tasks ADD COLUMN order_nr integer DEFAULT 0;',
-										[],
-										() => {
-											tx.executeSql(
-												'UPDATE settings SET version = ? WHERE id = 0;',
-												[VERSION],
-												() => {
-													tx.executeSql('SELECT id FROM quickly_tasks;', [], (_, { rows }) => {
-														Promise.all((resolve) => {
-															rows._array.forEach((id, index) => {
-																tx.executeSql(
-																	'update quickly_tasks set order_nr = ? where id = ?;',
-																	[index, id],
-																	() => resolve(),
-																)
-															})
-														}).then(() => {
-															if (!backup) {
-																AsyncStorage.setItem('updated', 'true')
-															}
-															prepareToUpdate('2.5.0')
-														})
-													})
-												},
-											)
-										},
-									)
-								})
-							} else if (update === '1.1.0') {
-								tx.executeSql('DELETE FROM themes WHERE id = 0;', [], () => {
-									tx.executeSql('DELETE FROM themes WHERE id = 1;', [], () => {
-										tx.executeSql(
-											'ALTER TABLE tasks ADD COLUMN event_id text default null;',
-											[],
-											() => {
-												tx.executeSql(
-													'ALTER TABLE tasks ADD COLUMN notification_id text default null;',
-													[],
-													() => {
-														tx.executeSql(
-															'ALTER TABLE settings ADD COLUMN hideTabView integer DEFAULT 0;',
-															[],
-															() => {
-																prepareToUpdate('2.0.0')
-															},
-														)
-													},
-												)
-											},
-										)
-									})
-								})
-							}
-						}
-
-						const versionID = +version.split('.').join('')
-						// Init prepare DB for newest version
-						if (versionID === 220) {
-							prepareToUpdate('2.5.0')
-						} else if (versionID === 110) {
-							prepareToUpdate('2.0.0')
-						} else if (versionID < 110) {
-							prepareToUpdate('1.1.0')
-						} else {
-							tx.executeSql('UPDATE settings SET version = ? WHERE id = 0;', [VERSION], () => {
-								callback()
-							})
-						}
+						startMigrations(tx, version, backup, callback)
 					} else callback()
 				},
 				() => initDatabase(callback),

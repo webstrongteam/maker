@@ -32,10 +32,11 @@ export const changeName = (name) => (dispatch) => {
 	)
 }
 
-export const changeAvatar = (avatar) => (dispatch) => {
+export const changeAvatar = (avatar, callback = () => null) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update profile set avatar = ? where id = 0;', [avatar], () => {
+				callback()
 				dispatch(initProfile())
 			})
 		},

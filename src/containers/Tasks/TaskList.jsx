@@ -861,7 +861,9 @@ class TaskList extends Component {
 					keyExtractor={({ task }) => `${task.id}`}
 					onRefresh={this.refreshComponent}
 					refreshing={loading}
-					ListFooterComponent={data.length > visibleData && <Spinner />}
+					ListFooterComponent={
+						data.length > visibleData ? <Spinner /> : <View style={{ marginBottom: 56 }} />
+					}
 				/>
 
 				<View>

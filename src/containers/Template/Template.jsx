@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Platform, StatusBar, View } from 'react-native'
 import { getTheme, Snackbar, ThemeContext } from 'react-native-material-ui'
-import { initDatabase, initTheme } from '../../db'
+import { initDatabase, initTheme } from '../../database/db'
 
 import * as actions from '../../store/actions'
 import { connect } from 'react-redux'
