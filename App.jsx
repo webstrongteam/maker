@@ -44,14 +44,20 @@ class App extends Component {
 			Ubuntu: require('./src/assets/fonts/Ubuntu.ttf'),
 		})
 
+		// Setting default styles for all Text components.
+		const customTextProps = {
+			style: { fontFamily: 'Ubuntu' },
+		}
+		setCustomText(customTextProps)
+
 		initApp(() => {
 			initTheme((state) => {
+				Analytics.logEvent('successStartedApp', {
+					name: 'startedApp',
+				})
+
 				this.setState(state)
 			})
-		})
-
-		await Analytics.logEvent('startedApp', {
-			name: 'startedApp',
 		})
 	}
 
@@ -65,12 +71,6 @@ class App extends Component {
 		const { uiTheme, ready } = this.state
 		// Hide yellow boxes
 		LogBox.ignoreAllLogs(true)
-
-		// Setting default styles for all Text components.
-		const customTextProps = {
-			style: { fontFamily: 'Ubuntu' },
-		}
-		setCustomText(customTextProps)
 
 		return ready ? (
 			<Provider store={store}>
