@@ -3,7 +3,6 @@ node_modules/**/*
 /.idea/*
 /firebase/*
 npm-debug.*
-/src/config/auth.js
 *.jks
 *.p12
 *.key

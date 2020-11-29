@@ -11,7 +11,7 @@ import {
 import axios from 'axios'
 import { Button, Toolbar } from 'react-native-material-ui'
 import { flex } from '../../shared/styles'
-import { AUTH_KEY } from '../../config/auth'
+import config from '../../config/config'
 import Spinner from '../../components/Spinner/Spinner'
 import Input from '../../components/Input/Input'
 import Template from '../Template/Template'
@@ -66,17 +66,17 @@ class Report extends Component {
 		if (!controls.title.error && !controls.description.error) {
 			this.setState({ sending: true }, () => {
 				axios
-					.post('https://webstrong.pl/api/send-email', {
+					.post(`${config.API_URL}/send-email`, {
 						subject: `Maker - ${title}`,
 						message: `${description}<p>version: ${settings.version}</p> <p>system: ${Platform.OS}</p>`,
 						to: 'maker@webstrong.pl',
-						auth: AUTH_KEY,
 					})
 					.then(() => {
 						this.toggleSnackbar(translations.correctSend, true)
 						const { controls } = this.state
 						controls.title.error = true
 						controls.description.error = true
+
 						this.setState({
 							title: '',
 							description: '',
