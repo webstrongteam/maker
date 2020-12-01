@@ -89,13 +89,14 @@ class ConfigQuicklyTask extends Component {
 
 	render() {
 		const { dialog } = this.state
-		const { showDialog } = this.props
+		const { theme, showDialog } = this.props
 
-		return <Dialog {...dialog} input showDialog={showDialog} />
+		return <Dialog {...dialog} input theme={theme} showDialog={showDialog} />
 	}
 }
 
 const mapStateToProps = (state) => ({
+	theme: state.theme.theme,
 	translations: {
 		...state.settings.translations.ConfigQuicklyTask,
 		...state.settings.translations.validation,

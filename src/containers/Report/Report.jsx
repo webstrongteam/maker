@@ -8,8 +8,11 @@ import {
 	TouchableWithoutFeedback,
 	View,
 } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import axios from 'axios'
+import * as Analytics from 'expo-firebase-analytics'
 import { Button, Toolbar } from 'react-native-material-ui'
+import { valid } from '../../shared/utility'
 import { flex } from '../../shared/styles'
 import config from '../../config/config'
 import Spinner from '../../components/Spinner/Spinner'
@@ -59,6 +62,21 @@ class Report extends Component {
 		onUpdateSnackbar(visible, message)
 	}
 
+	checkValidation = () => {
+		const { controls, title, description } = this.state
+		const { translations } = this.props
+		const newControls = controls
+
+		valid(controls.title, title, translations, (newControl) => {
+			newControls.title = newControl
+		})
+		valid(controls.description, description, translations, (newControl) => {
+			newControls.description = newControl
+		})
+
+		this.setState({ controls: newControls }, this.sendReport)
+	}
+
 	sendReport = () => {
 		const { title, description, controls } = this.state
 		const { translations, settings } = this.props
@@ -84,7 +102,11 @@ class Report extends Component {
 							controls,
 						})
 					})
-					.catch(() => {
+					.catch(({ message }) => {
+						Analytics.logEvent('sendReportError', {
+							error: message,
+						})
+
 						this.toggleSnackbar(translations.errorSend, true)
 						this.setState({ sending: false })
 					})
@@ -96,7 +118,7 @@ class Report extends Component {
 		const { title, description, sending, controls } = this.state
 		const { navigation, theme, translations } = this.props
 
-		const validDate = !controls.title.error && !controls.description.error
+		const validData = !controls.title.error && !controls.description.error
 
 		return (
 			<Template bgColor={theme.secondaryBackgroundColor}>
@@ -105,7 +127,7 @@ class Report extends Component {
 					onLeftElementPress={navigation.goBack}
 					centerElement={translations.title}
 				/>
-				<KeyboardAvoidingView behavior='padding' style={flex}>
+				<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'none'} style={flex}>
 					<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 						<View style={styles.formWrapper}>
 							<View>
@@ -136,17 +158,22 @@ class Report extends Component {
 							{sending ? (
 								<Spinner />
 							) : (
-								<Button
-									raised
-									icon='send'
-									disabled={!validDate}
-									text={translations.sendButton}
-									onPress={this.sendReport}
-									style={{
-										container: { backgroundColor: validDate ? theme.doneIconColor : '#bfbfbf' },
-										text: { color: theme.primaryTextColor },
-									}}
-								/>
+								<TouchableOpacity onPress={this.checkValidation}>
+									<Button
+										raised
+										icon='send'
+										disabled={!validData}
+										text={translations.sendButton}
+										style={{
+											container: {
+												marginLeft: 20,
+												marginRight: 20,
+												backgroundColor: validData ? theme.doneIconColor : '#bfbfbf',
+											},
+											text: { color: theme.primaryTextColor },
+										}}
+									/>
+								</TouchableOpacity>
 							)}
 						</View>
 					</TouchableWithoutFeedback>
@@ -159,7 +186,10 @@ class Report extends Component {
 const mapStateToProps = (state) => ({
 	theme: state.theme.theme,
 	settings: state.settings.settings,
-	translations: state.settings.translations.Report,
+	translations: {
+		...state.settings.translations.Report,
+		...state.settings.translations.validation,
+	},
 })
 
 const mapDispatchToProps = (dispatch) => ({

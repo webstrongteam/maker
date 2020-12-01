@@ -314,7 +314,7 @@ class Backup extends PureComponent {
 					centerElement={translations.title}
 				/>
 
-				<Dialog {...dialog} showDialog={showDialog} />
+				<Dialog {...dialog} theme={theme} showDialog={showDialog} />
 
 				{!loading ? (
 					<BackupList

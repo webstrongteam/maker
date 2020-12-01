@@ -4,7 +4,6 @@ import {
 	AsyncStorage,
 	Easing,
 	FlatList,
-	Platform,
 	RefreshControl,
 	Text,
 	TouchableOpacity,
@@ -119,7 +118,7 @@ class TaskList extends Component {
 			toValue: value,
 			duration: 250,
 			easing: Easing.bezier(0.0, 0.0, 0.2, 1),
-			useNativeDriver: Platform.OS === 'android',
+			useNativeDriver: true,
 		}).start()
 
 		const rotateInterpolate = rotateAnimated.interpolate({
@@ -139,7 +138,7 @@ class TaskList extends Component {
 				toValue: -400,
 				duration: 350,
 				easing: Easing.bezier(0.0, 0.0, 0.2, 1),
-				useNativeDriver: false,
+				useNativeDriver: true,
 			}).start(() => {
 				animations[`hide${selectedTask.id}`] = true
 				this.setState({ animations }, callback())
@@ -833,7 +832,7 @@ class TaskList extends Component {
 					toggleModal={this.toggleConfigCategory}
 				/>
 
-				<Dialog {...dialog} showDialog={showDialog} />
+				<Dialog {...dialog} theme={theme} showDialog={showDialog} />
 
 				<FlatList
 					ref={(e) => {

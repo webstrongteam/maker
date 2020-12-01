@@ -128,7 +128,7 @@ class CategoriesList extends PureComponent {
 					/>
 				)}
 
-				<Dialog {...dialog} showDialog={showDialog} />
+				<Dialog {...dialog} theme={theme} showDialog={showDialog} />
 
 				{ready && (
 					<View style={flex}>

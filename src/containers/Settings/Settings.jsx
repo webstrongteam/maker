@@ -124,7 +124,7 @@ class Settings extends PureComponent {
 					centerElement={translations.settings}
 				/>
 
-				<Dialog {...dialog} showDialog={showDialog} />
+				<Dialog {...dialog} theme={theme} showDialog={showDialog} />
 
 				{!loading ? (
 					<>

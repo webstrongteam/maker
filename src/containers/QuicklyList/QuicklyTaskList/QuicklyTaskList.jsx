@@ -314,7 +314,7 @@ class QuicklyTaskList extends Component {
 					/>
 				)}
 
-				<Dialog {...dialog} input showDialog={showInputDialog} />
+				<Dialog {...dialog} input theme={theme} showDialog={showInputDialog} />
 
 				{!loading ? (
 					<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'none'} style={flex}>

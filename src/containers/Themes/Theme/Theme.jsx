@@ -256,8 +256,9 @@ class Theme extends Component {
 					}
 				/>
 
-				<Dialog {...dialog} showDialog={showDialog} />
+				<Dialog {...dialog} theme={theme} showDialog={showDialog} />
 
+				{/* TODO: Move it to router */}
 				<Modal
 					coverScreen
 					style={{

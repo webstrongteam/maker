@@ -24,14 +24,14 @@
 				"READ_EXTERNAL_STORAGE",
 				"WRITE_EXTERNAL_STORAGE"
 			],
-			"versionCode": 243,
+			"versionCode": 2501,
 			"package": "com.webStrong.maker",
 			"playStoreUrl": "https://play.google.com/store/apps/details?id=com.webStrong.maker",
 			"googleServicesFile": "./firebase/google-services.json"
 		},
 		"platforms": ["ios", "android"],
 		"primaryColor": "#f4511e",
-		"orientation": "default",
+		"orientation": "portrait",
 		"icon": "./src/assets/icon.png",
 		"splash": {
 			"image": "./src/assets/splash.png",

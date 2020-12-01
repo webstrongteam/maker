@@ -80,12 +80,12 @@ class ConfigCategory extends Component {
 
 	render() {
 		const { dialog, control, category } = this.state
-		const { showDialog } = this.props
+		const { theme, showDialog } = this.props
 
 		return (
 			<>
 				{dialog && category && (
-					<Dialog {...dialog} showDialog={showDialog}>
+					<Dialog {...dialog} theme={theme} showDialog={showDialog}>
 						<Input
 							elementConfig={control}
 							focus
@@ -104,6 +104,7 @@ class ConfigCategory extends Component {
 }
 
 const mapStateToProps = (state) => ({
+	theme: state.theme.theme,
 	translations: {
 		...state.settings.translations.ConfigCategory,
 		...state.settings.translations.validation,

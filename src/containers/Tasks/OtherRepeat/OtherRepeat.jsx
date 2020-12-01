@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Platform } from 'react-native'
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
-import Modal from 'react-native-modalbox'
-import RepeatTime from '../components/RepeatTime'
-import RepeatDays from '../components/RepeatDays'
-import Spinner from '../../../../components/Spinner/Spinner'
+import Template from '../../Template/Template'
+import RepeatTime from './components/RepeatTime'
+import RepeatDays from './components/RepeatDays'
+import Spinner from '../../../components/Spinner/Spinner'
 import styles from './OtherRepeat.styles'
 
 import { connect } from 'react-redux'
@@ -18,29 +17,37 @@ class OtherRepeat extends Component {
 				{ key: 'days', title: this.props.translations.repeatDay },
 			],
 		},
+		loading: true,
+	}
+
+	componentDidMount() {
+		const { navigation } = this.props
+
+		const data = {
+			usingTime: navigation.getParam('usingTime', undefined),
+			repeat: navigation.getParam('repeat', undefined),
+			selectedTime: navigation.getParam('selectedTime', undefined),
+			saveHandler: navigation.getParam('saveHandler', undefined),
+		}
+
+		this.setState({ ...data, loading: false })
 	}
 
 	saveHandler = (repeat, selectedTime) => {
-		const { save } = this.props
-
-		save(repeat, selectedTime)
+		this.state.saveHandler(repeat, selectedTime)
+		this.props.navigation.goBack()
 	}
 
 	render() {
-		const { tabs } = this.state
-		const { showModal, usingTime, repeat, selectedTime, theme, cancel } = this.props
+		const { tabs, usingTime, repeat, selectedTime, loading } = this.state
+		const { navigation, theme } = this.props
+
+		if (loading) {
+			return <Spinner />
+		}
 
 		return (
-			<Modal
-				coverScreen
-				style={{
-					marginTop: Platform.OS === 'ios' ? 20 : 0,
-					backgroundColor: theme.secondaryBackgroundColor,
-				}}
-				isOpen={showModal}
-				swipeToClose={false}
-				onClosed={cancel}
-			>
+			<Template>
 				<TabView
 					navigationState={tabs}
 					style={styles.tabView}
@@ -53,7 +60,7 @@ class OtherRepeat extends Component {
 						time: () => (
 							<RepeatTime
 								save={this.saveHandler}
-								close={cancel}
+								close={() => navigation.goBack()}
 								usingTime={usingTime}
 								repeat={repeat}
 								selectedTime={selectedTime}
@@ -62,7 +69,7 @@ class OtherRepeat extends Component {
 						days: () => (
 							<RepeatDays
 								save={this.saveHandler}
-								close={cancel}
+								close={() => navigation.goBack()}
 								repeat={repeat}
 								selectedTime={selectedTime}
 							/>
@@ -81,7 +88,7 @@ class OtherRepeat extends Component {
 					renderLazyPlaceholder={() => <Spinner />}
 					lazy
 				/>
-			</Modal>
+			</Template>
 		)
 	}
 }

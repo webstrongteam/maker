@@ -3,7 +3,6 @@ import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Button, ListItem } from 'react-native-material-ui'
 import Input from '../../../../components/Input/Input'
 import { getTimeVariant } from '../../../../shared/utility'
-import { flex } from '../../../../shared/styles'
 import styles from './RepeatTime.styles'
 
 import { connect } from 'react-redux'
@@ -57,7 +56,7 @@ class RepeatTime extends Component {
 		}
 
 		return (
-			<View style={flex}>
+			<View style={{ flex: 1, backgroundColor: theme.secondaryBackgroundColor }}>
 				<ScrollView>
 					<Input
 						elementConfig={control}

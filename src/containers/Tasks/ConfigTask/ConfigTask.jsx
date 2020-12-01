@@ -11,7 +11,6 @@ import Spinner from '../../../components/Spinner/Spinner'
 import Template from '../../Template/Template'
 import Input from '../../../components/Input/Input'
 import ConfigCategory from '../../Categories/ConfigCategory/ConfigCategory'
-import OtherRepeat from './OtherRepeat/OtherRepeat'
 import {
 	checkValid,
 	convertDaysIndex,
@@ -58,7 +57,6 @@ class ConfigTask extends Component {
 		otherOption: null,
 		taskCopy: null,
 		selectedTime: 0,
-		showOtherRepeat: false,
 		editTask: null,
 		showConfigCategory: false,
 		setEvent: false,
@@ -264,8 +262,16 @@ class ConfigTask extends Component {
 		this.setState({ task, showConfigCategory: !showConfigCategory })
 	}
 
-	toggleOtherRepeat = () => {
-		this.setState({ showOtherRepeat: true })
+	showOtherRepeat = () => {
+		const { task, selectedTime, repeatValue } = this.state
+
+		const usingTime = dateTime(task.date)
+		this.props.navigation.navigate('OtherRepeat', {
+			usingTime,
+			selectedTime,
+			repeat: repeatValue,
+			saveHandler: (repeat, selectedTime) => this.saveOtherRepeat(repeat, selectedTime),
+		})
 	}
 
 	saveOtherRepeat = (repeatValue, selectedTime) => {
@@ -291,7 +297,6 @@ class ConfigTask extends Component {
 			otherOption,
 			repeatValue,
 			selectedTime,
-			showOtherRepeat: false,
 		})
 	}
 
@@ -378,9 +383,6 @@ class ConfigTask extends Component {
 			loading,
 			editTask,
 			showConfigCategory,
-			selectedTime,
-			showOtherRepeat,
-			repeatValue,
 			otherOption,
 			setEvent,
 			setNotification,
@@ -439,22 +441,13 @@ class ConfigTask extends Component {
 					}}
 				/>
 
-				<OtherRepeat
-					showModal={showOtherRepeat}
-					repeat={repeatValue}
-					selectedTime={selectedTime}
-					usingTime={isDateTime}
-					save={(repeat, selectedTime) => this.saveOtherRepeat(repeat, selectedTime)}
-					cancel={() => this.setState({ showOtherRepeat: false })}
-				/>
-
 				<ConfigCategory
 					showDialog={showConfigCategory}
 					category={false}
 					toggleModal={this.toggleConfigCategory}
 				/>
 
-				<Dialog {...dialog} showDialog={showDialog} />
+				<Dialog {...dialog} theme={theme} showDialog={showDialog} />
 
 				{!loading ? (
 					<ScrollView>
@@ -615,7 +608,7 @@ class ConfigTask extends Component {
 												{+task.repeat ? otherOption : convertRepeatNames(task.repeat, translations)}
 											</Text>
 										</TouchableOpacity>
-										<IconToggle onPress={this.toggleOtherRepeat} name='playlist-add' />
+										<IconToggle onPress={this.showOtherRepeat} name='playlist-add' />
 									</View>
 								</>
 							)}

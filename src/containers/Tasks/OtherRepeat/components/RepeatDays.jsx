@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { Avatar, Button } from 'react-native-material-ui'
 import { weekdaysCodes } from '../../../../shared/consts'
-import { flex } from '../../../../shared/styles'
 import styles from './RepeatDays.styles'
 
 import { connect } from 'react-redux'
@@ -64,7 +63,7 @@ class RepeatDays extends Component {
 		}
 
 		return (
-			<View style={flex}>
+			<View style={{ flex: 1, backgroundColor: theme.secondaryBackgroundColor }}>
 				<ScrollView>
 					<Text
 						style={{
