@@ -1,8 +1,8 @@
 node_modules/**/*
 .expo*
 /.idea/*
+/firebase/*
 npm-debug.*
-/src/API/*
 *.jks
 *.p12
 *.key

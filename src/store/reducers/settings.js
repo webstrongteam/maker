@@ -1,32 +1,32 @@
-import * as actionTypes from '../actions/actionTypes';
-import {updateObject} from '../../shared/utility';
-import en from "../../../translations/en.json";
-import pl from "../../../translations/pl.json";
+import * as actionTypes from '../actions/actionTypes'
+import { updateObject } from '../../shared/utility'
+import en from '../../../translations/en.json'
+import pl from '../../../translations/pl.json'
 
-const messages = {en, pl};
+const messages = { en, pl }
 
 const initState = {
-    settings: {},
-    translations: messages['en']
-};
+	settings: {},
+	translations: messages.en,
+}
 
 const updateSettings = (state, action) => {
-    if (action.settings.lang.constructor.name !== 'String') {
-        action.settings.lang = 'en'
-    }
-    return updateObject(state, {
-        settings: action.settings,
-        translations: messages[action.settings.lang]
-    });
-};
+	if (action.settings.lang.constructor.name !== 'String') {
+		action.settings.lang = 'en'
+	}
+	return updateObject(state, {
+		settings: action.settings,
+		translations: messages[action.settings.lang],
+	})
+}
 
 const reducer = (state = initState, action) => {
-    switch (action.type) {
-        case actionTypes.UPDATE_SETTINGS:
-            return updateSettings(state, action);
-        default:
-            return state;
-    }
-};
+	switch (action.type) {
+		case actionTypes.UPDATE_SETTINGS:
+			return updateSettings(state, action)
+		default:
+			return state
+	}
+}
 
-export default reducer;
+export default reducer
