@@ -3,7 +3,7 @@
 # Maker - ToDo App
 
 <a href="https://play.google.com/store/apps/details?id=com.webStrong.maker" target="_blank"><img src="https://webstrong.pl/assets/templates/google_play_en.png" alt="Google Play logo" height="50"/></a>
-<a href="https://apps.apple.com/us/app/maker-todo-list/id1502811101" target="_blank"><img src="https://webstrong.pl/assets/templates/apple_store_en.png" alt="App Store logo" height="50"/></a>
+<a href="https://apps.apple.com/us/app/maker-todo-list/id1502811101" target="_blank"><img src="https://webstrong.pl/assets/templates/app_store_en.png" alt="App Store logo" height="50"/></a>
 
 **Maker** is an advanced ToDo mobile application. This app offers the possibility to **quickly save tasks** with **name, description, date, time, repetition cycles, categories, and priority**. The intelligent dashboard offers **advanced sorting of tasks and displaying them by categories**. All completed tasks are stored in the finished category where you can restore or delete them. Maker was created with React Native and Expo framework.
 
@@ -56,9 +56,22 @@
 
 <p>App version: <b>2.5.0</b></p>
 
+## Available scripts
+
+`npm run start` - start app
+
+`npm run android` - start app for android
+
+`npm run ios` - start app for ios
+
+`npm run cleanup` - run prettier and ESlint
+
+`npm run eject` - Ejecting from Managed Workflow
+
 ### ToDo:
 
 - Update privacy policy
+- Write unit and e2e tests
 
 **iOS:**
 
