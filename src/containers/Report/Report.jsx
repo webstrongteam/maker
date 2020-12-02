@@ -91,6 +91,7 @@ class Report extends Component {
 					})
 					.then(() => {
 						this.toggleSnackbar(translations.correctSend, true)
+
 						const { controls } = this.state
 						controls.title.error = true
 						controls.description.error = true

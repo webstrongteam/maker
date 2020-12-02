@@ -24,7 +24,7 @@
 				"READ_EXTERNAL_STORAGE",
 				"WRITE_EXTERNAL_STORAGE"
 			],
-			"versionCode": 2501,
+			"versionCode": 2502,
 			"package": "com.webStrong.maker",
 			"playStoreUrl": "https://play.google.com/store/apps/details?id=com.webStrong.maker",
 			"googleServicesFile": "./firebase/google-services.json"
