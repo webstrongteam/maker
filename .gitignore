@@ -3,6 +3,7 @@ node_modules/**/*
 /.idea/*
 /firebase/*
 npm-debug.*
+package-lock.json
 *.jks
 *.p12
 *.key
