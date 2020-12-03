@@ -138,7 +138,7 @@ class TaskList extends Component {
 				toValue: -400,
 				duration: 350,
 				easing: Easing.bezier(0.0, 0.0, 0.2, 1),
-				useNativeDriver: true,
+				useNativeDriver: false,
 			}).start(() => {
 				animations[`hide${selectedTask.id}`] = true
 				this.setState({ animations }, callback())

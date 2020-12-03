@@ -69,7 +69,7 @@ class App extends Component {
 
 	render() {
 		const { uiTheme, ready } = this.state
-		// Hide yellow boxes
+		// TODO: only ignore known logs
 		LogBox.ignoreAllLogs(true)
 
 		return ready ? (
