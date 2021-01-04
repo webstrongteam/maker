@@ -23,6 +23,7 @@ import moment from 'moment'
 import { dateDiff, dateTime, generateDialogObject, sortingByType } from '../../shared/utility'
 import { empty, flex, shadow } from '../../shared/styles'
 import { dateFormat, dateTimeAFormat, dateTimeFormat, UP, DOWN } from '../../shared/consts'
+import * as Analytics from 'expo-firebase-analytics'
 import ConfigCategory from '../Categories/ConfigCategory/ConfigCategory'
 import Dialog from '../../components/Dialog/Dialog'
 import Spinner from '../../components/Spinner/Spinner'
@@ -217,6 +218,10 @@ class TaskList extends Component {
 						this.moveAnimate(() => {
 							const { onRemoveTask } = this.props
 							onRemoveTask(selectedTask)
+
+							Analytics.logEvent('removedTask', {
+								name: 'taskAction',
+							})
 						})
 					},
 					[translations.no]: cancelHandler,
@@ -225,7 +230,7 @@ class TaskList extends Component {
 		} else if (action === 'deleteAll') {
 			dialog = generateDialogObject(
 				cancelHandler,
-				translations.defaultAllTitle,
+				translations.defaultTitle,
 				translations.finishAllDescription,
 				{
 					[translations.yes]: () => {
@@ -273,6 +278,10 @@ class TaskList extends Component {
 		const { finished, onRemoveTask } = this.props
 
 		finished.map((task) => onRemoveTask(task))
+
+		Analytics.logEvent('removedAllFinishedTasks', {
+			name: 'taskAction',
+		})
 	}
 
 	checkDeleteHandler = () => {
@@ -656,7 +665,7 @@ class TaskList extends Component {
 							divider
 							dense
 							onPress={() =>
-								task.finish ? null : navigation.navigate('ConfigTask', { task: task.id })
+								navigation.navigate('ConfigTask', { task: task.id, finished: task.finish })
 							}
 							style={{
 								container: {

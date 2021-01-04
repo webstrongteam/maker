@@ -23,6 +23,7 @@ import {
 } from '../../../shared/utility'
 import { configTask } from '../../../shared/configTask'
 import Dialog from '../../../components/Dialog/Dialog'
+import * as Analytics from 'expo-firebase-analytics'
 import styles from './ConfigTask.styles'
 
 import * as actions from '../../../store/actions'
@@ -67,70 +68,78 @@ class ConfigTask extends Component {
 	}
 
 	componentDidMount() {
-		const { navigation } = this.props
-		const task = navigation.getParam('task', false)
+		const { task } = this.state
+		const { navigation, onInitTask, onInitFinishedTask, translations } = this.props
+		const taskId = navigation.getParam('task', false)
+		const finished = navigation.getParam('finished', false)
 		const category = navigation.getParam('category', false)
 
-		if (task !== false) this.initTask(task)
-		else {
-			const { task } = this.state
-			const { translations } = this.props
-
-			if (category && category.name !== translations.all) {
-				task.category = category
+		if (taskId !== false) {
+			if (finished) {
+				onInitFinishedTask(taskId, (task) => {
+					this.prepareTask({ ...task, event_id: null, notification_id: null })
+				})
+			} else {
+				onInitTask(taskId, (task) => {
+					this.prepareTask(task)
+				})
 			}
-			this.setState({
-				taskCopy: JSON.parse(JSON.stringify(task)),
-				editTask: false,
-				loading: false,
-			})
+			return
 		}
+
+		if (category && category.name !== translations.all) {
+			task.category = category
+		}
+
+		this.setState({
+			taskCopy: JSON.parse(JSON.stringify(task)),
+			editTask: false,
+			loading: false,
+		})
 	}
 
-	initTask = (id) => {
-		const { categories, translations, onInitTask, settings } = this.props
+	prepareTask = (task) => {
+		const { categories, translations, settings } = this.props
 
-		onInitTask(id, (task) => {
-			const findCate = categories.find((c) => +c.id === +task.category)
-			if (findCate) {
-				task.category = findCate
+		const findCate = categories.find((c) => +c.id === +task.category)
+		if (findCate) {
+			task.category = findCate
+		} else {
+			task.category = categories[0]
+		}
+
+		let selectedTime = 0
+		let repeatValue = '1'
+		let otherOption = `${translations.other}...`
+
+		if (+task.repeat === parseInt(task.repeat, 10)) {
+			selectedTime = task.repeat[0]
+			repeatValue = task.repeat.substring(1)
+			if (+selectedTime !== 6) {
+				otherOption = `${translations.other} (${repeatValue} ${getTimeVariant(
+					+repeatValue,
+					convertNumberToDate(+selectedTime),
+					settings.lang,
+					translations,
+				)})`
 			} else {
-				task.category = categories[0]
+				otherOption = `${translations.other} (${translations.repeatDays} ${convertDaysIndex(
+					repeatValue,
+					translations,
+				)})`
 			}
+		}
 
-			let selectedTime = 0
-			let repeatValue = '1'
-			let otherOption = `${translations.other}...`
-
-			if (+task.repeat === parseInt(task.repeat, 10)) {
-				selectedTime = task.repeat[0]
-				repeatValue = task.repeat.substring(1)
-				if (+selectedTime !== 6) {
-					otherOption = `${translations.other} (${repeatValue} ${getTimeVariant(
-						+repeatValue,
-						convertNumberToDate(+selectedTime),
-						settings.lang,
-						translations,
-					)})`
-				} else {
-					otherOption = `${translations.other} (${translations.repeatDays} ${convertDaysIndex(
-						repeatValue,
-						translations,
-					)})`
-				}
-			}
-
-			this.setState({
-				taskCopy: JSON.parse(JSON.stringify(task)),
-				editTask: true,
-				task,
-				otherOption,
-				repeatValue,
-				setEvent: task.event_id !== null,
-				setNotification: task.notification_id !== null,
-				selectedTime,
-				loading: false,
-			})
+		this.setState({
+			taskCopy: JSON.parse(JSON.stringify(task)),
+			editTask: true,
+			task,
+			otherOption,
+			repeatValue,
+			setEvent: task.event_id !== null,
+			setNotification: task.notification_id !== null,
+			selectedTime,
+			loading: false,
 		})
 	}
 
@@ -175,8 +184,15 @@ class ConfigTask extends Component {
 				{
 					[translations.yes]: () => {
 						const { onRemoveTask, navigation } = this.props
+
 						cancelHandler()
-						onRemoveTask(task, navigation.goBack)
+						onRemoveTask(task, !!task.finish, () => {
+							navigation.goBack()
+
+							Analytics.logEvent('removedTask', {
+								name: 'taskAction',
+							})
+						})
 					},
 					[translations.cancel]: cancelHandler,
 				},
@@ -366,14 +382,20 @@ class ConfigTask extends Component {
 
 	saveTask = () => {
 		let { task, setEvent, setNotification } = this.state
-		const { navigation, theme, onSaveTask } = this.props
+		const { navigation, theme, onSaveTask, onUndoTask } = this.props
+
+		const saveTaskCallback = (task) => {
+			if (task.finish) {
+				onUndoTask(task, navigation.goBack)
+			} else {
+				onSaveTask(task, navigation.goBack)
+			}
+		}
 
 		if (!dateTime(task.date)) setNotification = false
 		configTask(task, theme.primaryColor, setEvent, setNotification)
-			.then((task) => {
-				onSaveTask(task, navigation.goBack)
-			})
-			.catch(() => onSaveTask(task, navigation.goBack))
+			.then((task) => saveTaskCallback(task))
+			.catch((task) => saveTaskCallback(task))
 	}
 
 	render() {
@@ -431,7 +453,11 @@ class ConfigTask extends Component {
 								/>
 							)}
 							{this.checkChanges() && (
-								<IconToggle name='save' color={theme.primaryTextColor} onPress={this.saveTask} />
+								<IconToggle
+									name={task.finish ? 'replay' : 'save'}
+									color={theme.primaryTextColor}
+									onPress={this.saveTask}
+								/>
 							)}
 						</View>
 					}
@@ -666,8 +692,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
 	onInitTask: (id, callback) => dispatch(actions.initTask(id, callback)),
+	onInitFinishedTask: (id, callback) => dispatch(actions.initFinishedTask(id, callback)),
 	onSaveTask: (task, callback) => dispatch(actions.saveTask(task, callback)),
-	onRemoveTask: (task, callback) => dispatch(actions.removeTask(task, false, callback)),
+	onUndoTask: (task, callback) => dispatch(actions.undoTask(task, callback)),
+	onRemoveTask: (task, finished, callback) =>
+		dispatch(actions.removeTask(task, finished, callback)),
 	onUpdateSnackbar: (showSnackbar, snackbarText) =>
 		dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
 })

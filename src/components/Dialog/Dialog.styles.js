@@ -3,7 +3,7 @@ import { StyleSheet, Platform } from 'react-native'
 export default StyleSheet.create({
 	dialogContainer: {
 		borderRadius: 5,
-		paddingTop: 30,
+		paddingTop: 20,
 		marginTop: -40,
 		paddingLeft: 20,
 		marginLeft: -20,
@@ -18,10 +18,11 @@ export default StyleSheet.create({
 	dialogDescription: {
 		marginLeft: 15,
 		marginRight: 15,
+		marginBottom: 10,
 		textAlign: 'left',
 	},
 	dialogButtons: {
-		marginTop: Platform.OS === 'ios' ? 20 : 15,
+		marginTop: 15,
 		marginBottom: Platform.OS === 'ios' ? -5 : 0,
 		flexDirection: 'row',
 		justifyContent: 'flex-end',

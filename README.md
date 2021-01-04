@@ -54,7 +54,7 @@
 - Colorsys <i>1.0.22</i>
 - Axios <i>0.19.2</i>
 
-<p>App version: <b>2.5.0</b></p>
+<p>App version: <b>2.6.0</b></p>
 
 ## Available scripts
 
@@ -70,7 +70,16 @@
 
 ### ToDo:
 
-- Update privacy policy
+**2.6.0:**
+
+- Radio buttons in themes
+- Auto selecting new themes
+- Update SDK to 40
+- Update README
+
+**Next version:**
+
+- New privacy policy
 - Write unit and e2e tests
 
 **iOS:**

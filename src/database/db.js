@@ -3,7 +3,7 @@ import * as Analytics from 'expo-firebase-analytics'
 import { getLocale } from '../shared/utility'
 import startMigrations from './migrations'
 
-export const VERSION = '2.5.2' // APP VERSION
+export const VERSION = '2.6.0' // APP VERSION
 export const db = openDatabase('maker.db', VERSION)
 
 export const initDatabase = (callback) => {

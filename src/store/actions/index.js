@@ -3,6 +3,7 @@ export {
 	initToDo,
 	initTasks,
 	initTask,
+	initFinishedTask,
 	initFinished,
 	saveTask,
 	finishTask,
