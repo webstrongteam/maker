@@ -77,4 +77,10 @@ export default StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
+	foundResults: {
+		marginLeft: 15,
+	},
+	footerMargin: {
+		marginBottom: 56,
+	},
 })

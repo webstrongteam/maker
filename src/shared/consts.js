@@ -1,5 +1,5 @@
 export const dateFormat = 'DD-MM-YYYY'
-export const dateTimeFormat = 'DD-MM-YYYY HH:mm'
+export const dateTimeFormat = 'DD-MM-YYYY - HH:mm'
 export const dateTimeAFormat = 'DD-MM-YYYY - hh:mm A'
 export const timeFormat = 'HH:mm'
 export const timeFormatA = 'hh:mm A'
