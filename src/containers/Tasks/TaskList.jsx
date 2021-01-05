@@ -27,8 +27,9 @@ import {
 	getVariety,
 	sortingByType,
 } from '../../shared/utility'
-import { empty, flex, shadow } from '../../shared/styles'
+import { flex, foundResults, shadow } from '../../shared/styles'
 import { dateFormat, dateTimeAFormat, dateTimeFormat, UP, DOWN } from '../../shared/consts'
+import EmptyList from '../../components/EmptyList/EmptyList'
 import * as Analytics from 'expo-firebase-analytics'
 import ConfigCategory from '../Categories/ConfigCategory/ConfigCategory'
 import Dialog from '../../components/Dialog/Dialog'
@@ -791,7 +792,7 @@ class TaskList extends Component {
 			showDialog,
 			loading,
 		} = this.state
-		const { theme, navigation, sortingType, sorting, finished, translations } = this.props
+		const { theme, navigation, sortingType, settings, sorting, finished, translations } = this.props
 
 		const filterData = this.getFilterData()
 
@@ -802,7 +803,7 @@ class TaskList extends Component {
 						autoFocus: true,
 						placeholder: translations.search,
 						onChangeText: (value) => this.setState({ searchText: value }),
-						onSearchClosed: () => this.setState({ searchText: '' }),
+						onSearchCloseRequested: () => this.setState({ searchText: '' }),
 					}}
 					leftElement='menu'
 					onLeftElementPress={() => navigation.navigate('Drawer')}
@@ -855,7 +856,7 @@ class TaskList extends Component {
 				/>
 
 				{searchText.length > 0 && (
-					<View style={styles.foundResults}>
+					<View style={foundResults}>
 						<Text style={{ color: theme.thirdTextColor }}>
 							{translations.found}:{' '}
 							{getVariety(
@@ -863,6 +864,7 @@ class TaskList extends Component {
 								translations.resultSingular,
 								translations.resultPlural,
 								translations.resultGenitive,
+								settings.lang,
 							)}
 						</Text>
 					</View>
@@ -892,7 +894,7 @@ class TaskList extends Component {
 						/>
 					}
 					ListEmptyComponent={
-						<Text style={[empty, { color: theme.thirdTextColor }]}>{translations.emptyList}</Text>
+						<EmptyList color={theme.thirdTextColor} text={translations.emptyList} />
 					}
 					data={filterData}
 					initialNumToRender={8}

@@ -7,7 +7,11 @@
 		"confirm": "Confirm",
 		"search": "Search",
 		"defaultTitle": "Are you sure?",
-		"permissionError": "Error with permissions"
+		"permissionError": "Error with permissions",
+		"found": "Found",
+		"resultSingular": "result",
+		"resultPlural": "results",
+		"resultGenitive": "results"
 	},
 	"Main": {
 		"tasks": "Tasks",
@@ -32,10 +36,6 @@
 		"date": "Date",
 		"category": "Category",
 		"priority": "Priority",
-		"found": "Found",
-		"resultSingular": "result",
-		"resultPlural": "results",
-		"resultGenitive": "results",
 		"repeatTitle": "Repeat task?",
 		"repeatDescription": "Do you want to repeat this task?",
 		"finishDescription": "Finish this task?",

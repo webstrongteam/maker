@@ -10,9 +10,10 @@ import {
 	Keyboard,
 } from 'react-native'
 import { IconToggle, Toolbar } from 'react-native-material-ui'
-import { empty, listRow, shadow, flex } from '../../../shared/styles'
+import { listRow, shadow, flex, foundResults } from '../../../shared/styles'
 import Input from '../../../components/Input/Input'
-import { generateDialogObject } from '../../../shared/utility'
+import { generateDialogObject, getVariety } from '../../../shared/utility'
+import EmptyList from '../../../components/EmptyList/EmptyList'
 import ConfigQuicklyTask from '../ConfigQuicklyTask/ConfigQuicklyTask'
 import Spinner from '../../../components/Spinner/Spinner'
 import Template from '../../Template/Template'
@@ -49,7 +50,7 @@ class QuicklyTaskList extends Component {
 			value: '',
 		},
 		keyboardDidShow: false,
-		visibleData: initialNumToRender,
+		visibleData: 16,
 		searchText: '',
 		loading: true,
 	}
@@ -190,15 +191,22 @@ class QuicklyTaskList extends Component {
 		}
 	}
 
+	getFilterData = () => {
+		const { quicklyTasks, visibleData } = this.state
+
+		return quicklyTasks.filter((task, index) => {
+			if (index > visibleData) {
+				return false
+			}
+
+			const searchText = this.state.searchText.toLowerCase()
+			return !(searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0)
+		})
+	}
+
 	renderTaskRow = (item, index) => {
 		const { keyboardDidShow } = this.state
 		const { theme } = this.props
-
-		// Searching system
-		const searchText = this.state.searchText.toLowerCase()
-		if (searchText.length > 0 && item.name.toLowerCase().indexOf(searchText) < 0) {
-			return null
-		}
 
 		return (
 			<TouchableOpacity
@@ -239,12 +247,6 @@ class QuicklyTaskList extends Component {
 		)
 	}
 
-	renderEmptyList = () => {
-		const { theme, translations } = this.props
-
-		return <Text style={[empty, { color: theme.thirdTextColor }]}>{translations.emptyList}</Text>
-	}
-
 	render() {
 		const {
 			showDialog,
@@ -253,11 +255,13 @@ class QuicklyTaskList extends Component {
 			selectedTask,
 			input,
 			list,
-			quicklyTasks,
+			searchText,
 			visibleData,
 			loading,
 		} = this.state
-		const { navigation, theme, translations, onInitLists } = this.props
+		const { navigation, theme, lang, translations, onInitLists } = this.props
+
+		const filterData = this.getFilterData()
 
 		return (
 			<Template bgColor={theme.secondaryBackgroundColor}>
@@ -266,7 +270,7 @@ class QuicklyTaskList extends Component {
 						autoFocus: true,
 						placeholder: translations.search,
 						onChangeText: (value) => this.setState({ searchText: value }),
-						onSearchClosed: () => this.setState({ searchText: '' }),
+						onSearchCloseRequested: () => this.setState({ searchText: '' }),
 					}}
 					leftElement='arrow-back'
 					rightElement={
@@ -304,12 +308,27 @@ class QuicklyTaskList extends Component {
 					}
 				/>
 
+				{searchText.length > 0 && (
+					<View style={foundResults}>
+						<Text style={{ color: theme.thirdTextColor }}>
+							{translations.found}:{' '}
+							{getVariety(
+								filterData.length,
+								translations.resultSingular,
+								translations.resultPlural,
+								translations.resultGenitive,
+								lang,
+							)}
+						</Text>
+					</View>
+				)}
+
 				{showDialog && (
 					<ConfigQuicklyTask
 						showDialog={showDialog}
 						task_id={selectedTask}
 						list={list}
-						taskLength={quicklyTasks.length}
+						taskLength={filterData.length}
 						toggleModal={(selected, list) => this.toggleModalHandler(selected, list)}
 					/>
 				)}
@@ -322,7 +341,7 @@ class QuicklyTaskList extends Component {
 							<FlatList
 								keyboardShouldPersistTaps='handled'
 								keyboardDismissMode='interactive'
-								data={quicklyTasks.filter((d, i) => i <= visibleData)}
+								data={filterData}
 								refreshControl={
 									<RefreshControl
 										refreshing={loading}
@@ -333,12 +352,14 @@ class QuicklyTaskList extends Component {
 								style={styles.quicklyTaskList}
 								onEndReached={this.loadNextData}
 								initialNumToRender={initialNumToRender}
-								ListEmptyComponent={this.renderEmptyList()}
+								ListEmptyComponent={
+									<EmptyList color={theme.thirdTextColor} text={translations.emptyList} />
+								}
 								renderItem={({ item, index }) => this.renderTaskRow(item, index)}
 								keyExtractor={(item) => `${item.id}`}
 								onRefresh={this.reloadTasks}
 								refreshing={loading}
-								ListFooterComponent={quicklyTasks.length > visibleData && <Spinner />}
+								ListFooterComponent={filterData.length > visibleData && <Spinner />}
 							/>
 
 							<View style={styles.inputWrapper}>
@@ -367,6 +388,7 @@ class QuicklyTaskList extends Component {
 
 const mapStateToProps = (state) => ({
 	theme: state.theme.theme,
+	lang: state.settings.settings.lang,
 	translations: {
 		...state.settings.translations.QuicklyTaskList,
 		...state.settings.translations.validation,

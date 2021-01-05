@@ -7,7 +7,11 @@
 		"save": "Zapisz",
 		"no": "Nie",
 		"defaultTitle": "Jesteś pewien?",
-		"permissionError": "Wystąpił problem z uprawnieniami"
+		"permissionError": "Wystąpił problem z uprawnieniami",
+		"found": "Znaleziono",
+		"resultSingular": "wynik",
+		"resultPlural": "wyniki",
+		"resultGenitive": "wyników"
 	},
 	"Main": {
 		"tasks": "Zadania",
@@ -32,10 +36,6 @@
 		"date": "Date",
 		"category": "Kategorie",
 		"priority": "Priorytet",
-		"found": "Znaleziono",
-		"resultSingular": "wynik",
-		"resultPlural": "wyniki",
-		"resultGenitive": "wyników",
 		"repeatTitle": "Powtórzyć zadanie?",
 		"repeatDescription": "Czy na pewno chcesz powtórzyć to zadanie?",
 		"finishDescription": "Zakończyć to zadanie?",

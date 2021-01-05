@@ -72,6 +72,7 @@
 
 **2.6.0:**
 
+- searching counter in quickly list and tasks
 - Radio buttons in themes
 - Auto selecting new themes
 - Update SDK to 40

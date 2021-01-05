@@ -27,6 +27,14 @@ export const empty = {
 	textAlign: 'center',
 }
 
+export const foundResults = {
+	marginLeft: 15,
+	position: 'relative',
+	zIndex: 100,
+	marginTop: -5,
+	paddingBottom: 5,
+}
+
 export const settingsHeading = {
 	color: '#009688',
 }

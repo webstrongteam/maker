@@ -318,7 +318,14 @@ const formatNumber = (number, includePrecision) =>
 		.replace(includePrecision ? /\d(?=(\d{3})+\.)/g : /(.)(?=(\d{3})+$)/g, '$&\xa0')
 		.replace('.', ',')
 
-const getVarietyOption = (value, singular, plural, genitive) => {
+const getVarietyOption = (value, singular, plural, genitive, lang) => {
+	if (lang !== 'pl') {
+		if (value > 1) {
+			return plural
+		}
+		return singular
+	}
+
 	if (value === 1) {
 		return singular
 	}
@@ -330,5 +337,5 @@ const getVarietyOption = (value, singular, plural, genitive) => {
 	return genitive || plural
 }
 
-export const getVariety = (value, singular, plural, genitive) =>
-	`${formatNumber(value, false)} ${getVarietyOption(value, singular, plural, genitive)}`
+export const getVariety = (value, singular, plural, genitive, lang) =>
+	`${formatNumber(value, false)} ${getVarietyOption(value, singular, plural, genitive, lang)}`
