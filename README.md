@@ -33,26 +33,9 @@
 
 **Maker** was created together with:
 
-- Expo <i>39.0.0</i>
+- React Native <i>0.63</i>
 - React <i>16.13.1</i>
-- React Redux <i>7.2.1</i>
-- Redux <i>4.0.4</i>
-- Redux Thunk <i>2.3.0</i>
-- React Navigation <i>4.4.2</i>
-- React Native MaterialUI (custom) <i>1.30.1</i>
-- React Native Modal Datetime Picker <i>9.0.0</i>
-- React Native Dialog <i>6.1.1</i>
-- React Native Modal Dropdown (custom) <i>0.7.0</i>
-- React Native Material TextField (custom) <i>0.16.3</i>
-- React Native Color Wheel (custom) <i>0.1.7</i>
-- React Native Settings List <i>1.8.0</i>
-- React Native Modalbox <i>2.0.2</i>
-- React Native Screens <i>2.10.1</i>
-- React Native Reanimated <i>1.13.0</i>
-- React Native Tab View <i>2.15.2</i>
-- Moment.JS <i>2.29.1</i>
-- Colorsys <i>1.0.22</i>
-- Axios <i>0.19.2</i>
+- Expo <i>39.0.0</i>
 
 <p>App version: <b>2.6.0</b></p>
 
@@ -68,14 +51,13 @@
 
 `npm run eject` - Ejecting from Managed Workflow
 
+## How to run project locally
+
+1. Remove `playStoreUrl` and `googleServicesFile` from `app.json`
+2. `npm install`
+3. `npm run start`
+
 ### ToDo:
-
-**2.6.0:**
-
-- Update SDK to 40
-- Update README
-
-**Next version:**
 
 - Fix no-op errors
 - New privacy policy
