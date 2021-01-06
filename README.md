@@ -72,14 +72,12 @@
 
 **2.6.0:**
 
-- searching counter in quickly list and tasks
-- Radio buttons in themes
-- Auto selecting new themes
 - Update SDK to 40
 - Update README
 
 **Next version:**
 
+- Fix no-op errors
 - New privacy policy
 - Write unit and e2e tests
 

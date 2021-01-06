@@ -57,7 +57,7 @@ export const initCustomTheme = (id, callback = () => null) => () => {
 	)
 }
 
-export const setSelectedTheme = (id) => (dispatch) => {
+export const selectTheme = (id) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('update settings set theme = ? where id = 0;', [id], () => {
@@ -73,7 +73,7 @@ export const setSelectedTheme = (id) => (dispatch) => {
 	)
 }
 
-export const saveTheme = (theme) => (dispatch) => {
+export const saveTheme = (theme, callback = () => null) => (dispatch) => {
 	if (theme.id) {
 		db.transaction(
 			(tx) => {
@@ -100,6 +100,7 @@ export const saveTheme = (theme) => (dispatch) => {
 							name: 'themeAction',
 						})
 
+						callback(theme.id)
 						dispatch(initTheme())
 					},
 				)
@@ -127,11 +128,12 @@ export const saveTheme = (theme) => (dispatch) => {
 						theme.mediumColor,
 						theme.highColor,
 					],
-					() => {
+					(_, { insertId }) => {
 						Analytics.logEvent('createdTheme', {
 							name: 'themeAction',
 						})
 
+						callback(insertId)
 						dispatch(initThemes())
 					},
 				)

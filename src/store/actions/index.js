@@ -44,7 +44,7 @@ export {
 	initTheme,
 	initThemes,
 	initCustomTheme,
-	setSelectedTheme,
+	selectTheme,
 	saveTheme,
 	deleteTheme,
 } from './theme'

@@ -161,8 +161,7 @@ class Theme extends Component {
 		const { theme, onDeleteTheme } = this.props
 
 		if (theme.id === customTheme.id) {
-			const { onSetSelectedTheme } = this.props
-			onSetSelectedTheme(0) // Set default theme
+			this.props.onSelectTheme(0) // Set default theme
 		}
 		onDeleteTheme(customTheme.id)
 	}
@@ -192,8 +191,10 @@ class Theme extends Component {
 		const { customTheme } = this.state
 		const { navigation, onSaveTheme } = this.props
 
-		onSaveTheme(customTheme)
-		navigation.goBack()
+		onSaveTheme(customTheme, (id) => {
+			this.props.onSelectTheme(id)
+			navigation.goBack()
+		})
 	}
 
 	render() {
@@ -404,8 +405,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 	onInitTheme: (callback) => dispatch(actions.initTheme(callback)),
 	onInitCustomTheme: (id, callback) => dispatch(actions.initCustomTheme(id, callback)),
-	onSaveTheme: (theme) => dispatch(actions.saveTheme(theme)),
-	onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),
+	onSaveTheme: (theme, callback) => dispatch(actions.saveTheme(theme, callback)),
+	onSelectTheme: (id) => dispatch(actions.selectTheme(id)),
 	onDeleteTheme: (id) => dispatch(actions.deleteTheme(id)),
 })
 
