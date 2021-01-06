@@ -1,3 +1,5 @@
+import {Platform} from 'react-native'
+
 // GLOBAL STYLES
 
 export const flex = {
@@ -31,7 +33,7 @@ export const foundResults = {
 	marginLeft: 15,
 	position: 'relative',
 	zIndex: 100,
-	marginTop: -5,
+	marginTop: Platform.OS === 'ios' ? -5 : 10,
 	paddingBottom: 5,
 }
 

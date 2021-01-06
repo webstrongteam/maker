@@ -191,6 +191,7 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
 	let nextDate = task.date
 	const format = dateTime(task.date) ? dateTimeFormat : dateFormat
 
+	// Set next repeat date
 	if (+task.repeat === parseInt(task.repeat, 10)) {
 		// Other repeat
 		if (task.repeat[0] === '6') {
@@ -279,10 +280,10 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
                                    where id = ?;`,
 					[nextDate, task.id],
 					() => {
+						insertTaskToFinished(tx, true)
+
 						task.date = nextDate
 						configTask(task, primaryColor, task.event_id, task.notification_id !== null)
-
-						insertTaskToFinished(tx, true)
 					},
 					// eslint-disable-next-line no-console
 					(err) => console.log(err),

@@ -85,8 +85,8 @@ class Report extends Component {
 			this.setState({ sending: true }, () => {
 				axios
 					.post(`${config.API_URL}/send-email`, {
-						subject: `Maker - ${title}`,
-						message: `${description}<p>version: ${settings.version}</p> <p>system: ${Platform.OS}</p>`,
+						subject: title,
+						message: `<p>${description}</p> <p>Version: ${settings.version}</p> <p>System: ${Platform.OS}</p>`,
 						to: 'maker@webstrong.pl',
 					})
 					.then(() => {

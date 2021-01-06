@@ -112,7 +112,6 @@ class QuicklyList extends Component {
 		return data.map((list, index) => (
 			<View key={index} style={styles.quicklyTaskList}>
 				<ListItem
-					divider
 					dense
 					onPress={() => navigation.navigate('QuicklyTaskList', { list })}
 					style={{

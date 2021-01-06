@@ -35,9 +35,15 @@
 
 - React Native <i>0.63</i>
 - React <i>16.13.1</i>
-- Expo <i>39.0.0</i>
+- Expo <i>40.0.0</i>
 
 <p>App version: <b>2.6.0</b></p>
+
+## How to run project locally
+
+1. Remove `playStoreUrl` and `googleServicesFile` from `app.json`
+2. `npm install`
+3. `npm run start`
 
 ## Available scripts
 
@@ -49,13 +55,7 @@
 
 `npm run cleanup` - run prettier and ESlint
 
-`npm run eject` - Ejecting from Managed Workflow
-
-## How to run project locally
-
-1. Remove `playStoreUrl` and `googleServicesFile` from `app.json`
-2. `npm install`
-3. `npm run start`
+`npm run eject` - eject from Managed Workflow
 
 ### ToDo:
 

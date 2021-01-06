@@ -680,7 +680,6 @@ class TaskList extends Component {
 				<Animated.View style={{ height: hideTask, left: moveValue }}>
 					<View style={styles.taskRow}>
 						<ListItem
-							divider
 							dense
 							onPress={() =>
 								navigation.navigate('ConfigTask', { task: task.id, finished: task.finish })

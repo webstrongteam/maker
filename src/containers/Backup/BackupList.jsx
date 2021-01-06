@@ -10,7 +10,6 @@ const BackupList = ({ backups, theme, showDialog, renameBackup, shareBackup, tra
 			{backups.length ? (
 				backups.map((name, index) => (
 					<ListItem
-						divider
 						dense
 						key={index}
 						onPress={() => showDialog('showBackupAlert', name)}
