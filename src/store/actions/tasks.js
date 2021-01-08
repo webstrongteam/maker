@@ -40,6 +40,18 @@ export const initTask = (id, callback = () => null) => () => {
 	)
 }
 
+export const initFinishedTask = (id, callback = () => null) => () => {
+	db.transaction(
+		(tx) => {
+			tx.executeSql('select * from finished where id = ?', [id], (_, { rows }) => {
+				callback(rows._array[0])
+			})
+		},
+		// eslint-disable-next-line no-console
+		(err) => console.log(err),
+	)
+}
+
 export const initToDo = (callback = () => null) => {
 	let tasks
 	let categories
@@ -179,6 +191,7 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
 	let nextDate = task.date
 	const format = dateTime(task.date) ? dateTimeFormat : dateFormat
 
+	// Set next repeat date
 	if (+task.repeat === parseInt(task.repeat, 10)) {
 		// Other repeat
 		if (task.repeat[0] === '6') {
@@ -226,28 +239,35 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
 	nextDate = moment(nextDate, format).format(format)
 
 	return (dispatch) => {
+		const insertTaskToFinished = (tx, repeating) => {
+			tx.executeSql(
+				'insert into finished (name, description, date, category, priority, repeat, finish) values (?,?,?,?,?,?,1)',
+				[task.name, task.description, task.date, task.category.id, task.priority, task.repeat],
+				() => {
+					Analytics.logEvent('finishedTask', {
+						name: 'taskAction',
+					})
+
+					if (!repeating) {
+						if (task.event_id !== false) {
+							deleteCalendarEvent(task.event_id)
+						}
+						if (task.notification_id !== null) {
+							deleteLocalNotification(task.notification_id)
+						}
+					}
+
+					callback()
+					dispatch(initToDo())
+				},
+			)
+		}
+
 		if (task.repeat === 'noRepeat' || endTask) {
 			db.transaction(
 				(tx) => {
 					tx.executeSql('delete from tasks where id = ?', [task.id])
-					tx.executeSql(
-						'insert into finished (name, description, date, category, priority, repeat, finish) values (?,?,?,?,?,?,1)',
-						[task.name, task.description, task.date, task.category.id, task.priority, task.repeat],
-						() => {
-							Analytics.logEvent('finishedTask', {
-								name: 'taskAction',
-							})
-
-							if (task.event_id !== false) {
-								deleteCalendarEvent(task.event_id)
-							}
-							if (task.notification_id !== null) {
-								deleteLocalNotification(task.notification_id)
-							}
-							callback()
-							dispatch(initToDo())
-						},
-					)
+					insertTaskToFinished(tx, false)
 				},
 				// eslint-disable-next-line no-console
 				(err) => console.log(err),
@@ -260,14 +280,10 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
                                    where id = ?;`,
 					[nextDate, task.id],
 					() => {
-						Analytics.logEvent('repeatedTask', {
-							name: 'taskAction',
-						})
+						insertTaskToFinished(tx, true)
 
 						task.date = nextDate
 						configTask(task, primaryColor, task.event_id, task.notification_id !== null)
-						callback()
-						dispatch(initTasks())
 					},
 					// eslint-disable-next-line no-console
 					(err) => console.log(err),
@@ -277,18 +293,28 @@ export const finishTask = (task, endTask, primaryColor, callback = () => null) =
 	}
 }
 
-export const undoTask = (task) => (dispatch) => {
+export const undoTask = (task, callback = () => null) => (dispatch) => {
 	db.transaction(
 		(tx) => {
 			tx.executeSql('delete from finished where id = ?', [task.id])
 			tx.executeSql(
-				'insert into tasks (name, description, date, category, priority, repeat) values (?,?,?,?,?,?)',
-				[task.name, task.description, task.date, task.category.id, task.priority, task.repeat],
+				'insert into tasks (name, description, date, category, priority, repeat, event_id, notification_id) values (?,?,?,?,?,?,?,?)',
+				[
+					task.name,
+					task.description,
+					task.date,
+					task.category.id,
+					task.priority,
+					task.repeat,
+					task.event_id,
+					task.notification_id,
+				],
 				() => {
 					Analytics.logEvent('undoTask', {
 						name: 'taskAction',
 					})
 
+					callback()
 					dispatch(initToDo())
 				},
 			)
@@ -303,10 +329,6 @@ export const removeTask = (task, finished = true, callback = () => null) => (dis
 		db.transaction(
 			(tx) => {
 				tx.executeSql('delete from finished where id = ?', [task.id], () => {
-					Analytics.logEvent('removedTask', {
-						name: 'taskAction',
-					})
-
 					callback()
 					dispatch(initFinished())
 				})

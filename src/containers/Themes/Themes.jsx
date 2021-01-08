@@ -49,13 +49,13 @@ class Themes extends PureComponent {
 		}
 	}
 
-	selectedThemeHandler = (value, id) => {
+	selectThemeHandler = (value, id) => {
 		if (value) {
-			const { onSetSelectedTheme, translations } = this.props
+			const { onSelectTheme, translations } = this.props
 
 			this.setState({ loading: true }, () => {
 				const { selectedTheme } = this.state
-				onSetSelectedTheme(id)
+				onSelectTheme(id)
 
 				Object.keys(selectedTheme).map((theme) => {
 					selectedTheme[theme] = +theme === +id
@@ -99,7 +99,7 @@ class Themes extends PureComponent {
 							itemWidth={itemWidth}
 							hasSwitch
 							switchState={selectedTheme['0']}
-							switchOnValueChange={(value) => this.selectedThemeHandler(value, 0)}
+							switchOnValueChange={(value) => this.selectThemeHandler(value, 0)}
 							titleStyle={{ color: actualTheme.thirdTextColor, fontSize: 16 }}
 							title={translations.defaultTheme}
 						/>
@@ -109,7 +109,7 @@ class Themes extends PureComponent {
 							itemWidth={itemWidth}
 							hasSwitch
 							switchState={selectedTheme['1']}
-							switchOnValueChange={(value) => this.selectedThemeHandler(value, 1)}
+							switchOnValueChange={(value) => this.selectThemeHandler(value, 1)}
 							titleStyle={{ color: actualTheme.thirdTextColor, fontSize: 16 }}
 							title={translations.darkTheme}
 						/>
@@ -131,7 +131,7 @@ class Themes extends PureComponent {
 										itemWidth={itemWidth}
 										hasSwitch
 										switchState={selectedTheme[themeEl.id]}
-										switchOnValueChange={(value) => this.selectedThemeHandler(value, themeEl.id)}
+										switchOnValueChange={(value) => this.selectThemeHandler(value, themeEl.id)}
 										titleStyle={{
 											color: actualTheme.thirdTextColor,
 											fontSize: 16,
@@ -165,7 +165,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 	onInitTheme: (callback) => dispatch(actions.initTheme(callback)),
 	onInitThemes: () => dispatch(actions.initThemes()),
-	onSetSelectedTheme: (id) => dispatch(actions.setSelectedTheme(id)),
+	onSelectTheme: (id) => dispatch(actions.selectTheme(id)),
 	onUpdateSnackbar: (showSnackbar, snackbarText) =>
 		dispatch(actions.updateSnackbar(showSnackbar, snackbarText)),
 })

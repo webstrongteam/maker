@@ -1,7 +1,8 @@
 import React from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import { IconToggle, ListItem } from 'react-native-material-ui'
-import { empty, listRow, shadow, flex } from '../../shared/styles'
+import { listRow, shadow, flex } from '../../shared/styles'
+import EmptyList from '../../components/EmptyList/EmptyList'
 
 const BackupList = ({ backups, theme, showDialog, renameBackup, shareBackup, translations }) => (
 	<View style={flex}>
@@ -9,7 +10,6 @@ const BackupList = ({ backups, theme, showDialog, renameBackup, shareBackup, tra
 			{backups.length ? (
 				backups.map((name, index) => (
 					<ListItem
-						divider
 						dense
 						key={index}
 						onPress={() => showDialog('showBackupAlert', name)}
@@ -47,7 +47,7 @@ const BackupList = ({ backups, theme, showDialog, renameBackup, shareBackup, tra
 					/>
 				))
 			) : (
-				<Text style={[empty, { color: theme.thirdTextColor }]}>{translations.emptyList}</Text>
+				<EmptyList color={theme.thirdTextColor} text={translations.emptyList} />
 			)}
 		</ScrollView>
 	</View>

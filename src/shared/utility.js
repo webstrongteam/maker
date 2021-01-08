@@ -311,3 +311,31 @@ export const dateDiff = (firstDate, secondDate, translations, lang) => {
 		}
 	}
 }
+
+const formatNumber = (number, includePrecision) =>
+	number
+		.toFixed(includePrecision ? 2 : 0)
+		.replace(includePrecision ? /\d(?=(\d{3})+\.)/g : /(.)(?=(\d{3})+$)/g, '$&\xa0')
+		.replace('.', ',')
+
+const getVarietyOption = (value, singular, plural, genitive, lang) => {
+	if (lang !== 'pl') {
+		if (value > 1) {
+			return plural
+		}
+		return singular
+	}
+
+	if (value === 1) {
+		return singular
+	}
+
+	if ([2, 3, 4].includes(value % 10) && ![12, 13, 14].includes(value % 100)) {
+		return plural
+	}
+
+	return genitive || plural
+}
+
+export const getVariety = (value, singular, plural, genitive, lang) =>
+	`${formatNumber(value, false)} ${getVarietyOption(value, singular, plural, genitive, lang)}`

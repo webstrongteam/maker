@@ -3,6 +3,7 @@ export {
 	initToDo,
 	initTasks,
 	initTask,
+	initFinishedTask,
 	initFinished,
 	saveTask,
 	finishTask,
@@ -43,7 +44,7 @@ export {
 	initTheme,
 	initThemes,
 	initCustomTheme,
-	setSelectedTheme,
+	selectTheme,
 	saveTheme,
 	deleteTheme,
 } from './theme'

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import { ActionButton, IconToggle, ListItem, Toolbar } from 'react-native-material-ui'
-import { generateDialogObject } from '../../shared/utility'
-import { empty, flex, shadow } from '../../shared/styles'
+import { generateDialogObject, getVariety } from '../../shared/utility'
+import { flex, foundResults, shadow } from '../../shared/styles'
 import { DOWN, UP } from '../../shared/consts'
+import EmptyList from '../../components/EmptyList/EmptyList'
 import Spinner from '../../components/Spinner/Spinner'
 import Dialog from '../../components/Dialog/Dialog'
 import styles from './QuicklyList.styles'
@@ -95,58 +96,58 @@ class QuicklyList extends Component {
 		this.setState({ dialog, showDialog: true })
 	}
 
-	renderQuicklyList = () => {
-		const { amounts } = this.state
-		const { lists, theme, navigation, translations } = this.props
+	getFilterData = () => {
+		const { lists } = this.props
 
-		return lists.map((list, index) => {
-			// Searching system
+		return lists.filter((list) => {
 			const searchText = this.state.searchText.toLowerCase()
-			if (searchText.length > 0 && list.name.toLowerCase().indexOf(searchText) < 0) {
-				return null
-			}
-
-			return (
-				<View key={index} style={styles.quicklyTaskList}>
-					<ListItem
-						divider
-						dense
-						onPress={() => navigation.navigate('QuicklyTaskList', { list })}
-						style={{
-							container: [shadow, { backgroundColor: theme.primaryBackgroundColor }],
-							primaryText: {
-								fontSize: 17,
-								color: theme.secondaryTextColor,
-							},
-							secondaryText: {
-								color: theme.thirdTextColor,
-							},
-						}}
-						centerElement={{
-							primaryText: list.name,
-							secondaryText: `${translations.totalTasks} ${
-								amounts[list.id] ? amounts[list.id] : 0
-							}`,
-						}}
-						rightElement={
-							<View style={styles.rightElements}>
-								<IconToggle
-									onPress={() => this.showDialog(list.id, list.name)}
-									name='delete'
-									color={theme.warningColor}
-									size={26}
-								/>
-							</View>
-						}
-					/>
-				</View>
-			)
+			return !(searchText.length > 0 && list.name.toLowerCase().indexOf(searchText) < 0)
 		})
 	}
 
+	renderQuicklyList = (data) => {
+		const { amounts } = this.state
+		const { theme, navigation, translations } = this.props
+
+		return data.map((list, index) => (
+			<View key={index} style={styles.quicklyTaskList}>
+				<ListItem
+					dense
+					onPress={() => navigation.navigate('QuicklyTaskList', { list })}
+					style={{
+						container: [shadow, { backgroundColor: theme.primaryBackgroundColor }],
+						primaryText: {
+							fontSize: 17,
+							color: theme.secondaryTextColor,
+						},
+						secondaryText: {
+							color: theme.thirdTextColor,
+						},
+					}}
+					centerElement={{
+						primaryText: list.name,
+						secondaryText: `${translations.totalTasks} ${amounts[list.id] ? amounts[list.id] : 0}`,
+					}}
+					rightElement={
+						<View style={styles.rightElements}>
+							<IconToggle
+								onPress={() => this.showDialog(list.id, list.name)}
+								name='delete'
+								color={theme.warningColor}
+								size={26}
+							/>
+						</View>
+					}
+				/>
+			</View>
+		))
+	}
+
 	render() {
-		const { bottomHidden, showDialog, dialog, loading } = this.state
-		const { lists, theme, navigation, translations } = this.props
+		const { bottomHidden, searchText, showDialog, dialog, loading } = this.state
+		const { theme, navigation, settings, translations } = this.props
+
+		const filterData = this.getFilterData()
 
 		return (
 			<View style={flex}>
@@ -155,12 +156,27 @@ class QuicklyList extends Component {
 						autoFocus: true,
 						placeholder: translations.search,
 						onChangeText: (value) => this.setState({ searchText: value }),
-						onSearchClosed: () => this.setState({ searchText: '' }),
+						onSearchCloseRequested: () => this.setState({ searchText: '' }),
 					}}
 					leftElement='menu'
 					centerElement={translations.quicklyLists}
 					onLeftElementPress={() => navigation.navigate('Drawer')}
 				/>
+
+				{searchText.length > 0 && (
+					<View style={foundResults}>
+						<Text style={{ color: theme.thirdTextColor }}>
+							{translations.found}:{' '}
+							{getVariety(
+								filterData.length,
+								translations.resultSingular,
+								translations.resultPlural,
+								translations.resultGenitive,
+								settings.lang,
+							)}
+						</Text>
+					</View>
+				)}
 
 				<Dialog {...dialog} theme={theme} showDialog={showDialog} />
 
@@ -172,10 +188,12 @@ class QuicklyList extends Component {
 						onScroll={this.onScroll}
 						style={styles.scrollView}
 					>
-						{lists && lists.length ? (
-							<View style={styles.quicklyTaskListWrapper}>{this.renderQuicklyList()}</View>
+						{filterData?.length ? (
+							<View style={styles.quicklyTaskListWrapper}>
+								{this.renderQuicklyList(filterData)}
+							</View>
 						) : (
-							<Text style={[empty, { color: theme.thirdTextColor }]}>{translations.emptyList}</Text>
+							<EmptyList color={theme.thirdTextColor} text={translations.emptyList} />
 						)}
 					</ScrollView>
 				) : (

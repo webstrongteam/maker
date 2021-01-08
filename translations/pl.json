@@ -7,7 +7,11 @@
 		"save": "Zapisz",
 		"no": "Nie",
 		"defaultTitle": "Jesteś pewien?",
-		"permissionError": "Wystąpił problem z uprawnieniami"
+		"permissionError": "Wystąpił problem z uprawnieniami",
+		"found": "Znaleziono",
+		"resultSingular": "wynik",
+		"resultPlural": "wyniki",
+		"resultGenitive": "wyników"
 	},
 	"Main": {
 		"tasks": "Zadania",

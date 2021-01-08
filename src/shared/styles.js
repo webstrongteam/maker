@@ -1,3 +1,5 @@
+import {Platform} from 'react-native'
+
 // GLOBAL STYLES
 
 export const flex = {
@@ -25,6 +27,14 @@ export const empty = {
 	marginTop: 30,
 	width: '100%',
 	textAlign: 'center',
+}
+
+export const foundResults = {
+	marginLeft: 15,
+	position: 'relative',
+	zIndex: 100,
+	marginTop: Platform.OS === 'ios' ? -5 : 10,
+	paddingBottom: 5,
 }
 
 export const settingsHeading = {

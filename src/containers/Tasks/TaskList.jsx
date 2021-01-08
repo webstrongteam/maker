@@ -20,9 +20,17 @@ import {
 } from 'react-native-material-ui'
 import ModalDropdown from 'react-native-modal-dropdown'
 import moment from 'moment'
-import { dateDiff, dateTime, generateDialogObject, sortingByType } from '../../shared/utility'
-import { empty, flex, shadow } from '../../shared/styles'
+import {
+	dateDiff,
+	dateTime,
+	generateDialogObject,
+	getVariety,
+	sortingByType,
+} from '../../shared/utility'
+import { flex, foundResults, shadow } from '../../shared/styles'
 import { dateFormat, dateTimeAFormat, dateTimeFormat, UP, DOWN } from '../../shared/consts'
+import EmptyList from '../../components/EmptyList/EmptyList'
+import * as Analytics from 'expo-firebase-analytics'
 import ConfigCategory from '../Categories/ConfigCategory/ConfigCategory'
 import Dialog from '../../components/Dialog/Dialog'
 import Spinner from '../../components/Spinner/Spinner'
@@ -217,6 +225,10 @@ class TaskList extends Component {
 						this.moveAnimate(() => {
 							const { onRemoveTask } = this.props
 							onRemoveTask(selectedTask)
+
+							Analytics.logEvent('removedTask', {
+								name: 'taskAction',
+							})
 						})
 					},
 					[translations.no]: cancelHandler,
@@ -225,7 +237,7 @@ class TaskList extends Component {
 		} else if (action === 'deleteAll') {
 			dialog = generateDialogObject(
 				cancelHandler,
-				translations.defaultAllTitle,
+				translations.defaultTitle,
 				translations.finishAllDescription,
 				{
 					[translations.yes]: () => {
@@ -273,6 +285,10 @@ class TaskList extends Component {
 		const { finished, onRemoveTask } = this.props
 
 		finished.map((task) => onRemoveTask(task))
+
+		Analytics.logEvent('removedAllFinishedTasks', {
+			name: 'taskAction',
+		})
 	}
 
 	checkDeleteHandler = () => {
@@ -620,22 +636,33 @@ class TaskList extends Component {
 		})
 	}
 
+	getFilterData = () => {
+		const { data, visibleData } = this.state
+
+		return data.filter(({ task }, index) => {
+			if (index > visibleData) {
+				return false
+			}
+
+			const searchText = this.state.searchText.toLowerCase()
+			if (searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0) {
+				if (task.description.toLowerCase().indexOf(searchText) < 0) {
+					if (task.category.name.toLowerCase().indexOf(searchText) < 0) {
+						return false
+					}
+				}
+			}
+
+			return true
+		})
+	}
+
 	renderTaskRow = ({ task, div, showDiv }) => {
 		const { priorityColors, animations } = this.state
 		const { translations, theme, navigation } = this.props
 
 		const moveValue = animations[`move${task.id}`] ? animations[`move${task.id}`] : 0
 		const hideTask = animations[`hide${task.id}`] ? 0 : 'auto'
-
-		// Searching system
-		const searchText = this.state.searchText.toLowerCase()
-		if (searchText.length > 0 && task.name.toLowerCase().indexOf(searchText) < 0) {
-			if (task.description.toLowerCase().indexOf(searchText) < 0) {
-				if (task.category.name.toLowerCase().indexOf(searchText) < 0) {
-					return null
-				}
-			}
-		}
 
 		return (
 			<View>
@@ -653,10 +680,9 @@ class TaskList extends Component {
 				<Animated.View style={{ height: hideTask, left: moveValue }}>
 					<View style={styles.taskRow}>
 						<ListItem
-							divider
 							dense
 							onPress={() =>
-								task.finish ? null : navigation.navigate('ConfigTask', { task: task.id })
+								navigation.navigate('ConfigTask', { task: task.id, finished: task.finish })
 							}
 							style={{
 								container: {
@@ -756,16 +782,18 @@ class TaskList extends Component {
 			showConfigCategory,
 			dropdownData,
 			selectedIndex,
-			data,
 			visibleData,
 			rotateInterpolate,
 			bottomHidden,
+			searchText,
 			selectedCategory,
 			dialog,
 			showDialog,
 			loading,
 		} = this.state
-		const { theme, navigation, sortingType, sorting, finished, translations } = this.props
+		const { theme, navigation, sortingType, settings, sorting, finished, translations } = this.props
+
+		const filterData = this.getFilterData()
 
 		return (
 			<View style={flex}>
@@ -774,7 +802,7 @@ class TaskList extends Component {
 						autoFocus: true,
 						placeholder: translations.search,
 						onChangeText: (value) => this.setState({ searchText: value }),
-						onSearchClosed: () => this.setState({ searchText: '' }),
+						onSearchCloseRequested: () => this.setState({ searchText: '' }),
 					}}
 					leftElement='menu'
 					onLeftElementPress={() => navigation.navigate('Drawer')}
@@ -826,6 +854,21 @@ class TaskList extends Component {
 					}
 				/>
 
+				{searchText.length > 0 && (
+					<View style={foundResults}>
+						<Text style={{ color: theme.thirdTextColor }}>
+							{translations.found}:{' '}
+							{getVariety(
+								filterData.length,
+								translations.resultSingular,
+								translations.resultPlural,
+								translations.resultGenitive,
+								settings.lang,
+							)}
+						</Text>
+					</View>
+				)}
+
 				<ConfigCategory
 					category={false}
 					showDialog={showConfigCategory}
@@ -850,18 +893,18 @@ class TaskList extends Component {
 						/>
 					}
 					ListEmptyComponent={
-						<Text style={[empty, { color: theme.thirdTextColor }]}>{translations.emptyList}</Text>
+						<EmptyList color={theme.thirdTextColor} text={translations.emptyList} />
 					}
-					data={data.filter((d, i) => i <= visibleData)}
+					data={filterData}
 					initialNumToRender={8}
 					onEndReachedThreshold={0.2}
 					onEndReached={this.loadNextData}
-					renderItem={({ item }) => this.renderTaskRow(item)}
+					renderItem={({ item, index }) => this.renderTaskRow(item, index)}
 					keyExtractor={({ task }) => `${task.id}`}
 					onRefresh={this.refreshComponent}
 					refreshing={loading}
 					ListFooterComponent={
-						data.length > visibleData ? <Spinner /> : <View style={{ marginBottom: 56 }} />
+						filterData.length > visibleData ? <Spinner /> : <View style={styles.footerMargin} />
 					}
 				/>
 
