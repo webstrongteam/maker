@@ -24,7 +24,7 @@
 		"@react-native-community/datetimepicker": "3.0.4",
 		"@react-native-community/masked-view": "0.1.10",
 		"@ubaids/react-native-material-textfield": "0.16.3",
-		"axios": "0.21.1",
+		"axios": "1.6.0",
 		"colorsys": "1.0.22",
 		"expo": "^40.0.0",
 		"expo-calendar": "~8.6.0",
